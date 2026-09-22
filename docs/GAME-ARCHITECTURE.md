@@ -115,7 +115,7 @@ Commands: movement key state, `strike`, `dodge`, `technique`. Hit-stop buffers a
 
 ## Audio improvements
 
-The existing user's guzheng, pipa, xiao, tanggu, gong, bell, weapon and ambience synthesis is retained. These are procedural approximations of acoustic instruments, not recordings.
+The audio engine features a procedural high-energy rock soundtrack synthesized entirely with Web Audio API (overdriven electric guitar power chords, singing lead guitar riffs with vibrato and pitch bends, punchy rock bass, and a full rock drum kit with kick, snare, hi-hats, and crash cymbals). Backward compatibility aliases for legacy instrument calls are retained.
 
 The director converts scene transitions and combat events into music/SFX calls. Sound/music toggles and independent master/music/effects levels persist with the profile. The scheduler uses AudioContext time, discards missed beats after mute/throttling, and caps work per tick. The director only unlocks/resumes a suspended context on a gesture; repeated movement keys do not restart the sequencer. Delayed cues are tracked and canceled when scenes change, the page hides, or audio is disposed. Hiding the page pauses combat and suspends audio.
 

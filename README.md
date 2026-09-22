@@ -24,12 +24,12 @@ npm --prefix prototype/jade-gate run check
 
 The complete 4-Act narrative bible, world lore, character arcs (Zhao Yun, Lu Zhishen, Hu Sanniang, Lü Bu), in-engine dialogue exchanges, and macro/micro progression loops live in [`docs/GAME-FLOW-AND-STORY-SPEC.md`](docs/GAME-FLOW-AND-STORY-SPEC.md).
 
-## Procedural Wuxia Music & Sound Engine
+## Procedural Rock Music & Sound Engine
 
-A pure, zero-dependency procedural Web Audio API synthesizer (`prototype/jade-gate/audio.js`) provides an authentic traditional Chinese wuxia soundscape:
-- **Traditional Instruments:** Plucked Guzheng (古箏) with finger vibrato, rapid Pipa (琵琶) strums, breathy Xiao/Dizi (簫/笛) bamboo flute with portamento pitch glides, deep Tanggu (堂鼓) war drums, bronze Luo gongs (銅鑼), and multi-partial resonant Temple Bells (梵鐘).
-- **Adaptive Interactive BGM:** Dynamic state machine shifts between tranquil Mountain Pass ambience (72 BPM), high-stakes Vanguard Skirmishes (116 BPM war drums), and the climactic Ashen Warden Boss Duel (134 BPM polyrhythms and brassy gongs).
-- **Tactile Combat SFX:** Combo-scaling blade whooshes, crisp metal clashes, arrow snaps, dodge wind glides, jade healing chimes, and signature audio identities for all four legends.
+A pure, zero-dependency procedural Web Audio API synthesizer (`prototype/jade-gate/audio.js`) drives an authentic, high-energy rock soundtrack:
+- **Rock Instruments:** Distorted electric guitar power chords through tube-saturation overdrive curves and amp cabinet emulation, singing lead guitar riffs with expressive bends and vibrato, punchy rock bass guitar, and a complete rock drum kit (punchy acoustic kick, cracking rock snare, metallic hi-hats, and explosive crash cymbals).
+- **Adaptive Interactive BGM:** Dynamic state machine shifts between heavy moody desert rock groove in Hero Select/Waystation (96 BPM), driving hard rock arena anthem during Vanguard Skirmishes (138 BPM), and high-octane speed metal / thrash duel for the Ashen Warden Boss (158 BPM double-kick barrage and screaming solos).
+- **Tactile Combat SFX:** Combo-scaling pick-scrape blade whooshes, crunching steel impacts, power chord finishers, whammy dive dodges, and unique signature audio identities for all legends.
 - **In-Game Controls:** Independent Sound FX and Music toggles in the header nav bar, persisting seamlessly across play sessions.
 
 ## Play the earlier prototype
