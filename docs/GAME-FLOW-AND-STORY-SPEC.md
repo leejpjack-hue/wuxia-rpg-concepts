@@ -8,6 +8,12 @@
 
 ---
 
+## Implementation status and architecture
+
+The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now supports Act I arrival dialogue, encounter disciplines, a two-phase Warden, resolution dialogue, tea-house cultivation and checkpoint continuation. Quick play keeps all four heroes available; campaign Lü Bu unlocks after the planned Act III duel.
+
+Acts II–IV, environmental hazards, parrying, and 3D assets below remain production targets. The timeline is a planning estimate, not a delivery guarantee. Existing character art also requires a canon-alignment pass, especially Zhao Yun's sword and the revised ages.
+
 ## 1. Executive Summary & Creative Vision
 
 *Blades of the Four* is a combat-first, single-player wuxia action RPG. Set in an era of dynastic collapse, four legendary martial figures—each reimagined in their sharp, dangerous early twenties—are drawn into a collision course against the **Ashen Banner (灰旗會)**, an autocratic martial syndicate that seeks to subjugate the jianghu by capturing the empire's strategic mountain passes.

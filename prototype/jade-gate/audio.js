@@ -1,5 +1,6 @@
+import { scheduleWindow } from "./src/platform/audio-schedule.js";
 // audio.js — Procedural Wuxia Sound & Music Engine for Blades of the Four
-// Generates authentic traditional Chinese instruments (Guzheng, Xiao flute, Tanggu war drums, Luo gongs, Temple bells)
+// Synthesizes approximations inspired by traditional Chinese instruments (Guzheng, Xiao flute, Tanggu war drums, Luo gongs, Temple bells)
 // and interactive procedural background music using the Web Audio API without any external dependencies.
 
 let ctx = null;
@@ -12,25 +13,41 @@ let windGain = null;
 
 let soundEnabled = true;
 let musicEnabled = true;
-let currentMode = 'select'; // 'select' | 'battle' | 'boss' | 'upgrade' | 'victory' | 'defeat' | 'paused'
+let currentMode = "select"; // 'select' | 'battle' | 'boss' | 'upgrade' | 'victory' | 'defeat' | 'paused'
 let schedulerTimer = null;
 let currentStep = 0;
 let nextNoteTime = 0;
 let tempo = 72; // BPM
 let initialized = false;
+let windLfo = null;
+let masterVolume = 0.75,
+  musicVolume = 0.65,
+  sfxVolume = 0.85;
+const delayedCues = new Set();
+function scheduleCue(callback, delay) {
+  const timer = setTimeout(() => {
+    delayedCues.delete(timer);
+    if (ctx && ctx.state !== "closed") callback();
+  }, delay);
+  delayedCues.add(timer);
+  return timer;
+}
+function clearCues() {
+  for (const timer of delayedCues) clearTimeout(timer);
+  delayedCues.clear();
+}
 
 // Pentatonic Scale (宮 商 角 徵 羽 in D / B minor)
 // D3, E3, F#3, A3, B3, D4, E4, F#4, A4, B4, D5, E5, F#5
 const PENTATONIC = [
-  146.83, 164.81, 185.00, 220.00, 246.94,
-  293.66, 329.63, 369.99, 440.00, 493.88,
-  587.33, 659.25, 739.99
+  146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63, 369.99, 440.0, 493.88,
+  587.33, 659.25, 739.99,
 ];
 
 // Initialize Audio Context & Graph
 export function initAudio() {
-  if (ctx && ctx.state !== 'closed') {
-    if (ctx.state === 'suspended') {
+  if (ctx && ctx.state !== "closed") {
+    if (ctx.state === "suspended") {
       ctx.resume().catch(() => {});
     }
     return ctx;
@@ -43,20 +60,26 @@ export function initAudio() {
 
     // Master filter for pause/muffle effect
     filterNode = ctx.createBiquadFilter();
-    filterNode.type = 'lowpass';
+    filterNode.type = "lowpass";
     filterNode.frequency.setValueAtTime(20000, ctx.currentTime);
 
     // Master volume
     masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(soundEnabled ? 0.75 : 0, ctx.currentTime);
+    masterGain.gain.setValueAtTime(
+      soundEnabled ? masterVolume : 0,
+      ctx.currentTime,
+    );
 
     // SFX bus
     sfxGain = ctx.createGain();
-    sfxGain.gain.setValueAtTime(0.85, ctx.currentTime);
+    sfxGain.gain.setValueAtTime(sfxVolume, ctx.currentTime);
 
     // Music bus
     musicGain = ctx.createGain();
-    musicGain.gain.setValueAtTime(musicEnabled ? 0.6 : 0, ctx.currentTime);
+    musicGain.gain.setValueAtTime(
+      musicEnabled ? musicVolume : 0,
+      ctx.currentTime,
+    );
 
     sfxGain.connect(filterNode);
     musicGain.connect(filterNode);
@@ -71,7 +94,7 @@ export function initAudio() {
     initialized = true;
     return ctx;
   } catch (e) {
-    console.warn('AudioContext initialization failed:', e);
+    console.warn("AudioContext initialization failed:", e);
     return null;
   }
 }
@@ -83,15 +106,21 @@ function startWindAtmosphere() {
     const bufferSize = ctx.sampleRate * 3;
     const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    let b0 = 0,
+      b1 = 0,
+      b2 = 0,
+      b3 = 0,
+      b4 = 0,
+      b5 = 0,
+      b6 = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
       b0 = 0.99886 * b0 + white * 0.0555179;
       b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
+      b2 = 0.969 * b2 + white * 0.153852;
+      b3 = 0.8665 * b3 + white * 0.3104856;
+      b4 = 0.55 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.016898;
       output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
       b6 = white * 0.115926;
     }
@@ -101,12 +130,13 @@ function startWindAtmosphere() {
     windNode.loop = true;
 
     const windFilter = ctx.createBiquadFilter();
-    windFilter.type = 'bandpass';
+    windFilter.type = "bandpass";
     windFilter.frequency.setValueAtTime(320, ctx.currentTime);
     windFilter.Q.setValueAtTime(1.8, ctx.currentTime);
 
     // Modulate wind filter frequency slowly with LFO
     const lfo = ctx.createOscillator();
+    windLfo = lfo;
     const lfoGain = ctx.createGain();
     lfo.frequency.setValueAtTime(0.18, ctx.currentTime);
     lfoGain.gain.setValueAtTime(160, ctx.currentTime);
@@ -131,7 +161,13 @@ function startWindAtmosphere() {
 // ---------------------------------------------------------------------------
 
 // 1. Chinese Guzheng / Pipa (Plucked Silk String Synthesis)
-export function playGuzheng(freq, time = null, duration = 1.2, velocity = 0.8, bend = 0) {
+export function playGuzheng(
+  freq,
+  time = null,
+  duration = 1.2,
+  velocity = 0.8,
+  bend = 0,
+) {
   if (!ctx || !soundEnabled) return;
   const t = time ?? ctx.currentTime;
 
@@ -141,17 +177,23 @@ export function playGuzheng(freq, time = null, duration = 1.2, velocity = 0.8, b
     const filter = ctx.createBiquadFilter();
 
     // Harmonics: blend sawtooth and triangle for rich string timbre
-    osc.type = 'sawtooth';
+    osc.type = "sawtooth";
     osc.frequency.setValueAtTime(freq, t);
     if (bend !== 0) {
       // Traditional finger bend / vibrato
-      osc.frequency.linearRampToValueAtTime(freq * (1 + bend), t + duration * 0.4);
+      osc.frequency.linearRampToValueAtTime(
+        freq * (1 + bend),
+        t + duration * 0.4,
+      );
     }
 
     // Dynamic lowpass filter envelope: bright pluck that dampens quickly
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(Math.min(5000, freq * 8), t);
-    filter.frequency.exponentialRampToValueAtTime(Math.max(120, freq * 1.2), t + Math.min(duration, 0.6));
+    filter.frequency.exponentialRampToValueAtTime(
+      Math.max(120, freq * 1.2),
+      t + Math.min(duration, 0.6),
+    );
     filter.Q.setValueAtTime(2.2, t);
 
     // Pluck amplitude envelope
@@ -179,10 +221,10 @@ export function playPipa(freq, time = null, duration = 0.4, velocity = 0.7) {
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(freq, t);
 
-    filter.type = 'bandpass';
+    filter.type = "bandpass";
     filter.frequency.setValueAtTime(freq * 2.5, t);
     filter.Q.setValueAtTime(3.0, t);
 
@@ -201,7 +243,13 @@ export function playPipa(freq, time = null, duration = 0.4, velocity = 0.7) {
 }
 
 // 3. Chinese Bamboo Flute (Xiao / Dizi)
-export function playXiaoFlute(freq, time = null, duration = 1.4, velocity = 0.7, slideTo = null) {
+export function playXiaoFlute(
+  freq,
+  time = null,
+  duration = 1.4,
+  velocity = 0.7,
+  slideTo = null,
+) {
   if (!ctx || !soundEnabled) return;
   const t = time ?? ctx.currentTime;
 
@@ -210,7 +258,7 @@ export function playXiaoFlute(freq, time = null, duration = 1.4, velocity = 0.7,
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(freq * 0.985, t);
     // Smooth finger slide onto note
     osc.frequency.exponentialRampToValueAtTime(freq, t + 0.08);
@@ -231,7 +279,7 @@ export function playXiaoFlute(freq, time = null, duration = 1.4, velocity = 0.7,
     vibrato.stop(t + duration);
 
     // Warm resonant body
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(freq * 3.5, t);
 
     // Breath envelope: gradual rise, emotional swell, gentle release
@@ -259,7 +307,7 @@ export function playTanggu(time = null, velocity = 1.0, pitch = 1.0) {
     // 1. Membrane fundamental punch
     const osc = ctx.createOscillator();
     const oscGain = ctx.createGain();
-    osc.type = 'sine';
+    osc.type = "sine";
     const startFreq = 165 * pitch;
     const endFreq = 48 * pitch;
     osc.frequency.setValueAtTime(startFreq, t);
@@ -279,11 +327,12 @@ export function playTanggu(time = null, velocity = 1.0, pitch = 1.0) {
     const len = Math.floor(ctx.sampleRate * 0.045);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
     const data = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.25));
+    for (let i = 0; i < len; i++)
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.25));
     noise.buffer = buf;
 
     const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
+    noiseFilter.type = "bandpass";
     noiseFilter.frequency.setValueAtTime(140 * pitch, t);
     noiseFilter.Q.setValueAtTime(2.5, t);
 
@@ -303,7 +352,7 @@ export function playLuoGong(time = null, velocity = 0.8, pitch = 1.0) {
   const t = time ?? ctx.currentTime;
 
   try {
-    const partials = [180, 276, 385, 542, 730].map(f => f * pitch);
+    const partials = [180, 276, 385, 542, 730].map((f) => f * pitch);
     const gongGain = ctx.createGain();
     gongGain.gain.setValueAtTime(0.3 * velocity, t);
     gongGain.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
@@ -311,7 +360,7 @@ export function playLuoGong(time = null, velocity = 0.8, pitch = 1.0) {
     partials.forEach((f, idx) => {
       const osc = ctx.createOscillator();
       const pGain = ctx.createGain();
-      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.type = idx % 2 === 0 ? "sine" : "triangle";
       osc.frequency.setValueAtTime(f, t);
       // Slight pitch bend characteristic of Chinese gongs
       osc.frequency.exponentialRampToValueAtTime(f * 0.94, t + 0.5);
@@ -328,7 +377,12 @@ export function playLuoGong(time = null, velocity = 0.8, pitch = 1.0) {
 }
 
 // 6. Temple Bell / Qing (梵鐘 · 磬)
-export function playTempleBell(freq = 220, time = null, duration = 3.0, velocity = 0.8) {
+export function playTempleBell(
+  freq = 220,
+  time = null,
+  duration = 3.0,
+  velocity = 0.8,
+) {
   if (!ctx || !soundEnabled) return;
   const t = time ?? ctx.currentTime;
 
@@ -341,12 +395,15 @@ export function playTempleBell(freq = 220, time = null, duration = 3.0, velocity
     const ratios = [1.0, 1.414, 1.732, 2.3, 2.9];
     ratios.forEach((r, idx) => {
       const osc = ctx.createOscillator();
-      osc.type = 'sine';
+      osc.type = "sine";
       osc.frequency.setValueAtTime(freq * r, t);
 
       const pGain = ctx.createGain();
       pGain.gain.setValueAtTime(0.8 / (idx + 1), t);
-      pGain.gain.exponentialRampToValueAtTime(0.001, t + duration * (1 - idx * 0.15));
+      pGain.gain.exponentialRampToValueAtTime(
+        0.001,
+        t + duration * (1 - idx * 0.15),
+      );
 
       osc.connect(pGain);
       pGain.connect(bellGain);
@@ -366,25 +423,25 @@ export function playTempleBell(freq = 220, time = null, duration = 3.0, velocity
 const MELODIES = {
   select: [
     // Meditative, solitary mountain pass theme
-    [0, 2, 4, 7],     // Bar 1: D3, F#3, B3, F#4
-    [9, 7, 4, 2],     // Bar 2: B4, F#4, B3, F#3
-    [4, 7, 9, 11],    // Bar 3: B3, F#4, B4, E5
-    [11, 9, 7, 4]     // Bar 4: E5, B4, F#4, B3
+    [0, 2, 4, 7], // Bar 1: D3, F#3, B3, F#4
+    [9, 7, 4, 2], // Bar 2: B4, F#4, B3, F#3
+    [4, 7, 9, 11], // Bar 3: B3, F#4, B4, E5
+    [11, 9, 7, 4], // Bar 4: E5, B4, F#4, B3
   ],
   battle: [
     // High-tempo martial combat ostinato
     [2, 2, 4, 2, 7, 4, 2, 4],
     [9, 7, 9, 11, 9, 7, 4, 2],
     [4, 4, 7, 4, 9, 7, 4, 2],
-    [11, 11, 9, 7, 4, 2, 4, 7]
+    [11, 11, 9, 7, 4, 2, 4, 7],
   ],
   boss: [
     // Urgent, clashing duel against the Ashen Warden
     [0, 2, 4, 7, 9, 7, 4, 2],
     [4, 7, 9, 11, 12, 11, 9, 7],
     [2, 4, 7, 9, 11, 9, 7, 4],
-    [12, 11, 9, 7, 4, 2, 0, 2]
-  ]
+    [12, 11, 9, 7, 4, 2, 0, 2],
+  ],
 };
 
 function startMusicSequencer() {
@@ -393,31 +450,31 @@ function startMusicSequencer() {
   currentStep = 0;
 
   schedulerTimer = setInterval(() => {
-    if (!ctx || !musicEnabled || !soundEnabled) return;
-    const lookahead = 0.12; // Schedule notes up to 120ms in advance
-    while (nextNoteTime < ctx.currentTime + lookahead) {
-      scheduleStep(currentStep, nextNoteTime);
-      advanceStep();
+    if (!ctx || ctx.state !== "running" || !musicEnabled || !soundEnabled)
+      return;
+    const stepDuration = (60 / tempo) * (currentMode === "select" ? 0.5 : 0.25);
+    const window = scheduleWindow(nextNoteTime, ctx.currentTime, stepDuration);
+    for (const time of window.times) {
+      scheduleStep(currentStep, time);
+      currentStep = (currentStep + 1) % 64;
     }
+    nextNoteTime = window.next;
   }, 40);
 }
 
-function advanceStep() {
-  const secondsPerBeat = 60.0 / tempo;
-  // Step length: 16th notes in combat, 8th notes in select
-  const stepFraction = currentMode === 'select' ? 0.5 : 0.25;
-  nextNoteTime += secondsPerBeat * stepFraction;
-  currentStep = (currentStep + 1) % 64;
-}
-
 function scheduleStep(step, time) {
-  if (currentMode === 'paused' || currentMode === 'victory' || currentMode === 'defeat') return;
+  if (
+    currentMode === "paused" ||
+    currentMode === "victory" ||
+    currentMode === "defeat"
+  )
+    return;
 
   const bar = Math.floor(step / 16) % 4;
   const beatInBar = Math.floor((step % 16) / 4);
   const subStep = step % 4;
 
-  if (currentMode === 'select') {
+  if (currentMode === "select") {
     // Ambient Mode: gentle Guzheng plucks + sparse Dizi flute
     if (step % 4 === 0) {
       const melodyBar = MELODIES.select[bar];
@@ -439,14 +496,21 @@ function scheduleStep(step, time) {
     return;
   }
 
-  if (currentMode === 'battle') {
+  if (currentMode === "battle") {
     // Combat Mode: 116 BPM, driving Tanggu drums + Pipa ostinato
     // Downbeats: Heavy war drum
     if (subStep === 0) {
-      playTanggu(time, beatInBar === 0 ? 0.95 : 0.65, beatInBar === 0 ? 0.95 : 1.15);
+      playTanggu(
+        time,
+        beatInBar === 0 ? 0.95 : 0.65,
+        beatInBar === 0 ? 0.95 : 1.15,
+      );
     }
     // Syncopated drum fill on beat 3 and 4
-    if ((beatInBar === 2 && subStep === 2) || (beatInBar === 3 && subStep === 3)) {
+    if (
+      (beatInBar === 2 && subStep === 2) ||
+      (beatInBar === 3 && subStep === 3)
+    ) {
       playTanggu(time, 0.45, 1.35);
     }
 
@@ -470,7 +534,7 @@ function scheduleStep(step, time) {
     return;
   }
 
-  if (currentMode === 'boss') {
+  if (currentMode === "boss") {
     // Boss Duel Mode: 134 BPM, aggressive war drums, intense polyrhythms, urgent flute
     // Relentless drum pulse
     if (subStep === 0 || subStep === 2) {
@@ -509,9 +573,9 @@ export function playSfx(type, param = null) {
 
   try {
     switch (type) {
-      case 'strike': {
+      case "strike": {
         // Weapon swing whoosh: pitch-swept filtered noise + blade shimmer
-        const combo = typeof param === 'number' ? param : 1;
+        const combo = typeof param === "number" ? param : 1;
         const baseFreq = 420 + combo * 80;
 
         // Air whoosh
@@ -519,11 +583,12 @@ export function playSfx(type, param = null) {
         const len = Math.floor(ctx.sampleRate * 0.14);
         const buf = ctx.createBuffer(1, len, ctx.sampleRate);
         const data = buf.getChannelData(0);
-        for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.sin((i / len) * Math.PI);
+        for (let i = 0; i < len; i++)
+          data[i] = (Math.random() * 2 - 1) * Math.sin((i / len) * Math.PI);
         noise.buffer = buf;
 
         const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
+        bp.type = "bandpass";
         bp.frequency.setValueAtTime(baseFreq * 2.2, t);
         bp.frequency.exponentialRampToValueAtTime(baseFreq * 0.7, t + 0.13);
         bp.Q.setValueAtTime(3.2, t);
@@ -540,7 +605,7 @@ export function playSfx(type, param = null) {
         // Subtle metallic blade edge ring
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'triangle';
+        osc.type = "triangle";
         osc.frequency.setValueAtTime(baseFreq * 1.5, t);
         osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.9, t + 0.08);
         oGain.gain.setValueAtTime(0.12, t);
@@ -552,12 +617,12 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'hit': {
+      case "hit": {
         // Steel contact impact + bone thud
-        const isBoss = param === 'boss' || param === true;
+        const isBoss = param === "boss" || param === true;
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'sawtooth';
+        osc.type = "sawtooth";
         osc.frequency.setValueAtTime(isBoss ? 280 : 380, t);
         osc.frequency.exponentialRampToValueAtTime(isBoss ? 55 : 75, t + 0.12);
 
@@ -572,7 +637,7 @@ export function playSfx(type, param = null) {
         // Metallic spark ping
         const ping = ctx.createOscillator();
         const pGain = ctx.createGain();
-        ping.type = 'sine';
+        ping.type = "sine";
         ping.frequency.setValueAtTime(1250, t);
         ping.frequency.exponentialRampToValueAtTime(320, t + 0.09);
         pGain.gain.setValueAtTime(0.22, t);
@@ -584,12 +649,12 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'finisher': {
+      case "finisher": {
         // Combo finisher: heavy metal clash + resonant bronze ring
         playTempleBell(320, t, 1.4, 0.9);
         const sub = ctx.createOscillator();
         const sGain = ctx.createGain();
-        sub.type = 'sine';
+        sub.type = "sine";
         sub.frequency.setValueAtTime(180, t);
         sub.frequency.exponentialRampToValueAtTime(38, t + 0.22);
         sGain.gain.setValueAtTime(0.65, t);
@@ -601,17 +666,18 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'dodge': {
+      case "dodge": {
         // Ethereal wind glide / afterimage
         const noise = ctx.createBufferSource();
         const len = Math.floor(ctx.sampleRate * 0.22);
         const buf = ctx.createBuffer(1, len, ctx.sampleRate);
         const data = buf.getChannelData(0);
-        for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.sin((i / len) * Math.PI);
+        for (let i = 0; i < len; i++)
+          data[i] = (Math.random() * 2 - 1) * Math.sin((i / len) * Math.PI);
         noise.buffer = buf;
 
         const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
+        lp.type = "lowpass";
         lp.frequency.setValueAtTime(1400, t);
         lp.frequency.exponentialRampToValueAtTime(180, t + 0.2);
 
@@ -627,7 +693,7 @@ export function playSfx(type, param = null) {
         // Whistle
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(520, t);
         osc.frequency.exponentialRampToValueAtTime(220, t + 0.18);
         oGain.gain.setValueAtTime(0.15, t);
@@ -639,15 +705,15 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'special': {
+      case "special": {
         // Character-specific signature techniques
         const heroId = param;
-        if (heroId === 'zhao-yun') {
+        if (heroId === "zhao-yun") {
           // Azure Line: piercing dragon spear rush + sonic boom
           playGuzheng(587.33, t, 1.2, 0.9, 0.25);
           const sweep = ctx.createOscillator();
           const sGain = ctx.createGain();
-          sweep.type = 'sawtooth';
+          sweep.type = "sawtooth";
           sweep.frequency.setValueAtTime(180, t);
           sweep.frequency.exponentialRampToValueAtTime(1200, t + 0.18);
           sweep.frequency.exponentialRampToValueAtTime(80, t + 0.45);
@@ -657,15 +723,15 @@ export function playSfx(type, param = null) {
           sGain.connect(sfxGain);
           sweep.start(t);
           sweep.stop(t + 0.52);
-        } else if (heroId === 'lu-zhishen') {
+        } else if (heroId === "lu-zhishen") {
           // Temple Bell: immense bronze shockwave and earth rumble
           playTempleBell(110, t, 2.8, 1.0);
           playTanggu(t, 1.0, 0.7);
-        } else if (heroId === 'hu-sanniang') {
+        } else if (heroId === "hu-sanniang") {
           // Crimson Waltz: rapid triple scissor cuts + wind flutter
-          playSfx('strike', 2);
-          setTimeout(() => playSfx('strike', 3), 90);
-          setTimeout(() => playSfx('finisher'), 190);
+          playSfx("strike", 2);
+          scheduleCue(() => playSfx("strike", 3), 90);
+          scheduleCue(() => playSfx("finisher"), 190);
         } else {
           // Lü Bu / Skybreaker: thunderous cleave + shattering impact
           playLuoGong(t, 1.0, 0.85);
@@ -675,11 +741,11 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'arrow_shoot': {
+      case "arrow_shoot": {
         // Bowstring snap + whistle
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'triangle';
+        osc.type = "triangle";
         osc.frequency.setValueAtTime(680, t);
         osc.frequency.exponentialRampToValueAtTime(180, t + 0.08);
         oGain.gain.setValueAtTime(0.25, t);
@@ -691,11 +757,11 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'arrow_hit': {
+      case "arrow_hit": {
         // Wood impact thud
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(180, t);
         osc.frequency.exponentialRampToValueAtTime(45, t + 0.08);
         oGain.gain.setValueAtTime(0.3, t);
@@ -707,22 +773,27 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'heal': {
+      case "heal": {
         // Jade drop chime: ascending pentatonic notes
-        const notes = [PENTATONIC[4], PENTATONIC[7], PENTATONIC[9], PENTATONIC[11]];
+        const notes = [
+          PENTATONIC[4],
+          PENTATONIC[7],
+          PENTATONIC[9],
+          PENTATONIC[11],
+        ];
         notes.forEach((f, i) => {
-          setTimeout(() => {
+          scheduleCue(() => {
             playGuzheng(f, null, 0.8, 0.6, 0.05);
           }, i * 65);
         });
         break;
       }
 
-      case 'hurt': {
+      case "hurt": {
         // Heavy impact thud + ear ringing
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'sawtooth';
+        osc.type = "sawtooth";
         osc.frequency.setValueAtTime(120, t);
         osc.frequency.exponentialRampToValueAtTime(35, t + 0.18);
         oGain.gain.setValueAtTime(0.42, t);
@@ -734,11 +805,11 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'enemy_windup': {
+      case "enemy_windup": {
         // Rising tension pulse
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(140, t);
         osc.frequency.linearRampToValueAtTime(380, t + 0.4);
         oGain.gain.setValueAtTime(0.01, t);
@@ -751,18 +822,18 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'upgrade': {
+      case "upgrade": {
         // Mystical resonant chime on boon selection
         playTempleBell(440, t, 1.8, 0.7);
         playGuzheng(PENTATONIC[9], t + 0.1, 1.5, 0.7);
         break;
       }
 
-      case 'ui_click': {
+      case "ui_click": {
         // Crisp bamboo / wood clapper
         const osc = ctx.createOscillator();
         const oGain = ctx.createGain();
-        osc.type = 'triangle';
+        osc.type = "triangle";
         osc.frequency.setValueAtTime(520, t);
         osc.frequency.exponentialRampToValueAtTime(140, t + 0.04);
         oGain.gain.setValueAtTime(0.15, t);
@@ -774,21 +845,27 @@ export function playSfx(type, param = null) {
         break;
       }
 
-      case 'victory': {
+      case "victory": {
         // Triumphant wuxia war gong + ascending flourish
         playLuoGong(t, 1.0, 1.0);
         playTempleBell(293.66, t + 0.2, 3.0, 0.9);
-        const victoryNotes = [PENTATONIC[4], PENTATONIC[7], PENTATONIC[9], PENTATONIC[11], PENTATONIC[12]];
+        const victoryNotes = [
+          PENTATONIC[4],
+          PENTATONIC[7],
+          PENTATONIC[9],
+          PENTATONIC[11],
+          PENTATONIC[12],
+        ];
         victoryNotes.forEach((f, i) => {
-          setTimeout(() => playGuzheng(f, null, 1.8, 0.8), 250 + i * 140);
+          scheduleCue(() => playGuzheng(f, null, 1.8, 0.8), 250 + i * 140);
         });
         break;
       }
 
-      case 'defeat': {
+      case "defeat": {
         // Mournful low temple bell fading into wind
         playTempleBell(146.83, t, 3.5, 0.85);
-        setTimeout(() => playTempleBell(110, null, 3.0, 0.7), 600);
+        scheduleCue(() => playTempleBell(110, null, 3.0, 0.7), 600);
         break;
       }
     }
@@ -802,34 +879,36 @@ export function playSfx(type, param = null) {
 export function setMusicMode(mode) {
   if (currentMode === mode) return;
   currentMode = mode;
+  clearCues();
+  if (ctx) nextNoteTime = ctx.currentTime + 0.03;
 
-  if (mode === 'select') {
+  if (mode === "select") {
     tempo = 72;
-    if (filterNode && ctx) filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
-    if (musicGain && ctx && musicEnabled) musicGain.gain.setTargetAtTime(0.65, ctx.currentTime, 0.3);
-  } else if (mode === 'battle') {
+    if (filterNode && ctx)
+      filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
+  } else if (mode === "battle") {
     tempo = 116;
-    if (filterNode && ctx) filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
-    if (musicGain && ctx && musicEnabled) musicGain.gain.setTargetAtTime(0.75, ctx.currentTime, 0.2);
-  } else if (mode === 'boss') {
+    if (filterNode && ctx)
+      filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
+  } else if (mode === "boss") {
     tempo = 134;
-    if (filterNode && ctx) filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
-    if (musicGain && ctx && musicEnabled) musicGain.gain.setTargetAtTime(0.85, ctx.currentTime, 0.2);
+    if (filterNode && ctx)
+      filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
     // Dramatic gong crash to start the boss encounter
     playLuoGong(null, 1.0, 0.9);
-  } else if (mode === 'upgrade') {
-    if (filterNode && ctx) filterNode.frequency.setTargetAtTime(4500, ctx.currentTime, 0.3);
-    if (musicGain && ctx && musicEnabled) musicGain.gain.setTargetAtTime(0.45, ctx.currentTime, 0.3);
-  } else if (mode === 'paused') {
+  } else if (mode === "upgrade") {
+    if (filterNode && ctx)
+      filterNode.frequency.setTargetAtTime(4500, ctx.currentTime, 0.3);
+  } else if (mode === "paused") {
     // Muffle music through lowpass filter when paused
-    if (filterNode && ctx) filterNode.frequency.setTargetAtTime(700, ctx.currentTime, 0.15);
-  } else if (mode === 'victory') {
-    if (musicGain && ctx) musicGain.gain.setTargetAtTime(0.2, ctx.currentTime, 0.4);
-    playSfx('victory');
-  } else if (mode === 'defeat') {
-    if (musicGain && ctx) musicGain.gain.setTargetAtTime(0.15, ctx.currentTime, 0.4);
-    playSfx('defeat');
+    if (filterNode && ctx)
+      filterNode.frequency.setTargetAtTime(700, ctx.currentTime, 0.15);
+  } else if (mode === "victory") {
+    playSfx("victory");
+  } else if (mode === "defeat") {
+    playSfx("defeat");
   }
+  applyMix();
 }
 
 // ---------------------------------------------------------------------------
@@ -844,39 +923,114 @@ export function isMusicEnabled() {
   return musicEnabled;
 }
 
+function applyMix() {
+  if (!ctx) return;
+  const intensity =
+    {
+      select: 1,
+      battle: 1.15,
+      boss: 1.3,
+      upgrade: 0.7,
+      paused: 0.4,
+      victory: 0.3,
+      defeat: 0.23,
+    }[currentMode] ?? 1;
+  masterGain?.gain.setTargetAtTime(
+    soundEnabled ? masterVolume : 0,
+    ctx.currentTime,
+    0.04,
+  );
+  sfxGain?.gain.setTargetAtTime(sfxVolume, ctx.currentTime, 0.04);
+  musicGain?.gain.setTargetAtTime(
+    musicEnabled ? Math.min(1, musicVolume * intensity) : 0,
+    ctx.currentTime,
+    0.12,
+  );
+}
+export function setAudioSettings(settings) {
+  soundEnabled = settings.sound ?? soundEnabled;
+  musicEnabled = settings.music ?? musicEnabled;
+  for (const [key, value] of Object.entries(settings)) {
+    if (!Number.isFinite(value)) continue;
+    const v = Math.max(0, Math.min(1, value));
+    if (key === "masterVolume") masterVolume = v;
+    if (key === "musicVolume") musicVolume = v;
+    if (key === "sfxVolume") sfxVolume = v;
+  }
+  if (ctx) nextNoteTime = ctx.currentTime + 0.03;
+  applyMix();
+}
 export function toggleSound() {
-  initAudio();
-  soundEnabled = !soundEnabled;
-  if (masterGain && ctx) {
-    masterGain.gain.setValueAtTime(soundEnabled ? 0.75 : 0, ctx.currentTime);
-  }
-  if (soundEnabled) {
-    playSfx('ui_click');
-  }
+  setAudioSettings({ sound: !soundEnabled });
   return soundEnabled;
 }
-
 export function toggleMusic() {
-  initAudio();
-  musicEnabled = !musicEnabled;
-  if (musicGain && ctx) {
-    musicGain.gain.setValueAtTime(musicEnabled ? 0.65 : 0, ctx.currentTime);
-  }
+  setAudioSettings({ music: !musicEnabled });
   return musicEnabled;
+}
+export function suspendAudio() {
+  clearCues();
+  if (schedulerTimer) {
+    clearInterval(schedulerTimer);
+    schedulerTimer = null;
+  }
+  return ctx?.suspend().catch(() => {});
+}
+export function resumeAudio() {
+  const context = initAudio();
+  if (context) {
+    nextNoteTime = context.currentTime + 0.05;
+    startMusicSequencer();
+    applyMix();
+  }
+  return context;
+}
+export async function disposeAudio() {
+  clearCues();
+  if (schedulerTimer) clearInterval(schedulerTimer);
+  schedulerTimer = null;
+  try {
+    windNode?.stop();
+    windLfo?.stop();
+  } catch {}
+  const old = ctx;
+  ctx = null;
+  windNode = null;
+  windLfo = null;
+  windGain = null;
+  masterGain = null;
+  sfxGain = null;
+  musicGain = null;
+  filterNode = null;
+  initialized = false;
+  if (old && old.state !== "closed") await old.close();
+}
+export function audioStatus() {
+  return {
+    initialized,
+    state: ctx?.state || "unavailable",
+    currentMode,
+    soundEnabled,
+    musicEnabled,
+  };
 }
 
 // Fallback tone for legacy compatibility
-export function tone(freq = 280, len = 0.07, type = 'sine', volume = 0.05) {
+export function tone(freq = 280, len = 0.07, type = "sine", volume = 0.05) {
   if (!ctx || !soundEnabled) return;
   try {
-    const o = ctx.createOscillator(), a = ctx.createGain();
+    const o = ctx.createOscillator(),
+      a = ctx.createGain();
     o.type = type;
     o.frequency.setValueAtTime(freq, ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(Math.max(40, freq * 0.55), ctx.currentTime + len);
+    o.frequency.exponentialRampToValueAtTime(
+      Math.max(40, freq * 0.55),
+      ctx.currentTime + len,
+    );
     a.gain.setValueAtTime(volume, ctx.currentTime);
     a.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + len);
     o.connect(a);
-    a.connect(ctx.destination);
+    a.connect(sfxGain);
     o.start();
     o.stop(ctx.currentTime + len);
   } catch (e) {}

@@ -1,15 +1,145 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import vm from 'node:vm';
-import * as core from '../core.js';
-const {HEROES,makePlayer,inArc,takeDamage,applyUpgrade,createGame,nextWave}=core;
-test('strikes respect weapon reach and facing, including angle wrap',()=>{const p={x:0,y:0,facing:Math.PI-.1};assert.equal(inArc(p,{x:-100,y:-2,radius:20},120),true);assert.equal(inArc(p,{x:100,y:0,radius:20},120),false);assert.equal(inArc(p,{x:-200,y:0,radius:20},120),false);});
-test('dodge immunity prevents stacked damage and death clamps at zero',()=>{const p=makePlayer(HEROES[0]);p.invulnerable=.1;assert.equal(takeDamage(p,20),false);assert.equal(p.hp,120);p.invulnerable=0;assert.equal(takeDamage(p,200),true);assert.equal(p.hp,0);assert.equal(takeDamage(p,20),false);});
-test('upgrades persist through waves, recovery caps, final encounter has exactly one boss',()=>{const g=createGame(HEROES[0]);applyUpgrade(g.p,'power');applyUpgrade(g.p,'vitality');applyUpgrade(g.p,'flow');g.p.hp=149;g.p.flow=95;nextWave(g);assert.equal(g.p.hp,150);assert.equal(g.p.flow,100);assert.equal(g.p.power,1.25);assert.equal(g.p.cost,30);assert.equal(g.enemies.filter(e=>e.type==='archer').length,2);nextWave(g);assert.equal(g.enemies.filter(e=>e.type==='boss').length,1);assert.equal(g.wave,3);});
-// Execute the actual game controller with a small DOM adapter; no game rules are copied into tests.
-function controller(){const nodes=new Map();function node(){return {style:{},dataset:{},children:[],textContent:'',hidden:false,classList:{add(){},remove(){},toggle(){}},setAttribute(){},addEventListener(){},focus(){},getContext(){return{}},append(b){this.children.push(b)},set innerHTML(v){this.children=[]},get firstElementChild(){return this.children[0]}};}const document={getElementById(id){if(!nodes.has(id))nodes.set(id,node());return nodes.get(id)},querySelectorAll(){return[]},createElement:node,addEventListener(){}};const sandbox={...core,document,Image:class{},performance:{now:()=>0},matchMedia:()=>({matches:false}),localStorage:{getItem:()=>null,setItem(){}},window:{addEventListener(){}},requestAnimationFrame(){},draw(){},loadArt:async()=>{},console,Math};vm.createContext(sandbox);const src=fs.readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^await loadArt.*$/m,'ready=true;');vm.runInContext(src,sandbox);return {run:s=>vm.runInContext(s,sandbox),nodes};}
-test('actual controller: all four techniques consume Flow, damage nearby enemies, and respect cooldown',()=>{for(let i=0;i<4;i++){const c=controller();c.run(`selected=HEROES[${i}];start();g.enemies=[{...g.enemies[0],x:g.p.x+70,y:g.p.y,hp:1000,maxHp:1000}];special()`);assert(c.run('g.enemies[0].hp')<1000,HEROES[i].name);assert(c.run('g.p.specialCD')>0);const hp=c.run('g.enemies[0].hp');c.run('special()');assert.equal(c.run('g.enemies[0].hp'),hp);}});
-test('actual controller: normal attacks earn renown, wave upgrade and victory are reachable',()=>{const c=controller();c.run('start();g.enemies=[{...g.enemies[0],x:g.p.x+50,y:g.p.y,hp:1}];attack();update(.016)');assert.equal(c.run('g.mode'),'upgrade');assert(c.run('g.score')>0);c.nodes.get('choices').firstElementChild.onclick();assert.equal(c.run('g.wave'),2);assert.equal(c.run('g.p.power'),1.25);c.run('g.enemies=[];update(.016)');c.nodes.get('choices').firstElementChild.onclick();assert.equal(c.run('g.wave'),3);c.run('g.enemies=[];update(.016)');assert.equal(c.run('g.mode'),'victory');assert.equal(c.run('saved[selected.id].wins'),1);});
-test('actual controller: dodge prevents damage, defeat can retry, and pause freezes mode',()=>{const c=controller();c.run('start();dodge();hurt(30)');assert.equal(c.run('g.p.hp'),120);c.run('g.p.invulnerable=0;hurt(150);update(.016)');assert.equal(c.run('g.mode'),'defeat');c.run('start();pause()');assert.equal(c.run('g.mode'),'paused');c.run('resume()');assert.equal(c.run('g.mode'),'playing');assert.equal(c.run('g.p.hp'),120);});
-test('boss light-hit resistance preserves its telegraph, techniques can interrupt it',()=>{const c=controller();c.run("start();g.enemies=[{...g.enemies[0],type:'boss',hp:1000,wind:.8,target:{x:640,y:500,r:120}}];hit(g.enemies[0],20)");assert.equal(c.run('g.enemies[0].wind'),.8);c.run('hit(g.enemies[0],60,40,.8)');assert.equal(c.run('g.enemies[0].wind'),0);});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { HEROES } from "../src/content/heroes.js";
+import { inArc } from "../src/domain/math.js";
+import { makePlayer, takeDamage } from "../src/domain/player.js";
+import { session, clearEncounter } from "./helpers.js";
+const input = (actions = [], keys = []) => ({ actions, keys: new Set(keys) });
+test("weapon hit geometry respects facing, reach, and angle wrapping", () => {
+  const p = { x: 0, y: 0, facing: Math.PI - 0.1 };
+  assert(inArc(p, { x: -100, y: -2, radius: 20 }, 120));
+  assert(!inArc(p, { x: 100, y: 0, radius: 20 }, 120));
+  assert(!inArc(p, { x: -200, y: 0, radius: 20 }, 120));
+});
+test("damage immunity prevents repeated damage and HP never becomes negative", () => {
+  const p = makePlayer(HEROES[0]);
+  p.invulnerable = 0.1;
+  assert(!takeDamage(p, 20));
+  assert.equal(p.hp, 120);
+  p.invulnerable = 0;
+  assert(takeDamage(p, 200));
+  assert.equal(p.hp, 0);
+  assert(!takeDamage(p, 20));
+});
+for (const hero of HEROES)
+  test(`${hero.name}: technique spends Flow, damages, and respects cooldown`, () => {
+    const game = session();
+    game.start(hero.id, "quickplay");
+    const p = game.g.p;
+    game.g.enemies = [
+      { ...game.g.enemies[0], x: p.x + 70, y: p.y, hp: 1000, maxHp: 1000 },
+    ];
+    game.step(1 / 60, input(["technique"]));
+    assert(game.g.enemies[0].hp < 1000);
+    assert(p.flow < 40);
+    assert(p.specialCD > 0);
+    const hp = game.g.enemies[0].hp;
+    game.combat.special();
+    assert.equal(game.g.enemies[0].hp, hp);
+  });
+test("low Flow blocks techniques without applying damage or cooldown", () => {
+  const game = session();
+  game.start("zhao-yun", "quickplay");
+  game.g.p.flow = 0;
+  const hp = game.g.enemies[0].hp;
+  game.combat.special();
+  assert.equal(game.g.enemies[0].hp, hp);
+  assert.equal(game.g.p.specialCD, 0);
+});
+test("third swing is a finisher regardless of how many enemies the prior swing hit", () => {
+  const game = session();
+  game.start("hu-sanniang", "quickplay");
+  const g = game.g;
+  g.enemies = [{ ...g.enemies[0], x: 690, y: 500, hp: 1000 }];
+  const damage = [];
+  game.bus.on("combat:hit", (e) => damage.push(e.damage));
+  for (let i = 0; i < 3; i++) {
+    g.p.attackCD = 0;
+    g.enemies[0].x = 690;
+    game.combat.attack();
+  }
+  assert.deepEqual(damage, [19, 19, 25]);
+});
+test("perfect evades grant Flow once per attack; damage immunity alone does not", () => {
+  const game = session();
+  game.start("zhao-yun", "quickplay");
+  game.combat.dodge();
+  game.combat.hurt(30, "one");
+  game.combat.hurt(30, "one");
+  assert.equal(game.g.p.hp, 120);
+  assert.equal(game.g.p.flow, 50);
+  game.g.p.perfectWindow = 0;
+  game.combat.hurt(30, "two");
+  assert.equal(game.g.p.flow, 50);
+});
+test("boss transitions phase once, resists light interruption, and accepts technique interruption", () => {
+  const game = session();
+  game.start("lu-zhishen", "quickplay");
+  clearEncounter(game);
+  game.chooseDiscipline("power");
+  clearEncounter(game);
+  game.chooseDiscipline("power");
+  const boss = game.g.enemies.find((e) => e.type === "boss");
+  let phases = 0;
+  game.bus.on("boss:phase", () => phases++);
+  boss.hp = boss.maxHp * 0.49;
+  game.step(1 / 60, input());
+  game.step(1 / 60, input());
+  assert.equal(boss.phase, 1);
+  assert.equal(phases, 1);
+  boss.wind = 0.8;
+  boss.target = { x: 640, y: 500, r: 80 };
+  game.combat.hit(boss, 1);
+  assert.equal(boss.wind, 0.8);
+  game.combat.hit(boss, 1, 40, 0.8);
+  assert.equal(boss.wind, 0);
+  assert.equal(boss.burst, 0);
+});
+test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
+  const game = session();
+  game.start("zhao-yun", "quickplay");
+  const e = game.g.enemies[0];
+  e.wind = 0.001;
+  e.target = { x: 640, y: 500, r: 64 };
+  game.step(1 / 60, input());
+  assert.equal(game.g.p.hp, 106);
+  game.g.p.invulnerable = 0;
+  game.g.shots = [
+    { id: "arrow", x: 640, y: 500, vx: 0, vy: 0, life: 1, damage: 12 },
+  ];
+  game.step(1 / 60, input());
+  assert.equal(game.g.p.hp, 94);
+  assert.equal(game.g.shots.length, 0);
+});
+test("pause stops simulation and defeat can restart cleanly", () => {
+  const game = session();
+  game.start("zhao-yun", "quickplay");
+  game.pause();
+  const time = game.g.time;
+  game.step(1, input(["technique"]));
+  assert.equal(game.g.time, time);
+  assert.equal(game.g.p.flow, 40);
+  game.resume();
+  game.combat.hurt(500);
+  game.step(1 / 60, input());
+  assert.equal(game.mode, "defeat");
+  game.start("zhao-yun", "quickplay");
+  assert.equal(game.g.p.hp, 120);
+  assert.equal(game.g.score, 0);
+});
+test("dodge input survives hit-stop but does not leak across pause", () => {
+  const game = session();
+  game.start("zhao-yun", "quickplay");
+  game.g.hitStop = 0.025;
+  game.step(1 / 60, input(["dodge"]));
+  game.step(1 / 60, input());
+  game.step(1 / 60, input());
+  assert(game.g.p.dodgeCD > 0);
+  game.g.p.dodgeCD = 0;
+  game.g.hitStop = 0.025;
+  game.step(1 / 60, input(["dodge"]));
+  game.pause();
+  game.resume();
+  for (let i = 0; i < 3; i++) game.step(1 / 60, input());
+  assert.equal(game.g.p.dodgeCD, 0);
+});

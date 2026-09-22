@@ -1,16 +1,5 @@
-export const HEROES = [
-  {id:'zhao-yun',name:'Zhao Yun',cn:'趙雲',title:'The White Dragon',weapon:'Dragon spear',style:'Precision · Reach',hp:120,speed:245,damage:27,reach:142,rate:.39,color:'#bfe9df',skill:'Dragon Rush',description:'A spear that parts the storm. Long reach and a piercing rush reward precise positioning.'},
-  {id:'lu-zhishen',name:'Lu Zhishen',cn:'魯智深',title:'The Flower Monk',weapon:'Iron monk spade',style:'Resilience · Control',hp:165,speed:205,damage:32,reach:118,rate:.55,color:'#efd091',skill:'Mountain Bell',description:'Stand firm as the mountain. A sweeping spade and stunning shockwave control the crowd.'},
-  {id:'hu-sanniang',name:'Hu Sanniang',cn:'扈三娘',title:'The Twin Blades',weapon:'Paired sabers',style:'Agility · Combos',hp:105,speed:290,damage:19,reach:103,rate:.25,color:'#f3b0a4',skill:'Crimson Waltz',description:'Two blades, no hesitation. Swift strikes and a spinning flourish turn movement into mastery.'},
-  {id:'lu-bu',name:'Lü Bu',cn:'呂布',title:'The Flying General',weapon:'Crescent halberd',style:'Power · Cleave',hp:140,speed:220,damage:40,reach:157,rate:.62,color:'#d7afe3',skill:'Skybreaker',description:'An unstoppable force. A mighty halberd and devastating cleave shatter the Ashen Banner.'}
-];
-export const UPGRADES=[{id:'power',name:'Tempered steel',description:'+25% strike and technique damage.'},{id:'vitality',name:'Mountain heart',description:'+30 maximum health. Recover 55 health.'},{id:'flow',name:'Still water',description:'+8 Flow per hit. Techniques cost 30 Flow.'}];
-export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-export function inArc(p,e,range,arc=1.35){const d=distance(p,e);if(d>range+e.radius)return false;const a=Math.atan2(e.y-p.y,e.x-p.x)-p.facing;return Math.abs(Math.atan2(Math.sin(a),Math.cos(a)))<arc||d<36;}
-export function makePlayer(hero){return {...hero,x:640,y:500,maxHp:hero.hp,flow:40,attackCD:0,dodgeCD:0,specialCD:0,invulnerable:0,dash:0,dx:1,dy:0,facing:0,attackAnim:0,combo:0,comboTime:0,power:1,flowBonus:0,cost:40,kills:0,damageTaken:0,moving:false};}
-export function applyUpgrade(p,id){if(id==='power')p.power*=1.25;if(id==='vitality'){p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+55);}if(id==='flow'){p.flowBonus+=8;p.cost=30;}}
-export function enemyFor(wave,index){const boss=wave===3&&index===0;const archer=!boss&&wave>1&&index%3===1;return {id:`${wave}-${index}`,type:boss?'boss':archer?'archer':'guard',hp:boss?570:wave===1?62:85,maxHp:boss?570:wave===1?62:85,x:index%2?1090:190,y:315+(index*67)%285,radius:boss?33:21,speed:boss?80:archer?72:90+wave*8,damage:boss?25:archer?12:14,cd:1+index*.25,wind:0,stun:0,flash:0,facing:0,target:null,attacks:0};}
-export function createGame(hero){return {mode:'playing',p:makePlayer(hero),wave:1,enemies:Array.from({length:5},(_,i)=>enemyFor(1,i)),effects:[],shots:[],pickups:[],score:0,time:0,waveTime:0,totalKills:0,shake:0};}
-export function nextWave(g){g.wave++;g.enemies=Array.from({length:g.wave===2?7:5},(_,i)=>enemyFor(g.wave,i));g.p.hp=Math.min(g.p.maxHp,g.p.hp+22);g.p.flow=Math.min(100,g.p.flow+20);g.shots=[];g.pickups=[];g.waveTime=0;g.mode='playing';}
-export function takeDamage(p,amount){if(p.invulnerable>0)return false;p.hp=Math.max(0,p.hp-amount);p.damageTaken+=amount;p.invulnerable=.65;p.combo=0;return true;}
+// Stable compatibility exports for the art gallery and external consumers.
+export { HEROES } from "./src/content/heroes.js";
+export { UPGRADES, applyUpgrade } from "./src/content/disciplines.js";
+export { clamp, distance, inArc } from "./src/domain/math.js";
+export { makePlayer, takeDamage } from "./src/domain/player.js";

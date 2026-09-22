@@ -1,4 +1,6 @@
-# Blades of the Four: development specification
+# Blades of the Four: original slice specification
+
+This original slice document is retained for context. The implemented campaign foundation, save/audio contracts, and current scope are described in [architecture.md](architecture.md).
 
 ## Product promise
 

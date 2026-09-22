@@ -1,6 +1,194 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10191b"><title>Blades of the Four — Jade Gate</title><link rel="stylesheet" href="style.css"></head>
-<body><header><a class="brand" href="./"><span class="seal">四</span><span>BLADES OF THE FOUR<small>A WUXIA CHRONICLE</small></span></a><nav><a href="gallery.html">Art collection ↗</a><button id="sound" aria-pressed="true">Sound on</button><button id="music" aria-pressed="true">Music on</button><button id="motion" aria-pressed="false">Motion on</button></nav></header>
-<main id="selection"><div class="intro"><div><p class="eyebrow">CHAPTER I · THE JADE GATE</p><h1>Four legends.<br><em>One unbroken oath.</em></h1><p class="lede">The mountain pass has fallen to the Ashen Banner.<br>Choose your legend. Reclaim the gate.</p></div><div class="chapter-note"><span>江湖</span><p>A short tale of steel and resolve</p><small>3 encounters · 4 heroes · one final duel</small></div></div><section id="heroes" class="heroes" aria-label="Choose your hero"></section><section class="selection-footer"><div><p id="hero-description"></p><span id="record"></span></div><button id="start" class="primary">Enter the mountain pass <span>→</span></button></section><p class="hint">WASD / arrows to move · J / click to strike · K / Space to dodge · L / E technique · Esc pause</p></main>
-<main id="play" hidden><div class="game-top"><div class="hero-vitals"><img id="hud-portrait" alt=""><div><div class="meter-label"><strong id="hero-name"></strong><span id="hp-text"></span></div><div class="bar"><i id="hp-bar"></i></div><div class="meter-label"><span>FLOW</span><span id="flow-text"></span></div><div class="bar flow"><i id="flow-bar"></i></div></div></div><div class="objective"><p class="eyebrow" id="chapter"></p><strong id="objective"></strong></div><div class="score"><span id="score">0</span><small>RENOWN</small><button id="pause">Pause Ⅱ</button></div></div><div class="arena-wrap"><canvas id="arena" width="1280" height="720" tabindex="0" aria-label="Combat arena. Move with WASD or arrows; J attack; K or Space dodge; L or E technique."></canvas><div id="banner" class="banner" aria-live="polite"></div><div class="arena-location">JADE GATE <span>翠門</span></div><div id="boss-hud" hidden><span>THE ASHEN WARDEN</span><div class="bar boss"><i id="boss-bar"></i></div></div></div><div class="game-bottom"><div><strong id="combat-tip">Close the distance. Strike, then move.</strong><small id="kills"></small></div><div class="skills"><button id="attack"><kbd>J</kbd> Strike <span id="attack-status">READY</span></button><button id="dodge"><kbd>K</kbd> Dodge <span id="dodge-status">READY</span></button><button id="special"><kbd>L</kbd> <b id="skill-name">Technique</b> <span id="special-status">40 FLOW</span></button></div></div><div class="touch-move" aria-label="Movement controls"><button data-move="ArrowUp" aria-label="Move up">↑</button><button data-move="ArrowLeft" aria-label="Move left">←</button><button data-move="ArrowDown" aria-label="Move down">↓</button><button data-move="ArrowRight" aria-label="Move right">→</button></div></main>
-<div id="overlay" class="overlay" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><p id="modal-kicker" class="eyebrow"></p><h2 id="modal-title"></h2><p id="modal-copy"></p><div id="choices"></div><div id="modal-actions"></div></section></div><footer><span>BLADES OF THE FOUR</span><span>Local playable prototype · 01</span><span>Built for the journey.</span></footer><script type="module" src="game.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#10191b" />
+    <title>Blades of the Four — Jade Gate</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="./"
+        ><span class="seal">四</span
+        ><span>BLADES OF THE FOUR<small>A WUXIA CHRONICLE</small></span></a
+      >
+      <nav>
+        <a href="gallery.html">Art collection ↗</a
+        ><button id="sound" aria-pressed="true">Sound on</button
+        ><button id="music" aria-pressed="true">Music on</button
+        ><button id="motion" aria-pressed="false">Motion on</button>
+      </nav>
+    </header>
+    <main id="selection">
+      <div class="intro">
+        <div>
+          <p class="eyebrow">CHAPTER I · THE JADE GATE</p>
+          <h1>Four legends.<br /><em>One unbroken oath.</em></h1>
+          <p class="lede">
+            The mountain pass has fallen to the Ashen Banner.<br />Choose your
+            legend. Reclaim the gate.
+          </p>
+        </div>
+        <div class="chapter-note">
+          <span>江湖</span>
+          <p>A short tale of steel and resolve</p>
+          <small>3 encounters · 4 heroes · one final duel</small>
+        </div>
+      </div>
+      <section class="journey-controls" aria-label="Game mode">
+        <div class="mode-switch">
+          <button data-mode="campaign" aria-pressed="true">Campaign</button
+          ><button data-mode="quickplay" aria-pressed="false">
+            Quick play
+          </button>
+        </div>
+        <span id="journey-summary"></span
+        ><button id="continue" hidden>Continue journey</button>
+      </section>
+      <section
+        id="heroes"
+        class="heroes"
+        aria-label="Choose your hero"
+      ></section>
+      <section class="selection-footer">
+        <div>
+          <p id="hero-description"></p>
+          <span id="record"></span>
+        </div>
+        <button id="start" class="primary">
+          Enter the mountain pass <span>→</span>
+        </button>
+      </section>
+      <div
+        id="campaign-route"
+        class="campaign-route"
+        aria-label="Campaign route"
+      ></div>
+      <p id="load-status" role="status"></p>
+      <button id="retry-assets" hidden>Retry loading artwork</button>
+      <p id="save-status" role="status"></p>
+      <details class="audio-settings">
+        <summary>Audio mix</summary>
+        <div>
+          <label
+            >Master
+            <input
+              id="masterVolume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              aria-label="Master volume" /></label
+          ><label
+            >Music
+            <input
+              id="musicVolume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              aria-label="Music volume" /></label
+          ><label
+            >Effects
+            <input
+              id="sfxVolume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              aria-label="Effects volume"
+          /></label>
+        </div>
+      </details>
+      <p class="hint">
+        WASD / arrows to move · J / click to strike · K / Space to dodge · L / E
+        technique · Esc pause
+      </p>
+    </main>
+    <main id="play" hidden>
+      <div class="game-top">
+        <div class="hero-vitals">
+          <img id="hud-portrait" alt="" />
+          <div>
+            <div class="meter-label">
+              <strong id="hero-name"></strong><span id="hp-text"></span>
+            </div>
+            <div class="bar"><i id="hp-bar"></i></div>
+            <div class="meter-label">
+              <span>FLOW</span><span id="flow-text"></span>
+            </div>
+            <div class="bar flow"><i id="flow-bar"></i></div>
+          </div>
+        </div>
+        <div class="objective">
+          <p class="eyebrow" id="chapter"></p>
+          <strong id="objective"></strong>
+        </div>
+        <div class="score">
+          <span id="score">0</span><small>RENOWN</small
+          ><button id="pause">Pause Ⅱ</button>
+        </div>
+      </div>
+      <div class="arena-wrap">
+        <canvas
+          id="arena"
+          width="1280"
+          height="720"
+          tabindex="0"
+          aria-label="Combat arena. Move with WASD or arrows; J attack; K or Space dodge; L or E technique."
+        ></canvas>
+        <div id="banner" class="banner" aria-live="polite"></div>
+        <div class="arena-location">JADE GATE <span>翠門</span></div>
+        <div id="boss-hud" hidden>
+          <span id="boss-name">THE ASHEN WARDEN</span>
+          <div class="bar boss"><i id="boss-bar"></i></div>
+        </div>
+      </div>
+      <div class="game-bottom">
+        <div>
+          <strong id="combat-tip">Close the distance. Strike, then move.</strong
+          ><small id="kills"></small>
+        </div>
+        <div class="skills">
+          <button id="attack">
+            <kbd>J</kbd> Strike <span id="attack-status">READY</span></button
+          ><button id="dodge">
+            <kbd>K</kbd> Dodge <span id="dodge-status">READY</span></button
+          ><button id="special">
+            <kbd>L</kbd> <b id="skill-name">Technique</b>
+            <span id="special-status">40 FLOW</span>
+          </button>
+        </div>
+      </div>
+      <div class="touch-move" aria-label="Movement controls">
+        <button data-move="ArrowUp" aria-label="Move up">↑</button
+        ><button data-move="ArrowLeft" aria-label="Move left">←</button
+        ><button data-move="ArrowDown" aria-label="Move down">↓</button
+        ><button data-move="ArrowRight" aria-label="Move right">→</button>
+      </div>
+    </main>
+    <div id="overlay" class="overlay" hidden>
+      <section
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <p id="modal-kicker" class="eyebrow"></p>
+        <h2 id="modal-title"></h2>
+        <p id="modal-copy"></p>
+        <div id="choices"></div>
+        <div id="modal-actions"></div>
+      </section>
+    </div>
+    <footer>
+      <span>BLADES OF THE FOUR</span><span>Campaign foundation · 02</span
+      ><span>Built for the journey.</span>
+    </footer>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

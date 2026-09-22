@@ -1,0 +1,21 @@
+name: Jade Gate checks
+on:
+  push:
+    paths: ['prototype/jade-gate/**', '.github/workflows/jade-gate.yml']
+  pull_request:
+    paths: ['prototype/jade-gate/**', '.github/workflows/jade-gate.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prototype/jade-gate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - run: npm run check
