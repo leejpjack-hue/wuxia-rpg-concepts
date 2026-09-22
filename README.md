@@ -3,7 +3,15 @@
 Concept-art archive for a **combat-first wuxia RPG** (romance later). Public-domain cast only.
 
 **Owner:** Jack Lee JP · **Archived:** 2026-09-22 HKT  
-**Status:** Exploration DRAFT — mix packs when development starts. Not an engine / not shipped.
+**Status:** Exploration DRAFT plus a playable browser combat prototype. Not shipped.
+
+## Play the prototype
+
+```bash
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000/prototype/`. Choose a hero, move with **WASD**, attack with **J**, dodge with **K**, and spend full Flow with **L**. Touch controls are included for mobile landscape. The complete vertical-slice plan and recommended art-to-engine workflow live in [`docs/GAME-DEVELOPMENT-SPEC.md`](docs/GAME-DEVELOPMENT-SPEC.md).
 
 ## Cast
 

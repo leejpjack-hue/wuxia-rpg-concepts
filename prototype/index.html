@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#100e0c">
+  <title>Blades of the Four — Combat Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div><p class="eyebrow">Playable combat study · v0.1</p><h1>BLADES <span>OF THE</span> FOUR</h1></div>
+      <button id="sound" class="icon-button" type="button" aria-label="Toggle sound">SOUND · ON</button>
+    </header>
+
+    <section id="selection" class="selection" aria-labelledby="choose-title">
+      <div class="intro"><p class="chapter">CHAPTER I · THE BROKEN PASS</p><h2 id="choose-title">Choose your legend</h2><p>Four names survive the old chronicles. Tonight, one of them becomes yours.</p></div>
+      <div id="roster" class="roster"></div>
+      <div class="selection-footer"><p><kbd>←</kbd><kbd>→</kbd> Select &nbsp; <kbd>Enter</kbd> Begin</p><button id="begin" class="primary" type="button">ENTER THE PASS <span>→</span></button></div>
+    </section>
+
+    <section id="game" class="game" hidden>
+      <div class="hud">
+        <div class="hero-id"><div id="hero-mark" class="hero-mark">趙</div><div><strong id="hero-name">Zhao Yun</strong><small id="hero-style">THE SILVER EDGE</small></div></div>
+        <div class="meters"><label>VITALITY <span id="hp-text">100</span></label><div class="bar"><i id="hp-bar"></i></div><label>FLOW <span id="flow-text">0%</span></label><div class="bar flow"><i id="flow-bar"></i></div></div>
+        <div class="objective"><small>OBJECTIVE</small><strong id="objective">Defeat the ambush</strong><span id="enemy-count">Enemies · 0</span></div>
+      </div>
+      <div class="arena-wrap"><canvas id="arena" width="1200" height="620" aria-label="Top-down combat arena"></canvas><div id="message" class="message"><small>THE BROKEN PASS</small><strong>Ambush at dusk</strong></div></div>
+      <div class="controls"><span><kbd>WASD</kbd> Move</span><span><kbd>J</kbd> Cut</span><span><kbd>K</kbd> Dodge</span><span><kbd>L</kbd> Signature</span><button id="restart" type="button">Restart run</button></div>
+      <div class="touch" aria-label="Touch controls"><div class="dpad"><button data-key="w">▲</button><button data-key="a">◀</button><button data-key="s">▼</button><button data-key="d">▶</button></div><div class="actions"><button data-key="j">CUT</button><button data-key="k">DODGE</button><button data-key="l">FLOW</button></div></div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
