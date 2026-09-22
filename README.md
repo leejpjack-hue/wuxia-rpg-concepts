@@ -5,7 +5,22 @@ Concept-art archive for a **combat-first wuxia RPG** (romance later). Public-dom
 **Owner:** Jack Lee JP · **Archived:** 2026-09-22 HKT  
 **Status:** Exploration DRAFT plus a playable browser combat prototype. Not shipped.
 
-## Play the prototype
+## Play Jade Gate — new standalone build
+
+The new [Blades of the Four: Jade Gate](prototype/jade-gate/README.md) build includes four playable heroes, three encounters with a boss, between-encounter upgrades, saved scores, keyboard/touch controls, and 16 generated art assets. It is a fresh 2D implementation based on the concept summary; its character/weapon interpretation is separate from the archived cast direction below.
+
+```bash
+python3 prototype/jade-gate/serve.py
+```
+
+Open **http://127.0.0.1:8765/** to play, or **http://127.0.0.1:8765/gallery.html** to browse the artwork. On macOS, double-click `prototype/jade-gate/Play.command`. The [development spec](prototype/jade-gate/docs/development-spec.md) and [complete image prompts](prototype/jade-gate/docs/image-prompts.md) are included. 3D meshes and rigs remain future work.
+
+```bash
+npm --prefix prototype/jade-gate test
+npm --prefix prototype/jade-gate run check
+```
+
+## Play the earlier prototype
 
 ```bash
 python3 -m http.server 8000
