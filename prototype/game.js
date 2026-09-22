@@ -20,5 +20,34 @@ function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);const g=ctx.create
 function drawPlayer(){const h=HEROES[selected];ctx.save();ctx.translate(player.x,player.y);if(player.inv>0&&Math.floor(player.inv*12)%2)ctx.globalAlpha=.35;ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(0,16,26,9,0,0,7);ctx.fill();ctx.rotate(player.angle);if(player.attack>0){ctx.strokeStyle=h.accent;ctx.lineWidth=8;ctx.beginPath();ctx.arc(0,0,h.reach,-1.15,1.15);ctx.stroke()}ctx.strokeStyle=h.color;ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(5,0);ctx.lineTo(h.reach*.7,0);ctx.stroke();ctx.fillStyle=h.color;ctx.beginPath();ctx.arc(0,0,20,0,7);ctx.fill();ctx.fillStyle=h.accent;ctx.beginPath();ctx.arc(4,0,8,0,7);ctx.fill();ctx.restore()}
 function drawEnemy(e){ctx.save();ctx.translate(e.x,e.y);ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(0,15,e.r+7,8,0,0,7);ctx.fill();ctx.fillStyle=e.flash?'#f0d19a':e.attack<.3?'#b73229':'#4a3932';ctx.beginPath();ctx.arc(0,0,e.r,0,7);ctx.fill();ctx.strokeStyle=e.elite?'#d0a85d':'#958477';ctx.lineWidth=e.elite?5:3;ctx.beginPath();ctx.moveTo(-e.r,0);ctx.lineTo(e.r+18,0);ctx.stroke();ctx.restore()}
 function finish(win){running=false;const over=document.createElement('div');over.className='game-over';over.innerHTML=`<small>${win?'PASS CLEARED':'LEGEND INTERRUPTED'}</small><h2>${win?'Victory':'Defeated'}</h2><p>${kills} foes · ${score} renown</p><button type="button">${win?'FIGHT AGAIN':'RISE AGAIN'}</button>`;$('.arena-wrap').append(over);over.querySelector('button').onclick=reset}
-function beep(freq,duration){if(!audioOn)return;const ac=beep.ac||(beep.ac=new AudioContext),o=ac.createOscillator(),gain=ac.createGain();o.frequency.value=freq;gain.gain.setValueAtTime(.035,ac.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ac.currentTime+duration);o.connect(gain).connect(ac.destination);o.start();o.stop(ac.currentTime+duration)}
+function beep(freq,duration,type='sine'){
+  if(!audioOn)return;
+  try{
+    const ac=beep.ac||(beep.ac=new (window.AudioContext||window.webkitAudioContext)());
+    if(ac.state==='suspended')ac.resume();
+    const t=ac.currentTime;
+    if(freq<=100){
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type='sine';
+      o.frequency.setValueAtTime(160,t);
+      o.frequency.exponentialRampToValueAtTime(45,t+0.12);
+      g.gain.setValueAtTime(0.35,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+Math.max(duration,0.25));
+      o.connect(g);g.connect(ac.destination);
+      o.start(t);o.stop(t+Math.max(duration,0.26));
+    }else{
+      const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
+      o.type=freq>300?'triangle':'sawtooth';
+      o.frequency.setValueAtTime(freq*1.2,t);
+      o.frequency.exponentialRampToValueAtTime(freq*0.8,t+duration);
+      f.type='lowpass';
+      f.frequency.setValueAtTime(Math.min(4000,freq*4),t);
+      f.frequency.exponentialRampToValueAtTime(freq,t+duration);
+      g.gain.setValueAtTime(0.06,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+duration);
+      o.connect(f);f.connect(g);g.connect(ac.destination);
+      o.start(t);o.stop(t+duration);
+    }
+  }catch(e){}
+}
 document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(selection.hidden===false&&(k==='arrowright'||k==='arrowleft'))select(selected+(k==='arrowright'?1:-1));if(selection.hidden===false&&e.key==='Enter')start();keys[k]=true;if(k==='j'&&!e.repeat)attack();if(k==='k'&&!e.repeat&&player.dodge<=0){player.dodge=.18;player.inv=.3}if(k==='l'&&!e.repeat)attack(true)});document.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;b.onpointerdown=e=>{e.preventDefault();keys[k]=true;if(k==='j')attack();if(k==='k'&&player.dodge<=0){player.dodge=.18;player.inv=.3}if(k==='l')attack(true)};b.onpointerup=()=>keys[k]=false;b.onpointerleave=()=>keys[k]=false});$('#begin').onclick=start;$('#restart').onclick=reset;$('#sound').onclick=()=>{$('#sound').textContent=`SOUND · ${(audioOn=!audioOn)?'ON':'OFF'}`};
