@@ -62,9 +62,22 @@ export class GameSession {
     const event = this.machine.transition(next);
     this.combat?.clearInput();
     if (this.g) this.g.mode = next;
+    const dialogueKey = this.dialogue?.key || null;
+    const stage =
+      dialogueKey ||
+      (next === "playing"
+        ? this.encounter?.bossId
+          ? "boss"
+          : "battle"
+        : next);
     this.bus.emit("state:changed", {
       ...event,
       boss: !!this.encounter?.bossId,
+      dialogueKey,
+      stage,
+      runMode: this.g?.runMode || null,
+      actId: this.g?.actId || null,
+      encounterIndex: this.g?.encounterIndex ?? null,
     });
   }
   createRun(hero, act, runMode) {
