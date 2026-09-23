@@ -652,7 +652,7 @@ function scheduleStep(step, time, stepDuration) {
   // -------------------------------------------------------------------------
   // 1. SELECT MODE: Moody Heavy Grunge / Desert Rock Groove (96 BPM)
   // -------------------------------------------------------------------------
-  if (currentMode === "select") {
+  if (currentMode === "select" || currentMode === "waystation") {
     // 8 steps per bar (8th notes), 4 bars = 32 steps
     const bar = Math.floor(step / 8) % 4;
     const stepInBar = step % 8;
@@ -1253,7 +1253,7 @@ export function setMusicMode(mode) {
   clearCues();
   if (ctx) nextNoteTime = ctx.currentTime + 0.03;
 
-  if (mode === "select") {
+  if (mode === "select" || mode === "waystation") {
     tempo = 96;
     if (filterNode && ctx)
       filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
@@ -1300,6 +1300,7 @@ function applyMix() {
   const intensity =
     {
       select: 0.95,
+      waystation: 0.95,
       battle: 1.15,
       boss: 1.3,
       upgrade: 0.75,

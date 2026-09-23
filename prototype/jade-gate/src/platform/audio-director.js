@@ -1,3 +1,52 @@
+/**
+ * Maps story and gameplay state transitions to procedural audio modes:
+ * - select: menu, tea house waystation, arrival story dialogue
+ * - battle: standard combat encounters
+ * - boss: boss encounters and pre-boss confrontation dialogue
+ * - upgrade: between-encounter discipline/boon choices
+ * - victory: quick-play victory or campaign boss resolution dialogue
+ * - defeat: combat loss
+ * - paused: combat pause
+ */
+export function resolveMusicMode(event) {
+  if (!event) return "select";
+  const { current, boss, dialogueKey, stage } = event;
+
+  if (current === "playing") {
+    return boss ? "boss" : "battle";
+  }
+
+  if (current === "dialogue") {
+    const key = dialogueKey || stage;
+    if (key === "warden-fall") return "victory";
+    if (key === "warden-intro") return "boss";
+    if (key === "arrival") return "select";
+    return "select";
+  }
+
+  if (current === "menu" || current === "waystation") {
+    return "select";
+  }
+
+  if (current === "upgrade") {
+    return "upgrade";
+  }
+
+  if (current === "paused") {
+    return "paused";
+  }
+
+  if (current === "victory") {
+    return "victory";
+  }
+
+  if (current === "defeat") {
+    return "defeat";
+  }
+
+  return current || "select";
+}
+
 /** Maps domain events to an injected synth backend; no combat code imports Web Audio. */
 export class AudioDirector {
   constructor(bus, backend, settings) {
@@ -15,17 +64,9 @@ export class AudioDirector {
         }
         backend.playSfx(type, param);
       }),
-      bus.on("state:changed", ({ current, boss }) =>
-        backend.setMusicMode(
-          current === "playing"
-            ? boss
-              ? "boss"
-              : "battle"
-            : { menu: "select", dialogue: "upgrade", waystation: "select" }[
-                current
-              ] || current,
-        ),
-      ),
+      bus.on("state:changed", (event) => {
+        backend.setMusicMode(resolveMusicMode(event));
+      }),
       bus.on("settings:changed", (settings) => {
         this.settings = settings;
         backend.setAudioSettings(settings);
@@ -33,6 +74,12 @@ export class AudioDirector {
       bus.on("boss:phase", () => backend.playSfx("finisher")),
       bus.on("combat:evade", () => backend.playSfx("dodge")),
     ];
+  }
+  static resolveMusicMode(event) {
+    return resolveMusicMode(event);
+  }
+  resolveMusicMode(event) {
+    return resolveMusicMode(event);
   }
   unlock() {
     if (this.backend.audioStatus().state !== "running") {

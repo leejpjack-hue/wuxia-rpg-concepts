@@ -6,13 +6,13 @@ import {
   SAVE_VERSION,
   sanitizeProfile,
 } from "../src/platform/save-store.js";
-import { memoryStorage, session } from "./helpers.js";
+import { memoryStorage, session, clearEncounter } from "./helpers.js";
 import { FixedClock } from "../src/engine/clock.js";
 import { StateMachine } from "../src/engine/state-machine.js";
 import { EventBus } from "../src/engine/events.js";
 import { AssetStore } from "../src/platform/assets.js";
 import { scheduleWindow } from "../src/platform/audio-schedule.js";
-import { AudioDirector } from "../src/platform/audio-director.js";
+import { AudioDirector, resolveMusicMode } from "../src/platform/audio-director.js";
 test("legacy score migration preserves records but grants no campaign progress", () => {
   const store = new SaveStore(
     memoryStorage({
@@ -170,4 +170,180 @@ test("two tabs cannot silently overwrite a newer campaign save", () => {
   assert(!b.save(pb));
   assert.match(b.warning, /Another tab/);
   assert.equal(new SaveStore(storage).load().wallet, 500);
+});
+
+test("audio director resolves all story-state transitions to procedural audio modes", () => {
+  const bus = new EventBus(),
+    modes = [];
+  const backend = Object.fromEntries(
+    [
+      "setAudioSettings",
+      "playSfx",
+      "setMusicMode",
+      "resumeAudio",
+      "suspendAudio",
+      "disposeAudio",
+    ].map((key) => [
+      key,
+      (...args) => {
+        if (key === "setMusicMode") modes.push(args[0]);
+      },
+    ]),
+  );
+  backend.audioStatus = () => ({ state: "running" });
+  const director = new AudioDirector(bus, backend, { sound: true });
+
+  // 1. Menu and Waystation -> select
+  bus.emit("state:changed", { current: "menu" });
+  assert.equal(modes.at(-1), "select");
+  bus.emit("state:changed", { current: "waystation" });
+  assert.equal(modes.at(-1), "select");
+
+  // 2. Story arrival dialogue -> select
+  bus.emit("state:changed", {
+    current: "dialogue",
+    dialogueKey: "arrival",
+    stage: "arrival",
+  });
+  assert.equal(modes.at(-1), "select");
+
+  // 3. Regular combat battle (non-boss) -> battle
+  bus.emit("state:changed", {
+    current: "playing",
+    boss: false,
+    stage: "battle",
+  });
+  assert.equal(modes.at(-1), "battle");
+
+  // 4. Combat pause -> paused
+  bus.emit("state:changed", { current: "paused", stage: "paused" });
+  assert.equal(modes.at(-1), "paused");
+
+  // 5. Resume battle -> battle
+  bus.emit("state:changed", {
+    previous: "paused",
+    current: "playing",
+    boss: false,
+  });
+  assert.equal(modes.at(-1), "battle");
+
+  // 6. Encounter clear discipline upgrade -> upgrade
+  bus.emit("state:changed", { current: "upgrade", stage: "upgrade" });
+  assert.equal(modes.at(-1), "upgrade");
+
+  // 7. Boss intro dialogue -> boss
+  bus.emit("state:changed", {
+    current: "dialogue",
+    dialogueKey: "warden-intro",
+    stage: "warden-intro",
+    boss: true,
+  });
+  assert.equal(modes.at(-1), "boss");
+
+  // 8. Boss duel combat -> boss
+  bus.emit("state:changed", {
+    current: "playing",
+    boss: true,
+    stage: "boss",
+  });
+  assert.equal(modes.at(-1), "boss");
+
+  // 9. Pause during boss duel -> paused
+  bus.emit("state:changed", { current: "paused", boss: true });
+  assert.equal(modes.at(-1), "paused");
+
+  // 10. Resume boss duel -> boss
+  bus.emit("state:changed", {
+    previous: "paused",
+    current: "playing",
+    boss: true,
+  });
+  assert.equal(modes.at(-1), "boss");
+
+  // 11. Boss defeat / victory resolution dialogue (warden-fall) -> victory
+  bus.emit("state:changed", {
+    current: "dialogue",
+    dialogueKey: "warden-fall",
+    stage: "warden-fall",
+  });
+  assert.equal(modes.at(-1), "victory");
+
+  // 12. Quick-play victory -> victory
+  bus.emit("state:changed", { current: "victory", stage: "victory" });
+  assert.equal(modes.at(-1), "victory");
+
+  // 13. Combat defeat -> defeat
+  bus.emit("state:changed", { current: "defeat", stage: "defeat" });
+  assert.equal(modes.at(-1), "defeat");
+
+  // 14. Static and instance resolver methods
+  assert.equal(AudioDirector.resolveMusicMode({ current: "menu" }), "select");
+  assert.equal(director.resolveMusicMode({ current: "playing", boss: true }), "boss");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "warden-fall" }), "victory");
+
+  director.dispose();
+});
+
+test("full campaign story progression drives AudioDirector transitions seamlessly", () => {
+  const modes = [],
+    sfx = [];
+  const backend = {
+    setAudioSettings: () => {},
+    playSfx: (type, param) => sfx.push({ type, param }),
+    setMusicMode: (m) => modes.push(m),
+    resumeAudio: () => {},
+    suspendAudio: () => {},
+    disposeAudio: () => {},
+    audioStatus: () => ({ state: "running" }),
+  };
+  const storage = memoryStorage();
+  const game = session(storage);
+  const director = new AudioDirector(game.bus, backend, { sound: true });
+
+  // Start campaign: arrival dialogue
+  game.start("zhao-yun", "campaign");
+  assert.equal(modes.at(-1), "select");
+
+  // Advance dialogue to encounter 1 (patrol)
+  game.advanceDialogue(true);
+  assert.equal(modes.at(-1), "battle");
+
+  // Clear encounter 1: discipline upgrade
+  clearEncounter(game);
+  assert.equal(modes.at(-1), "upgrade");
+  assert(sfx.some((s) => s.type === "upgrade"));
+
+  // Choose discipline: encounter 2 (garrison)
+  game.chooseDiscipline("power");
+  assert.equal(modes.at(-1), "battle");
+
+  // Clear encounter 2: discipline upgrade before boss
+  clearEncounter(game);
+  assert.equal(modes.at(-1), "upgrade");
+
+  // Choose discipline: boss intro dialogue (warden-intro)
+  game.chooseDiscipline("vitality");
+  assert.equal(modes.at(-1), "boss");
+
+  // Advance dialogue into boss combat
+  game.advanceDialogue(true);
+  assert.equal(modes.at(-1), "boss");
+
+  // Pause and resume boss combat
+  game.pause();
+  assert.equal(modes.at(-1), "paused");
+  game.resume();
+  assert.equal(modes.at(-1), "boss");
+
+  // Clear boss encounter (victory): warden-fall dialogue
+  clearEncounter(game);
+  assert.equal(modes.at(-1), "victory");
+  assert(sfx.some((s) => s.type === "victory"));
+
+  // Advance warden-fall dialogue into waystation tea house
+  game.advanceDialogue(true);
+  assert.equal(modes.at(-1), "select");
+  assert.equal(game.mode, "waystation");
+
+  director.dispose();
 });
