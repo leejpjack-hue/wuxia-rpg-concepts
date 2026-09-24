@@ -4,6 +4,9 @@ export function createEnemies(encounter, index) {
     const boss = type === "boss",
       archer = type === "archer";
     const definition = boss ? BOSSES[encounter.bossId] : null;
+    if (boss && definition?.planned) {
+      throw new Error(`Cannot launch unbuilt boss: ${encounter.bossId}`);
+    }
     const hp = boss ? definition.hp : index === 0 ? 62 : 85;
     return {
       id: `${encounter.id}-${i}`,

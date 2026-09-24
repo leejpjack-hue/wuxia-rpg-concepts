@@ -158,44 +158,29 @@ export class GameView {
     this.$("modal-title").textContent = title;
     this.$("modal-copy").textContent = copy;
     this.$("choices").innerHTML = "";
-    this.$("modal-actions").innerHTML = "";
+    this.$("actions").innerHTML = "";
   }
-  button(
-    label,
-    fn,
-    { primary = false, disabled = false, parent = "modal-actions" } = {},
-  ) {
-    const button = this.document.createElement("button");
-    button.textContent = label;
-    button.disabled = disabled;
-    if (primary) button.className = "primary";
-    button.onclick = () => this.perform(fn);
-    this.$(parent).append(button);
-    return button;
+  button(text, onClick, { primary = false, disabled = false, parent = "actions" } = {}) {
+    const btn = this.document.createElement("button");
+    btn.textContent = text;
+    btn.disabled = disabled;
+    if (primary) btn.classList.add("primary");
+    btn.onclick = () => {
+      this.onGesture();
+      onClick();
+    };
+    this.$(parent).appendChild(btn);
+    return btn;
   }
   render() {
     const session = this.session,
-      g = session.g,
-      mode = session.mode;
-    this.$("selection").hidden = mode !== "menu";
-    this.$("play").hidden = mode === "menu";
-    this.$("overlay").hidden = true;
-    // Modal scenes own focus and block background controls until dismissed.
-    this.$("selection").inert = false;
-    this.$("play").inert = false;
-    this.settings();
-    this.refreshMenu();
-    if (g) {
-      this.$("hud-portrait").src = `assets/${g.p.id}.png`;
-      this.$("hero-name").textContent = g.p.name;
-      this.$("skill-name").textContent = g.p.skill;
-      this.hud(0);
-    }
-    if (mode === "playing") {
-      this.$("arena").focus();
+      mode = session.mode,
+      g = session.g;
+    this.$("overlay").hidden = mode === "playing";
+    if (mode === "menu") {
+      this.refreshMenu();
       return;
     }
-    if (mode === "menu") return;
     if (mode === "dialogue") {
       const d = session.dialogue,
         line = d.lines[d.index];
@@ -206,7 +191,7 @@ export class GameView {
       );
       this.button(
         d.index === d.lines.length - 1
-          ? d.key === "warden-fall"
+          ? (d.key === "warden-fall" || d.key === "heron-fall" || d.key?.endsWith("-fall"))
             ? "Enter the tea house"
             : "Draw your blade"
           : "Continue",

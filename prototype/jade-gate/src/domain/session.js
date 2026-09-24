@@ -88,6 +88,8 @@ export class GameSession {
       runId: this.makeRunId(),
       runMode,
       actId: act.id,
+      hazards: [...(act.hazards || [])],
+      shallows: act.hazards?.includes("shallows") || false,
       encounterIndex: 0,
       wave: 1,
       p,
@@ -114,6 +116,8 @@ export class GameSession {
       act = actById(actId);
     if (!hero || !act?.available)
       throw new Error("This hero or act is not available in this build.");
+    if (act.bossId && BOSSES[act.bossId]?.planned && act.available)
+      throw new Error("Cannot launch unbuilt boss.");
     if (runMode === "campaign" && !this.profile.unlockedHeroes.includes(heroId))
       throw new Error(
         "Defeat Lü Bu in Act III to unlock him in the campaign. Use Quick play to try him now.",
@@ -126,13 +130,22 @@ export class GameSession {
     )
       throw new Error("Complete the preceding act first.");
     this.createRun(hero, act, runMode);
-    if (runMode === "campaign") this.beginDialogue("arrival");
-    else this.transition("playing");
+    if (runMode === "campaign") {
+      const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : "arrival";
+      this.beginDialogue(arrivalKey);
+    } else this.transition("playing");
     this.bus.emit("audio:sfx", { type: "ui_click" });
   }
   prepareEncounter() {
     const g = this.g;
     g.wave = g.encounterIndex + 1;
+    g.hazards = [
+      ...new Set([
+        ...(this.act.hazards || []),
+        ...(this.encounter?.hazards || []),
+      ]),
+    ];
+    g.shallows = g.hazards.includes("shallows");
     g.enemies = createEnemies(this.encounter, g.encounterIndex);
     g.shots = [];
     g.pickups = [];
@@ -199,7 +212,7 @@ export class GameSession {
     }
     const key = this.dialogue.key;
     this.dialogue = null;
-    if (key === "warden-fall") {
+    if (key === "warden-fall" || key === "heron-fall" || key.endsWith("-fall")) {
       this.checkpoint("waystation");
       this.transition("waystation");
     } else {
@@ -231,9 +244,12 @@ export class GameSession {
     this.g.p.hp = Math.min(this.g.p.maxHp, this.g.p.hp + 22);
     this.g.p.flow = Math.min(100, this.g.p.flow + 20);
     this.prepareEncounter();
-    if (this.g.runMode === "campaign" && this.encounter.bossId === "warden")
-      this.beginDialogue("warden-intro");
-    else {
+    if (this.g.runMode === "campaign" && this.encounter.bossId) {
+      if (BOSSES[this.encounter.bossId]?.planned)
+        throw new Error(`Cannot launch unbuilt boss: ${this.encounter.bossId}`);
+      const introKey = this.encounter.bossId === "warden" ? "warden-intro" : `${this.encounter.bossId}-intro`;
+      this.beginDialogue(introKey);
+    } else {
       this.checkpoint("combat");
       this.transition("playing");
       this.bus.emit("notice", { text: this.encounter.title });
@@ -248,8 +264,11 @@ export class GameSession {
     this.save();
     if (won && this.g.runMode === "campaign") {
       // Store reward and post-boss checkpoint together before exposing the next scene.
-      this.checkpoint("warden-fall");
-      this.beginDialogue("warden-fall");
+      const dialogueKey = this.encounter?.bossId === "warden" || this.act.bossId === "warden"
+        ? "warden-fall"
+        : `${this.act.bossId}-fall`;
+      this.checkpoint(dialogueKey);
+      this.beginDialogue(dialogueKey);
       this.bus.emit("audio:sfx", { type: "victory" });
     } else this.transition(won ? "victory" : "defeat");
   }
@@ -283,7 +302,15 @@ export class GameSession {
     });
     Object.assign(this.g.p, cp.player);
     this.prepareEncounter();
-    if (["arrival", "warden-intro", "warden-fall"].includes(cp.stage))
+    const dialogueStages = [
+      "arrival",
+      "warden-intro",
+      "warden-fall",
+      "bamboo-arrival",
+      "heron-intro",
+      "heron-fall",
+    ];
+    if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);
     else if (cp.stage === "waystation") this.transition("waystation");
     else if (cp.stage === "upgrade") {

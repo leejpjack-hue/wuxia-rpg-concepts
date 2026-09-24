@@ -18,9 +18,9 @@ export function resolveMusicMode(event) {
 
   if (current === "dialogue") {
     const key = dialogueKey || stage;
-    if (key === "warden-fall") return "victory";
-    if (key === "warden-intro") return "boss";
-    if (key === "arrival") return "select";
+    if (key === "warden-fall" || key === "heron-fall" || key?.endsWith("-fall")) return "victory";
+    if (key === "warden-intro" || key === "heron-intro" || key?.endsWith("-intro")) return "boss";
+    if (key === "arrival" || key === "bamboo-arrival" || key?.endsWith("-arrival")) return "select";
     return "select";
   }
 
