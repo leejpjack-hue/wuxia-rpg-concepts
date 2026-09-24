@@ -5,7 +5,7 @@ export const HEROES = [
     cn: "趙雲",
     title: "The White Dragon",
     weapon: "Qinggang Jian",
-    style: "Precision · Reach",
+    style: "Precision · Protection",
     hp: 120,
     speed: 245,
     damage: 27,
@@ -14,7 +14,7 @@ export const HEROES = [
     color: "#bfe9df",
     skill: "Dragon Rush",
     description:
-      "A sword sworn to the people. Precise thrusts and a piercing rush break the enemy line.",
+      "A sword sworn to the people. Dragon Rush deals double damage and halves the rival’s reply.",
   },
   {
     id: "lu-zhishen",
@@ -22,7 +22,7 @@ export const HEROES = [
     cn: "魯智深",
     title: "The Flower Monk",
     weapon: "Iron monk spade",
-    style: "Resilience · Control",
+    style: "Resilience · Stun",
     hp: 165,
     speed: 205,
     damage: 32,
@@ -31,7 +31,7 @@ export const HEROES = [
     color: "#efd091",
     skill: "Mountain Bell",
     description:
-      "Stand firm as the mountain. A sweeping spade and stunning shockwave control the crowd.",
+      "Stand firm as the mountain. Mountain Bell stuns the rival for a turn and restores health.",
   },
   {
     id: "hu-sanniang",
@@ -39,7 +39,7 @@ export const HEROES = [
     cn: "扈三娘",
     title: "The Crimson Moon",
     weapon: "Paired sabers",
-    style: "Agility · Combos",
+    style: "Technique · Recovery",
     hp: 105,
     speed: 290,
     damage: 19,
@@ -48,7 +48,7 @@ export const HEROES = [
     color: "#f3b0a4",
     skill: "Crimson Waltz",
     description:
-      "Two blades, no hesitation. Swift strikes and a spinning flourish turn movement into mastery.",
+      "Two blades, no hesitation. Crimson Waltz delivers a powerful double-blade strike and restores health.",
   },
   {
     id: "lu-bu",
@@ -56,7 +56,7 @@ export const HEROES = [
     cn: "呂布",
     title: "The Flying General",
     weapon: "Crescent halberd",
-    style: "Power · Cleave",
+    style: "Power · Guardbreaker",
     hp: 140,
     speed: 220,
     damage: 40,
@@ -65,7 +65,7 @@ export const HEROES = [
     color: "#d7afe3",
     skill: "Skybreaker",
     description:
-      "An unstoppable force. A mighty halberd and devastating cleave shatter the Ashen Banner.",
+      "An unstoppable force. Skybreaker delivers devastating damage through the rival’s guard.",
   },
 ];
 

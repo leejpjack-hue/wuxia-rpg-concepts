@@ -5,9 +5,9 @@ Concept-art archive for a **combat-first wuxia RPG** (romance later). Public-dom
 **Owner:** Jack Lee JP · **Archived:** 2026-09-22 HKT  
 **Status:** Exploration DRAFT plus a playable browser combat prototype. Not shipped.
 
-## Play Jade Gate — campaign architecture build
+## Play Jade Gate — turn-based card RPG
 
-The [Blades of the Four: Jade Gate](prototype/jade-gate/README.md) build includes a modular campaign/combat foundation, Act I dialogue and checkpoints, a two-phase boss, tea-house cultivation, persistent audio settings, four-hero quick play, and 16 generated art assets. See the [implemented architecture](docs/GAME-ARCHITECTURE.md) for module contracts and remaining production work. It is a fresh 2D implementation based on the concept summary; its character/weapon interpretation is separate from the archived cast direction below.
+The [Blades of the Four: Jade Gate](prototype/jade-gate/README.md) build now uses **one hero card versus one enemy card** with turn-based Strike, Guard, Technique and Healing tea actions. It includes Act I dialogue and checkpoints, a two-stance boss, tea-house cultivation, persistent audio settings, four-hero quick play, and 16 generated art assets. See the [implemented architecture](docs/GAME-ARCHITECTURE.md) for module contracts and remaining production work. It is a fresh 2D implementation based on the concept summary; its character/weapon interpretation is separate from the archived cast direction below.
 
 ```bash
 python3 prototype/jade-gate/serve.py

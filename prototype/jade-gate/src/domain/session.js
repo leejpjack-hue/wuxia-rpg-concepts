@@ -20,6 +20,7 @@ export class GameSession {
     {
       bus = new EventBus(),
       runId = () => `${Date.now().toString(36)}-${++sequence}`,
+      combatFactory = createCombat,
     } = {},
   ) {
     validateContent({
@@ -32,6 +33,7 @@ export class GameSession {
     this.store = store;
     this.bus = bus;
     this.makeRunId = runId;
+    this.combatFactory = combatFactory;
     this.profile = store.load();
     this.machine = new StateMachine();
     this.g = null;
@@ -169,7 +171,10 @@ export class GameSession {
       g.p[key] = 0;
     g.p.chain = 0;
     g.p.combo = 0;
-    this.combat = createCombat(g, this.bus, { seed: 1337 + g.encounterIndex });
+    this.combat = this.combatFactory(g, this.bus, {
+      seed: 1337 + g.encounterIndex,
+      encounter: this.encounter,
+    });
   }
   checkpoint(stage) {
     if (this.g.runMode !== "campaign") return;
@@ -196,6 +201,7 @@ export class GameSession {
       score: g.score,
       time: g.time,
       totalKills: g.totalKills,
+      turns: g.turns || 0,
     };
     this.save();
   }
@@ -299,6 +305,7 @@ export class GameSession {
       score: cp.score,
       time: cp.time,
       totalKills: cp.totalKills,
+      turns: cp.turns || 0,
     });
     Object.assign(this.g.p, cp.player);
     this.prepareEncounter();

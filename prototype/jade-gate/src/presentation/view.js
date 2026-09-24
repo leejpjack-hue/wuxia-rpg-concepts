@@ -76,18 +76,21 @@ export class GameView {
       session.bus.on("notice", ({ text }) => this.notice(text)),
       session.bus.on("boss:phase", ({ name }) => this.notice(name)),
     ];
+    this.settings();
     this.render();
   }
   perform(fn) {
-    this.onGesture();
     try {
+      this.onGesture();
+      this.$("app-status").textContent = "";
       fn();
     } catch (error) {
-      this.$("save-status").textContent = error.message;
+      this.$("app-status").textContent = error.message;
     }
   }
   settings() {
     const s = this.session.profile.settings;
+    this.document.body.classList.toggle("reduced-motion", s.reducedMotion);
     for (const id of ["sound", "music"]) {
       this.$(id).textContent =
         `${id === "sound" ? "Sound" : "Music"} ${s[id] ? "on" : "off"}`;
@@ -132,7 +135,7 @@ export class GameView {
         ? "Begin the journey →"
         : "Enter quick play →"
       : "Preparing your journey…";
-    this.$("continue").hidden = !profile.checkpoint;
+    this.$("continue").hidden = this.runMode !== "campaign" || !profile.checkpoint;
     this.$("continue").disabled = !this.ready;
     this.$("journey-summary").textContent =
       this.runMode === "campaign"
@@ -158,17 +161,18 @@ export class GameView {
     this.$("modal-title").textContent = title;
     this.$("modal-copy").textContent = copy;
     this.$("choices").innerHTML = "";
-    this.$("actions").innerHTML = "";
+    this.$("modal-actions").innerHTML = "";
   }
-  button(text, onClick, { primary = false, disabled = false, parent = "actions" } = {}) {
+  button(
+    text,
+    onClick,
+    { primary = false, disabled = false, parent = "modal-actions" } = {},
+  ) {
     const btn = this.document.createElement("button");
     btn.textContent = text;
     btn.disabled = disabled;
     if (primary) btn.classList.add("primary");
-    btn.onclick = () => {
-      this.onGesture();
-      onClick();
-    };
+    btn.onclick = () => this.perform(onClick);
     this.$(parent).appendChild(btn);
     return btn;
   }
@@ -176,9 +180,21 @@ export class GameView {
     const session = this.session,
       mode = session.mode,
       g = session.g;
-    this.$("overlay").hidden = mode === "playing";
+    const wasMenu = this.lastMode === "menu";
+    this.lastMode = mode;
+    this.$("selection").hidden = mode !== "menu";
+    this.$("play").hidden = mode === "menu";
+    this.$("overlay").hidden = mode === "menu" || mode === "playing";
+    this.$("play").inert = mode !== "playing";
+    this.$("selection").inert = mode !== "menu";
     if (mode === "menu") {
       this.refreshMenu();
+      if (!wasMenu && this.ready) this.$("start").focus();
+      return;
+    }
+    if (mode === "playing") {
+      this.$("play").focus({ preventScroll: true });
+      this.$("play").scrollIntoView({ block: "start" });
       return;
     }
     if (mode === "dialogue") {
@@ -248,12 +264,12 @@ export class GameView {
         { primary: true, disabled: !next?.available },
       );
       this.button("Return to roster", () => session.menu());
-    } else {
+    } else if (mode === "victory" || mode === "defeat") {
       const won = mode === "victory";
       this.modal(
         won ? "THE OATH ENDURES" : "EVERY LEGEND BEGINS AGAIN",
         won ? "The gate is yours." : "Rise, and try again.",
-        `${g.p.name} · ${g.score} renown · ${g.totalKills} foes defeated · ${Math.floor(g.time / 60)}m ${Math.floor(g.time % 60)}s.`,
+        `${g.p.name} · ${g.score} renown · ${g.totalKills} foes defeated · ${g.turns || 0} turns.`,
       );
       this.button(
         "Walk the path again",
@@ -262,46 +278,7 @@ export class GameView {
       );
       this.button("Choose another hero", () => session.menu());
     }
-    this.$("play").inert = true;
-    this.$("selection").inert = true;
     this.$("overlay").querySelector("button:not(:disabled)")?.focus();
-  }
-  hud(dt) {
-    const g = this.session.g;
-    if (!g) return;
-    const p = g.p;
-    this.$("hp-text").textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
-    this.$("hp-bar").style.width = `${(100 * p.hp) / p.maxHp}%`;
-    this.$("flow-text").textContent = `${Math.floor(p.flow)} / 100`;
-    this.$("flow-bar").style.width = `${p.flow}%`;
-    this.$("score").textContent = g.score;
-    this.$("chapter").textContent =
-      `ACT ${this.session.act.number} · ENCOUNTER ${g.wave} / ${this.session.act.encounters.length}`;
-    this.$("objective").textContent = this.session.encounter.title;
-    this.$("combat-tip").textContent = this.session.encounter.tip;
-    this.$("kills").textContent =
-      `${g.enemies.length} enemies remain · ${p.combo} hit chain · ${g.totalKills} defeated`;
-    for (const [id, cd] of [
-      ["attack", p.attackCD],
-      ["dodge", p.dodgeCD],
-    ])
-      this.$(`${id}-status`).textContent =
-        cd > 0 ? `${cd.toFixed(1)}s` : "READY";
-    this.$("special-status").textContent =
-      p.specialCD > 0 ? `${p.specialCD.toFixed(1)}s` : `${p.cost} FLOW`;
-    this.$("special").style.borderColor =
-      p.flow >= p.cost && p.specialCD === 0 ? "#ceb88b" : "";
-    const boss = g.enemies.find((e) => e.type === "boss");
-    this.$("boss-hud").hidden = !boss;
-    if (boss) {
-      this.$("boss-name").textContent =
-        `${boss.name} · PHASE ${boss.phase + 1}`;
-      this.$("boss-bar").style.width = `${(100 * boss.hp) / boss.maxHp}%`;
-    }
-    if (this.noticeTime > 0) {
-      this.noticeTime -= dt;
-      if (this.noticeTime <= 0) this.$("banner").classList.remove("show");
-    }
   }
   dispose() {
     this.off.forEach((off) => off());

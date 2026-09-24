@@ -1,52 +1,31 @@
-# Blades of the Four — Jade Gate
+# Blades of the Four — a wuxia card RPG
 
-A fresh, local wuxia combat RPG prototype built from the supplied concept summary. This is a new implementation; the earlier source repository was unavailable.
+A local, turn-based RPG with one hero card facing one enemy card. Follow the Jade Gate story, read each rival's next move, choose your action, learn disciplines and spend earned Renown on permanent cultivation.
 
-## Play
+## Play locally
 
-Run `python3 serve.py` in this folder, then open http://127.0.0.1:8765. On macOS, `Play.command` starts the same server and opens the game. Python 3 is required. Stop the server with Ctrl+C. No npm installation, external assets, account, API key, or build step is needed.
+Run `python3 serve.py` here and open http://127.0.0.1:8765/. On macOS, double-click `Play.command`. No npm installation, API key, account or build step is needed. Keep the server running; Ctrl+C stops it.
 
-The server listens only on this computer's loopback interface. Keep it running while playing. Another process on port 8765 must be stopped or use `python3 -m http.server 8766 --bind 127.0.0.1` from this directory and open the corresponding address.
+## How to fight
 
-## Controls
+- **1 — Strike:** deal weapon damage and build Flow.
+- **2 — Guard:** block 80% of the rival's next attack and gain 20 Flow.
+- **3 — Technique:** spend Flow on your hero's signature attack. All techniques pierce guard.
+- **4 — Healing tea:** recover up to 30 health once per encounter; the rival still replies.
+- **Esc — Pause/resume.** Mouse and touch buttons offer the same choices.
 
-- WASD or arrow keys: move.
-- J (hold), primary click, or Strike button: attack; a nearby target is automatically faced.
-- K or Space: dodge with a brief invulnerable window.
-- L or E: hero technique; costs 40 Flow, reduced to 30 by Still water.
-- Escape or Pause: pause/resume. Switching away automatically pauses.
-- Touch: hold direction buttons; tap Dodge/Technique or hold Strike.
-- Sound and reduced-motion buttons are available in the header.
+Only an action advances a turn. The rival's next move and exact damage are shown before you choose. Defeating a rival restores 12 health and 8 Flow; the next rival arrives on your turn. Choose a discipline between encounters. Reduced motion, sound/music and volume controls are in the menu/header.
 
-## Campaign foundation
+## RPG progression
 
-Choose Campaign for Act I dialogue, saved encounter checkpoints, permanent Renown, and tea-house cultivation. Continue restores the encounter boundary or saved dialogue/upgrade/tea-house scene. Choose Quick play to test all four heroes without permanent bonuses. Lü Bu is locked in campaign until the future Act III duel. Acts II–IV are visibly in development.
+Campaign includes Act I arrival dialogue, two initial encounters, two discipline choices, a two-stance Warden duel, resolution and the tea house. Spend Renown there on health, starting Flow and weapon power. Cultivation applies on your next new campaign run.
 
-The Warden has two combat phases. Third-swing finishers, hit-stop buffering and perfect evade Flow rewards are implemented. Sound/music preferences and master/music/effects volume levels persist. Corrupt or newer saves and conflicting writes from another tab are preserved with a visible warning.
+Continue restores the saved encounter boundary or story/upgrade/tea-house scene, not a mid-turn snapshot. Existing arena saves carry over to the equivalent card encounter. Progress and settings stay in this browser. Quick play offers all four heroes without changing campaign currency or unlocks. Lü Bu remains locked in the campaign until the planned Act III. Acts II–IV are in development.
 
-See [architecture](docs/architecture.md) for the dependency graph, scene/event contracts, save schema and implementation boundaries.
+## Architecture and validation
 
-## Playable content
+See [architecture](docs/architecture.md) for module contracts and [the art gallery](gallery.html) for the 16 generated images and modeling references. The browser root uses `card-combat.js` and `duel-view.js`; older canvas/arena modules remain as reference and are not part of the current play loop.
 
-Four heroes have distinct health, speed, damage, reach, attack timing and techniques. Three encounters introduce guards, ranged archers, and the Ashen Warden. Attacks build Flow, third-chain finishers increase damage, enemies telegraph attacks, health drops restore 18 HP, and two upgrade choices shape a run. Victory, defeat, retry, pause, local per-hero best scores and win counts are implemented. Sound effects are synthesized locally with Web Audio.
+Run `npm test` and `npm run check`. Tests cover card rules, all four heroes, campaign completion, save recovery, rewards, purchases, scene/modal regressions, and the retained legacy combat/audio contracts. Browser checks cover actual dialogue, duels, upgrades, pause/resume and saved tea-house progression.
 
-Art includes 4 hero portraits, 4 transparent hero sprites, 4 front/side/back modeling sheets with equipment/material references, 3 transparent enemy sprites, and 1 painted arena. Open `gallery.html` through the server. All exact prompts and file paths are in `docs/asset-manifest.json`; generated using the built-in image_gen tool.
-
-## Project structure
-
-- `game.js`: browser composition root and frame/page lifecycle.
-- `src/content`: heroes, acts, encounters, dialogue and progression definitions.
-- `src/engine`: events, state machine and fixed simulation clock.
-- `src/domain`: session, combat, AI, encounters and progression rules.
-- `src/platform`: input, assets, save storage and audio adapters.
-- `src/presentation`: UI scenes/HUD and canvas rendering.
-- `audio.js`: procedural instrument and SFX synthesis backend.
-- `tests`: direct module tests for gameplay and architecture contracts.
-
-## Validation
-
-Run `npm test` and `npm run check` with Node installed. No installation or build is needed. CI runs the same commands. Tests cover all techniques, enemy damage, boss phases, campaign dialogue/upgrade/tea-house flow, save migration and corruption, duplicate rewards, purchases, pause/retry, asset failures, fixed-step determinism and audio scheduling. Browser verification checks actual rendering, input, Continue and audio controls. These checks do not establish final balance or full device compatibility.
-
-## Current limits
-
-This is a 2D canvas action prototype with painted depth, single-pose sprites and procedural movement/attack effects. It does not contain 3D meshes, skeletal animation, an open world, inventory, or the complete four-act campaign. Act I dialogue and progression are implemented. Generated turnaround sheets need a modeler's consistency review before production. The earlier prototype and concept archive remain in the parent repository. This standalone build does not replace their files.
+This is a playable Act I prototype. It does not yet include open-world movement, an equipment inventory, later acts, 3D characters or a Godot project. Existing artwork still needs a canon-alignment pass, notably Zhao Yun's sword.

@@ -7,14 +7,15 @@
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
     <meta name="theme-color" content="#10191b" />
-    <title>Blades of the Four — Jade Gate</title>
+    <title>Blades of the Four — Card RPG</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="duel.css" />
   </head>
   <body>
     <header>
       <a class="brand" href="./"
         ><span class="seal">四</span
-        ><span>BLADES OF THE FOUR<small>A WUXIA CHRONICLE</small></span></a
+        ><span>BLADES OF THE FOUR<small>A WUXIA CARD RPG</small></span></a
       >
       <nav>
         <a href="gallery.html">Art collection ↗</a
@@ -30,13 +31,13 @@
           <h1>Four legends.<br /><em>One unbroken oath.</em></h1>
           <p class="lede">
             The mountain pass has fallen to the Ashen Banner.<br />Choose your
-            legend. Reclaim the gate.
+            legend. Read your rival. Reclaim the gate.
           </p>
         </div>
         <div class="chapter-note">
           <span>江湖</span>
-          <p>A short tale of steel and resolve</p>
-          <small>3 encounters · 4 heroes · one final duel</small>
+          <p>A tale told one duel at a time</p>
+          <small>3 encounters · 2 facing cards · your next move</small>
         </div>
       </div>
       <section class="journey-controls" aria-label="Game mode">
@@ -70,7 +71,7 @@
       ></div>
       <p id="load-status" role="status"></p>
       <button id="retry-assets" hidden>Retry loading artwork</button>
-      <p id="save-status" role="status"></p>
+
       <details class="audio-settings">
         <summary>Audio mix</summary>
         <div>
@@ -104,73 +105,52 @@
           /></label>
         </div>
       </details>
-      <p class="hint">
-        WASD / arrows to move · J / click to strike · K / Space to dodge · L / E
-        technique · Esc pause
-      </p>
+      <p class="hint">One hero. One rival. Read their next move, then choose yours. No timer.</p>
     </main>
-    <main id="play" hidden>
-      <div class="game-top">
-        <div class="hero-vitals">
-          <img id="hud-portrait" alt="" />
-          <div>
-            <div class="meter-label">
-              <strong id="hero-name"></strong><span id="hp-text"></span>
-            </div>
-            <div class="bar"><i id="hp-bar"></i></div>
-            <div class="meter-label">
-              <span>FLOW</span><span id="flow-text"></span>
-            </div>
-            <div class="bar flow"><i id="flow-bar"></i></div>
+    <main id="play" class="duel-main" tabindex="-1" hidden>
+      <div class="duel-heading">
+        <div><p class="eyebrow" id="chapter"></p><h1 id="objective"></h1></div>
+        <div class="duel-meta"><span><b id="score">0</b> RENOWN</span><button id="pause">Pause / menu</button></div>
+      </div>
+      <div class="encounter-track" id="encounter-track" aria-label="Journey progress"></div>
+      <div class="duel-table" id="duel-table" aria-label="Card duel">
+        <article class="fighter-card ally" id="hero-card" aria-labelledby="hero-name">
+          <div class="card-cap"><span>YOUR HERO</span><span id="hero-symbol"></span></div>
+          <div class="fighter-art"><img id="hero-image" alt="" /><span class="art-sigil" aria-hidden="true">俠</span></div>
+          <div class="fighter-info"><p class="fighter-title" id="hero-title"></p><h2 id="hero-name"></h2>
+            <div class="health-label"><span>HEALTH</span><strong id="hero-health"></strong></div>
+            <div class="duel-meter" id="hero-health-meter" role="progressbar" aria-label="Hero health"><i id="hero-health-bar"></i></div>
+            <div class="health-label"><span>FLOW</span><strong id="hero-flow"></strong></div>
+            <div class="duel-meter flow-meter" id="hero-flow-meter" role="progressbar" aria-label="Hero Flow"><i id="hero-flow-bar"></i></div>
           </div>
-        </div>
-        <div class="objective">
-          <p class="eyebrow" id="chapter"></p>
-          <strong id="objective"></strong>
-        </div>
-        <div class="score">
-          <span id="score">0</span><small>RENOWN</small
-          ><button id="pause">Pause Ⅱ</button>
-        </div>
+        </article>
+        <div class="duel-versus"><span id="duel-number"></span><b>對</b><span id="round-number"></span><small>YOUR TURN</small></div>
+        <article class="fighter-card rival" id="enemy-card" aria-labelledby="enemy-name">
+          <div class="card-cap"><span>YOUR RIVAL</span><span id="enemy-phase"></span></div>
+          <div class="fighter-art"><img id="enemy-image" alt="" /><span class="art-sigil" aria-hidden="true">武</span></div>
+          <div class="fighter-info"><p class="fighter-title" id="enemy-title"></p><h2 id="enemy-name"></h2>
+            <div class="health-label"><span>HEALTH</span><strong id="enemy-health"></strong></div>
+            <div class="duel-meter rival-meter" id="enemy-health-meter" role="progressbar" aria-label="Rival health"><i id="enemy-health-bar"></i></div>
+            <div class="intent-badge"><span>NEXT MOVE</span><strong id="enemy-intent"></strong></div>
+          </div>
+        </article>
       </div>
-      <div class="arena-wrap">
-        <canvas
-          id="arena"
-          width="1280"
-          height="720"
-          tabindex="0"
-          aria-label="Combat arena. Move with WASD or arrows; J attack; K or Space dodge; L or E technique."
-        ></canvas>
-        <div id="banner" class="banner" aria-live="polite"></div>
-        <div class="arena-location">JADE GATE <span>翠門</span></div>
-        <div id="boss-hud" hidden>
-          <span id="boss-name">THE ASHEN WARDEN</span>
-          <div class="bar boss"><i id="boss-bar"></i></div>
+      <section class="turn-panel" aria-label="Choose your action">
+        <div class="turn-heading"><div><p class="eyebrow">READ THE RIVAL · CHOOSE YOUR MOVE</p><p id="intent-detail"></p></div><span id="turn-status" role="status" aria-live="polite">Your turn. Take your time.</span></div>
+        <div class="duel-actions">
+          <button id="card-attack" data-action="attack"><span><kbd>1</kbd> Strike</span><small id="attack-detail"></small></button>
+          <button id="card-guard" data-action="guard"><span><kbd>2</kbd> Guard</span><small>Block 80% damage · +20 Flow</small></button>
+          <button id="card-technique" data-action="technique"><span><kbd>3</kbd> <b id="technique-name"></b></span><small id="technique-detail"></small></button>
+          <button id="card-tea" data-action="tea"><span><kbd>4</kbd> Healing tea</span><small id="tea-detail"></small></button>
         </div>
-      </div>
-      <div class="game-bottom">
-        <div>
-          <strong id="combat-tip">Close the distance. Strike, then move.</strong
-          ><small id="kills"></small>
-        </div>
-        <div class="skills">
-          <button id="attack">
-            <kbd>J</kbd> Strike <span id="attack-status">READY</span></button
-          ><button id="dodge">
-            <kbd>K</kbd> Dodge <span id="dodge-status">READY</span></button
-          ><button id="special">
-            <kbd>L</kbd> <b id="skill-name">Technique</b>
-            <span id="special-status">40 FLOW</span>
-          </button>
-        </div>
-      </div>
-      <div class="touch-move" aria-label="Movement controls">
-        <button data-move="ArrowUp" aria-label="Move up">↑</button
-        ><button data-move="ArrowLeft" aria-label="Move left">←</button
-        ><button data-move="ArrowDown" aria-label="Move down">↓</button
-        ><button data-move="ArrowRight" aria-label="Move right">→</button>
-      </div>
+        <p class="technique-help" id="technique-help"></p>
+      </section>
+      <details class="battle-journal" open><summary>Battle journal <span id="journal-count"></span></summary><ol id="battle-log"></ol></details>
+      <p id="banner" role="status"></p>
+      <p class="hint">Keys 1–4 choose an action · Esc pauses · Only your action advances the duel.</p>
     </main>
+    <p id="app-status" role="alert"></p>
+    <p id="save-status" role="status"></p>
     <div id="overlay" class="overlay" hidden>
       <section
         class="modal"
@@ -186,7 +166,7 @@
       </section>
     </div>
     <footer>
-      <span>BLADES OF THE FOUR</span><span>Campaign foundation · 02</span
+      <span>BLADES OF THE FOUR</span><span>Card RPG · 03</span
       ><span>Built for the journey.</span>
     </footer>
     <script type="module" src="game.js"></script>

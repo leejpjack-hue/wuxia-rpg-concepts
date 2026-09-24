@@ -76,6 +76,7 @@ export function sanitizeCheckpoint(raw) {
     score: integer(raw.score),
     time: number(raw.time),
     totalKills: integer(raw.totalKills, 0, 1000),
+    turns: integer(raw.turns),
   };
 }
 export function sanitizeProfile(raw) {

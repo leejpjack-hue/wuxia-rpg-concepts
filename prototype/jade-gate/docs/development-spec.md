@@ -1,6 +1,6 @@
 # Blades of the Four: original slice specification
 
-This original slice document is retained for context. The implemented campaign foundation, save/audio contracts, and current scope are described in [architecture.md](architecture.md).
+This original real-time slice document is retained for historical context. The current build is a turn-based hero-card-versus-enemy-card RPG. The implemented campaign foundation, save/audio contracts, and current scope are described in [architecture.md](architecture.md).
 
 ## Product promise
 

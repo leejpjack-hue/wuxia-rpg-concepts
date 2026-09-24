@@ -1,0 +1,102 @@
+/* The card table replaces the canvas arena; menu and gallery retain their art direction. */
+.duel-main { max-width: 1120px; padding-top: 24px; }
+.duel-heading { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+.duel-heading h1 { font-size: clamp(24px, 3vw, 36px); margin: 4px 0 18px; }
+.duel-heading .eyebrow { margin: 0 0 5px; }
+.duel-meta { display: flex; align-items: center; gap: 20px; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.duel-meta b { font-size: 21px; color: var(--gold); margin-right: 6px; }
+.duel-meta button { font-size: 12px; }
+.encounter-track { display: flex; gap: 18px; margin-bottom: 18px; font-size: 11px; color: #8c9b96; }
+.encounter-track span { flex: 1; padding: 8px 0; border-top: 2px solid #344244; }
+.encounter-track .current { color: var(--gold); border-color: var(--gold); }
+.encounter-track .complete { color: var(--jade); border-color: var(--jade); }
+.duel-table { position: relative; display: grid; grid-template-columns: minmax(0, 285px) 110px minmax(0, 285px); justify-content: center; align-items: center; gap: 20px; padding: 28px 24px; border: 1px solid #53615a; border-radius: 6px; isolation: isolate; background: linear-gradient(#101b20c9, #0f1c1ddd), url('assets/arena.png') center/cover; box-shadow: inset 0 0 80px #050d10; }
+.fighter-card { --fighter-color: #bfe9df; position: relative; border: 1px solid #81928b; background: #142324; border-radius: 8px; overflow: hidden; box-shadow: 0 16px 40px #0008; min-width: 0; }
+.fighter-card.ally { border-color: var(--fighter-color); }
+.fighter-card.rival { --fighter-color: #e3a798; border-color: #aa8577; background: #271f20; }
+.card-cap { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 1.8px; padding: 10px 13px; background: #0d191cca; color: var(--fighter-color); border-bottom: 1px solid #50645f70; }
+.fighter-art { position: relative; height: 190px; overflow: hidden; background: radial-gradient(ellipse at center, #546b5f80, #122123); }
+.rival .fighter-art { background: radial-gradient(ellipse at center, #8950446b, #1e1c20); }
+.fighter-art img { width: 100%; height: 100%; object-fit: cover; object-position: center top; position: relative; z-index: 1; }
+.rival .fighter-art img { object-fit: contain; padding: 5px; }
+.art-sigil { position: absolute; inset: 0; display: grid; place-content: center; font: 95px Georgia, serif; color: #b9ccbc25; }
+.fighter-info { padding: 12px 16px 16px; }
+.fighter-title { font-size: 8px; letter-spacing: 1.7px; color: var(--fighter-color); margin: 0 0 3px; }
+.fighter-info h2 { font: 24px/1.15 Georgia, serif; margin: 0 0 12px; }
+.health-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 9px; letter-spacing: 1px; margin: 8px 0 4px; }
+.health-label strong { color: var(--ink); font-size: 11px; letter-spacing: 0; }
+.duel-meter { height: 7px; background: #050e14; border-radius: 3px; overflow: hidden; }
+.duel-meter i { display: block; height: 100%; background: #a8c7ae; transition: width .3s ease; }
+.flow-meter i { background: #d6be87; }
+.rival-meter i { background: #cd8b7e; }
+.intent-badge { display: flex; flex-direction: column; min-height: 38px; margin-top: 10px; color: #efbea3; }
+.intent-badge span { font-size: 8px; letter-spacing: 1.5px; }
+.intent-badge strong { font-size: 12px; font-weight: 500; }
+[data-intent="heavy"] .intent-badge strong { color: #ffbca6; }
+.duel-versus { text-align: center; display: flex; flex-direction: column; gap: 9px; }
+.duel-versus b { font: 52px Georgia, serif; color: #d8c9a3; text-shadow: 0 2px 20px #000; }
+.duel-versus span { font-size: 10px; letter-spacing: 1.5px; color: #ded9c9; }
+.duel-versus small { font-size: 8px; letter-spacing: 2px; color: var(--jade); border-top: 1px solid #768776; padding-top: 12px; }
+.turn-panel { margin-top: 20px; }
+.turn-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.turn-heading .eyebrow { margin: 0 0 4px; letter-spacing: 1.6px; font-size: 9px; }
+#intent-detail { margin: 0 0 12px; color: #becbc4; font-size: 13px; }
+#turn-status { font-size: 11px; color: var(--gold); max-width: 310px; text-align: right; }
+.duel-actions { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+.duel-actions button { text-align: left; min-height: 87px; padding: 14px; background: #1b2b29; border-color: #667b69; }
+.duel-actions button:hover:enabled { background: #293e36; transform: translateY(-2px); }
+.duel-actions button span { display: block; font-family: Georgia, serif; font-size: 18px; color: #e4ddc9; }
+.duel-actions button b { font-weight: normal; }
+.duel-actions kbd { margin-right: 6px; color: #b0c0b5; border-color: #536c62; }
+.duel-actions small { display: block; font-size: 10px; line-height: 1.6; color: #b5c2b9; margin-top: 7px; }
+#card-technique { border-color: #a68c61; background: #322e23; }
+#card-tea { background: #1d282c; border-color: #445d63; }
+.technique-help { font-size: 11px; color: #aab9b1; margin-top: 10px; }
+.battle-journal { border-top: 1px solid #3c4a44; margin-top: 20px; padding-top: 12px; }
+.battle-journal summary { color: #c2cdbf; font-size: 12px; cursor: pointer; }
+#journal-count { color: #a19a81; margin-left: 10px; font-size: 10px; }
+#battle-log { list-style: none; margin: 9px 0 0; padding: 0; max-height: 100px; overflow: auto; font-size: 11px; color: #aebdb4; }
+#battle-log li { padding: 4px 0; border-bottom: 1px solid #34413a70; }
+#battle-log li:first-child { color: var(--gold); }
+#banner { color: var(--gold); font-size: 12px; }
+#app-status, #save-status { max-width: 1100px; margin: 10px auto; padding: 0 24px; color: #f1bb9d; font-size: 12px; }
+#app-status:empty, #save-status:empty { display: none; }
+.animate-attack .ally, .animate-technique .ally { animation: card-strike .42s ease; }
+.animate-attack .rival, .animate-technique .rival { animation: card-hit .42s ease; }
+.animate-guard .ally { animation: card-guard .42s ease; }
+.animate-tea .ally { animation: card-heal .42s ease; }
+@keyframes card-strike { 35% { transform: translateX(25px) rotate(3deg); box-shadow: 0 0 30px #d3cbb855; } }
+@keyframes card-hit { 55% { transform: translateX(7px) rotate(-2deg); filter: brightness(1.6); } }
+@keyframes card-guard { 50% { box-shadow: 0 0 35px #a0e4ff99; transform: scale(1.02); } }
+@keyframes card-heal { 50% { box-shadow: 0 0 35px #a0ffc799; } }
+.reduced-motion *, .reduced-motion *::before, .reduced-motion *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) { .duel-table *, .duel-actions * { animation: none !important; transition: none !important; } }
+@media (max-width: 700px) {
+  .duel-table { grid-template-columns: minmax(0,1fr) 45px minmax(0,1fr); gap: 10px; padding: 17px 12px; }
+  .fighter-art { height: 180px; }
+  .fighter-info { padding: 10px; }
+  .fighter-info h2 { font-size: 20px; }
+  .duel-versus b { font-size: 35px; }
+  .duel-versus span, .duel-versus small { font-size: 7px; letter-spacing: .7px; }
+  .duel-heading { align-items: flex-start; }
+  .duel-meta { flex-direction: column; gap: 5px; align-items: flex-end; }
+  .duel-heading h1 { margin-bottom: 10px; font-size: 25px; }
+  .duel-actions { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .encounter-track { gap: 9px; font-size: 9px; }
+  .turn-heading { display: block; }
+  #turn-status { display: block; text-align: left; max-width: none; margin-bottom: 10px; }
+}
+@media (max-width: 420px) {
+  .duel-main { padding-inline: 12px; }
+  .duel-table { grid-template-columns: minmax(0,1fr) 27px minmax(0,1fr); gap: 6px; padding: 12px 7px; }
+  .fighter-art { height: 145px; }
+  .card-cap { font-size: 7px; letter-spacing: .4px; padding: 8px; }
+  .fighter-info { padding: 8px; }
+  .fighter-info h2 { font-size: 17px; min-height: 39px; }
+  .fighter-title { font-size: 7px; letter-spacing: .6px; min-height: 21px; }
+  .intent-badge strong { font-size: 10px; }
+  .duel-versus small { letter-spacing: 0; }
+  .duel-actions button span { font-size: 16px; }
+  .duel-meta button { padding: 7px; font-size: 10px; }
+  .duel-heading .eyebrow { letter-spacing: 1px; font-size: 8px; }
+}

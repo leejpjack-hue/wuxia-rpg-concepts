@@ -8,6 +8,10 @@
 
 ---
 
+## Combat direction update — 2026-09-24
+
+The player has confirmed a **turn-based card RPG: one hero card versus one enemy card**. The current browser build uses visible enemy intentions and Strike, Guard, Technique and Healing tea actions. There is no real-time movement, dodge timing, or automatic damage. The story and cultivation below remain the narrative foundation; older real-time combat details are historical production concepts superseded by [the current architecture](GAME-ARCHITECTURE.md).
+
 ## Implementation status and architecture
 
 The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now supports Act I arrival dialogue, encounter disciplines, a two-phase Warden, resolution dialogue, tea-house cultivation and checkpoint continuation. Quick play keeps all four heroes available; campaign Lü Bu unlocks after the planned Act III duel.
