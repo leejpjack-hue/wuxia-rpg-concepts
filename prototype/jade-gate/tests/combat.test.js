@@ -4,13 +4,17 @@ import { HEROES } from "../src/content/heroes.js";
 import { inArc } from "../src/domain/math.js";
 import { makePlayer, takeDamage } from "../src/domain/player.js";
 import { session, clearEncounter } from "./helpers.js";
+import { isInShallows, SHALLOWS_SPEED_FACTOR } from "../src/domain/combat.js";
+
 const input = (actions = [], keys = []) => ({ actions, keys: new Set(keys) });
+
 test("weapon hit geometry respects facing, reach, and angle wrapping", () => {
   const p = { x: 0, y: 0, facing: Math.PI - 0.1 };
   assert(inArc(p, { x: -100, y: -2, radius: 20 }, 120));
   assert(!inArc(p, { x: 100, y: 0, radius: 20 }, 120));
   assert(!inArc(p, { x: -200, y: 0, radius: 20 }, 120));
 });
+
 test("damage immunity prevents repeated damage and HP never becomes negative", () => {
   const p = makePlayer(HEROES[0]);
   p.invulnerable = 0.1;
@@ -21,6 +25,7 @@ test("damage immunity prevents repeated damage and HP never becomes negative", (
   assert.equal(p.hp, 0);
   assert(!takeDamage(p, 20));
 });
+
 for (const hero of HEROES)
   test(`${hero.name}: technique spends Flow, damages, and respects cooldown`, () => {
     const game = session();
@@ -37,6 +42,7 @@ for (const hero of HEROES)
     game.combat.special();
     assert.equal(game.g.enemies[0].hp, hp);
   });
+
 test("low Flow blocks techniques without applying damage or cooldown", () => {
   const game = session();
   game.start("zhao-yun", "quickplay");
@@ -46,6 +52,7 @@ test("low Flow blocks techniques without applying damage or cooldown", () => {
   assert.equal(game.g.enemies[0].hp, hp);
   assert.equal(game.g.p.specialCD, 0);
 });
+
 test("third swing is a finisher regardless of how many enemies the prior swing hit", () => {
   const game = session();
   game.start("hu-sanniang", "quickplay");
@@ -60,6 +67,7 @@ test("third swing is a finisher regardless of how many enemies the prior swing h
   }
   assert.deepEqual(damage, [19, 19, 25]);
 });
+
 test("perfect evades grant Flow once per attack; damage immunity alone does not", () => {
   const game = session();
   game.start("zhao-yun", "quickplay");
@@ -72,6 +80,7 @@ test("perfect evades grant Flow once per attack; damage immunity alone does not"
   game.combat.hurt(30, "two");
   assert.equal(game.g.p.flow, 50);
 });
+
 test("boss transitions phase once, resists light interruption, and accepts technique interruption", () => {
   const game = session();
   game.start("lu-zhishen", "quickplay");
@@ -95,6 +104,7 @@ test("boss transitions phase once, resists light interruption, and accepts techn
   assert.equal(boss.wind, 0);
   assert.equal(boss.burst, 0);
 });
+
 test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
   const game = session();
   game.start("zhao-yun", "quickplay");
@@ -111,6 +121,7 @@ test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
   assert.equal(game.g.p.hp, 94);
   assert.equal(game.g.shots.length, 0);
 });
+
 test("pause stops simulation and defeat can restart cleanly", () => {
   const game = session();
   game.start("zhao-yun", "quickplay");
@@ -127,6 +138,7 @@ test("pause stops simulation and defeat can restart cleanly", () => {
   assert.equal(game.g.p.hp, 120);
   assert.equal(game.g.score, 0);
 });
+
 test("dodge input survives hit-stop but does not leak across pause", () => {
   const game = session();
   game.start("zhao-yun", "quickplay");
@@ -142,4 +154,61 @@ test("dodge input survives hit-stop but does not leak across pause", () => {
   game.resume();
   for (let i = 0; i < 3; i++) game.step(1 / 60, input());
   assert.equal(game.g.p.dodgeCD, 0);
+});
+
+test("water-shallows movement impedance: domain-side movement slowdown and zone detection", () => {
+  // Test 1: Normal surface vs shallows slowdown
+  const normalGame = session();
+  normalGame.start("zhao-yun", "quickplay");
+  normalGame.g.p.x = 500;
+  normalGame.g.p.y = 500;
+  normalGame.g.shallows = false;
+  normalGame.step(0.5, input([], ["KeyD"]));
+  const normalDist = normalGame.g.p.x - 500;
+
+  const shallowGame = session();
+  shallowGame.start("zhao-yun", "quickplay");
+  shallowGame.g.p.x = 500;
+  shallowGame.g.p.y = 500;
+  shallowGame.g.shallows = true;
+  shallowGame.step(0.5, input([], ["KeyD"]));
+  const shallowDist = shallowGame.g.p.x - 500;
+
+  assert(shallowGame.g.p.inShallows, "Player should be flagged as inShallows");
+  assert(!normalGame.g.p.inShallows, "Player on dry ground should not be inShallows");
+  assert(shallowDist < normalDist, "Movement in shallows must be slower than normal");
+  const expectedDist = normalDist * SHALLOWS_SPEED_FACTOR;
+  assert(Math.abs(shallowDist - expectedDist) < 1e-4, `Expected dist ${expectedDist}, got ${shallowDist}`);
+
+  // Test 2: Spatial shallows zone
+  const zoneGame = session();
+  zoneGame.start("zhao-yun", "quickplay");
+  zoneGame.g.shallowsZone = { minY: 450 };
+
+  // Position above water zone (y = 400)
+  zoneGame.g.p.x = 500;
+  zoneGame.g.p.y = 400;
+  assert(!isInShallows(zoneGame.g, zoneGame.g.p));
+  zoneGame.step(0.1, input([], ["KeyD"]));
+  assert(!zoneGame.g.p.inShallows);
+
+  // Position inside water zone (y = 500)
+  zoneGame.g.p.x = 500;
+  zoneGame.g.p.y = 500;
+  assert(isInShallows(zoneGame.g, zoneGame.g.p));
+  zoneGame.step(0.1, input([], ["KeyD"]));
+  assert(zoneGame.g.p.inShallows);
+
+  // Test 3: Hazards list tag "shallows" activates impedance
+  const hazardGame = session();
+  hazardGame.start("zhao-yun", "quickplay");
+  hazardGame.g.hazards = ["shallows", "razor-wire"];
+  assert(isInShallows(hazardGame.g, hazardGame.g.p));
+
+  // Test 4: Evasive dash maintains burst displacement
+  shallowGame.combat.dodge();
+  assert(shallowGame.g.p.dash > 0);
+  const preX = shallowGame.g.p.x;
+  shallowGame.step(1 / 60, input());
+  assert(shallowGame.g.p.x > preX + 10, "Dash should maintain evasive velocity through shallows");
 });

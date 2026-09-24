@@ -2,6 +2,24 @@ import { clamp, distance, inArc } from "./math.js";
 import { takeDamage } from "./player.js";
 import { updateEnemy } from "./enemy-ai.js";
 import { seededRandom } from "../engine/clock.js";
+
+export const SHALLOWS_SPEED_FACTOR = 0.8;
+
+export function isInShallows(g, entity = g?.p) {
+  if (!g || !entity) return false;
+  if (typeof g.shallows === "function") return g.shallows(entity);
+  if (g.shallowsZone) {
+    const z = g.shallowsZone;
+    return (
+      (z.minY === undefined || entity.y >= z.minY) &&
+      (z.maxY === undefined || entity.y <= z.maxY) &&
+      (z.minX === undefined || entity.x >= z.minX) &&
+      (z.maxX === undefined || entity.x <= z.maxX)
+    );
+  }
+  return !!(g.shallows || g.hazards?.includes("shallows"));
+}
+
 /** Browser-independent combat. Commands enter; domain events leave. */
 export function createCombat(g, bus, { seed = 1 } = {}) {
   let keys = new Set();
@@ -221,13 +239,16 @@ export function createCombat(g, bus, { seed = 1 } = {}) {
         (keys.has("KeyS") || keys.has("ArrowDown") ? 1 : 0) -
         (keys.has("KeyW") || keys.has("ArrowUp") ? 1 : 0);
     p.moving = !!(mx || my);
+    const inShallows = isInShallows(g, p);
+    p.inShallows = inShallows;
     if (p.dash > 0) {
       p.x += p.dx * 850 * dt;
       p.y += p.dy * 650 * dt;
     } else if (p.moving) {
       const n = Math.hypot(mx, my);
-      p.x += (mx / n) * p.speed * dt;
-      p.y += (my / n) * p.speed * 0.72 * dt;
+      const speed = p.speed * (inShallows ? SHALLOWS_SPEED_FACTOR : 1);
+      p.x += (mx / n) * speed * dt;
+      p.y += (my / n) * speed * 0.72 * dt;
       p.facing = Math.atan2(my, mx);
     }
     p.x = clamp(p.x, 135, 1145);

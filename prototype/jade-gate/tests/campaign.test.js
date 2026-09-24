@@ -10,8 +10,11 @@ import { SaveStore, SAVE_KEY } from "../src/platform/save-store.js";
 import { HEROES } from "../src/content/heroes.js";
 import { ACTS, BOSSES, CULTIVATIONS } from "../src/content/campaign.js";
 import { UPGRADES } from "../src/content/disciplines.js";
+import { dialogueFor } from "../src/content/dialogue.js";
 import { validateContent } from "../src/content/validate.js";
 import { awardResult } from "../src/domain/progression.js";
+import { resolveMusicMode } from "../src/platform/audio-director.js";
+
 test("campaign validates and incomplete future acts cannot be launched", () => {
   assert(
     validateContent({
@@ -172,4 +175,94 @@ test("invalid content references fail before launching", () => {
       }),
     /Broken campaign/,
   );
+});
+
+test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and availability gates", () => {
+  const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
+  assert(act2, "Act II must be registered in ACTS");
+  assert.equal(act2.number, 2);
+  assert.equal(act2.name, "Whispering Bamboo & the River Crossing");
+  assert.equal(act2.cn, "幽篁夜渡");
+  assert.equal(act2.available, false, "Act II must be gated (available: false)");
+  assert.equal(act2.bossId, "night-heron");
+  assert.deepEqual(act2.hazards, ["shallows", "razor-wire"]);
+
+  // Encounter roster stubs
+  assert.equal(act2.encounters.length, 3, "Act II must have 3 encounter stubs");
+  assert(act2.encounters.every((e) => e.enemies.length > 0));
+  assert(act2.encounters.some((e) => e.bossId === "night-heron"));
+
+  // Night Heron boss design metadata
+  const boss = BOSSES["night-heron"];
+  assert(boss, "Night Heron must be in BOSSES");
+  assert.equal(boss.planned, true, "Night Heron must remain planned (unbuilt)");
+  assert.equal(boss.name, "The Night Heron");
+  assert.equal(boss.cn, "夜鷺娘子");
+  assert(boss.phases && boss.phases.length >= 2, "Boss design metadata must include phases");
+  assert(boss.mechanics.includes("sonic-rings"));
+  assert(boss.mechanics.includes("razor-wire"));
+
+  // Validation passes with available: false
+  assert(
+    validateContent({
+      heroes: HEROES,
+      acts: ACTS,
+      bosses: BOSSES,
+      cultivations: CULTIVATIONS,
+      disciplines: UPGRADES,
+    }),
+  );
+
+  // Content validation fails if prematurely marked available without playable boss implementation
+  const unbuiltActs = structuredClone(ACTS);
+  unbuiltActs[1].available = true;
+  assert.throws(
+    () =>
+      validateContent({
+        heroes: HEROES,
+        acts: unbuiltActs,
+        bosses: BOSSES,
+        cultivations: CULTIVATIONS,
+        disciplines: UPGRADES,
+      }),
+    /Incomplete playable act/,
+  );
+
+  // Domain gate: cannot launch unbuilt act or boss
+  const game = session();
+  assert.throws(
+    () => game.start("zhao-yun", "campaign", "bamboo-crossing"),
+    /not available/,
+  );
+});
+
+test("Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and resolution vignettes", () => {
+  for (const hero of HEROES) {
+    // Arrival vignette
+    const arrival = dialogueFor("bamboo-arrival", hero);
+    assert.equal(arrival.length, 2);
+    assert.equal(arrival[0].speaker, "Whispering Bamboo");
+    assert.match(arrival[0].text, /bamboo/i);
+    assert.equal(arrival[1].speaker, hero.name);
+
+    // Night Heron boss confrontation exchange (hero-specific)
+    const intro = dialogueFor("heron-intro", hero);
+    assert.equal(intro.length, 2);
+    assert.equal(intro[0].speaker, "The Night Heron");
+    assert.equal(intro[1].speaker, hero.name);
+    assert(intro[0].text.length > 10);
+    assert(intro[1].text.length > 10);
+
+    // Night Heron defeat / resolution vignette
+    const resolution = dialogueFor("heron-fall", hero);
+    assert.equal(resolution.length, 2);
+    assert.equal(resolution[0].speaker, "The Night Heron");
+    assert.match(resolution[0].text, /strings snap/i);
+    assert.equal(resolution[1].speaker, "The road ahead");
+  }
+
+  // Audio director resolves Act II dialogue states
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "bamboo-arrival" }), "select");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-intro" }), "boss");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-fall" }), "victory");
 });

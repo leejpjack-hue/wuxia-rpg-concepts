@@ -18,6 +18,9 @@ export function createRenderer(images) {
     const bob = player && a.moving && !reduced ? Math.sin(g.time * 17) * 2 : 0;
     const facing = Math.cos(a.facing) >= 0 ? 1 : -1;
     ellipse(c, a.x, a.y + 1, size * 0.19, size * 0.06, "#0b151a65");
+    if (a.inShallows || g?.shallows || g?.hazards?.includes("shallows")) {
+      ring(c, a.x, a.y + 1, size * (player ? 0.23 : 0.2), "rgba(160, 215, 230, 0.45)", 1.5);
+    }
     if (player) {
       ring(
         c,
@@ -82,6 +85,12 @@ export function createRenderer(images) {
     else {
       c.fillStyle = "#35433e";
       c.fillRect(0, 0, W, H);
+    }
+    if (g.shallows || g.hazards?.includes("shallows")) {
+      c.save();
+      c.fillStyle = "#1e383c30";
+      c.fillRect(0, 300, W, 350);
+      c.restore();
     }
     c.fillStyle = "#14201d20";
     c.fillRect(0, 0, W, H);
@@ -200,7 +209,7 @@ export function createRenderer(images) {
         c.translate(x, y);
         c.rotate(g.time + i);
         c.fillStyle = "#e4ca8566";
-        c.fillRect(0, 0, 5, 2);
+        c.fillRect(0, 5, 2, 2);
         c.restore();
       }
     c.restore();

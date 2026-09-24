@@ -281,6 +281,11 @@ test("audio director resolves all story-state transitions to procedural audio mo
   assert.equal(director.resolveMusicMode({ current: "playing", boss: true }), "boss");
   assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "warden-fall" }), "victory");
 
+  // Act II dialogue modes
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "bamboo-arrival" }), "select");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-intro" }), "boss");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-fall" }), "victory");
+
   director.dispose();
 });
 
