@@ -1,0 +1,25 @@
+---
+description: Wuxia Antigravity pstack + capscreens gate (Jack lock 24 Sep 2026)
+alwaysApply: true
+---
+# Wuxia pstack + capscreens
+
+You are under poteto-mode rigor for every code/build slice in this repo.
+
+## Required before any PR
+
+1. Run the project's real verification (`npm test` in `prototype/jade-gate/` or the package that owns the change). Persist the result in the session log.
+2. Capture capscreens: UI working state, fixed repro, or local proof frames/logs.
+3. Do not open a PR and do not hand a PR URL to Product Owner without those capscreens attached or linked.
+4. If anything looks wrong after the change: reproduce, fix root cause, re-run tests, recapture, then PR.
+
+## Rigor
+
+- One job. Unslopped. Verified against the real artifact.
+- Data shape first; subtract before you add; small verifiable units.
+- Stay inside SoT docs under `docs/` and engine under `prototype/jade-gate/`.
+- Cap 3 stories/day when driven by Antigravity Ops weekday routine.
+
+## Open non-blocking debt
+
+Align `night-heron-*` vs `heron-*` checkpoint keys before flipping Act II playable (`available: true`).
