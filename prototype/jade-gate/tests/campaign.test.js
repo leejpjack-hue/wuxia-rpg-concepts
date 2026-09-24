@@ -35,7 +35,7 @@ test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
   assert.throws(() => game.start("lu-bu", "campaign"), /Act III/);
   game.start("lu-bu", "quickplay");
-  assert.equal(game.mode, "playing");
+  assert.equal(game.mode, "exploring");
 });
 test("campaign includes arrival, two disciplines, boss dialogue, resolution and tea house", () => {
   const game = session();
@@ -44,7 +44,7 @@ test("campaign includes arrival, two disciplines, boss dialogue, resolution and 
   game.advanceDialogue();
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
-  assert.equal(game.mode, "playing");
+  assert.equal(game.mode, "exploring");
   clearEncounter(game);
   assert.equal(game.mode, "upgrade");
   game.chooseDiscipline("power");
@@ -74,7 +74,7 @@ test("checkpoint resumes encounter boundary and preserves run upgrades", () => {
   game.g.score = 99999;
   const restored = session(storage);
   assert(restored.continueCheckpoint());
-  assert.equal(restored.mode, "playing");
+  assert.equal(restored.mode, "exploring");
   assert.equal(restored.g.encounterIndex, 1);
   assert.equal(restored.g.p.power, 1.25);
   assert.equal(restored.g.p.hp, 120);
@@ -109,8 +109,10 @@ test("a failed attempt does not prevent a continued checkpoint from earning vict
     game = session(storage);
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  game.combat.hurt(500);
-  game.step(1 / 60, {});
+  game.beginDuel(0);
+  game.g.p.hp = 1;
+  game.combat.act("attack");
+  assert.equal(game.mode, "defeat");
   const restored = session(storage);
   restored.continueCheckpoint();
   clearEncounter(restored);

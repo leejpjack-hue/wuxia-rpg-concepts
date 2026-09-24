@@ -12,7 +12,7 @@ export function resolveMusicMode(event) {
   if (!event) return "select";
   const { current, boss, dialogueKey, stage } = event;
 
-  if (current === "playing") {
+  if (current === "playing" || current === "exploring") {
     return boss ? "boss" : "battle";
   }
 

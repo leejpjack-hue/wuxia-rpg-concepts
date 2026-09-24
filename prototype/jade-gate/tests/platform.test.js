@@ -81,12 +81,14 @@ test("fixed simulation is identical at 30 and 120 render FPS", () => {
     game.start("zhao-yun", "quickplay");
     const clock = new FixedClock();
     for (let n = 0; n < fps * 2; n++)
-      clock.advance(1 / fps, (dt) =>
-        game.step(dt, { keys: new Set(["KeyD"]), actions: [] }),
-      );
-    return { p: game.g.p, enemies: game.g.enemies, time: game.g.time };
+      clock.advance(1 / fps, (dt) => game.step(dt, { dx: 1, dy: 0 }));
+    // JSON drops the seeded rng functions, which never compare by reference.
+    return JSON.stringify({
+      p: { x: game.g.p.x, y: game.g.p.y },
+      roam: game.g.roam,
+    });
   }
-  assert.deepEqual(run(30), run(120));
+  assert.deepEqual(JSON.parse(run(30)), JSON.parse(run(120)));
 });
 test("fixed clock bounds catch-up and safely resets inside scene transitions", () => {
   const clock = new FixedClock();
@@ -99,7 +101,7 @@ test("fixed clock bounds catch-up and safely resets inside scene transitions", (
 test("state machine rejects impossible scene transitions", () => {
   const machine = new StateMachine();
   assert.throws(() => machine.transition("upgrade"), /Illegal/);
-  machine.transition("playing");
+  machine.transition("exploring");
   machine.transition("paused");
   assert.equal(machine.value, "paused");
 });

@@ -19,7 +19,7 @@ function fixture() {
   function element() {
     return {
       children: [], textContent: '', hidden: false, inert: false, disabled: false,
-      classList: { add() {}, toggle() {} }, style: {},
+      classList: { add() {}, toggle() {}, remove() {} }, style: {},
       set innerHTML(value) { this.children = []; },
       setAttribute() {}, addEventListener() {}, scrollIntoView() {},
       appendChild(child) { this.children.push(child); },
@@ -36,32 +36,37 @@ function fixture() {
   view.setReady(true);
   return { session, view, $: document.getElementById };
 }
-test('fresh menu is unobstructed and Quick play shows the battle instead of a defeat modal', () => {
+test('fresh menu is unobstructed and Quick play opens the pass, not the duel table', () => {
   const { session, view, $ } = fixture();
   assert.equal($('overlay').hidden, true); assert.equal($('selection').hidden, false);
   assert.equal($('selection').inert, false);
   view.runMode = 'quickplay'; $('start').onclick();
-  assert.equal(session.mode, 'playing'); assert.equal($('play').hidden, false);
-  assert.equal($('play').inert, false); assert.equal($('selection').hidden, true);
+  assert.equal(session.mode, 'exploring');
+  assert.equal($('roam').hidden, false); assert.equal($('roam').inert, false);
+  assert.equal($('play').hidden, true); assert.equal($('play').inert, true);
+  assert.equal($('selection').hidden, true);
   assert.equal($('overlay').hidden, true); assert.equal($('app-status').textContent, '');
 });
-test('campaign dialogue buttons work against actual HTML IDs and enter the card battle', () => {
+test('campaign dialogue buttons work against actual HTML IDs and reach the pass and the duel', () => {
   const { session, $ } = fixture(); $('start').onclick();
   assert.equal(session.mode, 'dialogue'); assert.equal($('overlay').hidden, false);
   assert.equal($('modal-actions').children.length, 2);
   $('modal-actions').children[0].onclick();
   assert.equal($('modal-title').textContent, 'Zhao Yun');
   $('modal-actions').children[0].onclick();
-  assert.equal(session.mode, 'playing'); assert.equal($('overlay').hidden, true);
-  assert.equal($('play').hidden, false); assert.equal($('app-status').textContent, '');
+  assert.equal(session.mode, 'exploring'); assert.equal($('overlay').hidden, true);
+  assert.equal($('roam').hidden, false); assert.equal($('play').hidden, true);
+  session.beginDuel(0);
+  assert.equal(session.mode, 'playing'); assert.equal($('play').hidden, false);
+  assert.equal($('roam').hidden, true); assert.equal($('app-status').textContent, '');
 });
 test('pause, resume, and return to roster restore visibility and interaction', () => {
   const { session, view, $ } = fixture(); view.runMode = 'quickplay'; $('start').onclick();
-  $('pause').onclick(); assert.equal(session.mode, 'paused'); assert.equal($('play').inert, true);
-  $('modal-actions').children[0].onclick(); assert.equal(session.mode, 'playing');
-  assert.equal($('play').inert, false); assert.equal($('overlay').hidden, true);
-  $('pause').onclick(); $('modal-actions').children[1].onclick();
+  $('roam-pause').onclick(); assert.equal(session.mode, 'paused'); assert.equal($('roam').inert, true);
+  $('modal-actions').children[0].onclick(); assert.equal(session.mode, 'exploring');
+  assert.equal($('roam').inert, false); assert.equal($('overlay').hidden, true);
+  $('roam-pause').onclick(); $('modal-actions').children[1].onclick();
   assert.equal(session.mode, 'menu'); assert.equal($('selection').inert, false);
-  assert.equal($('selection').hidden, false); assert.equal($('play').hidden, true);
-  assert.equal($('overlay').hidden, true);
+  assert.equal($('selection').hidden, false); assert.equal($('roam').hidden, true);
+  assert.equal($('play').hidden, true); assert.equal($('overlay').hidden, true);
 });

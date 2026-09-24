@@ -7,6 +7,7 @@ import { AssetStore } from "./src/platform/assets.js";
 import { AudioDirector } from "./src/platform/audio-director.js";
 import { GameView } from "./src/presentation/view.js";
 import { DuelView } from "./src/presentation/duel-view.js";
+import { RoamView } from "./src/presentation/roam-view.js";
 import { HERO_IDS } from "./src/content/heroes.js";
 
 let storage = null;
@@ -23,8 +24,16 @@ function gesture() {
 }
 const view = new GameView(session, document, gesture);
 const duel = new DuelView(session, document, gesture);
+const roam = new RoamView(session, document, gesture);
 const assets = new AssetStore();
-const art = [...HERO_IDS, "arena", "guard-sprite", "archer-sprite", "warden-sprite"];
+const art = [
+  ...HERO_IDS,
+  ...HERO_IDS.map((id) => `${id}-sprite`),
+  "arena",
+  "guard-sprite",
+  "archer-sprite",
+  "warden-sprite",
+];
 view.setReady(true);
 async function prepare() {
   const status = document.getElementById("load-status"), retry = document.getElementById("retry-assets");
@@ -45,6 +54,7 @@ function pagehide(event) {
   if (event.persisted) { hidden(); return; }
   view.dispose();
   duel.dispose();
+  roam.dispose();
   audio.dispose();
   session.dispose();
   document.removeEventListener("visibilitychange", hidden);

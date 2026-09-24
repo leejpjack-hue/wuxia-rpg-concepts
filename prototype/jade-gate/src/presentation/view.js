@@ -37,7 +37,8 @@ export class GameView {
       this.perform(() => session.start(this.heroId, this.runMode));
     this.$("continue").onclick = () =>
       this.perform(() => session.continueCheckpoint());
-    this.$("pause").onclick = () => session.pause();
+    for (const id of ["pause", "roam-pause"])
+      this.$(id).onclick = () => session.pause();
     for (const [id, key] of [
       ["sound", "sound"],
       ["music", "music"],
@@ -151,9 +152,15 @@ export class GameView {
     this.refreshMenu();
   }
   notice(text) {
+    clearTimeout(this.noticeTimer);
     this.$("banner").textContent = text;
     this.$("banner").classList.add("show");
     this.noticeTime = 2.5;
+    // The banner lives outside the scene mains now, so clear it ourselves.
+    this.noticeTimer = setTimeout(() => {
+      this.$("banner").classList.remove("show");
+      this.$("banner").textContent = "";
+    }, 2600);
   }
   modal(kicker, title, copy) {
     this.$("overlay").hidden = false;
@@ -183,8 +190,11 @@ export class GameView {
     const wasMenu = this.lastMode === "menu";
     this.lastMode = mode;
     this.$("selection").hidden = mode !== "menu";
-    this.$("play").hidden = mode === "menu";
-    this.$("overlay").hidden = mode === "menu" || mode === "playing";
+    this.$("roam").hidden = mode !== "exploring";
+    this.$("play").hidden = mode !== "playing";
+    this.$("overlay").hidden =
+      mode === "menu" || mode === "playing" || mode === "exploring";
+    this.$("roam").inert = mode !== "exploring";
     this.$("play").inert = mode !== "playing";
     this.$("selection").inert = mode !== "menu";
     if (mode === "menu") {
@@ -281,6 +291,7 @@ export class GameView {
     this.$("overlay").querySelector("button:not(:disabled)")?.focus();
   }
   dispose() {
+    clearTimeout(this.noticeTimer);
     this.off.forEach((off) => off());
   }
 }

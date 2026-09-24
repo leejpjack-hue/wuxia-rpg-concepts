@@ -2,7 +2,7 @@
 
 ## Current direction
 
-The playable browser build is a turn-based wuxia RPG. The player confirmed one hero card versus one enemy card, with deliberate action choices. This replaces the previous real-time arena interaction. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Act I is playable; Acts II–IV remain visibly gated.
+The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Act I is playable; Acts II–IV remain visibly gated.
 
 ## Runtime
 
@@ -28,27 +28,30 @@ The composition root injects `createCardCombat` into `GameSession`. The session 
 
 | Module | Responsibility |
 |---|---|
-| `src/content/duels.js` | Act I card rosters, enemy stats/patterns, hero technique effects |
-| `src/domain/card-combat.js` | One explicit action plus at most one enemy reply; no idle damage |
+| `src/content/duels.js` | Act I pass rosters, enemy stats/patterns, hero technique effects |
+| `src/domain/roam.js` | Button-driven hero movement, deterministic rival patrols, contact hand-off; fixed 60 Hz step |
+| `src/domain/card-combat.js` | One explicit action plus at most one enemy reply; one duel per contacted rival; no idle damage |
 | `src/domain/session.js` | Scene transitions; injected combat factory; encounter preparation; upgrades and saves |
 | `src/presentation/view.js` | Roster, dialogue, disciplines, pause, results, tea house; screen visibility and focus |
+| `src/presentation/roam-view.js` | Pass scene, sprite placement, d-pad/WASD input, requestAnimationFrame stepping |
 | `src/presentation/duel-view.js` | Two-card display, accessible meters, intent preview, action buttons, keyboard and short visual animations |
+| `roam.css` | Pass stage, sprite scaling, d-pad buttons and touch behavior |
 | `duel.css` | Responsive table, cards, action panel and reduced-motion behavior |
 | `src/platform/save-store.js` | Versioned profiles, corruption checks, legacy migration, concurrent-tab protection |
 | `src/platform/audio-director.js` | Story/battle cues routed to the existing procedural audio engine |
 | `game.js` | Wiring, optional art loading and browser lifecycle; no simulation loop |
 
-The old canvas renderer, real-time combat, input controller and fixed clock remain as archived modules with their existing regression coverage. The current browser root does not import or execute them. The session's default combat factory remains the legacy engine for compatibility; browser consumers must inject the card factory.
+The old canvas renderer and real-time combat remain as archived modules with their existing regression coverage; the browser root does not import them. Roaming reuses the shared fixed-step clock for identical 30/120 FPS simulation, and the d-pad follows the archived input controller's pointer-capture pattern. The session's default combat factory remains the legacy engine for compatibility; browser consumers must inject the card factory.
 
 ## Combat contract
 
-Exactly two cards are on the table: the chosen hero and the current rival. Defeating a rival brings forward the next one, without giving that new rival a free attack. Act I has two swordsmen in encounter one, an archer and a swordsman in encounter two, then the Warden alone.
+Each encounter opens on the pass: the hero and that encounter's rivals (from `duels.js` rosters) move with directional input, rivals patrol near their posts, and contact starts a duel with exactly two cards on the table — the chosen hero and the contacted rival. Winning removes that rival from the pass and returns to roaming, without giving the next rival a free attack. Act I has two swordsmen in encounter one, an archer and a swordsman in encounter two, then the Warden alone. Healing tea is one shared pot per encounter.
 
 1. Inspect the rival's next move and its exact incoming damage.
 2. Choose Strike, Guard, Technique or Healing tea.
 3. Resolve the hero action. A defeated rival cannot retaliate.
 4. If the rival survives, resolve its displayed reply exactly once, then reveal the next intention.
-5. Repeat until the encounter ends. There is no timer, movement input, automatic attack, hit chance or damage while waiting.
+5. Win the duel to return to the pass, then repeat until the field is clear. Inside a duel there is no timer, automatic attack, hit chance or damage while waiting; on the pass there is no combat damage — only contact matters.
 
 | Action | Rule |
 |---|---|
@@ -87,6 +90,6 @@ Writes continue to detect another tab's newer save, preserve corrupt/future-vers
 
 Run `npm test` and `npm run check` in `prototype/jade-gate`. Card tests cover idle safety, pause, exact replies, Flow affordability, guard, tea exhaustion, hero techniques, no post-defeat retaliation, all-hero completions, checkpoint recovery, cultivation, idempotent rewards and retry. UI tests cover the original screen/modal regressions. Existing legacy combat, save and audio tests remain.
 
-Browser acceptance: roster → campaign dialogue → first card duel → disciplines → Warden stance change → resolution → tea house → purchase → reload/Continue; also pause/resume and Quick play. Check narrow layouts, card portraits, keyboard controls and reduced motion.
+Browser acceptance: roster → campaign dialogue → the pass (move by buttons and WASD) → contact starts first card duel → win returns to the pass → disciplines → Warden stance change → resolution → tea house → purchase → reload/Continue; also pause/resume from both the pass and a duel, and Quick play. Check narrow layouts, pass sprites, card portraits, keyboard controls and reduced motion.
 
 Delivered: local browser card RPG with Act I, four heroes, persistent progression, procedural soundtrack and 16 existing illustrated assets. Deferred: later acts, open-world exploration, equipment inventory, narrative branching, new card illustrations matching the revised weapon canon, 3D meshes/rigs and a Godot port.

@@ -4,15 +4,36 @@ import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js
 export function createCardCombat(g, bus, { encounter } = {}) {
   const roster = DUEL_ROSTERS[encounter?.id];
   if (!roster) throw new Error("This encounter has no card duel yet.");
-  g.enemies = roster.map((kind, index) => ({
-    ...DUEL_ENEMIES[kind], id: `${encounter.id}-card-${index}`,
-    kind, type: kind === "warden" ? "boss" : kind,
-    maxHp: DUEL_ENEMIES[kind].hp, phase: 0, move: 0,
-  }));
   g.turns ||= 0;
-  g.duel = { round: 1, total: roster.length, defeated: 0, tea: 1, log: [],
-    lastAction: null, lastDamage: 0, lastIncoming: 0 };
-  const d = g.duel;
+
+  /** One duel per contacted rival; tea and progress persist within the encounter. */
+  function begin(kind, id = `${encounter.id}-card`) {
+    const rival = DUEL_ENEMIES[kind];
+    if (!rival) throw new Error(`Unknown rival: ${kind}`);
+    g.enemies = [
+      {
+        ...rival,
+        id,
+        kind,
+        type: kind === "warden" ? "boss" : kind,
+        maxHp: rival.hp,
+        phase: 0,
+        move: 0,
+      },
+    ];
+    g.encounterDone = false;
+    g.duel = {
+      round: 1,
+      total: roster.length,
+      defeated: g.duel?.defeated ?? 0,
+      tea: g.duel?.tea ?? 1,
+      log: [],
+      lastAction: null,
+      lastDamage: 0,
+      lastIncoming: 0,
+    };
+    bus.emit("card:changed");
+  }
   function intent(enemy = g.enemies[0]) {
     if (!enemy) return null;
     const kind = enemy.pattern[enemy.move % enemy.pattern.length];
@@ -27,13 +48,13 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     };
   }
   function log(text) {
-    d.log.unshift(text);
-    d.log = d.log.slice(0, 8);
+    g.duel.log.unshift(text);
+    g.duel.log = g.duel.log.slice(0, 8);
   }
   function act(action) {
-    if (g.mode !== "playing" || !g.enemies.length || g.encounterDone) return false;
+    if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
     if (!["attack", "guard", "technique", "tea"].includes(action)) return false;
-    const p = g.p, enemy = g.enemies[0], next = intent(enemy);
+    const p = g.p, d = g.duel, enemy = g.enemies[0], next = intent(enemy);
     if (action === "technique" && p.flow < p.cost) return false;
     if (action === "tea" && (d.tea < 1 || p.hp >= p.maxHp)) return false;
     let damage = 0, protect = 0, stunned = false;
@@ -76,13 +97,8 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       d.defeated++;
       log(`${enemy.name} falls. +${enemy.reward} Renown, +12 health, +8 Flow.`);
       g.enemies.shift();
-      if (!g.enemies.length) {
-        g.encounterDone = true;
-        bus.emit("combat:cleared");
-      } else {
-        d.round++;
-        log(`${g.enemies[0].name} steps forward. Your turn.`);
-      }
+      g.encounterDone = true;
+      bus.emit("duel:won");
     } else {
       const incoming = stunned ? 0 : Math.round(next.damage * (1 - protect));
       d.lastIncoming = Math.min(p.hp, incoming);
@@ -103,5 +119,5 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     bus.emit("card:changed");
     return true;
   }
-  return { act, intent, clearInput() {}, step() {} };
+  return { act, intent, begin, clearInput() {}, step() {} };
 }

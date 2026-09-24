@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { HEROES } from "../src/content/heroes.js";
 import { inArc } from "../src/domain/math.js";
 import { makePlayer, takeDamage } from "../src/domain/player.js";
-import { session, clearEncounter } from "./helpers.js";
+import { rtSession } from "./helpers.js";
 import { isInShallows, SHALLOWS_SPEED_FACTOR } from "../src/domain/combat.js";
 
 const input = (actions = [], keys = []) => ({ actions, keys: new Set(keys) });
@@ -28,8 +28,9 @@ test("damage immunity prevents repeated damage and HP never becomes negative", (
 
 for (const hero of HEROES)
   test(`${hero.name}: technique spends Flow, damages, and respects cooldown`, () => {
-    const game = session();
+    const game = rtSession();
     game.start(hero.id, "quickplay");
+    game.transition("playing");
     const p = game.g.p;
     game.g.enemies = [
       { ...game.g.enemies[0], x: p.x + 70, y: p.y, hp: 1000, maxHp: 1000 },
@@ -44,8 +45,9 @@ for (const hero of HEROES)
   });
 
 test("low Flow blocks techniques without applying damage or cooldown", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.g.p.flow = 0;
   const hp = game.g.enemies[0].hp;
   game.combat.special();
@@ -54,8 +56,9 @@ test("low Flow blocks techniques without applying damage or cooldown", () => {
 });
 
 test("third swing is a finisher regardless of how many enemies the prior swing hit", () => {
-  const game = session();
+  const game = rtSession();
   game.start("hu-sanniang", "quickplay");
+  game.transition("playing");
   const g = game.g;
   g.enemies = [{ ...g.enemies[0], x: 690, y: 500, hp: 1000 }];
   const damage = [];
@@ -69,8 +72,9 @@ test("third swing is a finisher regardless of how many enemies the prior swing h
 });
 
 test("perfect evades grant Flow once per attack; damage immunity alone does not", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.combat.dodge();
   game.combat.hurt(30, "one");
   game.combat.hurt(30, "one");
@@ -82,12 +86,11 @@ test("perfect evades grant Flow once per attack; damage immunity alone does not"
 });
 
 test("boss transitions phase once, resists light interruption, and accepts technique interruption", () => {
-  const game = session();
+  const game = rtSession();
   game.start("lu-zhishen", "quickplay");
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  clearEncounter(game);
-  game.chooseDiscipline("power");
+  game.transition("playing");
+  game.g.encounterIndex = 2;
+  game.prepareEncounter();
   const boss = game.g.enemies.find((e) => e.type === "boss");
   let phases = 0;
   game.bus.on("boss:phase", () => phases++);
@@ -106,8 +109,9 @@ test("boss transitions phase once, resists light interruption, and accepts techn
 });
 
 test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   const e = game.g.enemies[0];
   e.wind = 0.001;
   e.target = { x: 640, y: 500, r: 64 };
@@ -123,8 +127,9 @@ test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
 });
 
 test("pause stops simulation and defeat can restart cleanly", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.pause();
   const time = game.g.time;
   game.step(1, input(["technique"]));
@@ -135,13 +140,15 @@ test("pause stops simulation and defeat can restart cleanly", () => {
   game.step(1 / 60, input());
   assert.equal(game.mode, "defeat");
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   assert.equal(game.g.p.hp, 120);
   assert.equal(game.g.score, 0);
 });
 
 test("dodge input survives hit-stop but does not leak across pause", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.g.hitStop = 0.025;
   game.step(1 / 60, input(["dodge"]));
   game.step(1 / 60, input());
@@ -158,16 +165,18 @@ test("dodge input survives hit-stop but does not leak across pause", () => {
 
 test("water-shallows movement impedance: domain-side movement slowdown and zone detection", () => {
   // Test 1: Normal surface vs shallows slowdown
-  const normalGame = session();
+  const normalGame = rtSession();
   normalGame.start("zhao-yun", "quickplay");
+  normalGame.transition("playing");
   normalGame.g.p.x = 500;
   normalGame.g.p.y = 500;
   normalGame.g.shallows = false;
   normalGame.step(0.5, input([], ["KeyD"]));
   const normalDist = normalGame.g.p.x - 500;
 
-  const shallowGame = session();
+  const shallowGame = rtSession();
   shallowGame.start("zhao-yun", "quickplay");
+  shallowGame.transition("playing");
   shallowGame.g.p.x = 500;
   shallowGame.g.p.y = 500;
   shallowGame.g.shallows = true;
@@ -181,8 +190,9 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   assert(Math.abs(shallowDist - expectedDist) < 1e-4, `Expected dist ${expectedDist}, got ${shallowDist}`);
 
   // Test 2: Spatial shallows zone
-  const zoneGame = session();
+  const zoneGame = rtSession();
   zoneGame.start("zhao-yun", "quickplay");
+  zoneGame.transition("playing");
   zoneGame.g.shallowsZone = { minY: 450 };
 
   // Position above water zone (y = 400)
@@ -200,8 +210,9 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   assert(zoneGame.g.p.inShallows);
 
   // Test 3: Hazards list tag "shallows" activates impedance
-  const hazardGame = session();
+  const hazardGame = rtSession();
   hazardGame.start("zhao-yun", "quickplay");
+  hazardGame.transition("playing");
   hazardGame.g.hazards = ["shallows", "razor-wire"];
   assert(isInShallows(hazardGame.g, hazardGame.g.p));
 

@@ -10,7 +10,7 @@
 
 ## Combat direction update — 2026-09-24
 
-The player has confirmed a **turn-based card RPG: one hero card versus one enemy card**. The current browser build uses visible enemy intentions and Strike, Guard, Technique and Healing tea actions. There is no real-time movement, dodge timing, or automatic damage. The story and cultivation below remain the narrative foundation; older real-time combat details are historical production concepts superseded by [the current architecture](GAME-ARCHITECTURE.md).
+The player has confirmed a **hybrid loop: roam, then duel**. Between fights the hero walks the pass with on-screen buttons or WASD/arrow keys while rivals patrol; meeting a rival starts a **turn-based card duel: one hero card versus one enemy card** with visible enemy intentions and Strike, Guard, Technique and Healing tea actions. There is no dodge timing, real-time combat damage, or automatic damage inside duels. The story and cultivation below remain the narrative foundation; older real-time combat details are historical production concepts superseded by [the current architecture](GAME-ARCHITECTURE.md).
 
 ## Implementation status and architecture
 

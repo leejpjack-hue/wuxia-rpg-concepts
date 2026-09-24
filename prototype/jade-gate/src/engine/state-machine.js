@@ -1,12 +1,13 @@
 const transitions = {
-  menu: ["dialogue", "playing", "waystation"],
-  dialogue: ["playing", "waystation", "menu"],
-  playing: ["paused", "upgrade", "dialogue", "victory", "defeat"],
-  paused: ["playing", "menu"],
-  upgrade: ["playing", "dialogue", "menu"],
-  victory: ["playing", "dialogue", "menu"],
-  defeat: ["playing", "dialogue", "menu"],
-  waystation: ["dialogue", "playing", "menu"],
+  menu: ["dialogue", "exploring", "waystation"],
+  dialogue: ["exploring", "waystation", "menu"],
+  exploring: ["playing", "paused", "dialogue", "upgrade", "menu"],
+  playing: ["paused", "exploring", "upgrade", "dialogue", "victory", "defeat"],
+  paused: ["playing", "exploring", "menu"],
+  upgrade: ["exploring", "dialogue", "menu"],
+  victory: ["exploring", "dialogue", "menu"],
+  defeat: ["exploring", "dialogue", "menu"],
+  waystation: ["dialogue", "exploring", "menu"],
 };
 export class StateMachine {
   constructor(initial = "menu") {

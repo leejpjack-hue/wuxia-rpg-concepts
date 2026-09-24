@@ -1,0 +1,93 @@
+/* Arena roaming scene: walk the pass, walk into a rival to duel. */
+/* Notice banner sits between scenes, so it owns its spacing here. */
+#banner {
+  text-align: center;
+  padding: 0 16px;
+  margin: 0 auto;
+  max-width: 900px;
+}
+#roam {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 20px 26px;
+  outline: none;
+}
+#roam[hidden] {
+  display: none;
+}
+.roam-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: center / cover no-repeat url("assets/arena.png"), #16232a;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px #0007;
+}
+.roam-stage img {
+  position: absolute;
+  height: 24%;
+  transform: translate(-50%, -80%);
+  pointer-events: none;
+  filter: drop-shadow(0 10px 12px #0008);
+}
+.roam-stage img[hidden] {
+  display: none;
+}
+#roam-hero {
+  height: 27%;
+  transform: translate(-50%, -82%) scaleX(var(--face, 1));
+  z-index: 2;
+}
+.roam-rival {
+  z-index: 1;
+}
+.roam-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 58px);
+  grid-template-rows: repeat(2, 50px);
+  gap: 6px;
+}
+.dpad button {
+  font-size: 17px;
+  background: #1b2b29;
+  border: 1px solid #667b69;
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.dpad button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.dpad button:active {
+  border-color: var(--jade);
+  color: var(--gold);
+}
+.dpad-up { grid-column: 2; grid-row: 1; }
+.dpad-left { grid-column: 1; grid-row: 2; }
+.dpad-down { grid-column: 2; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+@media (max-width: 720px) {
+  #roam {
+    padding: 6px 10px 18px;
+  }
+  .dpad {
+    grid-template-columns: repeat(3, 52px);
+    grid-template-rows: repeat(2, 46px);
+  }
+}

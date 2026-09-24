@@ -10,6 +10,7 @@
     <title>Blades of the Four — Card RPG</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="duel.css" />
+    <link rel="stylesheet" href="roam.css" />
   </head>
   <body>
     <header>
@@ -107,6 +108,24 @@
       </details>
       <p class="hint">One hero. One rival. Read their next move, then choose yours. No timer.</p>
     </main>
+    <main id="roam" tabindex="-1" hidden>
+      <div class="duel-heading">
+        <div><p class="eyebrow" id="roam-chapter"></p><h1 id="roam-objective"></h1></div>
+        <div class="duel-meta"><span id="roam-remaining"></span><span><b id="roam-score">0</b> RENOWN</span><button id="roam-pause">Pause / menu</button></div>
+      </div>
+      <div class="roam-stage" id="roam-arena" aria-label="Mountain pass. Move your hero to find a rival.">
+        <img id="roam-hero" alt="" draggable="false" />
+      </div>
+      <div class="roam-controls">
+        <div class="dpad" aria-label="Movement buttons">
+          <button data-move="up" class="dpad-up" aria-label="Move up">▲</button>
+          <button data-move="left" class="dpad-left" aria-label="Move left">◀</button>
+          <button data-move="down" class="dpad-down" aria-label="Move down">▼</button>
+          <button data-move="right" class="dpad-right" aria-label="Move right">▶</button>
+        </div>
+        <p class="hint">Move with the buttons or WASD / arrow keys. Walk into a rival to begin a card duel.</p>
+      </div>
+    </main>
     <main id="play" class="duel-main" tabindex="-1" hidden>
       <div class="duel-heading">
         <div><p class="eyebrow" id="chapter"></p><h1 id="objective"></h1></div>
@@ -146,9 +165,9 @@
         <p class="technique-help" id="technique-help"></p>
       </section>
       <details class="battle-journal" open><summary>Battle journal <span id="journal-count"></span></summary><ol id="battle-log"></ol></details>
-      <p id="banner" role="status"></p>
       <p class="hint">Keys 1–4 choose an action · Esc pauses · Only your action advances the duel.</p>
     </main>
+    <p id="banner" role="status"></p>
     <p id="app-status" role="alert"></p>
     <p id="save-status" role="status"></p>
     <div id="overlay" class="overlay" hidden>
