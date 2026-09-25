@@ -98,32 +98,72 @@
   {
     "id": "guan-yu",
     "file": "assets/guan-yu.png",
-    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
-    "prompt": "Guan Yu hero card art. Male try-run sheet, main figure left of frame. Stored as converted PNG; no dedicated sprite or turnaround yet."
+    "method": "built-in image_gen · approved single-character key art 2026-09-25",
+    "prompt": "Use the archived concept sheet only as an identity and equipment reference. Render Guan Yu, adult Chinese male warrior age 30. Long black hair in a topknot, dignified dark beard, deep jade green layered hanfu, practical dark bronze lamellar shoulder armor and worn leather boots. Exactly one complete Green Dragon crescent guandao. One single full-body three-quarter grounded combat pose; both feet and entire weapon inside a portrait 2:3 canvas with 8% margin. Premium painterly realistic Chinese historical fantasy game art. Flat dark charcoal #10191b backdrop. No concept sheet, turnaround, collage, inset views, scenery, labels, calligraphy, UI, extra figures, duplicated limbs or equipment, watermark, childish styling, lingerie armor or impossible heels.",
+    "reference": "concepts/stitch-try-2026-09-25"
+  },
+  {
+    "id": "guan-yu-sprite",
+    "file": "assets/guan-yu-sprite.png",
+    "method": "built-in image_gen · identity-preserved transparent sprite 2026-09-25",
+    "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Guan Yu, adult Chinese male warrior age 30. Long black hair in a topknot, dignified dark beard, deep jade green layered hanfu, practical dark bronze lamellar shoulder armor and worn leather boots. Exactly one complete Green Dragon crescent guandao. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
+    "reference": "assets/guan-yu.png"
   },
   {
     "id": "wu-song",
     "file": "assets/wu-song.png",
-    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
-    "prompt": "Wu Song hero card art. Male try-run sheet, main figure left of frame. Stored as converted PNG; no dedicated sprite or turnaround yet."
+    "method": "built-in image_gen · approved single-character key art 2026-09-25",
+    "prompt": "Use the archived concept sheet only as an identity and equipment reference. Render Wu Song, rugged athletic adult Chinese male tiger slayer, loose dark blue worn hanfu, ochre trousers, leather belt, rough wrist wraps and messy topknot. Exactly one long plain wooden tiger-hunting staff. One single full-body three-quarter grounded combat pose; both feet and entire weapon inside a portrait 2:3 canvas with 8% margin. Premium painterly realistic Chinese historical fantasy game art. Flat dark charcoal #10191b backdrop. No concept sheet, turnaround, collage, inset views, scenery, labels, calligraphy, UI, extra figures, duplicated limbs or equipment, watermark, childish styling, lingerie armor or impossible heels.",
+    "reference": "concepts/stitch-try-2026-09-25"
+  },
+  {
+    "id": "wu-song-sprite",
+    "file": "assets/wu-song-sprite.png",
+    "method": "built-in image_gen · identity-preserved transparent sprite 2026-09-25",
+    "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Wu Song, rugged athletic adult Chinese male tiger slayer, loose dark blue worn hanfu, ochre trousers, leather belt, rough wrist wraps and messy topknot. Exactly one long plain wooden tiger-hunting staff. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
+    "reference": "assets/wu-song.png"
   },
   {
     "id": "mu-guiying",
     "file": "assets/mu-guiying.png",
-    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
-    "prompt": "Mu Guiying hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+    "method": "built-in image_gen · approved single-character key art 2026-09-25",
+    "prompt": "Use the archived concept sheet only as an identity and equipment reference. Render Mu Guiying, adult female cavalry general with athletic build and commanding face. Crimson and charcoal Chinese lamellar, a short upper-thigh pleated battle skirt over fitted dark leggings, practical boots. Exactly one pear-blossom spear with steel tip and red tassel. One single full-body three-quarter grounded combat pose; both feet and entire weapon inside a portrait 2:3 canvas with 8% margin. Premium painterly realistic Chinese historical fantasy game art. Flat dark charcoal #10191b backdrop. No concept sheet, turnaround, collage, inset views, scenery, labels, calligraphy, UI, extra figures, duplicated limbs or equipment, watermark, childish styling, lingerie armor or impossible heels. Final outfit edit: replace long waist panels with the short pleated battle skirt while preserving face, hair, spear, pose and palette.",
+    "reference": "concepts/stitch-try-2026-09-25-female"
+  },
+  {
+    "id": "mu-guiying-sprite",
+    "file": "assets/mu-guiying-sprite.png",
+    "method": "built-in image_gen · identity-preserved transparent sprite 2026-09-25",
+    "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Mu Guiying, adult female cavalry general with athletic build and commanding face. Crimson and charcoal Chinese lamellar, a short upper-thigh pleated battle skirt over fitted dark leggings, practical boots. Exactly one pear-blossom spear with steel tip and red tassel. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
+    "reference": "assets/mu-guiying.png"
   },
   {
     "id": "liang-hongyu",
     "file": "assets/liang-hongyu.png",
-    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
-    "prompt": "Liang Hongyu hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+    "method": "built-in image_gen · approved single-character key art 2026-09-25",
+    "prompt": "Use the archived concept sheet only as an identity and equipment reference. Render Liang Hongyu, adult female drum-corps commander with strong shoulders and mature face. Deep red cropped Chinese cross-collar martial top, shoulder guards, short layered battle skirt over dark fitted trousers and boots, command sash. Exactly two matched dao sabers, one in each hand. One single full-body three-quarter grounded combat pose; both feet and entire weapon inside a portrait 2:3 canvas with 8% margin. Premium painterly realistic Chinese historical fantasy game art. Flat dark charcoal #10191b backdrop. No concept sheet, turnaround, collage, inset views, scenery, labels, calligraphy, UI, extra figures, duplicated limbs or equipment, watermark, childish styling, lingerie armor or impossible heels. Final outfit edit: replace bulky cuirass with cropped martial top and short battle skirt while preserving face, hair, two sabers, pose and palette.",
+    "reference": "concepts/stitch-try-2026-09-25-female"
+  },
+  {
+    "id": "liang-hongyu-sprite",
+    "file": "assets/liang-hongyu-sprite.png",
+    "method": "built-in image_gen · identity-preserved transparent sprite 2026-09-25",
+    "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Liang Hongyu, adult female drum-corps commander with strong shoulders and mature face. Deep red cropped Chinese cross-collar martial top, shoulder guards, short layered battle skirt over dark fitted trousers and boots, command sash. Exactly two matched dao sabers, one in each hand. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
+    "reference": "assets/liang-hongyu.png"
   },
   {
     "id": "nie-yinniang",
     "file": "assets/nie-yinniang.png",
-    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
-    "prompt": "Nie Yinniang hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+    "method": "built-in image_gen · approved single-character key art 2026-09-25",
+    "prompt": "Use the archived concept sheet only as an identity and equipment reference. Render Nie Yinniang, adult female Tang assassin, compact agile build, muted indigo and charcoal Chinese cross-collar martial top, short asymmetric wrap skirt over fitted leggings, secure leather wrist wraps, dark traveling cloak. Exactly one short Chinese straight sword and an empty scabbard. One single full-body three-quarter grounded combat pose; both feet and entire weapon inside a portrait 2:3 canvas with 8% margin. Premium painterly realistic Chinese historical fantasy game art. Flat dark charcoal #10191b backdrop. No concept sheet, turnaround, collage, inset views, scenery, labels, calligraphy, UI, extra figures, duplicated limbs or equipment, watermark, childish styling, lingerie armor or impossible heels.",
+    "reference": "concepts/stitch-try-2026-09-25-female"
+  },
+  {
+    "id": "nie-yinniang-sprite",
+    "file": "assets/nie-yinniang-sprite.png",
+    "method": "built-in image_gen · identity-preserved transparent sprite 2026-09-25",
+    "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Nie Yinniang, adult female Tang assassin, compact agile build, muted indigo and charcoal Chinese cross-collar martial top, short asymmetric wrap skirt over fitted leggings, secure leather wrist wraps, dark traveling cloak. Exactly one short Chinese straight sword and an empty scabbard. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
+    "reference": "assets/nie-yinniang.png"
   },
   {
     "id": "bamboo-ambush",

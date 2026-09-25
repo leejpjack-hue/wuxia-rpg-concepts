@@ -63,7 +63,6 @@ export class DuelView {
     const img = this.$(id), path = `assets/${art}.png`;
     if (img.getAttribute("src") !== path) { img.hidden = false; img.src = path; }
     img.alt = name;
-    // Sheet art from the Stitch try-run crops toward its main figure.
     img.style.objectPosition = focus || "";
   }
   meter(id, value, max) {

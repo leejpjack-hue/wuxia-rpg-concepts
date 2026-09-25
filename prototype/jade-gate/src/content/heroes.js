@@ -68,8 +68,6 @@ export const HEROES = [
       "An unstoppable force. Skybreaker delivers devastating damage through the rival’s guard.",
   },
   {
-    // Stitch try-run 2026-09-25. Concept sheet art; no dedicated sprite yet,
-    // so the pass renders this hero as a framed standee token.
     id: "guan-yu",
     name: "Guan Yu",
     cn: "關羽",
@@ -83,7 +81,6 @@ export const HEROES = [
     rate: 0.5,
     color: "#a8d5b0",
     skill: "Spring-Autumn Cleave",
-    artFocus: "26% 32%",
     description:
       "A lord among warriors. Spring-Autumn Cleave sweeps for heavy damage and braces the line behind the blade.",
   },
@@ -101,7 +98,6 @@ export const HEROES = [
     rate: 0.34,
     color: "#e8b060",
     skill: "Tiger-Crushing Blow",
-    artFocus: "24% 34%",
     description:
       "The tiger of Jingyang Ridge. Tiger-Crushing Break lands a brutal strike that leaves the rival reeling.",
   },
@@ -119,7 +115,6 @@ export const HEROES = [
     rate: 0.3,
     color: "#e9a9c0",
     skill: "Pear Blossom Storm",
-    artFocus: "30% 30%",
     description:
       "The general who took the gate. Pear Blossom Storm strikes in a drifting flurry, then recovers guard and health.",
   },
@@ -137,7 +132,6 @@ export const HEROES = [
     rate: 0.36,
     color: "#9fb9e8",
     skill: "War Drum Barrage",
-    artFocus: "28% 32%",
     description:
       "Drums on the river walls. War Drum Barrage beats a relentless double-blade rhythm and restores fighting spirit.",
   },
@@ -146,7 +140,7 @@ export const HEROES = [
     name: "Nie Yinniang",
     cn: "聶隱娘",
     title: "The Hidden Blade",
-    weapon: "Twin short swords",
+    weapon: "Concealed short sword",
     style: "Stealth · Evasion",
     hp: 95,
     speed: 305,
@@ -155,7 +149,6 @@ export const HEROES = [
     rate: 0.22,
     color: "#b9aee6",
     skill: "Shadow Step",
-    artFocus: "30% 34%",
     description:
       "The assassin who vanished mid-strike. Shadow Step cuts deep, then slips beyond the rival’s reply.",
   },

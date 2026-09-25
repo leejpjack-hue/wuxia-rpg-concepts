@@ -121,7 +121,7 @@ export class RoamView {
     }
     const hero = this.$("roam-hero"),
       src = `assets/${g.p.id}-sprite.png`;
-    // Heroes without a transparent sprite stand on the pass as framed tokens.
+    // Keep a visible fallback if a future sprite fails to load.
     this.heroToken?.remove();
     this.heroToken = null;
     hero.hidden = false;
