@@ -24,11 +24,12 @@ npm --prefix prototype/jade-gate run check
 
 The complete 4-Act narrative bible, world lore, character arcs (Zhao Yun, Lu Zhishen, Hu Sanniang, Lü Bu), in-engine dialogue exchanges, and macro/micro progression loops live in [`docs/GAME-FLOW-AND-STORY-SPEC.md`](docs/GAME-FLOW-AND-STORY-SPEC.md).
 
-## Procedural Rock Music & Sound Engine
+## Adaptive Wuxia-Rock Music & Sound Engine
 
-A pure, zero-dependency procedural Web Audio API synthesizer (`prototype/jade-gate/audio.js`) drives an authentic, high-energy rock soundtrack:
-- **Rock Instruments:** Distorted electric guitar power chords through tube-saturation overdrive curves and amp cabinet emulation, singing lead guitar riffs with expressive bends and vibrato, punchy rock bass guitar, and a complete rock drum kit (punchy acoustic kick, cracking rock snare, metallic hi-hats, and explosive crash cymbals).
-- **Adaptive Interactive BGM:** Dynamic state machine shifts between heavy moody desert rock groove in Hero Select/Waystation (96 BPM), driving hard rock arena anthem during Vanguard Skirmishes (138 BPM), and high-octane speed metal / thrash duel for the Ashen Warden Boss (158 BPM double-kick barrage and screaming solos).
+A zero-dependency Web Audio synthesizer (`prototype/jade-gate/audio.js`) layers guzheng, pipa and xiao-like voices over guitar, bass and drums:
+- **Longer arrangements:** Each mode has a deterministic 32-bar progression with four melodic sections and dynamic breaks. The select theme runs about 80 seconds, upgrade 74 seconds, battle 56 seconds and boss 49 seconds before looping. Tab suspension preserves the phrase position.
+- **Cleaner mix:** Gentler guitar distortion, lower percussion levels, no constant amp hum, music-bus compression and an output limiter reduce harshness and clipping.
+- **Adaptive BGM:** Hero Select/Waystation uses a restrained groove (96 BPM); upgrades add flute (104 BPM); skirmishes build energy (138 BPM); boss fights intensify it (158 BPM).
 - **Tactile Combat SFX:** Combo-scaling pick-scrape blade whooshes, crunching steel impacts, power chord finishers, whammy dive dodges, and unique signature audio identities for all legends.
 - **In-Game Controls:** Independent Sound FX and Music toggles in the header nav bar, persisting seamlessly across play sessions.
 

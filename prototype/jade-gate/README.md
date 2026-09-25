@@ -24,6 +24,8 @@ Each card action plays a short combat sequence with weapon trails, impact number
 
 Only an action advances a duel turn — no timers or idle damage inside a duel. The rival's next move and exact damage are shown before you choose. Defeating a rival restores 12 health and 8 Flow and returns you to the pass; one pot of healing tea is shared across the whole encounter. Choose a discipline between encounters. Reduced motion, sound/music and volume controls are in the menu/header.
 
+Music is synthesized in the browser. Each scene has a 32-bar arrangement with changing melody and instrumentation, lasting roughly 49–80 seconds before it loops. The soundtrack resumes its place after switching tabs; volume and music toggles are in Settings.
+
 ## RPG progression
 
 Campaign includes Act I arrival dialogue, two initial encounters, two discipline choices, a two-stance Warden duel, resolution and the tea house. Spend Renown there on health, starting Flow and weapon power. Cultivation applies on your next new campaign run.

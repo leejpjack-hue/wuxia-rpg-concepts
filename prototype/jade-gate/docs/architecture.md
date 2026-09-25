@@ -21,7 +21,7 @@ flowchart LR
   Bus --> View
   Bus --> Duel
   Bus --> Audio
-  Audio --> Synth[Procedural rock audio]
+  Audio --> Synth[Adaptive 32-bar wuxia-rock score]
 ```
 
 The composition root injects `createCardCombat` into `GameSession`. The session owns campaign state, dialogue, encounter boundaries, rewards and persistence. Combat owns turns, rival intentions, damage, Flow, and victory/defeat signals. Neither domain module reads the DOM, a timer or browser storage.

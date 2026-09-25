@@ -1,4 +1,5 @@
 import { scheduleWindow } from "./src/platform/audio-schedule.js";
+import { musicStepCount, scoreStep } from "./src/content/music-score.js";
 // audio.js — Procedural Rock Music & Sound Engine for Blades of the Four
 // Synthesizes heavy driving rock music: distorted electric guitar power chords,
 // singing lead guitar riffs, punchy rock bass, and a full rock drum kit
@@ -10,13 +11,13 @@ let masterGain = null;
 let sfxGain = null;
 let musicGain = null;
 let filterNode = null;
-let ampNode = null;
-let humNode = null;
-let ampGain = null;
+let musicCompressor = null;
+let outputLimiter = null;
 
 let soundEnabled = true;
 let musicEnabled = true;
 let currentMode = "select"; // 'select' | 'battle' | 'boss' | 'upgrade' | 'victory' | 'defeat' | 'paused'
+let lastPlayingMode = "select";
 let schedulerTimer = null;
 let currentStep = 0;
 let nextNoteTime = 0;
@@ -89,7 +90,7 @@ function getDistortionCurve() {
     const curve = new Float32Array(samples);
     for (let i = 0; i < samples; i++) {
       const x = (i * 2) / samples - 1;
-      curve[i] = Math.tanh(14 * x * 0.55) * 0.82 + Math.sin(x * Math.PI) * 0.18;
+      curve[i] = Math.tanh(5.5 * x) * 0.88;
     }
     distortionCurve = curve;
   }
@@ -136,15 +137,27 @@ export function initAudio() {
       ctx.currentTime,
     );
 
+    musicCompressor = ctx.createDynamicsCompressor();
+    musicCompressor.threshold.setValueAtTime(-18, ctx.currentTime);
+    musicCompressor.knee.setValueAtTime(16, ctx.currentTime);
+    musicCompressor.ratio.setValueAtTime(3, ctx.currentTime);
+    musicCompressor.attack.setValueAtTime(0.012, ctx.currentTime);
+    musicCompressor.release.setValueAtTime(0.22, ctx.currentTime);
+    outputLimiter = ctx.createDynamicsCompressor();
+    outputLimiter.threshold.setValueAtTime(-6, ctx.currentTime);
+    outputLimiter.knee.setValueAtTime(0, ctx.currentTime);
+    outputLimiter.ratio.setValueAtTime(16, ctx.currentTime);
+    outputLimiter.attack.setValueAtTime(0.003, ctx.currentTime);
+    outputLimiter.release.setValueAtTime(0.12, ctx.currentTime);
+
     sfxGain.connect(filterNode);
-    musicGain.connect(filterNode);
-    filterNode.connect(masterGain);
+    musicGain.connect(musicCompressor);
+    musicCompressor.connect(filterNode);
+    filterNode.connect(outputLimiter);
+    outputLimiter.connect(masterGain);
     masterGain.connect(ctx.destination);
 
-    // Start analog tube amp room atmosphere
-    startRockAtmosphere();
-
-    // Start rock music sequencer
+    // A low-noise music bus keeps quiet passages clean.
     startMusicSequencer();
     initialized = true;
     return ctx;
@@ -152,50 +165,6 @@ export function initAudio() {
     console.warn("AudioContext initialization failed:", e);
     return null;
   }
-}
-
-// Procedural Analog Amp Bed (subtle room presence & 60Hz transformer warmth)
-function startRockAtmosphere() {
-  if (!ctx || ampNode) return;
-  try {
-    const bufferSize = ctx.sampleRate * 2;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    let last = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      last = (last + 0.02 * white) / 1.02;
-      output[i] = last * 0.35;
-    }
-
-    ampNode = ctx.createBufferSource();
-    ampNode.buffer = noiseBuffer;
-    ampNode.loop = true;
-
-    const ampFilter = ctx.createBiquadFilter();
-    ampFilter.type = "bandpass";
-    ampFilter.frequency.setValueAtTime(180, ctx.currentTime);
-    ampFilter.Q.setValueAtTime(1.5, ctx.currentTime);
-
-    const hum = ctx.createOscillator();
-    humNode = hum;
-    hum.type = "sine";
-    hum.frequency.setValueAtTime(60, ctx.currentTime);
-    const humGain = ctx.createGain();
-    humGain.gain.setValueAtTime(0.012, ctx.currentTime);
-    hum.connect(humGain);
-
-    ampGain = ctx.createGain();
-    ampGain.gain.setValueAtTime(0.035, ctx.currentTime);
-
-    ampNode.connect(ampFilter);
-    ampFilter.connect(ampGain);
-    humGain.connect(ampGain);
-    ampGain.connect(musicGain);
-
-    ampNode.start();
-    hum.start();
-  } catch (e) {}
 }
 
 // ---------------------------------------------------------------------------
@@ -238,34 +207,34 @@ export function playPowerChord(
     oscOct.detune.setValueAtTime(4, t);
 
     // Pre-distortion gain drives the waveshaper into saturation
-    preGain.gain.setValueAtTime(0.35 * velocity, t);
+    preGain.gain.setValueAtTime(0.23 * velocity, t);
 
     shaper.curve = getDistortionCurve();
     shaper.oversample = "2x";
 
     // Amp Cabinet simulation: steep rolloff above 4.2 kHz removes fizzy digital treble
     cabinet.type = "lowpass";
-    cabinet.frequency.setValueAtTime(mute ? 2200 : 4200, t);
+    cabinet.frequency.setValueAtTime(mute ? 1900 : 3100, t);
     cabinet.Q.setValueAtTime(1.4, t);
 
     // Midrange punch EQ
     midEq.type = "peaking";
     midEq.frequency.setValueAtTime(1400, t);
-    midEq.gain.setValueAtTime(3.5, t);
+    midEq.gain.setValueAtTime(1.5, t);
 
     // Amplitude envelope
     postGain.gain.setValueAtTime(0.001, t);
     if (mute) {
       // Palm-muted chug
-      postGain.gain.linearRampToValueAtTime(0.48 * velocity, t + 0.005);
+      postGain.gain.linearRampToValueAtTime(0.3 * velocity, t + 0.005);
       postGain.gain.exponentialRampToValueAtTime(
         0.001,
         t + Math.min(duration, 0.13),
       );
     } else {
       // Sustained ringing power chord
-      postGain.gain.linearRampToValueAtTime(0.42 * velocity, t + 0.008);
-      postGain.gain.setValueAtTime(0.34 * velocity, t + duration * 0.5);
+      postGain.gain.linearRampToValueAtTime(0.27 * velocity, t + 0.008);
+      postGain.gain.setValueAtTime(0.21 * velocity, t + duration * 0.5);
       postGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
     }
 
@@ -341,18 +310,18 @@ export function playLeadGuitar(
     vibrato.start(t + Math.min(0.08, duration * 0.25));
     vibrato.stop(t + duration);
 
-    preGain.gain.setValueAtTime(0.4 * velocity, t);
+    preGain.gain.setValueAtTime(0.25 * velocity, t);
     shaper.curve = getDistortionCurve();
     shaper.oversample = "2x";
 
     presence.type = "peaking";
     presence.frequency.setValueAtTime(2400, t);
-    presence.gain.setValueAtTime(4.5, t);
+    presence.gain.setValueAtTime(1.5, t);
 
     cabinet.type = "lowpass";
-    cabinet.frequency.setValueAtTime(4600, t);
+    cabinet.frequency.setValueAtTime(3500, t);
 
-    const peak = 0.38 * velocity;
+    const peak = 0.23 * velocity;
     gain.gain.setValueAtTime(0.001, t);
     gain.gain.linearRampToValueAtTime(peak, t + 0.006);
     gain.gain.setValueAtTime(peak * 0.88, t + duration * 0.6);
@@ -401,7 +370,7 @@ export function playBassGuitar(
     filter.frequency.exponentialRampToValueAtTime(340, t + 0.045);
     filter.Q.setValueAtTime(2.2, t);
 
-    const peak = 0.44 * velocity;
+    const peak = 0.3 * velocity;
     gain.gain.setValueAtTime(0.001, t);
     gain.gain.linearRampToValueAtTime(peak, t + 0.005);
     gain.gain.setValueAtTime(peak * 0.8, t + duration * 0.5);
@@ -432,7 +401,7 @@ export function playRockKick(time = null, velocity = 1.0) {
     osc.frequency.setValueAtTime(175, t);
     osc.frequency.exponentialRampToValueAtTime(42, t + 0.055);
 
-    const peak = 0.85 * velocity;
+    const peak = 0.56 * velocity;
     oscGain.gain.setValueAtTime(peak, t);
     oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
 
@@ -447,7 +416,7 @@ export function playRockKick(time = null, velocity = 1.0) {
     click.type = "triangle";
     click.frequency.setValueAtTime(600, t);
     click.frequency.exponentialRampToValueAtTime(80, t + 0.02);
-    clickGain.gain.setValueAtTime(0.3 * velocity, t);
+    clickGain.gain.setValueAtTime(0.18 * velocity, t);
     clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
 
     click.connect(clickGain);
@@ -469,7 +438,7 @@ export function playRockSnare(time = null, velocity = 0.9) {
     osc.type = "triangle";
     osc.frequency.setValueAtTime(215, t);
     osc.frequency.exponentialRampToValueAtTime(130, t + 0.04);
-    oscGain.gain.setValueAtTime(0.48 * velocity, t);
+    oscGain.gain.setValueAtTime(0.32 * velocity, t);
     oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
 
     osc.connect(oscGain);
@@ -497,7 +466,7 @@ export function playRockSnare(time = null, velocity = 0.9) {
     bp.Q.setValueAtTime(1.2, t);
 
     const nGain = ctx.createGain();
-    nGain.gain.setValueAtTime(0.55 * velocity, t);
+    nGain.gain.setValueAtTime(0.32 * velocity, t);
     nGain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
 
     noise.connect(hp);
@@ -526,11 +495,11 @@ export function playHiHat(time = null, open = false, velocity = 0.6) {
 
     const hp = ctx.createBiquadFilter();
     hp.type = "highpass";
-    hp.frequency.setValueAtTime(7500, t);
-    hp.Q.setValueAtTime(2.0, t);
+    hp.frequency.setValueAtTime(5200, t);
+    hp.Q.setValueAtTime(0.8, t);
 
     const gain = ctx.createGain();
-    const peak = (open ? 0.32 : 0.22) * velocity;
+    const peak = (open ? 0.22 : 0.14) * velocity;
     gain.gain.setValueAtTime(peak, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
@@ -559,10 +528,10 @@ export function playCrashCymbal(time = null, velocity = 0.8) {
 
     const hp = ctx.createBiquadFilter();
     hp.type = "highpass";
-    hp.frequency.setValueAtTime(6200, t);
+    hp.frequency.setValueAtTime(4800, t);
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.48 * velocity, t);
+    gain.gain.setValueAtTime(0.28 * velocity, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
     noise.connect(hp);
@@ -573,8 +542,7 @@ export function playCrashCymbal(time = null, velocity = 0.8) {
 }
 
 // ---------------------------------------------------------------------------
-// Backward-Compatibility Instrument Aliases
-// (Ensures legacy test suites and callers seamlessly map to rock equivalents)
+// Wuxia lead voices, layered over the restrained rock rhythm section.
 // ---------------------------------------------------------------------------
 
 export function playGuzheng(
@@ -584,11 +552,62 @@ export function playGuzheng(
   velocity = 0.8,
   bend = 0,
 ) {
-  playPowerChord(freq, time, duration, velocity, false);
+  if (!ctx || !soundEnabled) return;
+  const t = time ?? ctx.currentTime;
+  const length = Math.max(0.09, duration);
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(3600, t);
+  filter.frequency.exponentialRampToValueAtTime(700, t + length);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.linearRampToValueAtTime(0.17 * velocity, t + 0.009);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + length);
+  for (const [ratio, level] of [[1, 1], [2, 0.28], [3, 0.11]]) {
+    const osc = ctx.createOscillator();
+    const partial = ctx.createGain();
+    osc.type = ratio === 1 ? "triangle" : "sine";
+    osc.frequency.setValueAtTime(freq * ratio, t);
+    if (bend) osc.frequency.exponentialRampToValueAtTime(freq * ratio * Math.pow(2, bend / 1200), t + length);
+    partial.gain.setValueAtTime(level, t);
+    osc.connect(partial);
+    partial.connect(filter);
+    osc.start(t);
+    osc.stop(t + length);
+  }
+  filter.connect(gain);
+  gain.connect(musicGain);
 }
 
 export function playPipa(freq, time = null, duration = 0.4, velocity = 0.7) {
-  playLeadGuitar(freq, time, duration, velocity, 0);
+  if (!ctx || !soundEnabled) return;
+  const t = time ?? ctx.currentTime;
+  const length = Math.max(0.08, duration);
+  const body = ctx.createOscillator();
+  const edge = ctx.createOscillator();
+  const edgeGain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  const gain = ctx.createGain();
+  body.type = "triangle";
+  body.frequency.setValueAtTime(freq, t);
+  edge.type = "sawtooth";
+  edge.frequency.setValueAtTime(freq * 2.02, t);
+  edgeGain.gain.setValueAtTime(0.18, t);
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(4500, t);
+  filter.frequency.exponentialRampToValueAtTime(950, t + length);
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.linearRampToValueAtTime(0.14 * velocity, t + 0.004);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + length);
+  body.connect(filter);
+  edge.connect(edgeGain);
+  edgeGain.connect(filter);
+  filter.connect(gain);
+  gain.connect(musicGain);
+  body.start(t);
+  edge.start(t);
+  body.stop(t + length);
+  edge.stop(t + length);
 }
 
 export function playXiaoFlute(
@@ -598,7 +617,44 @@ export function playXiaoFlute(
   velocity = 0.7,
   slideTo = null,
 ) {
-  playLeadGuitar(freq, time, duration, velocity, slideTo ? 2 : 0);
+  if (!ctx || !soundEnabled) return;
+  const t = time ?? ctx.currentTime;
+  const length = Math.max(0.12, duration);
+  const osc = ctx.createOscillator();
+  const overtone = ctx.createOscillator();
+  const overtoneGain = ctx.createGain();
+  const gain = ctx.createGain();
+  const vibrato = ctx.createOscillator();
+  const vibratoDepth = ctx.createGain();
+  osc.type = "sine";
+  overtone.type = "triangle";
+  osc.frequency.setValueAtTime(freq, t);
+  overtone.frequency.setValueAtTime(freq * 2, t);
+  if (slideTo && slideTo > 0) {
+    osc.frequency.exponentialRampToValueAtTime(slideTo, t + length * 0.7);
+    overtone.frequency.exponentialRampToValueAtTime(slideTo * 2, t + length * 0.7);
+  }
+  overtoneGain.gain.setValueAtTime(0.12, t);
+  vibrato.type = "sine";
+  vibrato.frequency.setValueAtTime(5.1, t);
+  vibratoDepth.gain.setValueAtTime(freq * 0.004, t);
+  vibrato.connect(vibratoDepth);
+  vibratoDepth.connect(osc.frequency);
+  vibratoDepth.connect(overtone.frequency);
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.linearRampToValueAtTime(0.16 * velocity, t + Math.min(0.07, length * 0.2));
+  gain.gain.setValueAtTime(0.14 * velocity, t + length * 0.68);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + length);
+  osc.connect(gain);
+  overtone.connect(overtoneGain);
+  overtoneGain.connect(gain);
+  gain.connect(musicGain);
+  osc.start(t);
+  overtone.start(t);
+  vibrato.start(t);
+  osc.stop(t + length);
+  overtone.stop(t + length);
+  vibrato.stop(t + length);
 }
 
 export function playTanggu(time = null, velocity = 1.0, pitch = 1.0) {
@@ -619,292 +675,40 @@ export function playTempleBell(
 }
 
 // ---------------------------------------------------------------------------
-// Procedural Rock Sequencer
+// Adaptive 32-bar score
 // ---------------------------------------------------------------------------
 
 function startMusicSequencer() {
   if (schedulerTimer) return;
   nextNoteTime = ctx ? ctx.currentTime + 0.1 : 0;
-  currentStep = 0;
-
+  // Keep currentStep across tab suspension so the phrase does not restart.
   schedulerTimer = setInterval(() => {
     if (!ctx || ctx.state !== "running" || !musicEnabled || !soundEnabled)
       return;
+    const mode = currentMode === "waystation" ? "select" : currentMode;
     const stepDuration =
-      (60 / tempo) * (currentMode === "select" || currentMode === "upgrade" ? 0.5 : 0.25);
+      (60 / tempo) * (mode === "select" || mode === "upgrade" ? 0.5 : 0.25);
     const window = scheduleWindow(nextNoteTime, ctx.currentTime, stepDuration);
     for (const time of window.times) {
-      scheduleStep(currentStep, time, stepDuration);
-      currentStep = (currentStep + 1) % 64;
+      for (const event of scoreStep(mode, currentStep)) {
+        const { instrument, pitch, duration, velocity } = event;
+        switch (instrument) {
+          case "chord": playPowerChord(pitch, time, duration, velocity, event.mute); break;
+          case "lead": playLeadGuitar(pitch, time, duration, velocity); break;
+          case "bass": playBassGuitar(pitch, time, duration, velocity); break;
+          case "guzheng": playGuzheng(pitch, time, duration, velocity); break;
+          case "pipa": playPipa(pitch, time, duration, velocity); break;
+          case "flute": playXiaoFlute(pitch, time, duration, velocity); break;
+          case "kick": playRockKick(time, velocity); break;
+          case "snare": playRockSnare(time, velocity); break;
+          case "hat": playHiHat(time, event.open, velocity); break;
+          case "crash": playCrashCymbal(time, velocity); break;
+        }
+      }
+      currentStep = (currentStep + 1) % musicStepCount(mode);
     }
     nextNoteTime = window.next;
   }, 40);
-}
-
-function scheduleStep(step, time, stepDuration) {
-  if (
-    currentMode === "paused" ||
-    currentMode === "victory" ||
-    currentMode === "defeat"
-  )
-    return;
-
-  // -------------------------------------------------------------------------
-  // 1. SELECT MODE: Moody Heavy Grunge / Desert Rock Groove (96 BPM)
-  // -------------------------------------------------------------------------
-  if (currentMode === "select" || currentMode === "waystation") {
-    // 8 steps per bar (8th notes), 4 bars = 32 steps
-    const bar = Math.floor(step / 8) % 4;
-    const stepInBar = step % 8;
-
-    // Drums
-    if (step === 0 && bar === 0) {
-      playCrashCymbal(time, 0.75);
-    }
-    if (stepInBar === 0) {
-      playRockKick(time, 0.95);
-    } else if (stepInBar === 3) {
-      playRockKick(time, 0.7);
-    } else if (stepInBar === 4) {
-      playRockKick(time, 0.85);
-    }
-
-    if (stepInBar === 2 || stepInBar === 6) {
-      playRockSnare(time, 0.9);
-    } else if (bar === 3 && stepInBar === 7) {
-      playRockSnare(time, 0.65);
-    }
-
-    if (stepInBar === 7) {
-      playHiHat(time, true, 0.65);
-    } else {
-      playHiHat(time, false, 0.55);
-    }
-
-    // Bassline
-    const bassPatterns = [
-      [PITCHES.E2, PITCHES.E2, PITCHES.G2, PITCHES.E2, PITCHES.A2, PITCHES.G2, PITCHES.E2, PITCHES.D2],
-      [PITCHES.E2, PITCHES.E2, PITCHES.G2, PITCHES.E2, PITCHES.D2, PITCHES.D2, PITCHES.E2, PITCHES.G2],
-      [PITCHES.C3, PITCHES.C3, PITCHES.C3, PITCHES.C3, PITCHES.D3, PITCHES.D3, PITCHES.D3, PITCHES.D3],
-      [PITCHES.E2, PITCHES.G2, PITCHES.A2, PITCHES.Bb2, PITCHES.B2, PITCHES.A2, PITCHES.G2, PITCHES.E2],
-    ];
-    const bassFreq = bassPatterns[bar][stepInBar];
-    playBassGuitar(bassFreq, time, stepDuration * 0.9, 0.85);
-
-    // Rhythm Guitar Power Chords
-    if (bar === 0) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 1.2, 0.75, false);
-      if (stepInBar === 4 || stepInBar === 5) playPowerChord(PITCHES.E2, time, 0.2, 0.55, true);
-    } else if (bar === 1) {
-      if (stepInBar === 0) playPowerChord(PITCHES.G2, time, 0.75, 0.7, false);
-      if (stepInBar === 4) playPowerChord(PITCHES.A2, time, 0.75, 0.75, false);
-    } else if (bar === 2) {
-      if (stepInBar === 0) playPowerChord(PITCHES.C3, time, 0.75, 0.7, false);
-      if (stepInBar === 4) playPowerChord(PITCHES.D3, time, 0.75, 0.75, false);
-    } else if (bar === 3) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 0.85, 0.8, false);
-      // Lead guitar turnaround blues lick
-      if (stepInBar === 2) playLeadGuitar(PITCHES.G4, time, 0.25, 0.7, 0);
-      if (stepInBar === 4) playLeadGuitar(PITCHES.A4, time, 0.45, 0.8, 2);
-      if (stepInBar === 6) playLeadGuitar(PITCHES.E4, time, 0.65, 0.85, 0);
-    }
-    return;
-  }
-
-  // -------------------------------------------------------------------------
-  // 2. UPGRADE MODE: Atmospheric Rock Ballad Progression (104 BPM)
-  // -------------------------------------------------------------------------
-  if (currentMode === "upgrade") {
-    const bar = Math.floor(step / 8) % 4;
-    const stepInBar = step % 8;
-
-    if (stepInBar === 0) {
-      playRockKick(time, 0.75);
-      const chordRoots = [PITCHES.E2, PITCHES.C3, PITCHES.G2, PITCHES.D3];
-      playPowerChord(chordRoots[bar], time, 1.6, 0.7, false);
-    } else if (stepInBar === 4) {
-      playRockSnare(time, 0.6);
-    }
-    playHiHat(time, false, 0.4);
-
-    const bassRoots = [PITCHES.E2, PITCHES.C2, PITCHES.G2, PITCHES.D2];
-    playBassGuitar(bassRoots[bar], time, stepDuration * 0.9, 0.75);
-    return;
-  }
-
-  // -------------------------------------------------------------------------
-  // 3. BATTLE MODE: Driving Hard Rock / Arena Anthem (138 BPM)
-  // -------------------------------------------------------------------------
-  if (currentMode === "battle") {
-    // 16 steps per bar (16th notes), 4 bars = 64 steps
-    const bar = Math.floor(step / 16) % 4;
-    const stepInBar = step % 16;
-    const beatInBar = Math.floor(stepInBar / 4);
-    const subStep = stepInBar % 4;
-
-    // Cymbals
-    if (step === 0 && bar === 0) playCrashCymbal(time, 0.85);
-    if (stepInBar === 0 && bar === 2) playCrashCymbal(time, 0.75);
-
-    // Snare Drum
-    if (bar === 3 && stepInBar >= 10) {
-      // Snare roll fill on turnaround
-      playRockSnare(time, 0.75 + (stepInBar - 10) * 0.04);
-    } else if ((beatInBar === 1 || beatInBar === 3) && subStep === 0) {
-      playRockSnare(time, 0.95);
-    }
-
-    // Kick Drum
-    if (bar === 3 && stepInBar >= 10) {
-      if (subStep === 0) playRockKick(time, 0.85);
-    } else {
-      if (beatInBar === 0 && subStep === 0) playRockKick(time, 1.0);
-      if (beatInBar === 0 && subStep === 2) playRockKick(time, 0.85);
-      if (beatInBar === 2 && subStep === 0) playRockKick(time, 0.95);
-      if (beatInBar === 2 && subStep === 3) playRockKick(time, 0.75);
-    }
-
-    // Hi-Hats (driving 8th notes)
-    if (subStep === 0 || subStep === 2) {
-      if (beatInBar === 3 && subStep === 2 && bar !== 3) {
-        playHiHat(time, true, 0.7);
-      } else {
-        playHiHat(time, false, 0.6);
-      }
-    }
-
-    // Bass Guitar (pumping 8th notes)
-    if (subStep === 0 || subStep === 2) {
-      let bFreq = PITCHES.E2;
-      if (bar === 1) {
-        bFreq = beatInBar < 2 ? PITCHES.G2 : PITCHES.A2;
-      } else if (bar === 2) {
-        bFreq = beatInBar < 2 ? PITCHES.C3 : PITCHES.D3;
-      } else if (bar === 3) {
-        const fillPitches = [
-          PITCHES.E2, PITCHES.E2, PITCHES.G2, PITCHES.G2,
-          PITCHES.A2, PITCHES.B2, PITCHES.D3, PITCHES.E3,
-        ];
-        bFreq = fillPitches[Math.floor(stepInBar / 2)] || PITCHES.E2;
-      }
-      playBassGuitar(bFreq, time, stepDuration * 1.8, 0.9);
-    }
-
-    // Rhythm Power Chords
-    if (bar === 0) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 0.45, 0.85, false);
-      if (stepInBar === 2 || stepInBar === 4 || stepInBar === 6)
-        playPowerChord(PITCHES.E2, time, 0.12, 0.65, true);
-      if (stepInBar === 8) playPowerChord(PITCHES.E2, time, 0.35, 0.75, false);
-      if (stepInBar === 10 || stepInBar === 12)
-        playPowerChord(PITCHES.E2, time, 0.12, 0.65, true);
-      if (stepInBar === 14) playPowerChord(PITCHES.G2, time, 0.25, 0.75, false);
-    } else if (bar === 1) {
-      if (stepInBar === 0) playPowerChord(PITCHES.G2, time, 0.35, 0.8, false);
-      if (stepInBar === 4) playPowerChord(PITCHES.G2, time, 0.12, 0.65, true);
-      if (stepInBar === 8) playPowerChord(PITCHES.A2, time, 0.45, 0.85, false);
-      if (stepInBar === 12) playPowerChord(PITCHES.A2, time, 0.12, 0.65, true);
-      if (stepInBar === 14) playPowerChord(PITCHES.G2, time, 0.25, 0.75, false);
-      // Lead guitar lick
-      if (stepInBar === 8) playLeadGuitar(PITCHES.E4, time, 0.18, 0.75, 0);
-      if (stepInBar === 10) playLeadGuitar(PITCHES.G4, time, 0.18, 0.8, 0);
-      if (stepInBar === 12) playLeadGuitar(PITCHES.A4, time, 0.45, 0.9, 2);
-    } else if (bar === 2) {
-      if (stepInBar === 0) playPowerChord(PITCHES.C3, time, 0.45, 0.85, false);
-      if (stepInBar === 4) playPowerChord(PITCHES.C3, time, 0.12, 0.65, true);
-      if (stepInBar === 8) playPowerChord(PITCHES.D3, time, 0.45, 0.85, false);
-      if (stepInBar === 12) playPowerChord(PITCHES.D3, time, 0.12, 0.65, true);
-    } else if (bar === 3) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E3, time, 0.6, 0.9, false);
-      // Searing lead guitar lick over the turnaround
-      if (stepInBar === 2) playLeadGuitar(PITCHES.B4, time, 0.18, 0.8, 0);
-      if (stepInBar === 4) playLeadGuitar(PITCHES.D5, time, 0.18, 0.85, 0);
-      if (stepInBar === 6) playLeadGuitar(PITCHES.E5, time, 0.22, 0.9, 0);
-      if (stepInBar === 8) playLeadGuitar(PITCHES.G5, time, 0.22, 0.95, 0);
-      if (stepInBar === 10) playLeadGuitar(PITCHES.E5, time, 0.65, 1.0, 0);
-    }
-    return;
-  }
-
-  // -------------------------------------------------------------------------
-  // 4. BOSS MODE: High-Octane Speed Metal / Thrash Combat (158 BPM)
-  // -------------------------------------------------------------------------
-  if (currentMode === "boss") {
-    const bar = Math.floor(step / 16) % 4;
-    const stepInBar = step % 16;
-    const beatInBar = Math.floor(stepInBar / 4);
-    const subStep = stepInBar % 4;
-
-    // Crash Cymbals
-    if (step === 0 && bar === 0) playCrashCymbal(time, 0.95);
-    if (stepInBar === 0 && bar === 2) playCrashCymbal(time, 0.9);
-    if (bar === 3 && stepInBar === 14) playCrashCymbal(time, 0.85);
-
-    // Double-Bass Kick Frenzy (16th-note relentless barrage)
-    if (subStep === 0) playRockKick(time, 0.95);
-    else if (subStep === 1) playRockKick(time, 0.72);
-    else if (subStep === 2) playRockKick(time, 0.88);
-    else if (subStep === 3) playRockKick(time, 0.72);
-
-    // Snare Drum
-    if ((beatInBar === 1 || beatInBar === 3) && subStep === 0) {
-      playRockSnare(time, 1.0);
-    } else if (subStep === 2) {
-      playRockSnare(time, 0.35); // Ghost snare
-    }
-
-    // Sizzling Open Hi-Hat
-    if (subStep === 0 || subStep === 2) {
-      playHiHat(time, true, 0.65);
-    }
-
-    // Galloping 16th-Note Metal Bass
-    let metalBassFreq = PITCHES.E1;
-    if (bar === 0) {
-      metalBassFreq = stepInBar >= 12 ? PITCHES.F1 : PITCHES.E1;
-    } else if (bar === 1) {
-      metalBassFreq = stepInBar >= 8 ? PITCHES.Bb1 : PITCHES.E1;
-    } else if (bar === 2) {
-      metalBassFreq = [PITCHES.C2, PITCHES.B1, PITCHES.Bb1, PITCHES.A1][beatInBar];
-    } else if (bar === 3) {
-      metalBassFreq = stepInBar >= 8 ? PITCHES.G1 : PITCHES.E1;
-    }
-    playBassGuitar(metalBassFreq, time, stepDuration * 0.9, subStep === 0 ? 0.9 : 0.7);
-
-    // Thrash Metal Power Chords
-    if (bar === 0) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 0.25, 0.9, false);
-      if (stepInBar === 2 || stepInBar === 4 || stepInBar === 6 || stepInBar === 8 || stepInBar === 10)
-        playPowerChord(PITCHES.E2, time, 0.08, 0.75, true);
-      if (stepInBar === 12) playPowerChord(PITCHES.F2, time, 0.22, 0.9, false);
-    } else if (bar === 1) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 0.25, 0.9, false);
-      if (stepInBar === 2 || stepInBar === 4 || stepInBar === 6)
-        playPowerChord(PITCHES.E2, time, 0.08, 0.75, true);
-      if (stepInBar === 8) playPowerChord(PITCHES.Bb2, time, 0.22, 0.9, false); // Tritone stab!
-      if (stepInBar === 12) playPowerChord(PITCHES.A2, time, 0.22, 0.88, false);
-      // Screaming lead solo fill
-      if (stepInBar === 8) playLeadGuitar(PITCHES.Bb4, time, 0.12, 0.85, 0);
-      if (stepInBar === 10) playLeadGuitar(PITCHES.B4, time, 0.12, 0.85, 0);
-      if (stepInBar === 12) playLeadGuitar(PITCHES.D5, time, 0.14, 0.9, 0);
-      if (stepInBar === 14) playLeadGuitar(PITCHES.E5, time, 0.35, 1.0, 2);
-    } else if (bar === 2) {
-      if (stepInBar === 0) playPowerChord(PITCHES.C3, time, 0.2, 0.85, false);
-      if (stepInBar === 4) playPowerChord(PITCHES.B2, time, 0.2, 0.85, false);
-      if (stepInBar === 8) playPowerChord(PITCHES.Bb2, time, 0.2, 0.85, false);
-      if (stepInBar === 12) playPowerChord(PITCHES.A2, time, 0.2, 0.85, false);
-    } else if (bar === 3) {
-      if (stepInBar === 0) playPowerChord(PITCHES.E2, time, 0.25, 0.9, false);
-      if (stepInBar === 2 || stepInBar === 4 || stepInBar === 6)
-        playPowerChord(PITCHES.E2, time, 0.08, 0.75, true);
-      if (stepInBar === 8) playPowerChord(PITCHES.G2, time, 0.22, 0.9, false);
-      if (stepInBar === 12) playPowerChord(PITCHES.B2, time, 0.22, 0.9, false);
-      // High screaming solo climax
-      if (stepInBar === 8) playLeadGuitar(PITCHES.E5, time, 0.14, 0.9, 0);
-      if (stepInBar === 10) playLeadGuitar(PITCHES.G5, time, 0.14, 0.95, 0);
-      if (stepInBar === 12) playLeadGuitar(PITCHES.A5, time, 0.5, 1.0, 2);
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1249,7 +1053,14 @@ export function playSfx(type, param = null) {
 
 export function setMusicMode(mode) {
   if (currentMode === mode) return;
+  const oldMode = currentMode;
   currentMode = mode;
+  if (["select", "waystation", "battle", "boss", "upgrade"].includes(mode)) {
+    const priorMode = oldMode === "paused" ? lastPlayingMode : oldMode;
+    const scoreMode = (value) => value === "waystation" ? "select" : value;
+    if (scoreMode(mode) !== scoreMode(priorMode)) currentStep = 0;
+    lastPlayingMode = mode;
+  }
   clearCues();
   if (ctx) nextNoteTime = ctx.currentTime + 0.03;
 
@@ -1323,6 +1134,7 @@ function applyMix() {
 }
 
 export function setAudioSettings(settings) {
+  const wasAudible = soundEnabled && musicEnabled;
   soundEnabled = settings.sound ?? soundEnabled;
   musicEnabled = settings.music ?? musicEnabled;
   for (const [key, value] of Object.entries(settings)) {
@@ -1332,7 +1144,8 @@ export function setAudioSettings(settings) {
     if (key === "musicVolume") musicVolume = v;
     if (key === "sfxVolume") sfxVolume = v;
   }
-  if (ctx) nextNoteTime = ctx.currentTime + 0.03;
+  if (ctx && !wasAudible && soundEnabled && musicEnabled)
+    nextNoteTime = ctx.currentTime + 0.03;
   applyMix();
 }
 
@@ -1369,18 +1182,13 @@ export async function disposeAudio() {
   clearCues();
   if (schedulerTimer) clearInterval(schedulerTimer);
   schedulerTimer = null;
-  try {
-    ampNode?.stop();
-    humNode?.stop();
-  } catch {}
   const old = ctx;
   ctx = null;
-  ampNode = null;
-  humNode = null;
-  ampGain = null;
   masterGain = null;
   sfxGain = null;
   musicGain = null;
+  musicCompressor = null;
+  outputLimiter = null;
   filterNode = null;
   initialized = false;
   if (old && old.state !== "closed") await old.close();
