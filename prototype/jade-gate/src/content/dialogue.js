@@ -16,6 +16,27 @@ const replies = {
     "General Lü! You swore an accord with the Sovereign—why strike down our own garrison?!",
     "Your Warden blocks my path and dares speak of accords. Stand aside, or be split beneath my halberd.",
   ],
+  // Stitch try-run 2026-09-25 roster.
+  "guan-yu": [
+    "The Peach Garden idealist… a rogue god playing soldier for peasants?",
+    "I swore my blade to the people, not to tyrants. The Warden falls before dusk.",
+  ],
+  "wu-song": [
+    "The tiger-killer of Jingyang Ridge, drunk on his own legend… this pass is no tiger to be wrestled.",
+    "I strangled the tiger with bare hands. You are only a man with a polearm.",
+  ],
+  "mu-guiying": [
+    "The widow-general of a broken house… did the gates not take enough of your family?",
+    "My family paid so gates like this would stand open. I finish what they began.",
+  ],
+  "liang-hongyu": [
+    "The drum-wife of the river walls… your war drums fall silent at the Jade Gate.",
+    "My drums have never called a retreat. Hear the last measure — it is yours.",
+  ],
+  "nie-yinniang": [
+    "A hidden blade out of the mist… assassins have no place in honest war.",
+    "I was trained to end tyrants quietly. Tonight the mist does not need me quiet.",
+  ],
 };
 
 const heronReplies = {
@@ -34,6 +55,26 @@ const heronReplies = {
   "lu-bu": [
     "The invincible Flying General wading in muddy water… Have you come to bow before the Sovereign’s melody?",
     "Petty zither tricks from a bird in a cage. Strum your last chord before my halberd fells your tower.",
+  ],
+  "guan-yu": [
+    "Guan Yu… the beard that banners fear. Even legends drown in three feet of water.",
+    "The river may rise, assassin. The Green Dragon does not.",
+  ],
+  "wu-song": [
+    "The tiger of the ridge, wading… your roar is muffled by the rain, brute.",
+    "Tigers hunt in this rain. So do I.",
+  ],
+  "mu-guiying": [
+    "The general of a broken house… command nothing here but reeds.",
+    "Then I will command the reeds. They whisper where you hide.",
+  ],
+  "liang-hongyu": [
+    "War drums across the water… I will cut the drumsticks from your hands, widow.",
+    "Cut them, and the river itself keeps time for me.",
+  ],
+  "nie-yinniang": [
+    "A shadow meeting a shadow… we are the same trade, you and I.",
+    "No. You sold your strings to a tyrant. My blades were never for sale.",
   ],
 };
 

@@ -14,7 +14,7 @@ export class GameView {
     this.onGesture = onGesture;
     this.$("heroes").innerHTML = HEROES.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} concept art"><span class="card-number">0${index + 1} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} concept art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">0${index + 1} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {

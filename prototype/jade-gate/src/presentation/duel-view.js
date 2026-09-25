@@ -59,10 +59,12 @@ export class DuelView {
     }
   }
 
-  image(id, art, name) {
+  image(id, art, name, focus) {
     const img = this.$(id), path = `assets/${art}.png`;
     if (img.getAttribute("src") !== path) { img.hidden = false; img.src = path; }
     img.alt = name;
+    // Sheet art from the Stitch try-run crops toward its main figure.
+    img.style.objectPosition = focus || "";
   }
   meter(id, value, max) {
     this.$(`${id}-bar`).style.width = `${Math.max(0, Math.min(100, value / max * 100))}%`;
@@ -89,7 +91,7 @@ export class DuelView {
     this.$("hero-symbol").textContent = p.cn;
     this.$("hero-title").textContent = p.title;
     this.$("hero-card").style.setProperty("--fighter-color", p.color);
-    this.image("hero-image", p.id, p.name);
+    this.image("hero-image", p.id, p.name, p.artFocus);
     this.$("hero-health").textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
     this.$("hero-flow").textContent = `${Math.floor(p.flow)} / 100`;
     this.meter("hero-health", p.hp, p.maxHp);

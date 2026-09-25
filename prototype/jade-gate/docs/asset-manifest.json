@@ -94,5 +94,41 @@
     "file": "assets/warden-sprite.png",
     "method": "built-in image_gen",
     "prompt": "Use case: stylized-concept. Asset type: transparent enemy sprite for painterly wuxia RPG. A single imposing adult Chinese warlord called the Ashen Warden, heavy charcoal lamellar armor with restrained tarnished gold fittings, burnt orange shoulder cloak, ornate iron mask, wielding a giant dark iron guandao polearm. Wide commanding stance, powerful distinctive silhouette. Full body and complete weapon visible, elevated three-quarter game view facing right, high quality detailed hand-painted realistic game art with readable shapes for display at 140 pixels tall. Genuinely transparent alpha background, no ground, no shadow, no glow, no labels, no text, no border. One single character centered with 8% margin. Square image."
+  },
+  {
+    "id": "guan-yu",
+    "file": "assets/guan-yu.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Guan Yu hero card art. Male try-run sheet, main figure left of frame. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "wu-song",
+    "file": "assets/wu-song.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Wu Song hero card art. Male try-run sheet, main figure left of frame. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "mu-guiying",
+    "file": "assets/mu-guiying.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Mu Guiying hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "liang-hongyu",
+    "file": "assets/liang-hongyu.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Liang Hongyu hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "nie-yinniang",
+    "file": "assets/nie-yinniang.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Nie Yinniang hero card art. Female try-run turnaround sheet. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "bamboo-ambush",
+    "file": "assets/bamboo-ambush.png",
+    "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
+    "prompt": "Act II Whispering Bamboo pass background. Stored as converted PNG; no dedicated sprite or turnaround yet."
   }
 ]

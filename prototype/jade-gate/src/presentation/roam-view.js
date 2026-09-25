@@ -114,9 +114,29 @@ export class RoamView {
     this.$("roam-score").textContent = g.score;
     const left = g.roam.field.length;
     this.$("roam-remaining").textContent = `${left} ${left === 1 ? "RIVAL" : "RIVALS"} ON THE PASS`;
+    const stage = `assets/${session.act.arena || "arena"}.png`;
+    if (this.$("roam-arena").dataset.stage !== stage) {
+      this.$("roam-arena").dataset.stage = stage;
+      this.$("roam-arena").style.backgroundImage = `url("${stage}")`;
+    }
     const hero = this.$("roam-hero"),
       src = `assets/${g.p.id}-sprite.png`;
+    // Heroes without a transparent sprite stand on the pass as framed tokens.
+    this.heroToken?.remove();
+    this.heroToken = null;
     hero.hidden = false;
+    hero.onerror = () => {
+      if (hero.getAttribute("src") !== src) return;
+      hero.hidden = true;
+      const token = this.document.createElement("div");
+      token.className = "roam-token";
+      token.style.borderColor = g.p.color;
+      token.style.backgroundImage = `url("assets/${g.p.id}.png")`;
+      token.style.backgroundPosition = g.p.artFocus || "32% 30%";
+      this.$("roam-arena").appendChild(token);
+      this.heroToken = token;
+      this.draw();
+    };
     if (hero.getAttribute("src") !== src) hero.src = src;
     hero.alt = g.p.name;
     for (const [id, node] of this.sprites)
@@ -152,8 +172,9 @@ export class RoamView {
       const action = button.dataset.roamAction;
       button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : g.roam.strikeCD > 0 || action === "technique" && g.p.flow < g.p.cost);
     }
-    this.place(this.$("roam-hero"), g.p.x, g.p.y);
-    this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
+    this.place(this.heroToken || this.$("roam-hero"), g.p.x, g.p.y);
+    if (!this.heroToken)
+      this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
     this.drawEffects(g);
     for (const enemy of g.roam.field) {
       const node = this.sprites.get(enemy.id);

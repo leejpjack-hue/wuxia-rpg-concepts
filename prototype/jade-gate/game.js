@@ -30,6 +30,7 @@ const art = [
   ...HERO_IDS,
   ...HERO_IDS.map((id) => `${id}-sprite`),
   "arena",
+  "bamboo-ambush",
   "guard-sprite",
   "archer-sprite",
   "warden-sprite",

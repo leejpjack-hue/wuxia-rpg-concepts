@@ -46,7 +46,7 @@ export const ACTS = [
     name: "Whispering Bamboo & the River Crossing",
     cn: "幽篁夜渡",
     available: false,
-    arena: null,
+    arena: "bamboo-ambush",
     bossId: "night-heron",
     next: "mount-canglan",
     unlocks: [],
