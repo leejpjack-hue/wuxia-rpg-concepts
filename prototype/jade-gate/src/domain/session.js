@@ -225,7 +225,12 @@ export class GameSession {
     }
     const key = this.dialogue.key;
     this.dialogue = null;
-    if (key === "warden-fall" || key === "heron-fall" || key.endsWith("-fall")) {
+    if (
+      key === "warden-fall" ||
+      key === "night-heron-fall" ||
+      key === "heron-fall" ||
+      key.endsWith("-fall")
+    ) {
       this.checkpoint("waystation");
       this.transition("waystation");
     } else {
@@ -349,6 +354,8 @@ export class GameSession {
       "warden-intro",
       "warden-fall",
       "bamboo-arrival",
+      "night-heron-intro",
+      "night-heron-fall",
       "heron-intro",
       "heron-fall",
     ];

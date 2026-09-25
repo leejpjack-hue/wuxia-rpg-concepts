@@ -10,8 +10,19 @@ export const ARENA = {
   // Anchors sit at a sprite's feet; keep enough headroom for the 27% hero art.
   top: 170,
 };
-const PLAYER_SPEED = 300;
+/** Dry-ground roam speed. Shallows use SHALLOWS_ROAM_SPEED_FACTOR of this. */
+export const PLAYER_SPEED = 300;
+/** Water shallows slow footwork to 65% — inside the 60–70% band. */
+export const SHALLOWS_ROAM_SPEED_FACTOR = 0.65;
 const PLAYER_RADIUS = 34;
+
+/** True when the pass or the run state marks water shallows. */
+export function isRoamInShallows(encounter, g) {
+  if (g?.shallows) return true;
+  if (encounter?.hazards?.includes("shallows")) return true;
+  if (Array.isArray(g?.hazards) && g.hazards.includes("shallows")) return true;
+  return false;
+}
 
 /**
  * Arena roaming between duels: the hero walks with directional input, rivals
@@ -84,13 +95,16 @@ export function createRoam(g, bus, { encounter } = {}) {
       const len = Math.hypot(dx, dy) || 1,
         nx = dx / len,
         ny = dy / len;
+      const speed = isRoamInShallows(encounter, g)
+        ? PLAYER_SPEED * SHALLOWS_ROAM_SPEED_FACTOR
+        : PLAYER_SPEED;
       g.p.x = clamp(
-        g.p.x + nx * PLAYER_SPEED * dt,
+        g.p.x + nx * speed * dt,
         ARENA.margin,
         ARENA.width - ARENA.margin,
       );
       g.p.y = clamp(
-        g.p.y + ny * PLAYER_SPEED * dt,
+        g.p.y + ny * speed * dt,
         ARENA.top,
         ARENA.height - ARENA.margin + 20,
       );

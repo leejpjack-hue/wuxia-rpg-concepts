@@ -14,6 +14,8 @@ import { dialogueFor } from "../src/content/dialogue.js";
 import { validateContent } from "../src/content/validate.js";
 import { awardResult } from "../src/domain/progression.js";
 import { resolveMusicMode } from "../src/platform/audio-director.js";
+import { DUEL_ROSTERS, DUEL_ENEMIES } from "../src/content/duels.js";
+import { createRoam } from "../src/domain/roam.js";
 
 test("campaign validates and incomplete future acts cannot be launched", () => {
   assert(
@@ -197,7 +199,7 @@ test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and
   // Night Heron boss design metadata
   const boss = BOSSES["night-heron"];
   assert(boss, "Night Heron must be in BOSSES");
-  assert.equal(boss.planned, true, "Night Heron must remain planned (unbuilt)");
+  assert.equal(boss.planned, true, "Night Heron must remain planned while Act II is gated");
   assert.equal(boss.name, "The Night Heron");
   assert.equal(boss.cn, "夜鷺娘子");
   assert(boss.phases && boss.phases.length >= 2, "Boss design metadata must include phases");
@@ -247,24 +249,203 @@ test("Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and r
     assert.match(arrival[0].text, /bamboo/i);
     assert.equal(arrival[1].speaker, hero.name);
 
-    // Night Heron boss confrontation exchange (hero-specific)
-    const intro = dialogueFor("heron-intro", hero);
-    assert.equal(intro.length, 2);
-    assert.equal(intro[0].speaker, "The Night Heron");
-    assert.equal(intro[1].speaker, hero.name);
-    assert(intro[0].text.length > 10);
-    assert(intro[1].text.length > 10);
+    // Night Heron boss confrontation exchange (canonical + legacy alias)
+    const canonicalIntro = dialogueFor("night-heron-intro", hero);
+    const legacyIntro = dialogueFor("heron-intro", hero);
+    assert.deepEqual(canonicalIntro, legacyIntro);
+    assert.equal(canonicalIntro.length, 2);
+    assert.equal(canonicalIntro[0].speaker, "The Night Heron");
+    assert.equal(canonicalIntro[1].speaker, hero.name);
+    assert(canonicalIntro[0].text.length > 10);
+    assert(canonicalIntro[1].text.length > 10);
 
-    // Night Heron defeat / resolution vignette
-    const resolution = dialogueFor("heron-fall", hero);
-    assert.equal(resolution.length, 2);
-    assert.equal(resolution[0].speaker, "The Night Heron");
-    assert.match(resolution[0].text, /strings snap/i);
-    assert.equal(resolution[1].speaker, "The road ahead");
+    // Night Heron defeat / resolution vignette (canonical + legacy alias)
+    const canonicalResolution = dialogueFor("night-heron-fall", hero);
+    const legacyResolution = dialogueFor("heron-fall", hero);
+    assert.deepEqual(canonicalResolution, legacyResolution);
+    assert.equal(canonicalResolution.length, 2);
+    assert.equal(canonicalResolution[0].speaker, "The Night Heron");
+    assert.match(canonicalResolution[0].text, /strings snap/i);
+    assert.equal(canonicalResolution[1].speaker, "The road ahead");
   }
 
-  // Audio director resolves Act II dialogue states
+  // Audio director resolves Act II dialogue states (canonical and legacy)
   assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "bamboo-arrival" }), "select");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "night-heron-intro" }), "boss");
+  assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "night-heron-fall" }), "victory");
   assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-intro" }), "boss");
   assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-fall" }), "victory");
+});
+
+test("Night Heron checkpoint keys: canonical round-trip and legacy alias support without unlocking Act II", () => {
+  const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
+  assert.equal(act2.available, false, "Act II must remain gated");
+
+  // Verify runtime derived keys
+  assert.equal(`${act2.bossId}-intro`, "night-heron-intro");
+  assert.equal(`${act2.bossId}-fall`, "night-heron-fall");
+
+  // Round-trip checkpoint restoration with canonical night-heron-intro
+  const storageCanonical = memoryStorage({
+    [SAVE_KEY]: JSON.stringify({
+      version: 2,
+      wallet: 50,
+      records: {},
+      ranks: {},
+      unlockedHeroes: ["zhao-yun"],
+      completedActs: [],
+      completedRuns: [],
+      settings: { sound: true, music: true, motion: true },
+      checkpoint: {
+        stage: "night-heron-intro",
+        runId: "test-run-canonical",
+        heroId: "zhao-yun",
+        actId: "jade-gate",
+        encounterIndex: 2,
+        player: { hp: 120, maxHp: 120, flow: 50, power: 1, flowBonus: 0, cost: 40, kills: 5, damageTaken: 0 },
+        score: 100,
+        time: 60,
+        totalKills: 5,
+      },
+    }),
+  });
+  const gameCanonical = session(storageCanonical);
+  assert(gameCanonical.continueCheckpoint());
+  assert.equal(gameCanonical.mode, "dialogue");
+  assert.equal(gameCanonical.dialogue.key, "night-heron-intro");
+  assert.equal(gameCanonical.dialogue.lines[0].speaker, "The Night Heron");
+
+  // Legacy alias checkpoint restoration with heron-intro
+  const storageLegacy = memoryStorage({
+    [SAVE_KEY]: JSON.stringify({
+      version: 2,
+      wallet: 50,
+      records: {},
+      ranks: {},
+      unlockedHeroes: ["zhao-yun"],
+      completedActs: [],
+      completedRuns: [],
+      settings: { sound: true, music: true, motion: true },
+      checkpoint: {
+        stage: "heron-intro",
+        runId: "test-run-legacy",
+        heroId: "zhao-yun",
+        actId: "jade-gate",
+        encounterIndex: 2,
+        player: { hp: 120, maxHp: 120, flow: 50, power: 1, flowBonus: 0, cost: 40, kills: 5, damageTaken: 0 },
+        score: 100,
+        time: 60,
+        totalKills: 5,
+      },
+    }),
+  });
+  const gameLegacy = session(storageLegacy);
+  assert(gameLegacy.continueCheckpoint());
+  assert.equal(gameLegacy.mode, "dialogue");
+  assert.equal(gameLegacy.dialogue.key, "heron-intro");
+  assert.equal(gameLegacy.dialogue.lines[0].speaker, "The Night Heron");
+
+  // Round-trip checkpoint restoration with canonical night-heron-fall
+  const storageFall = memoryStorage({
+    [SAVE_KEY]: JSON.stringify({
+      version: 2,
+      wallet: 50,
+      records: {},
+      ranks: {},
+      unlockedHeroes: ["zhao-yun"],
+      completedActs: [],
+      completedRuns: [],
+      settings: { sound: true, music: true, motion: true },
+      checkpoint: {
+        stage: "night-heron-fall",
+        runId: "test-run-fall",
+        heroId: "zhao-yun",
+        actId: "jade-gate",
+        encounterIndex: 2,
+        player: { hp: 120, maxHp: 120, flow: 50, power: 1, flowBonus: 0, cost: 40, kills: 5, damageTaken: 0 },
+        score: 100,
+        time: 60,
+        totalKills: 5,
+      },
+    }),
+  });
+  const gameFall = session(storageFall);
+  assert(gameFall.continueCheckpoint());
+  assert.equal(gameFall.mode, "dialogue");
+  assert.equal(gameFall.dialogue.key, "night-heron-fall");
+  // Completing the dialogue transitions to waystation
+  gameFall.advanceDialogue(true);
+  assert.equal(gameFall.mode, "waystation");
+
+  // Legacy alias fall restoration with heron-fall
+  const storageLegacyFall = memoryStorage({
+    [SAVE_KEY]: JSON.stringify({
+      version: 2,
+      wallet: 50,
+      records: {},
+      ranks: {},
+      unlockedHeroes: ["zhao-yun"],
+      completedActs: [],
+      completedRuns: [],
+      settings: { sound: true, music: true, motion: true },
+      checkpoint: {
+        stage: "heron-fall",
+        runId: "test-run-legacy-fall",
+        heroId: "zhao-yun",
+        actId: "jade-gate",
+        encounterIndex: 2,
+        player: { hp: 120, maxHp: 120, flow: 50, power: 1, flowBonus: 0, cost: 40, kills: 5, damageTaken: 0 },
+        score: 100,
+        time: 60,
+        totalKills: 5,
+      },
+    }),
+  });
+  const gameLegacyFall = session(storageLegacyFall);
+  assert(gameLegacyFall.continueCheckpoint());
+  assert.equal(gameLegacyFall.mode, "dialogue");
+  assert.equal(gameLegacyFall.dialogue.key, "heron-fall");
+  gameLegacyFall.advanceDialogue(true);
+  assert.equal(gameLegacyFall.mode, "waystation");
+});
+
+test("Act II card duel content: DUEL_ROSTERS, DUEL_ENEMIES behind the gate and roam creation", () => {
+  const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
+  assert.equal(act2.available, false, "Act II bamboo-crossing must remain available: false");
+
+  // Roster registration for all Act II encounter IDs
+  const act2EncounterIds = ["bamboo-ambush", "river-skiff", "night-heron"];
+  for (const encId of act2EncounterIds) {
+    assert(DUEL_ROSTERS[encId], `DUEL_ROSTERS must contain encounter ${encId}`);
+    assert(DUEL_ROSTERS[encId].length > 0, `DUEL_ROSTERS[${encId}] must have enemies`);
+  }
+
+  for (const kind of ["shadow-assassin", "skiff-archer", "night-heron"]) {
+    const enemy = DUEL_ENEMIES[kind];
+    assert(enemy, `DUEL_ENEMIES must define ${kind}`);
+    assert(enemy.hp > 0);
+    assert(enemy.name);
+    assert(enemy.pattern.length >= 2);
+  }
+  assert.equal(DUEL_ENEMIES["shadow-assassin"].name, "Shadow Assassin");
+  assert.equal(DUEL_ENEMIES["skiff-archer"].name, "Skiff Archer");
+  assert.equal(DUEL_ENEMIES["night-heron"].name, "The Night Heron");
+  assert(DUEL_ENEMIES["night-heron"].pattern.length >= 3);
+  assert.equal(BOSSES["night-heron"].planned, true);
+  assert.equal(act2.available, false);
+
+  const bus = { emit() {} };
+  for (const encId of act2EncounterIds) {
+    const encounter = act2.encounters.find((e) => e.id === encId);
+    assert(encounter, `Act II must define encounter ${encId}`);
+    const g = { p: { x: 0, y: 0 }, encounterIndex: 0 };
+    const roam = createRoam(g, bus, { encounter });
+    assert(roam, `createRoam must succeed for ${encId}`);
+    assert.equal(g.roam.field.length, DUEL_ROSTERS[encId].length);
+    for (const rival of g.roam.field) {
+      assert.equal(DUEL_ENEMIES[rival.kind].name, rival.name);
+      assert(rival.x > 0);
+      assert(rival.y > 0);
+    }
+  }
 });

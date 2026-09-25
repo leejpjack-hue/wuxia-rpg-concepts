@@ -5,6 +5,13 @@ import { inArc } from "../src/domain/math.js";
 import { makePlayer, takeDamage } from "../src/domain/player.js";
 import { rtSession } from "./helpers.js";
 import { isInShallows, SHALLOWS_SPEED_FACTOR } from "../src/domain/combat.js";
+import {
+  createRoam,
+  isRoamInShallows,
+  PLAYER_SPEED,
+  SHALLOWS_ROAM_SPEED_FACTOR,
+} from "../src/domain/roam.js";
+import { ACTS } from "../src/content/campaign.js";
 
 const input = (actions = [], keys = []) => ({ actions, keys: new Set(keys) });
 
@@ -222,4 +229,53 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   const preX = shallowGame.g.p.x;
   shallowGame.step(1 / 60, input());
   assert(shallowGame.g.p.x > preX + 10, "Dash should maintain evasive velocity through shallows");
+});
+
+function walkRight(g, roam, seconds, fps = 60) {
+  const steps = Math.round(seconds * fps);
+  const start = g.p.x;
+  for (let i = 0; i < steps; i++) roam.step(1 / fps, { dx: 1, dy: 0 });
+  return g.p.x - start;
+}
+
+test("roam shallows impedance: hero displacement is 60–70% of dry ground", () => {
+  const bus = { emit() {} };
+  const blank = (extra = {}) => ({ p: { x: 0, y: 0 }, encounterIndex: 0, ...extra });
+  const vanguard = { id: "vanguard" };
+
+  const dryG = blank();
+  const dryDist = walkRight(dryG, createRoam(dryG, bus, { encounter: vanguard }), 1);
+  assert.equal(dryDist, PLAYER_SPEED);
+
+  const wetG = blank({ shallows: true });
+  const wetDist = walkRight(wetG, createRoam(wetG, bus, { encounter: vanguard }), 1);
+  assert(wetDist < dryDist, "shallows displacement must be smaller than dry ground");
+  const ratio = wetDist / dryDist;
+  assert(ratio >= 0.6 && ratio <= 0.7, `ratio ${ratio} must sit between 60% and 70%`);
+  assert.equal(ratio, SHALLOWS_ROAM_SPEED_FACTOR);
+
+  const hazardG = blank({ hazards: ["shallows"] });
+  const hazardDist = walkRight(
+    hazardG,
+    createRoam(hazardG, bus, { encounter: vanguard }),
+    1,
+  );
+  assert.equal(hazardDist, wetDist);
+
+  const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
+  const ambush = act2.encounters.find((e) => e.id === "bamboo-ambush");
+  assert.equal(act2.available, false);
+  assert(isRoamInShallows(ambush, {}));
+  const ambushG = blank();
+  const ambushDist = walkRight(ambushG, createRoam(ambushG, bus, { encounter: ambush }), 1);
+  assert.equal(ambushDist, wetDist);
+
+  const skiff = act2.encounters.find((e) => e.id === "river-skiff");
+  const slow30 = blank();
+  walkRight(slow30, createRoam(slow30, bus, { encounter: skiff }), 1, 30);
+  const slow60 = blank();
+  walkRight(slow60, createRoam(slow60, bus, { encounter: skiff }), 1, 60);
+  assert.equal(Math.round(slow30.p.x * 100), Math.round(slow60.p.x * 100));
+  assert.equal(Math.round(slow30.p.y * 100), Math.round(slow60.p.y * 100));
+  assert(slow60.p.x - 640 < dryDist);
 });

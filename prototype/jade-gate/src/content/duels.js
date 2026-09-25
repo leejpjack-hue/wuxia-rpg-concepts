@@ -3,6 +3,10 @@ export const DUEL_ROSTERS = {
   vanguard: ["guard", "guard"],
   crossfire: ["archer", "guard"],
   warden: ["warden"],
+  // Act II stays behind bamboo-crossing.available === false.
+  "bamboo-ambush": ["shadow-assassin", "shadow-assassin"],
+  "river-skiff": ["skiff-archer", "shadow-assassin"],
+  "night-heron": ["night-heron"],
 };
 
 export const DUEL_ENEMIES = {
@@ -20,6 +24,21 @@ export const DUEL_ENEMIES = {
     name: "The Ashen Warden", title: "KEEPER OF THE JADE GATE", art: "warden-sprite",
     hp: 240, damage: 18, reward: 700,
     pattern: ["strike", "heavy", "guard", "heavy"],
+  },
+  "shadow-assassin": {
+    name: "Shadow Assassin", title: "BAMBOO MIST STALKER", art: "guard-sprite",
+    hp: 44, damage: 15, reward: 140,
+    pattern: ["strike", "guard", "heavy"],
+  },
+  "skiff-archer": {
+    name: "Skiff Archer", title: "RIVER VOLLEY", art: "archer-sprite",
+    hp: 36, damage: 16, reward: 160,
+    pattern: ["strike", "heavy", "guard"],
+  },
+  "night-heron": {
+    name: "The Night Heron", title: "THE BLIND ZITHER-ASSASSIN", art: "warden-sprite",
+    hp: 95, damage: 24, reward: 800,
+    pattern: ["heavy", "strike", "guard", "heavy"],
   },
 };
 
