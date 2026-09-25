@@ -12,14 +12,14 @@ export function resolveMusicMode(event) {
   if (!event) return "select";
   const { current, boss, dialogueKey, stage } = event;
 
-  if (current === "playing") {
+  if (current === "playing" || current === "exploring") {
     return boss ? "boss" : "battle";
   }
 
   if (current === "dialogue") {
     const key = dialogueKey || stage;
-    if (key === "warden-fall" || key === "night-heron-fall" || key === "heron-fall" || key?.endsWith("-fall")) return "victory";
-    if (key === "warden-intro" || key === "night-heron-intro" || key === "heron-intro" || key?.endsWith("-intro")) return "boss";
+    if (key === "warden-fall" || key === "heron-fall" || key?.endsWith("-fall")) return "victory";
+    if (key === "warden-intro" || key === "heron-intro" || key?.endsWith("-intro")) return "boss";
     if (key === "arrival" || key === "bamboo-arrival" || key?.endsWith("-arrival")) return "select";
     return "select";
   }

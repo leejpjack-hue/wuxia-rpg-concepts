@@ -8,6 +8,7 @@ import { validateContent } from "../content/validate.js";
 import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
+import { createRoam } from "./roam.js";
 import {
   applyCultivation,
   awardResult,
@@ -38,9 +39,12 @@ export class GameSession {
     this.machine = new StateMachine();
     this.g = null;
     this.combat = null;
+    this.roam = null;
     this.dialogue = null;
+    this.pausedFrom = null;
     this.disposers = [
-      bus.on("combat:cleared", () => this.clearEncounter()),
+      bus.on("roam:contact", () => this.beginDuel()),
+      bus.on("duel:won", () => this.endDuel()),
       bus.on("combat:defeat", () => this.finish(false)),
     ];
   }
@@ -135,7 +139,7 @@ export class GameSession {
     if (runMode === "campaign") {
       const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : "arrival";
       this.beginDialogue(arrivalKey);
-    } else this.transition("playing");
+    } else this.transition("exploring");
     this.bus.emit("audio:sfx", { type: "ui_click" });
   }
   prepareEncounter() {
@@ -171,9 +175,13 @@ export class GameSession {
       g.p[key] = 0;
     g.p.chain = 0;
     g.p.combo = 0;
-    this.combat = (this.combatFactory || createCombat)(g, this.bus, {
+    this.combat = this.combatFactory(g, this.bus, {
       seed: 1337 + g.encounterIndex,
+      encounter: this.encounter,
     });
+    // Rivals wait on the pass; each duel starts when the hero walks into one.
+    g.duel = null;
+    this.roam = createRoam(g, this.bus, { encounter: this.encounter });
   }
   checkpoint(stage) {
     if (this.g.runMode !== "campaign") return;
@@ -200,6 +208,7 @@ export class GameSession {
       score: g.score,
       time: g.time,
       totalKills: g.totalKills,
+      turns: g.turns || 0,
     };
     this.save();
   }
@@ -226,13 +235,39 @@ export class GameSession {
       this.transition("waystation");
     } else {
       this.checkpoint("combat");
-      this.transition("playing");
+      this.transition("exploring");
       this.bus.emit("notice", { text: this.encounter.title });
     }
     return true;
   }
   step(dt, input) {
     if (this.mode === "playing") this.combat.step(dt, input);
+    else if (this.mode === "exploring") this.roam?.step(dt, input);
+  }
+  beginDuel(index = this.g?.roam?.contact ?? -1) {
+    if (this.mode !== "exploring" || !this.g?.roam) return false;
+    const field = this.g.roam.field;
+    if (index < 0 || index >= field.length) return false;
+    this.g.roam.contact = index;
+    const enemy = field[index];
+    this.combat.begin?.(enemy.kind, enemy.id);
+    this.transition("playing");
+    this.bus.emit("audio:sfx", { type: "ui_click" });
+    this.bus.emit("notice", { text: `${enemy.name} bars your way` });
+    return true;
+  }
+  endDuel() {
+    if (this.mode !== "playing" || !this.g?.roam) return;
+    if (!this.roam.removeContacted()) return;
+    if (!this.g.roam.field.length) {
+      this.clearEncounter();
+      return;
+    }
+    const left = this.g.roam.field.length;
+    this.transition("exploring");
+    this.bus.emit("notice", {
+      text: `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
+    });
   }
   clearEncounter() {
     if (this.mode !== "playing") return;
@@ -260,7 +295,7 @@ export class GameSession {
       this.beginDialogue(introKey);
     } else {
       this.checkpoint("combat");
-      this.transition("playing");
+      this.transition("exploring");
       this.bus.emit("notice", { text: this.encounter.title });
     }
     this.bus.emit("audio:sfx", { type: "ui_click" });
@@ -282,15 +317,17 @@ export class GameSession {
     } else this.transition(won ? "victory" : "defeat");
   }
   pause() {
-    if (this.mode === "playing") this.transition("paused");
-    else if (this.mode === "paused") this.resume();
+    if (this.mode === "playing" || this.mode === "exploring") {
+      this.pausedFrom = this.mode;
+      this.transition("paused");
+    } else if (this.mode === "paused") this.resume();
   }
   resume() {
-    if (this.mode === "paused") this.transition("playing");
+    if (this.mode === "paused") this.transition(this.pausedFrom || "playing");
   }
   menu() {
     if (this.mode === "menu") return;
-    if (this.mode === "playing") this.pause();
+    if (this.mode === "playing" || this.mode === "paused") this.pause();
     this.dialogue = null;
     this.transition("menu");
   }
@@ -308,6 +345,7 @@ export class GameSession {
       score: cp.score,
       time: cp.time,
       totalKills: cp.totalKills,
+      turns: cp.turns || 0,
     });
     Object.assign(this.g.p, cp.player);
     this.prepareEncounter();
@@ -326,11 +364,10 @@ export class GameSession {
     else if (cp.stage === "waystation") this.transition("waystation");
     else if (cp.stage === "upgrade") {
       // Menu-to-upgrade restoration uses a validated encounter entry, without simulating a frame.
-      this.transition("playing");
-      this.g.enemies = [];
+      this.transition("exploring");
       this.g.encounterDone = true;
       this.transition("upgrade");
-    } else this.transition("playing");
+    } else this.transition("exploring");
     return true;
   }
   buy(id) {

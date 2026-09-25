@@ -45,6 +45,11 @@ export function sanitizeCheckpoint(raw) {
     "warden-intro",
     "warden-fall",
     "waystation",
+    "bamboo-arrival",
+    "night-heron-intro",
+    "night-heron-fall",
+    "heron-intro",
+    "heron-fall",
   ];
   if (
     !act?.available ||

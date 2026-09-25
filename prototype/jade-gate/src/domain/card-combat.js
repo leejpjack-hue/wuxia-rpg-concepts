@@ -1,204 +1,123 @@
-import { DUEL_ENEMIES, DUEL_ROSTERS, HERO_TECHNIQUES } from "../content/duels.js";
-import { createRoam } from "./roam.js";
+import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
 
-/**
- * Creates turn-based Card Combat adapter injected into GameSession.
- *
- * Implements the card duel contract:
- * - 1 action per turn (Strike, Guard, Technique, Tea)
- * - 0 or 1 rival reply per turn
- * - Exact preview of rival incoming damage
- * - Flow accumulation and spending
- * - Shared healing tea pot per encounter
- * - Contact hand-off from roaming pass
- */
-export function createCardCombat(g, bus, { seed = 1 } = {}) {
-  const encounter = g?.encounter || { id: g?.act?.encounters?.[g?.encounterIndex || 0]?.id || "vanguard" };
-  const hero = g?.p;
-  const technique = HERO_TECHNIQUES[hero?.id] || HERO_TECHNIQUES["zhao-yun"];
+/** Pure, synchronous turns. No timers, DOM, random hit chance, or background damage. */
+export function createCardCombat(g, bus, { encounter } = {}) {
+  const roster = DUEL_ROSTERS[encounter?.id];
+  if (!roster) throw new Error("This encounter has no card duel yet.");
+  g.turns ||= 0;
 
-  const roam = createRoam(encounter, hero, { g, shallows: g?.shallows });
-
-  let duel = null;
-  let teaCharges = 1;
-  let heroGuarding = false;
-  let rivalGuarding = false;
-
-  function sfx(type, param) {
-    bus?.emit?.("audio:sfx", { type, param });
-  }
-
-  function startDuel(rival) {
-    const enemyDef = DUEL_ENEMIES[rival.enemyId] || DUEL_ENEMIES["guard"];
-    duel = {
-      rival,
-      enemyDef,
-      hp: rival.hp,
-      maxHp: rival.maxHp,
+  /** One duel per contacted rival; tea and progress persist within the encounter. */
+  function begin(kind, id = `${encounter.id}-card`) {
+    const rival = DUEL_ENEMIES[kind];
+    if (!rival) throw new Error(`Unknown rival: ${kind}`);
+    g.enemies = [
+      {
+        ...rival,
+        id,
+        kind,
+        type: kind === "warden" ? "boss" : kind,
+        maxHp: rival.hp,
+        phase: 0,
+        move: 0,
+      },
+    ];
+    g.encounterDone = false;
+    g.duel = {
       round: 1,
-      moveIndex: 0,
-      nextMove: enemyDef.moves[0],
+      total: roster.length,
+      defeated: g.duel?.defeated ?? 0,
+      tea: g.duel?.tea ?? 1,
       log: [],
+      lastAction: null,
+      lastDamage: 0,
+      lastIncoming: 0,
     };
-    bus?.emit?.("state:changed", {
-      current: "playing",
-      boss: !!enemyDef.boss,
-      phase: "duel",
-    });
+    bus.emit("card:changed");
   }
-
-  function getIncomingDamage() {
-    if (!duel || !duel.nextMove) return 0;
-    return duel.nextMove.damage || 0;
+  function intent(enemy = g.enemies[0]) {
+    if (!enemy) return null;
+    const kind = enemy.pattern[enemy.move % enemy.pattern.length];
+    const damage = kind === "guard" ? 0 :
+      Math.round(enemy.damage * (kind === "heavy" ? 1.8 : 1) * (enemy.phase ? 1.2 : 1));
+    return {
+      kind, damage,
+      name: kind === "heavy" ? "Heavy strike" : kind === "guard" ? "Iron guard" : "Weapon strike",
+      description: kind === "guard" ? "Blocks half of a normal attack. Techniques pierce guard."
+        : kind === "heavy" ? `${damage} damage next. Guard to reduce it by 80%.`
+          : `${damage} damage after your action.`,
+    };
   }
-
-  function advanceRivalIntent() {
-    if (!duel || !duel.enemyDef) return;
-    const moves = duel.enemyDef.moves;
-    duel.moveIndex = (duel.moveIndex + 1) % moves.length;
-    duel.nextMove = moves[duel.moveIndex];
+  function log(text) {
+    g.duel.log.unshift(text);
+    g.duel.log = g.duel.log.slice(0, 8);
   }
-
-  return {
-    roam,
-    get duel() {
-      return duel;
-    },
-    get teaCharges() {
-      return teaCharges;
-    },
-    get nextMove() {
-      return duel?.nextMove || null;
-    },
-    get incomingDamage() {
-      return getIncomingDamage();
-    },
-
-    step(dt, input) {
-      if (!duel) {
-        const contacted = roam.step(dt, input);
-        if (contacted) {
-          startDuel(contacted);
-        }
+  function act(action) {
+    if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
+    if (!["attack", "guard", "technique", "tea"].includes(action)) return false;
+    const p = g.p, d = g.duel, enemy = g.enemies[0], next = intent(enemy);
+    if (action === "technique" && p.flow < p.cost) return false;
+    if (action === "tea" && (d.tea < 1 || p.hp >= p.maxHp)) return false;
+    let damage = 0, protect = 0, stunned = false;
+    d.lastAction = action;
+    d.lastIncoming = 0;
+    g.turns++;
+    if (action === "attack") {
+      damage = Math.round(p.damage * p.power * (next.kind === "guard" ? 0.5 : 1));
+      p.flow = Math.min(100, p.flow + 12 + p.flowBonus);
+      bus.emit("audio:sfx", { type: "strike" });
+    } else if (action === "guard") {
+      protect = 0.8;
+      p.flow = Math.min(100, p.flow + 20);
+      log("You guard and gather 20 Flow.");
+      bus.emit("audio:sfx", { type: "dodge" });
+    } else if (action === "tea") {
+      const healed = Math.min(30, p.maxHp - p.hp);
+      p.hp += healed;
+      d.tea--;
+      log(`Healing tea restores ${healed} health. The enemy still takes its turn.`);
+      bus.emit("audio:sfx", { type: "heal" });
+    } else {
+      const technique = HERO_TECHNIQUES[p.id];
+      p.flow -= p.cost;
+      damage = Math.round(p.damage * p.power * technique.multiplier);
+      p.hp = Math.min(p.maxHp, p.hp + technique.heal);
+      protect = technique.protect;
+      stunned = technique.stun;
+      bus.emit("audio:sfx", { type: "special", param: p.id });
+    }
+    d.lastDamage = Math.min(enemy.hp, damage);
+    enemy.hp = Math.max(0, enemy.hp - damage);
+    if (damage) log(`${action === "technique" ? p.skill : "Your strike"} deals ${d.lastDamage} damage.`);
+    if (enemy.hp <= 0) {
+      g.score += enemy.reward;
+      g.totalKills++;
+      p.kills++;
+      p.hp = Math.min(p.maxHp, p.hp + 12);
+      p.flow = Math.min(100, p.flow + 8);
+      d.defeated++;
+      log(`${enemy.name} falls. +${enemy.reward} Renown, +12 health, +8 Flow.`);
+      g.enemies.shift();
+      g.encounterDone = true;
+      bus.emit("duel:won");
+    } else {
+      const incoming = stunned ? 0 : Math.round(next.damage * (1 - protect));
+      d.lastIncoming = Math.min(p.hp, incoming);
+      p.hp = Math.max(0, p.hp - incoming);
+      p.damageTaken += d.lastIncoming;
+      log(stunned ? `${enemy.name} is stunned and cannot reply.`
+        : next.kind === "guard" ? `${enemy.name} holds a defensive stance.`
+          : `${enemy.name} uses ${next.name.toLowerCase()}: ${d.lastIncoming} damage.`);
+      enemy.move++;
+      if (enemy.type === "boss" && enemy.phase === 0 && enemy.hp <= enemy.maxHp / 2) {
+        enemy.phase = 1;
+        log("The Warden enters his second stance. Incoming damage rises by 20%.");
+        bus.emit("boss:phase", { name: "Warden · Unbroken fury" });
       }
-    },
-
-    strike() {
-      if (!duel) return false;
-      const power = hero.power || 1.0;
-      let dmg = Math.round((hero.damage || 20) * power);
-      if (rivalGuarding) dmg = Math.round(dmg * 0.5);
-
-      duel.hp -= dmg;
-      hero.flow = Math.min(100, (hero.flow || 0) + 12 + (hero.flowBonus || 0));
-      sfx("strike");
-      bus?.emit?.("combat:hit", { damage: dmg, enemyId: duel.rival.id });
-
-      if (duel.hp <= 0) {
-        return this.finishDuel(true);
-      }
-
-      this.resolveRivalReply();
-      return true;
-    },
-
-    guard() {
-      if (!duel) return false;
-      heroGuarding = true;
-      hero.flow = Math.min(100, (hero.flow || 0) + 20);
-      sfx("dodge");
-      this.resolveRivalReply();
-      heroGuarding = false;
-      return true;
-    },
-
-    technique() {
-      if (!duel) return false;
-      const cost = hero.cost || technique.cost;
-      if (hero.flow < cost) return false;
-
-      hero.flow -= cost;
-      const power = hero.power || 1.0;
-      let dmg = Math.round((hero.damage || 20) * power * technique.multiplier);
-      duel.hp -= dmg;
-
-      if (technique.heal) {
-        hero.hp = Math.min(hero.maxHp, hero.hp + technique.heal);
-      }
-
-      sfx("special", hero.id);
-      bus?.emit?.("combat:hit", { damage: dmg, enemyId: duel.rival.id });
-
-      if (duel.hp <= 0) {
-        return this.finishDuel(true);
-      }
-
-      if (!technique.stunReply) {
-        const factor = technique.replyFactor || 1.0;
-        this.resolveRivalReply(factor);
-      } else {
-        advanceRivalIntent();
-      }
-      return true;
-    },
-
-    tea() {
-      if (!duel || teaCharges <= 0 || hero.hp >= hero.maxHp) return false;
-      teaCharges--;
-      hero.hp = Math.min(hero.maxHp, hero.hp + 30);
-      sfx("heal");
-      this.resolveRivalReply();
-      return true;
-    },
-
-    resolveRivalReply(damageFactor = 1.0) {
-      if (!duel || duel.hp <= 0) return;
-      const move = duel.nextMove;
-      let replyDmg = Math.round((move.damage || 0) * damageFactor);
-
-      if (move.intent === "guard") {
-        rivalGuarding = true;
-      } else {
-        rivalGuarding = false;
-      }
-
-      if (replyDmg > 0) {
-        if (heroGuarding) {
-          replyDmg = Math.round(replyDmg * 0.2); // Block 80% damage
-        }
-        hero.hp = Math.max(0, hero.hp - replyDmg);
-        sfx("hurt");
-      }
-
-      advanceRivalIntent();
-      duel.round++;
-
-      if (hero.hp <= 0) {
-        bus?.emit?.("combat:defeat");
-      }
-    },
-
-    finishDuel(won) {
-      if (!won) {
-        bus?.emit?.("combat:defeat");
-        return;
-      }
-
-      const rival = duel.rival;
-      const cleared = roam.defeatRival(rival.id);
-
-      // Defeating a rival restores 12 health and 8 Flow
-      hero.hp = Math.min(hero.maxHp, hero.hp + 12);
-      hero.flow = Math.min(100, (hero.flow || 0) + 8);
-      g.score = (g.score || 0) + (rival.boss ? 500 : 100);
-      duel = null;
-
-      if (cleared) {
-        g.encounterDone = true;
-        bus?.emit?.("combat:cleared");
-      }
-    },
-
-    clearInput() {},
-  };
+      if (p.hp <= 0) bus.emit("combat:defeat");
+      else d.round++;
+    }
+    bus.emit("card:changed");
+    return true;
+  }
+  return { act, intent, begin, clearInput() {}, step() {} };
 }

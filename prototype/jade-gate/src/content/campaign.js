@@ -140,6 +140,7 @@ export const BOSSES = {
     name: "The Night Heron",
     cn: "夜鷺娘子",
     title: "The Blind Zither-Assassin",
+    planned: true,
     hp: 620,
     arena: "pagoda-crossing",
     mechanics: ["sonic-rings", "razor-wire"],

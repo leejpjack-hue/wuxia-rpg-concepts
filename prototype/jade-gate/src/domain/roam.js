@@ -1,23 +1,23 @@
-import { DUEL_ENEMIES, DUEL_ROSTERS } from "../content/duels.js";
+import { clamp, distance } from "./math.js";
+import { FixedClock, seededRandom } from "../engine/clock.js";
+import { DUEL_ROSTERS, DUEL_ENEMIES } from "../content/duels.js";
 
-export { DUEL_ENEMIES, DUEL_ROSTERS } from "../content/duels.js";
-
-/** Base roaming speed for heroes on dry ground (pixels/second). */
-export const PLAYER_SPEED = 240;
-
-/**
- * Shallows impedance factor (~60–70% of PLAYER_SPEED).
- * Water shallows impede footwork on the river crossing.
- */
+/** Logical ground plane shared with the archived real-time arena rules. */
+export const ARENA = {
+  width: 1280,
+  height: 720,
+  margin: 64,
+  // Anchors sit at a sprite's feet; keep enough headroom for the 27% hero art.
+  top: 170,
+};
+/** Dry-ground roam speed. Shallows use SHALLOWS_ROAM_SPEED_FACTOR of this. */
+export const PLAYER_SPEED = 300;
+/** Water shallows slow footwork to 65% — inside the 60–70% band. */
 export const SHALLOWS_ROAM_SPEED_FACTOR = 0.65;
+const PLAYER_RADIUS = 34;
 
-/** Contact threshold distance between hero and rival to initiate a card duel. */
-export const CONTACT_DISTANCE = 52;
-
-/**
- * Determines whether the current roaming environment has shallows impedance.
- */
-export function isRoamInShallows(encounter, g = null) {
+/** True when the pass or the run state marks water shallows. */
+export function isRoamInShallows(encounter, g) {
   if (g?.shallows) return true;
   if (encounter?.hazards?.includes("shallows")) return true;
   if (Array.isArray(g?.hazards) && g.hazards.includes("shallows")) return true;
@@ -25,164 +25,112 @@ export function isRoamInShallows(encounter, g = null) {
 }
 
 /**
- * Calculates hero roam speed given shallows state.
+ * Arena roaming between duels: the hero walks with directional input, rivals
+ * patrol near their posts, and the first contact hands off to a card duel.
+ * Runs on a fixed 60 Hz step so 30 and 120 FPS produce identical simulations.
  */
-export function getHeroRoamSpeed(inShallows = false) {
-  return inShallows
-    ? PLAYER_SPEED * SHALLOWS_ROAM_SPEED_FACTOR
-    : PLAYER_SPEED;
-}
-
-/**
- * Creates a deterministic fixed-step roam state for an encounter pass.
- *
- * @param {object|string} encounter - Encounter object or ID string.
- * @param {object|string} hero - Hero object or ID string.
- * @param {object} options - Optional configuration (g, shallows, heroX, heroY, etc.)
- */
-export function createRoam(encounter, hero = "zhao-yun", options = {}) {
-  const enc = typeof encounter === "string" ? { id: encounter } : (encounter || {});
-  const encounterId = enc.id || "vanguard";
-  const hazards = [
-    ...new Set([
-      ...(enc.hazards || []),
-      ...(options.g?.hazards || []),
-      ...(options.hazards || []),
-    ]),
-  ];
-  const shallows = options.shallows ?? isRoamInShallows(enc, options.g);
-
-  const heroId = typeof hero === "string" ? hero : (hero?.id || "zhao-yun");
-  const heroState = {
-    id: heroId,
-    x: options.heroX ?? 180,
-    y: options.heroY ?? 400,
-    facing: 1,
-    moving: false,
-    inShallows: shallows,
-    speed: getHeroRoamSpeed(shallows),
-  };
-
-  const rosterIds = DUEL_ROSTERS[encounterId] || enc.enemies || [];
-  const rivals = rosterIds.map((enemyId, i) => {
-    const enemyDef = DUEL_ENEMIES[enemyId] || {
-      id: enemyId,
-      name: enemyId,
-      title: "Rival",
-      hp: 40,
-      maxHp: 40,
-    };
+export function createRoam(g, bus, { encounter } = {}) {
+  const roster = DUEL_ROSTERS[encounter?.id];
+  if (!roster) throw new Error("This encounter has no arena rivals yet.");
+  const clock = new FixedClock();
+  const field = roster.map((kind, index) => {
+    const def = DUEL_ENEMIES[kind];
+    const x =
+      ARENA.margin +
+      ((ARENA.width - 2 * ARENA.margin) * (index + 0.5)) / roster.length;
+    const y = ARENA.top + (index % 2) * 150;
     return {
-      id: `${encounterId}-rival-${i}`,
-      enemyId,
-      name: enemyDef.name,
-      title: enemyDef.title,
-      cn: enemyDef.cn || "",
-      hp: enemyDef.hp,
-      maxHp: enemyDef.maxHp,
-      boss: !!enemyDef.boss,
-      x: 520 + i * 210,
-      y: 360 + (i % 2 === 0 ? 40 : -40),
-      originX: 520 + i * 210,
-      originY: 360 + (i % 2 === 0 ? 40 : -40),
-      alive: true,
-      contact: false,
+      id: `${encounter.id}-field-${index}`,
+      kind,
+      name: def.name,
+      title: def.title,
+      art: def.art,
+      radius: 44,
+      speed: kind === "warden" ? 70 : 55 + index * 10,
+      x,
+      y,
+      homeX: x,
+      homeY: y,
+      tx: x,
+      ty: y,
+      timer: 0,
+      rng: seededRandom(1337 + g.encounterIndex * 7 + index * 131),
     };
   });
+  g.p.x = ARENA.width / 2;
+  // Keep the archived arena start (640, 500): the real-time combat tests aim at it.
+  g.p.y = 500;
+  g.roam = { field, contact: -1 };
+
+  function wander(enemy, dt) {
+    enemy.timer -= dt;
+    const dx = enemy.tx - enemy.x,
+      dy = enemy.ty - enemy.y,
+      d = Math.hypot(dx, dy);
+    if (d > 8) {
+      const step = Math.min(d, enemy.speed * dt);
+      enemy.x += (dx / d) * step;
+      enemy.y += (dy / d) * step;
+    }
+    if (d <= 8 || enemy.timer <= 0) {
+      enemy.tx = clamp(
+        enemy.homeX + (enemy.rng() * 2 - 1) * 240,
+        ARENA.margin,
+        ARENA.width - ARENA.margin,
+      );
+      enemy.ty = clamp(
+        enemy.homeY + (enemy.rng() * 2 - 1) * 170,
+        ARENA.top,
+        ARENA.height - ARENA.margin - 40,
+      );
+      enemy.timer = 1.2 + enemy.rng() * 1.6;
+    }
+  }
+
+  function tick(dt, input) {
+    const roam = g.roam;
+    if (roam.contact >= 0) return;
+    const { dx = 0, dy = 0 } = input || {};
+    if (dx || dy) {
+      const len = Math.hypot(dx, dy) || 1,
+        nx = dx / len,
+        ny = dy / len;
+      const speed = isRoamInShallows(encounter, g)
+        ? PLAYER_SPEED * SHALLOWS_ROAM_SPEED_FACTOR
+        : PLAYER_SPEED;
+      g.p.x = clamp(
+        g.p.x + nx * speed * dt,
+        ARENA.margin,
+        ARENA.width - ARENA.margin,
+      );
+      g.p.y = clamp(
+        g.p.y + ny * speed * dt,
+        ARENA.top,
+        ARENA.height - ARENA.margin + 20,
+      );
+      if (nx) g.p.dx = nx > 0 ? 1 : -1;
+      g.p.moving = true;
+    } else g.p.moving = false;
+    for (const enemy of roam.field) wander(enemy, dt);
+    for (let i = 0; i < roam.field.length; i++) {
+      if (distance(g.p, roam.field[i]) < PLAYER_RADIUS + roam.field[i].radius) {
+        roam.contact = i;
+        bus.emit("roam:contact", { index: i, kind: roam.field[i].kind });
+        break;
+      }
+    }
+  }
 
   return {
-    encounterId,
-    encounter: enc,
-    hazards,
-    shallows,
-    hero: heroState,
-    rivals,
-    time: 0,
-    contactRival: null,
-    duelStarted: false,
-
-    /**
-     * Advances the roaming simulation by a deterministic fixed timestep `dt`.
-     *
-     * @param {number} dt - Timestep in seconds (e.g. 1/60).
-     * @param {object} input - Input state ({ keys: Set, move: string, dx: number, dy: number }).
-     * @returns {object|null} The rival contacted this frame, if any.
-     */
-    step(dt, input = {}) {
-      this.time += dt;
-      const keys = input.keys || (input.actions ? new Set(input.actions) : new Set());
-      const move = input.move || null;
-
-      let mx = 0, my = 0;
-
-      // Handle keyboard keys (WASD and arrow keys)
-      if (keys.has("KeyD") || keys.has("ArrowRight") || move === "right") mx += 1;
-      if (keys.has("KeyA") || keys.has("ArrowLeft") || move === "left") mx -= 1;
-      if (keys.has("KeyS") || keys.has("ArrowDown") || move === "down") my += 1;
-      if (keys.has("KeyW") || keys.has("ArrowUp") || move === "up") my -= 1;
-
-      // Handle direct vector input (e.g. analog sticks or test inputs)
-      if (typeof input.dx === "number" && input.dx !== 0) mx = input.dx;
-      if (typeof input.dy === "number" && input.dy !== 0) my = input.dy;
-
-      const len = Math.hypot(mx, my);
-      this.hero.moving = len > 0;
-      this.hero.inShallows = this.shallows;
-
-      if (this.hero.moving) {
-        const normX = mx / len;
-        const normY = my / len;
-        const currentSpeed = getHeroRoamSpeed(this.shallows);
-        this.hero.speed = currentSpeed;
-        this.hero.x += normX * currentSpeed * dt;
-        this.hero.y += normY * currentSpeed * dt;
-
-        if (mx > 0) this.hero.facing = 1;
-        else if (mx < 0) this.hero.facing = -1;
-      }
-
-      // Clamp hero within mountain pass stage bounds
-      this.hero.x = Math.max(60, Math.min(1220, this.hero.x));
-      this.hero.y = Math.max(160, Math.min(660, this.hero.y));
-
-      // Deterministic subtle patrol sway for rivals
-      for (const r of this.rivals) {
-        if (!r.alive) continue;
-        r.x = r.originX + Math.sin(this.time * 1.5 + r.originY) * 16;
-        r.y = r.originY + Math.cos(this.time * 1.2 + r.originX) * 8;
-
-        // Check contact collision
-        const dist = Math.hypot(this.hero.x - r.x, this.hero.y - r.y);
-        if (dist <= CONTACT_DISTANCE) {
-          r.contact = true;
-          this.contactRival = r;
-          this.duelStarted = true;
-          return r;
-        }
-      }
-
-      return null;
+    field,
+    step(dt, input) {
+      clock.advance(dt, (h) => tick(h, input));
     },
-
-    /**
-     * Resolves victory in a card duel against a rival, removing them from the pass.
-     */
-    defeatRival(rivalId) {
-      const rival = this.rivals.find((r) => r.id === rivalId || r.enemyId === rivalId);
-      if (rival) {
-        rival.alive = false;
-        rival.contact = false;
-      }
-      this.contactRival = null;
-      this.duelStarted = false;
-      return this.rivals.every((r) => !r.alive);
-    },
-
-    /**
-     * Checks if all rivals in this encounter pass have been defeated.
-     */
-    isCleared() {
-      return this.rivals.length > 0 && this.rivals.every((r) => !r.alive);
+    removeContacted() {
+      if (g.roam.contact < 0) return null;
+      const [removed] = g.roam.field.splice(g.roam.contact, 1);
+      g.roam.contact = -1;
+      return removed;
     },
   };
 }

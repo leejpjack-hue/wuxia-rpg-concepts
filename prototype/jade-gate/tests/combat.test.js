@@ -3,13 +3,15 @@ import assert from "node:assert/strict";
 import { HEROES } from "../src/content/heroes.js";
 import { inArc } from "../src/domain/math.js";
 import { makePlayer, takeDamage } from "../src/domain/player.js";
-import { session, clearEncounter } from "./helpers.js";
+import { rtSession } from "./helpers.js";
 import { isInShallows, SHALLOWS_SPEED_FACTOR } from "../src/domain/combat.js";
 import {
   createRoam,
+  isRoamInShallows,
   PLAYER_SPEED,
   SHALLOWS_ROAM_SPEED_FACTOR,
 } from "../src/domain/roam.js";
+import { ACTS } from "../src/content/campaign.js";
 
 const input = (actions = [], keys = []) => ({ actions, keys: new Set(keys) });
 
@@ -33,8 +35,9 @@ test("damage immunity prevents repeated damage and HP never becomes negative", (
 
 for (const hero of HEROES)
   test(`${hero.name}: technique spends Flow, damages, and respects cooldown`, () => {
-    const game = session();
+    const game = rtSession();
     game.start(hero.id, "quickplay");
+    game.transition("playing");
     const p = game.g.p;
     game.g.enemies = [
       { ...game.g.enemies[0], x: p.x + 70, y: p.y, hp: 1000, maxHp: 1000 },
@@ -49,8 +52,9 @@ for (const hero of HEROES)
   });
 
 test("low Flow blocks techniques without applying damage or cooldown", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.g.p.flow = 0;
   const hp = game.g.enemies[0].hp;
   game.combat.special();
@@ -59,8 +63,9 @@ test("low Flow blocks techniques without applying damage or cooldown", () => {
 });
 
 test("third swing is a finisher regardless of how many enemies the prior swing hit", () => {
-  const game = session();
+  const game = rtSession();
   game.start("hu-sanniang", "quickplay");
+  game.transition("playing");
   const g = game.g;
   g.enemies = [{ ...g.enemies[0], x: 690, y: 500, hp: 1000 }];
   const damage = [];
@@ -74,8 +79,9 @@ test("third swing is a finisher regardless of how many enemies the prior swing h
 });
 
 test("perfect evades grant Flow once per attack; damage immunity alone does not", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.combat.dodge();
   game.combat.hurt(30, "one");
   game.combat.hurt(30, "one");
@@ -87,12 +93,11 @@ test("perfect evades grant Flow once per attack; damage immunity alone does not"
 });
 
 test("boss transitions phase once, resists light interruption, and accepts technique interruption", () => {
-  const game = session();
+  const game = rtSession();
   game.start("lu-zhishen", "quickplay");
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  clearEncounter(game);
-  game.chooseDiscipline("power");
+  game.transition("playing");
+  game.g.encounterIndex = 2;
+  game.prepareEncounter();
   const boss = game.g.enemies.find((e) => e.type === "boss");
   let phases = 0;
   game.bus.on("boss:phase", () => phases++);
@@ -111,8 +116,9 @@ test("boss transitions phase once, resists light interruption, and accepts techn
 });
 
 test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   const e = game.g.enemies[0];
   e.wind = 0.001;
   e.target = { x: 640, y: 500, r: 64 };
@@ -128,8 +134,9 @@ test("enemy telegraphs inflict damage and arrows resolve collisions", () => {
 });
 
 test("pause stops simulation and defeat can restart cleanly", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.pause();
   const time = game.g.time;
   game.step(1, input(["technique"]));
@@ -140,13 +147,15 @@ test("pause stops simulation and defeat can restart cleanly", () => {
   game.step(1 / 60, input());
   assert.equal(game.mode, "defeat");
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   assert.equal(game.g.p.hp, 120);
   assert.equal(game.g.score, 0);
 });
 
 test("dodge input survives hit-stop but does not leak across pause", () => {
-  const game = session();
+  const game = rtSession();
   game.start("zhao-yun", "quickplay");
+  game.transition("playing");
   game.g.hitStop = 0.025;
   game.step(1 / 60, input(["dodge"]));
   game.step(1 / 60, input());
@@ -163,16 +172,18 @@ test("dodge input survives hit-stop but does not leak across pause", () => {
 
 test("water-shallows movement impedance: domain-side movement slowdown and zone detection", () => {
   // Test 1: Normal surface vs shallows slowdown
-  const normalGame = session();
+  const normalGame = rtSession();
   normalGame.start("zhao-yun", "quickplay");
+  normalGame.transition("playing");
   normalGame.g.p.x = 500;
   normalGame.g.p.y = 500;
   normalGame.g.shallows = false;
   normalGame.step(0.5, input([], ["KeyD"]));
   const normalDist = normalGame.g.p.x - 500;
 
-  const shallowGame = session();
+  const shallowGame = rtSession();
   shallowGame.start("zhao-yun", "quickplay");
+  shallowGame.transition("playing");
   shallowGame.g.p.x = 500;
   shallowGame.g.p.y = 500;
   shallowGame.g.shallows = true;
@@ -186,8 +197,9 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   assert(Math.abs(shallowDist - expectedDist) < 1e-4, `Expected dist ${expectedDist}, got ${shallowDist}`);
 
   // Test 2: Spatial shallows zone
-  const zoneGame = session();
+  const zoneGame = rtSession();
   zoneGame.start("zhao-yun", "quickplay");
+  zoneGame.transition("playing");
   zoneGame.g.shallowsZone = { minY: 450 };
 
   // Position above water zone (y = 400)
@@ -205,8 +217,9 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   assert(zoneGame.g.p.inShallows);
 
   // Test 3: Hazards list tag "shallows" activates impedance
-  const hazardGame = session();
+  const hazardGame = rtSession();
   hazardGame.start("zhao-yun", "quickplay");
+  hazardGame.transition("playing");
   hazardGame.g.hazards = ["shallows", "razor-wire"];
   assert(isInShallows(hazardGame.g, hazardGame.g.p));
 
@@ -218,57 +231,51 @@ test("water-shallows movement impedance: domain-side movement slowdown and zone 
   assert(shallowGame.g.p.x > preX + 10, "Dash should maintain evasive velocity through shallows");
 });
 
-test("roam shallows impedance: hero movement speed reduced to 60-70% of PLAYER_SPEED with deterministic fixed-step", () => {
-  // 1. Dry ground roaming displacement
-  const dryRoam = createRoam("vanguard", "zhao-yun", { shallows: false, heroX: 500, heroY: 500 });
-  assert.equal(dryRoam.shallows, false);
-  assert.equal(dryRoam.hero.speed, PLAYER_SPEED);
+function walkRight(g, roam, seconds, fps = 60) {
+  const steps = Math.round(seconds * fps);
+  const start = g.p.x;
+  for (let i = 0; i < steps; i++) roam.step(1 / fps, { dx: 1, dy: 0 });
+  return g.p.x - start;
+}
 
-  const dt = 1 / 60;
-  const inputRight = { keys: new Set(["KeyD"]) };
+test("roam shallows impedance: hero displacement is 60–70% of dry ground", () => {
+  const bus = { emit() {} };
+  const blank = (extra = {}) => ({ p: { x: 0, y: 0 }, encounterIndex: 0, ...extra });
+  const vanguard = { id: "vanguard" };
 
-  // Step for 1 second (60 frames)
-  for (let i = 0; i < 60; i++) {
-    dryRoam.step(dt, inputRight);
-  }
-  const dryDisplacement = dryRoam.hero.x - 500;
-  assert.equal(Math.round(dryDisplacement), PLAYER_SPEED); // 240 pixels in 1 second
+  const dryG = blank();
+  const dryDist = walkRight(dryG, createRoam(dryG, bus, { encounter: vanguard }), 1);
+  assert.equal(dryDist, PLAYER_SPEED);
 
-  // 2. Shallows roaming displacement (bamboo-ambush has shallows hazard)
-  const shallowRoam = createRoam("bamboo-ambush", "zhao-yun", { heroX: 500, heroY: 500 });
-  assert.equal(shallowRoam.shallows, true);
-  assert.equal(shallowRoam.hero.speed, PLAYER_SPEED * SHALLOWS_ROAM_SPEED_FACTOR);
-
-  for (let i = 0; i < 60; i++) {
-    shallowRoam.step(dt, inputRight);
-  }
-  const shallowDisplacement = shallowRoam.hero.x - 500;
-
-  // Tests prove smaller displacement with shallows
-  assert(shallowDisplacement < dryDisplacement, "Shallows displacement must be smaller than dry ground");
-  const ratio = shallowDisplacement / dryDisplacement;
-  assert(ratio >= 0.60 && ratio <= 0.70, `Ratio ${ratio} must be between 60% and 70% of PLAYER_SPEED`);
+  const wetG = blank({ shallows: true });
+  const wetDist = walkRight(wetG, createRoam(wetG, bus, { encounter: vanguard }), 1);
+  assert(wetDist < dryDist, "shallows displacement must be smaller than dry ground");
+  const ratio = wetDist / dryDist;
+  assert(ratio >= 0.6 && ratio <= 0.7, `ratio ${ratio} must sit between 60% and 70%`);
   assert.equal(ratio, SHALLOWS_ROAM_SPEED_FACTOR);
 
-  // 3. Hazard inspection: g.shallows activates impedance
-  const gShallowRoam = createRoam("vanguard", "zhao-yun", { g: { shallows: true }, heroX: 500, heroY: 500 });
-  assert.equal(gShallowRoam.shallows, true);
-  for (let i = 0; i < 60; i++) {
-    gShallowRoam.step(dt, inputRight);
-  }
-  assert.equal(gShallowRoam.hero.x - 500, shallowDisplacement);
+  const hazardG = blank({ hazards: ["shallows"] });
+  const hazardDist = walkRight(
+    hazardG,
+    createRoam(hazardG, bus, { encounter: vanguard }),
+    1,
+  );
+  assert.equal(hazardDist, wetDist);
 
-  // 4. Deterministic fixed-step proof: 30 steps @ 1/30s vs 60 steps @ 1/60s
-  const roam30 = createRoam("river-skiff", "zhao-yun", { heroX: 200, heroY: 300 });
-  for (let i = 0; i < 30; i++) {
-    roam30.step(1 / 30, inputRight);
-  }
+  const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
+  const ambush = act2.encounters.find((e) => e.id === "bamboo-ambush");
+  assert.equal(act2.available, false);
+  assert(isRoamInShallows(ambush, {}));
+  const ambushG = blank();
+  const ambushDist = walkRight(ambushG, createRoam(ambushG, bus, { encounter: ambush }), 1);
+  assert.equal(ambushDist, wetDist);
 
-  const roam60 = createRoam("river-skiff", "zhao-yun", { heroX: 200, heroY: 300 });
-  for (let i = 0; i < 60; i++) {
-    roam60.step(1 / 60, inputRight);
-  }
-
-  assert.equal(Math.round(roam30.hero.x * 100), Math.round(roam60.hero.x * 100), "Deterministic fixed-step displacement must match across framerates");
-  assert.equal(Math.round(roam30.hero.y * 100), Math.round(roam60.hero.y * 100));
+  const skiff = act2.encounters.find((e) => e.id === "river-skiff");
+  const slow30 = blank();
+  walkRight(slow30, createRoam(slow30, bus, { encounter: skiff }), 1, 30);
+  const slow60 = blank();
+  walkRight(slow60, createRoam(slow60, bus, { encounter: skiff }), 1, 60);
+  assert.equal(Math.round(slow30.p.x * 100), Math.round(slow60.p.x * 100));
+  assert.equal(Math.round(slow30.p.y * 100), Math.round(slow60.p.y * 100));
+  assert(slow60.p.x - 640 < dryDist);
 });

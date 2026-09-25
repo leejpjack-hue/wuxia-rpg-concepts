@@ -37,7 +37,7 @@ test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
   assert.throws(() => game.start("lu-bu", "campaign"), /Act III/);
   game.start("lu-bu", "quickplay");
-  assert.equal(game.mode, "playing");
+  assert.equal(game.mode, "exploring");
 });
 test("campaign includes arrival, two disciplines, boss dialogue, resolution and tea house", () => {
   const game = session();
@@ -46,7 +46,7 @@ test("campaign includes arrival, two disciplines, boss dialogue, resolution and 
   game.advanceDialogue();
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
-  assert.equal(game.mode, "playing");
+  assert.equal(game.mode, "exploring");
   clearEncounter(game);
   assert.equal(game.mode, "upgrade");
   game.chooseDiscipline("power");
@@ -76,7 +76,7 @@ test("checkpoint resumes encounter boundary and preserves run upgrades", () => {
   game.g.score = 99999;
   const restored = session(storage);
   assert(restored.continueCheckpoint());
-  assert.equal(restored.mode, "playing");
+  assert.equal(restored.mode, "exploring");
   assert.equal(restored.g.encounterIndex, 1);
   assert.equal(restored.g.p.power, 1.25);
   assert.equal(restored.g.p.hp, 120);
@@ -111,8 +111,10 @@ test("a failed attempt does not prevent a continued checkpoint from earning vict
     game = session(storage);
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  game.combat.hurt(500);
-  game.step(1 / 60, {});
+  game.beginDuel(0);
+  game.g.p.hp = 1;
+  game.combat.act("attack");
+  assert.equal(game.mode, "defeat");
   const restored = session(storage);
   restored.continueCheckpoint();
   clearEncounter(restored);
@@ -197,7 +199,7 @@ test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and
   // Night Heron boss design metadata
   const boss = BOSSES["night-heron"];
   assert(boss, "Night Heron must be in BOSSES");
-  assert(!boss.planned, "Night Heron card boss is fully wired, planned flag cleared");
+  assert.equal(boss.planned, true, "Night Heron must remain planned while Act II is gated");
   assert.equal(boss.name, "The Night Heron");
   assert.equal(boss.cn, "夜鷺娘子");
   assert(boss.phases && boss.phases.length >= 2, "Boss design metadata must include phases");
@@ -418,48 +420,32 @@ test("Act II card duel content: DUEL_ROSTERS, DUEL_ENEMIES behind the gate and r
     assert(DUEL_ROSTERS[encId].length > 0, `DUEL_ROSTERS[${encId}] must have enemies`);
   }
 
-  // DUEL_ENEMIES stats for Act II rivals
-  assert(DUEL_ENEMIES["shadow-assassin"], "DUEL_ENEMIES must define shadow assassin");
+  for (const kind of ["shadow-assassin", "skiff-archer", "night-heron"]) {
+    const enemy = DUEL_ENEMIES[kind];
+    assert(enemy, `DUEL_ENEMIES must define ${kind}`);
+    assert(enemy.hp > 0);
+    assert(enemy.name);
+    assert(enemy.pattern.length >= 2);
+  }
   assert.equal(DUEL_ENEMIES["shadow-assassin"].name, "Shadow Assassin");
-  assert(DUEL_ENEMIES["shadow-assassin"].hp > 0);
-  assert(DUEL_ENEMIES["shadow-assassin"].moves.length >= 2);
-
-  assert(DUEL_ENEMIES["skiff-archer"], "DUEL_ENEMIES must define skiff archer");
   assert.equal(DUEL_ENEMIES["skiff-archer"].name, "Skiff Archer");
-  assert(DUEL_ENEMIES["skiff-archer"].hp > 0);
-  assert(DUEL_ENEMIES["skiff-archer"].moves.length >= 2);
-
-  assert(DUEL_ENEMIES["night-heron"], "DUEL_ENEMIES must define Night Heron");
   assert.equal(DUEL_ENEMIES["night-heron"].name, "The Night Heron");
-  assert.equal(DUEL_ENEMIES["night-heron"].boss, true);
-  assert(DUEL_ENEMIES["night-heron"].hp > 0);
-  assert(DUEL_ENEMIES["night-heron"].moves.length >= 3);
+  assert(DUEL_ENEMIES["night-heron"].pattern.length >= 3);
+  assert.equal(BOSSES["night-heron"].planned, true);
+  assert.equal(act2.available, false);
 
-  // Night Heron planned flag is cleared so later unlock won't throw
-  const boss = BOSSES["night-heron"];
-  assert(!boss.planned, "Night Heron boss planned flag must be cleared once card boss is fully wired");
-  assert(boss.phases && boss.phases.length >= 2);
-
-  // Roam creation for all three Act II encounter IDs
+  const bus = { emit() {} };
   for (const encId of act2EncounterIds) {
     const encounter = act2.encounters.find((e) => e.id === encId);
     assert(encounter, `Act II must define encounter ${encId}`);
-
-    const roam = createRoam(encounter, HEROES[0]);
+    const g = { p: { x: 0, y: 0 }, encounterIndex: 0 };
+    const roam = createRoam(g, bus, { encounter });
     assert(roam, `createRoam must succeed for ${encId}`);
-    assert.equal(roam.encounterId, encId);
-    assert(roam.rivals.length > 0, `Roam for ${encId} must instantiate rivals`);
-    for (const rival of roam.rivals) {
-      assert(rival.hp > 0);
-      assert(rival.name);
-      assert(rival.originX > 0);
-      assert(rival.originY > 0);
+    assert.equal(g.roam.field.length, DUEL_ROSTERS[encId].length);
+    for (const rival of g.roam.field) {
+      assert.equal(DUEL_ENEMIES[rival.kind].name, rival.name);
+      assert(rival.x > 0);
+      assert(rival.y > 0);
     }
   }
-
-  // Hazards properly set shallows on bamboo-ambush and river-skiff
-  const ambushRoam = createRoam(act2.encounters[0], "zhao-yun");
-  assert.equal(ambushRoam.shallows, true);
-  const skiffRoam = createRoam(act2.encounters[1], "zhao-yun");
-  assert.equal(skiffRoam.shallows, true);
 });
