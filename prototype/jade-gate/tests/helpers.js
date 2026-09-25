@@ -30,11 +30,19 @@ export function duelPolicy(game) {
         ? "guard"
         : "attack";
 }
+export function engageRival(game) {
+  const enemy = game.g.roam.field[0];
+  if (!enemy.ranged) return game.beginDuel(0);
+  Object.assign(game.g.p, { x: enemy.x + 80, y: enemy.y });
+  game.roam.act(game.g.p.flow >= game.g.p.cost ? "technique" : "strike");
+  for (let i = 0; i < 50 && game.mode === "exploring"; i++) game.step(1 / 60, {});
+  return true;
+}
 export function clearEncounter(game) {
   let guard = 0;
   while (["exploring", "playing"].includes(game.mode) && guard++ < 400) {
     if (game.mode === "exploring") {
-      if (!game.beginDuel(0)) throw new Error("nothing to duel");
+      if (!engageRival(game)) throw new Error("nothing to duel");
     } else if (!game.combat.act(duelPolicy(game)))
       throw new Error("duel policy stalled");
   }

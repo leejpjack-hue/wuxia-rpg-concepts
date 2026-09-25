@@ -8,7 +8,7 @@ import { validateContent } from "../content/validate.js";
 import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
-import { createRoam } from "./roam.js";
+import { createRoam, isRanged } from "./roam.js";
 import {
   applyCultivation,
   awardResult,
@@ -44,6 +44,12 @@ export class GameSession {
     this.pausedFrom = null;
     this.disposers = [
       bus.on("roam:contact", () => this.beginDuel()),
+      bus.on("roam:rival-defeated", () => {
+        if (this.mode === "exploring" && !this.g.roam.field.length) {
+          this.g.encounterDone = true;
+          this.clearEncounter();
+        }
+      }),
       bus.on("duel:won", () => this.endDuel()),
       bus.on("combat:defeat", () => this.finish(false)),
     ];
@@ -67,6 +73,7 @@ export class GameSession {
   transition(next) {
     const event = this.machine.transition(next);
     this.combat?.clearInput();
+    this.roam?.clearInput();
     if (this.g) this.g.mode = next;
     const dialogueKey = this.dialogue?.key || null;
     const stage =
@@ -247,7 +254,9 @@ export class GameSession {
   beginDuel(index = this.g?.roam?.contact ?? -1) {
     if (this.mode !== "exploring" || !this.g?.roam) return false;
     const field = this.g.roam.field;
-    if (index < 0 || index >= field.length) return false;
+    if (index < 0 || index >= field.length || isRanged(field[index].kind)) return false;
+    this.g.roam.shots = [];
+    for (const rival of field) { rival.windup = 0; rival.aim = null; rival.cooldown = Math.max(1, rival.cooldown); }
     this.g.roam.contact = index;
     const enemy = field[index];
     this.combat.begin?.(enemy.kind, enemy.id);
@@ -264,13 +273,14 @@ export class GameSession {
       return;
     }
     const left = this.g.roam.field.length;
+    this.g.encounterDone = false;
     this.transition("exploring");
     this.bus.emit("notice", {
       text: `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
     });
   }
   clearEncounter() {
-    if (this.mode !== "playing") return;
+    if (!["playing", "exploring"].includes(this.mode)) return;
     if (this.g.encounterIndex === this.act.encounters.length - 1) {
       this.finish(true);
       return;
@@ -302,7 +312,7 @@ export class GameSession {
     return true;
   }
   finish(won) {
-    if (this.mode !== "playing") return;
+    if (!["playing", "exploring"].includes(this.mode)) return;
     if (won) this.g.score += Math.max(0, Math.round(this.g.p.hp * 3));
     awardResult(this.profile, this.g, won, this.act);
     this.save();
@@ -327,7 +337,7 @@ export class GameSession {
   }
   menu() {
     if (this.mode === "menu") return;
-    if (this.mode === "playing" || this.mode === "paused") this.pause();
+    if (this.mode === "playing" || this.mode === "exploring") this.pause();
     this.dialogue = null;
     this.transition("menu");
   }

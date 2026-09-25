@@ -46,7 +46,7 @@ async function prepare() {
 document.getElementById("retry-assets").onclick = prepare;
 function hidden() {
   if (document.hidden) {
-    if (session.mode === "playing") session.pause();
+    if (["playing", "exploring"].includes(session.mode)) session.pause();
     audio.hidden();
   }
 }

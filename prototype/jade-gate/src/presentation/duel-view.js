@@ -1,3 +1,4 @@
+import { DuelCinematic } from "./duel-cinematic.js";
 import { HERO_TECHNIQUES } from "../content/duels.js";
 
 export class DuelView {
@@ -7,7 +8,7 @@ export class DuelView {
     this.$ = (id) => document.getElementById(id);
     this.onGesture = onGesture;
     this.busy = false;
-    this.timer = null;
+    this.cinematic = new DuelCinematic(document, this.$("duel-table"), cue => session.bus.emit("audio:sfx", cue));
     for (const button of document.querySelectorAll("[data-action]"))
       button.onclick = () => this.act(button.dataset.action);
     for (const id of ["hero-image", "enemy-image"])
@@ -27,7 +28,7 @@ export class DuelView {
     this.off = [
       session.bus.on("card:changed", () => this.render()),
       session.bus.on("state:changed", () => {
-        clearTimeout(this.timer);
+        this.cinematic.cancel();
         this.busy = false;
         this.$("duel-table").className = "duel-table";
         this.render();
@@ -40,25 +41,24 @@ export class DuelView {
     this.onGesture();
     this.busy = true;
     try {
-      const accepted = this.session.combat.act(action);
-      if (!accepted || this.session.mode !== "playing") {
-        this.busy = false;
-        this.render();
-        return;
-      }
-      this.$("duel-table").className = `duel-table animate-${action}`;
+      const result = this.session.combat.preview(action);
+      if (!result) { this.busy = false; this.render(); return; }
       this.render();
-      this.timer = setTimeout(() => {
+      this.$("duel-table").scrollIntoView({ block: "center", behavior: "instant" });
+      const combat = this.session.combat;
+      const reduced = this.session.profile.settings.reducedMotion || this.document.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      this.cinematic.play(action, this.session.g.p, this.session.g.enemies[0], result, reduced, () => {
         this.busy = false;
-        this.$("duel-table").className = "duel-table";
+        if (this.session.mode === "playing" && this.session.combat === combat) combat.act(action, { silent: true });
         this.render();
-      }, this.session.profile.settings.reducedMotion ? 0 : 420);
+      });
     } catch (error) {
-      this.busy = false;
+      this.cinematic.cancel(); this.busy = false;
       this.$("app-status").textContent = error.message;
       this.render();
     }
   }
+
   image(id, art, name) {
     const img = this.$(id), path = `assets/${art}.png`;
     if (img.getAttribute("src") !== path) { img.hidden = false; img.src = path; }
@@ -127,7 +127,7 @@ export class DuelView {
     }));
   }
   dispose() {
-    clearTimeout(this.timer);
+    this.cinematic.cancel();
     this.off.forEach((off) => off());
     this.document.removeEventListener("keydown", this.keydown);
   }

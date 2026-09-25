@@ -1,7 +1,7 @@
 const transitions = {
   menu: ["dialogue", "exploring", "waystation"],
   dialogue: ["exploring", "waystation", "menu"],
-  exploring: ["playing", "paused", "dialogue", "upgrade", "menu"],
+  exploring: ["playing", "paused", "dialogue", "upgrade", "menu", "victory", "defeat"],
   playing: ["paused", "exploring", "upgrade", "dialogue", "victory", "defeat"],
   paused: ["playing", "exploring", "menu"],
   upgrade: ["exploring", "dialogue", "menu"],

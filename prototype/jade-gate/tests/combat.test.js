@@ -240,7 +240,7 @@ function walkRight(g, roam, seconds, fps = 60) {
 
 test("roam shallows impedance: hero displacement is 60–70% of dry ground", () => {
   const bus = { emit() {} };
-  const blank = (extra = {}) => ({ p: { x: 0, y: 0 }, encounterIndex: 0, ...extra });
+  const blank = (extra = {}) => ({ mode: "exploring", p: { x: 0, y: 0 }, encounterIndex: 0, ...extra });
   const vanguard = { id: "vanguard" };
 
   const dryG = blank();

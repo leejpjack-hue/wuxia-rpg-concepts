@@ -31,7 +31,7 @@
 .roam-stage img {
   position: absolute;
   height: 24%;
-  transform: translate(-50%, -80%);
+  transform: translate(-50%, -100%);
   pointer-events: none;
   filter: drop-shadow(0 10px 12px #0008);
 }
@@ -40,7 +40,7 @@
 }
 #roam-hero {
   height: 27%;
-  transform: translate(-50%, -82%) scaleX(var(--face, 1));
+  transform: translate(-50%, -100%) scaleX(var(--face, 1));
   z-index: 2;
 }
 .roam-rival {
@@ -91,3 +91,9 @@
     grid-template-rows: repeat(2, 46px);
   }
 }
+
+#roam-effects { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:700; }
+.roam-actions { text-align:center; }
+.roam-actions button { margin:4px; padding:12px 15px; }
+#roam-health { color:var(--jade); font-weight:700; font-size:13px; letter-spacing:.05em; }
+.roam-controls > .hint { flex-basis:100%; text-align:center; max-width:680px; }

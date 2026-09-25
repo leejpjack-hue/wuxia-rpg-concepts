@@ -8,13 +8,19 @@ Run `python3 serve.py` here and open http://127.0.0.1:8765/. On macOS, double-cl
 
 ## How to travel and fight
 
-Between duels you roam the pass. Move the hero with the on-screen arrow buttons or **WASD / arrow keys**; rivals patrol their own ground. Walking into a rival starts that rival's card duel, and winning removes them from the pass. Clear every rival to finish the encounter. **Esc** pauses.
+Between duels you roam the pass. Move the hero with the on-screen arrow buttons or **WASD / arrow keys**; rivals patrol their own ground. Walking into a swordsman starts that rival's card duel, and winning removes them from the pass. Clear every rival to finish the encounter. **Esc** pauses.
+
+Archers fight entirely in real time. Their amber aiming line locks before release: move away or **Space / K** to dodge, close in and **J / 1** to strike, or **E / 3** for a longer-range technique. Touch buttons provide the same actions. Characters and patrol targets stay on the stone courtyard.
+
+Inside a card duel:
 
 - **1 — Strike:** deal weapon damage and build Flow.
 - **2 — Guard:** block 80% of the rival's next attack and gain 20 Flow.
 - **3 — Technique:** spend Flow on your hero's signature attack. All techniques pierce guard.
 - **4 — Healing tea:** recover up to 30 health once per encounter; the rival still replies.
 - **Esc — Pause/resume.** Mouse and touch buttons offer the same choices.
+
+Each card action plays a short combat sequence with weapon trails, impact numbers and a counterstrike. Dragon Rush dashes with afterimages, Mountain Bell creates a shockwave, Crimson Waltz makes twin passes, and Skybreaker delivers a heavy cleave. Finishing blows complete before leaving the duel; pause cancels an unfinished animation without consuming the turn. Reduced motion uses a short static sequence.
 
 Only an action advances a duel turn — no timers or idle damage inside a duel. The rival's next move and exact damage are shown before you choose. Defeating a rival restores 12 health and 8 Flow and returns you to the pass; one pot of healing tea is shared across the whole encounter. Choose a discipline between encounters. Reduced motion, sound/music and volume controls are in the menu/header.
 
@@ -26,7 +32,7 @@ Continue restores the saved encounter boundary or story/upgrade/tea-house scene,
 
 ## Architecture and validation
 
-See [architecture](docs/architecture.md) for module contracts and [the art gallery](gallery.html) for the 16 generated images and modeling references. The browser root uses `roam.js`, `card-combat.js`, `roam-view.js` and `duel-view.js`; roaming reuses the fixed-step clock for identical 30/120 FPS simulation. The older canvas renderer and real-time combat remain as reference modules.
+See [architecture](docs/architecture.md) for module contracts and [the art gallery](gallery.html) for the 16 generated images and modeling references. The browser root uses `ground.js`, `roam.js`, `card-combat.js`, `roam-view.js`, `duel-view.js` and the cancellable `duel-cinematic.js` timeline; roaming reuses the fixed-step clock for identical 30/120 FPS simulation. The older canvas renderer and real-time combat remain as reference modules.
 
 Run `npm test` and `npm run check`. Tests cover card rules, roaming determinism and contact hand-off, all four heroes, campaign completion, save recovery, rewards, purchases, scene/modal regressions, and the retained legacy combat/audio contracts. Browser checks cover actual dialogue, roaming, duels, upgrades, pause/resume and saved tea-house progression.
 

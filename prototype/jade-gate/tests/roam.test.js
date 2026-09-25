@@ -1,3 +1,4 @@
+import { groundEdges } from "../src/domain/ground.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRoam } from "../src/domain/roam.js";
@@ -45,7 +46,7 @@ test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass",
     b = JSON.parse(run(120));
   assert.deepEqual(a, b);
   assert.equal(a.mode, "exploring");
-  assert.equal(a.p.x, 1216); // right margin of the 1280-wide pass
+  assert.equal(a.p.x, groundEdges(a.p.y).right); // painted courtyard edge
 });
 
 test("roam requires a statted encounter and parks the hero away from rivals", () => {

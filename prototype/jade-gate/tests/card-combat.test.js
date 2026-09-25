@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import { GameSession } from '../src/domain/session.js';
 import { createCardCombat } from '../src/domain/card-combat.js';
 import { SaveStore } from '../src/platform/save-store.js';
-import { memoryStorage, duelPolicy } from './helpers.js';
+import { memoryStorage, duelPolicy, engageRival } from './helpers.js';
 const game = (storage = memoryStorage()) => new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
 function finishRun(g) {
   let steps = 0;
   while (['playing', 'exploring', 'dialogue', 'upgrade'].includes(g.mode) && steps++ < 150) {
     if (g.mode === 'dialogue') g.advanceDialogue(true);
     else if (g.mode === 'upgrade') g.chooseDiscipline('vitality');
-    else if (g.mode === 'exploring') assert(g.beginDuel(0));
+    else if (g.mode === 'exploring') assert(engageRival(g));
     else assert(g.combat.act(duelPolicy(g)));
   }
   assert(steps < 150);

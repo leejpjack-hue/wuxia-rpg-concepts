@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="duel.css" />
     <link rel="stylesheet" href="roam.css" />
+    <link rel="stylesheet" href="cinematic.css" />
   </head>
   <body>
     <header>
@@ -106,7 +107,7 @@
           /></label>
         </div>
       </details>
-      <p class="hint">One hero. One rival. Read their next move, then choose yours. No timer.</p>
+      <p class="hint">Explore the pass. Duel swordsmen with cards. Dodge archers in real time.</p>
     </main>
     <main id="roam" tabindex="-1" hidden>
       <div class="duel-heading">
@@ -114,6 +115,7 @@
         <div class="duel-meta"><span id="roam-remaining"></span><span><b id="roam-score">0</b> RENOWN</span><button id="roam-pause">Pause / menu</button></div>
       </div>
       <div class="roam-stage" id="roam-arena" aria-label="Mountain pass. Move your hero to find a rival.">
+        <canvas id="roam-effects" width="1280" height="720" aria-hidden="true"></canvas>
         <img id="roam-hero" alt="" draggable="false" />
       </div>
       <div class="roam-controls">
@@ -123,7 +125,8 @@
           <button data-move="down" class="dpad-down" aria-label="Move down">▼</button>
           <button data-move="right" class="dpad-right" aria-label="Move right">▶</button>
         </div>
-        <p class="hint">Move with the buttons or WASD / arrow keys. Walk into a rival to begin a card duel.</p>
+        <div class="roam-actions"><p id="roam-health" role="status"></p><button data-roam-action="strike">Strike · J</button><button data-roam-action="dodge">Dodge · Space</button><button data-roam-action="technique">Technique · E</button></div>
+        <p class="hint">WASD / arrows to move. Walk into swordsmen for card duels. Archers fight in real time: dodge the aiming line, close in, then strike. Techniques reach farther.</p>
       </div>
     </main>
     <main id="play" class="duel-main" tabindex="-1" hidden>

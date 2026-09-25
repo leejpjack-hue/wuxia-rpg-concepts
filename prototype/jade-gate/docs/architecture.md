@@ -2,7 +2,7 @@
 
 ## Current direction
 
-The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Act I is playable; Acts II–IV remain visibly gated.
+The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a melee rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Act I is playable; Acts II–IV remain visibly gated.
 
 ## Runtime
 
@@ -29,7 +29,10 @@ The composition root injects `createCardCombat` into `GameSession`. The session 
 | Module | Responsibility |
 |---|---|
 | `src/content/duels.js` | Act I pass rosters, enemy stats/patterns, hero technique effects |
-| `src/domain/roam.js` | Button-driven hero movement, deterministic rival patrols, contact hand-off; fixed 60 Hz step |
+| `src/domain/roam.js` | Grounded movement, deterministic patrols, archer telegraphs/projectiles, real-time strike/dodge/technique, melee hand-off; fixed 60 Hz step |
+| `src/domain/ground.js` | Courtyard trapezoid, shared actor/target clamping and projectile boundaries |
+| `src/presentation/duel-cinematic.js` | Cancellable strike/impact/reply timeline; defers a single domain action until animation completes |
+| `cinematic.css` | Four hero techniques, full-body actors, trails, impacts, finishers and reduced-motion variants |
 | `src/domain/card-combat.js` | One explicit action plus at most one enemy reply; one duel per contacted rival; no idle damage |
 | `src/domain/session.js` | Scene transitions; injected combat factory; encounter preparation; upgrades and saves |
 | `src/presentation/view.js` | Roster, dialogue, disciplines, pause, results, tea house; screen visibility and focus |
@@ -72,7 +75,7 @@ Each defeated rival grants Renown, restores 12 health and grants 8 Flow. Discipl
 - Only explicit `victory` and `defeat` states create a result screen.
 - Modal action buttons consistently target `modal-actions`, matching the shipped HTML.
 - Button errors appear in an alert outside the hidden screens. Saved audio/motion settings apply on initial load.
-- A brief visual animation disables repeat input, but cannot damage the player or change a turn. Reduced motion removes the animation.
+- CardCombat.preview returns a read-only turn forecast. A presentation timeline locks repeat input and commits the action exactly once after its last frame, preserving finishing blows. Scene changes cancel pending callbacks without consuming a turn. Reduced motion uses a 220 ms static sequence.
 - Keys 1–4 match the action buttons. Escape pauses/resumes. Held-key repeats are ignored.
 - Missing artwork reports a retryable notice but cannot block a mechanically playable duel.
 
@@ -93,3 +96,9 @@ Run `npm test` and `npm run check` in `prototype/jade-gate`. Card tests cover id
 Browser acceptance: roster → campaign dialogue → the pass (move by buttons and WASD) → contact starts first card duel → win returns to the pass → disciplines → Warden stance change → resolution → tea house → purchase → reload/Continue; also pause/resume from both the pass and a duel, and Quick play. Check narrow layouts, pass sprites, card portraits, keyboard controls and reduced motion.
 
 Delivered: local browser card RPG with Act I, four heroes, persistent progression, procedural soundtrack and 16 existing illustrated assets. Deferred: later acts, open-world exploration, equipment inventory, narrative branching, new card illustrations matching the revised weapon canon, 3D meshes/rigs and a Godot port.
+
+## Hybrid combat verification (2026-09-25)
+
+Archers cannot start a duel, including through explicit session commands. Windups lock an aim point, arrows use swept collision, dodge grants temporary invulnerability, and a last archer kill can advance the encounter directly from exploration. Pause freezes the simulation; entering melee clears projectiles before handing off.
+
+Validation: 73 tests pass; JavaScript syntax and 16 image checks pass. Browser verification on localhost covered courtyard movement, two melee duels, normal and special cinematics, a finishing blow, discipline selection, arrow damage and defeating the archer with a real-time technique while remaining in exploration. No browser warnings/errors after the cinematic timer fix.
