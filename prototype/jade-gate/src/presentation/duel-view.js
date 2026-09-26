@@ -1,6 +1,7 @@
 import { translate } from "../locales/i18n.js";
 import { DuelCinematic } from "./duel-cinematic.js";
 import { HERO_TECHNIQUES } from "../content/duels.js";
+import { curioById, techniqueCost } from "../content/curios.js";
 
 export class DuelView {
   constructor(session, document, onGesture = () => {}) {
@@ -82,6 +83,21 @@ export class DuelView {
     meter.setAttribute("aria-valuemin", 0);
     meter.setAttribute("aria-valuemax", max);
   }
+  /** Carried curios shown as glyph chips with a name/effect tooltip. */
+  renderCurios(elementId, ids) {
+    const node = this.$(elementId);
+    if (!node) return;
+    const html = (ids || []).map((id) => {
+      const curio = curioById(id);
+      return curio
+        ? `<span class="curio-chip" title="${curio.name}: ${curio.description}">${curio.icon}</span>`
+        : "";
+    }).join("");
+    if (node.dataset.curios !== (ids || []).join(",")) {
+      node.dataset.curios = (ids || []).join(",");
+      node.innerHTML = html;
+    }
+  }
   render() {
     const { g, mode } = this.session;
     if (!g?.duel) return;
@@ -117,17 +133,23 @@ export class DuelView {
       const intent = this.session.combat.intent();
       this.$("enemy-intent").textContent = this.t(intent.name + (intent.damage ? ` · ${intent.damage} damage` : ""));
       this.$("intent-detail").textContent = this.t(intent.description);
+      // The Night-Eye Charm reveals the rival's following move as well.
+      const after = g.curios?.includes("night-eye") ? this.session.combat.intent(enemy, 1) : null;
+      this.$("intent-next").textContent = after
+        ? this.t(`Then: ${after.name}${after.damage ? ` · ${after.damage} damage` : ""}`) : "";
       this.$("enemy-card").dataset.intent = intent.kind;
       this.$("attack-detail").textContent = this.t(`${Math.round(p.damage * p.power * (intent.kind === "guard" ? 0.5 : 1))} damage · +${12 + p.flowBonus} Flow`);
     }
     const technique = HERO_TECHNIQUES[p.id];
+    const cost = techniqueCost(p, g.curios);
     this.$("technique-name").textContent = this.t(p.skill);
-    this.$("technique-detail").textContent = this.t(`${Math.round(p.damage * p.power * technique.multiplier)} damage · ${p.cost} Flow`);
+    this.$("technique-detail").textContent = this.t(`${Math.round(p.damage * p.power * technique.multiplier)} damage · ${cost} Flow`);
     this.$("technique-help").textContent = `${this.t(p.skill)}: ${this.t(technique.description)} ${this.t("All techniques pierce guard.")}`;
-    this.$("tea-detail").textContent = this.t(`Recover 30 health · ${d.tea} left this encounter`);
+    this.$("tea-detail").textContent = this.t(`Recover ${30 + (g.curios?.includes("river-charm") ? 15 : 0)} health · ${d.tea} left this encounter`);
+    this.renderCurios("curio-icons", g.curios);
     for (const button of this.document.querySelectorAll("[data-action]")) {
       button.disabled = this.busy || mode !== "playing" ||
-        (button.dataset.action === "technique" && p.flow < p.cost) ||
+        (button.dataset.action === "technique" && p.flow < cost) ||
         (button.dataset.action === "tea" && (d.tea < 1 || p.hp >= p.maxHp));
     }
     this.$("turn-status").textContent = this.t(this.busy ? "Blades meet…" : d.log[0] || "Your turn. Take your time.");

@@ -5,6 +5,7 @@ import { UPGRADES, applyUpgrade } from "../content/disciplines.js";
 import { ACTS, BOSSES, CULTIVATIONS, actById } from "../content/campaign.js";
 import { dialogueFor } from "../content/dialogue.js";
 import { validateContent } from "../content/validate.js";
+import { CURIOS, CURIO_IDS, curioById, EVENTS, techniqueCost } from "../content/curios.js";
 import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
@@ -117,6 +118,9 @@ export class GameSession {
       shake: 0,
       hitStop: 0,
       encounterDone: false,
+      curios: [],
+      // Campaign-only branching map; null in Quick play (linear encounters).
+      map: runMode === "campaign" && act.map ? { row: 0, cleared: [], pendingCurios: [], event: null } : null,
     };
     this.prepareEncounter();
   }
@@ -218,6 +222,8 @@ export class GameSession {
       time: g.time,
       totalKills: g.totalKills,
       turns: g.turns || 0,
+      curios: [...g.curios],
+      map: g.map ? { row: g.map.row, cleared: [...g.map.cleared] } : null,
     };
     this.save();
   }
@@ -253,6 +259,105 @@ export class GameSession {
     if (this.mode === "playing") this.combat.step(dt, input);
     else if (this.mode === "exploring") this.roam?.step(dt, input);
   }
+  /** Row bookkeeping after a node resolves; single-node rows auto-march. */
+  advanceRow() {
+    const map = this.g.map;
+    map.row++;
+    this.arriveAtRow();
+    return true;
+  }
+  arriveAtRow() {
+    const map = this.g.map;
+    const rows = this.act.map.rows;
+    if (map.row >= rows.length) return false;
+    if (!map.pendingCurios.length && !map.event && rows[map.row].length === 1) {
+      this.selectNode(rows[map.row][0]);
+      return true;
+    }
+    if (this.mode !== "map") {
+      this.checkpoint("map");
+      this.transition("map");
+    } else
+      this.bus.emit("state:changed", {
+        previous: "map", current: "map", boss: false, dialogueKey: null, stage: "map",
+        runMode: this.g.runMode, actId: this.g.actId, encounterIndex: this.g.encounterIndex,
+      });
+    return true;
+  }
+  nodeInfo(node) {
+    const [type, encounterId] = node.split(":");
+    return { type, encounterId, encounter: this.act.encounters.find((e) => e.id === encounterId) };
+  }
+  selectNode(node) {
+    const info = this.nodeInfo(node);
+    if (!info.encounter) return false;
+    this.g.map.current = node;
+    this.g.encounterIndex = this.act.encounters.indexOf(info.encounter);
+    this.prepareEncounter();
+    if (info.encounter.bossId) {
+      const introKey = info.encounter.bossId === "warden" ? "warden-intro" : `${info.encounter.bossId}-intro`;
+      this.beginDialogue(introKey);
+    } else {
+      this.checkpoint("combat");
+      this.transition("exploring");
+      this.bus.emit("notice", { text: this.encounter.title });
+    }
+    return true;
+  }
+  chooseNode(node) {
+    if (this.mode !== "map" || !this.g.map) return false;
+    const rows = this.act.map.rows;
+    if (!rows[this.g.map.row]?.includes(node)) return false;
+    if (!this.g.map.cleared.includes(node)) this.g.map.cleared.push(node);
+    if (node.startsWith("rest:")) {
+      const healed = Math.min(30, this.g.p.maxHp - this.g.p.hp);
+      this.g.p.hp += healed;
+      this.g.p.flow = Math.min(100, this.g.p.flow + 10);
+      this.bus.emit("notice", { text: `Roadside rest: +${healed} health, +10 Flow` });
+      this.bus.emit("audio:sfx", { type: "heal" });
+      this.advanceRow();
+      return true;
+    }
+    if (node.startsWith("event:")) {
+      this.g.map.event = node.slice(6);
+      this.arriveAtRow();
+      return true;
+    }
+    return this.selectNode(node);
+  }
+  resolveEvent(choiceIndex) {
+    const map = this.g.map;
+    const event = map.event && EVENTS[map.event];
+    if (this.mode !== "map" || !event) return false;
+    const choice = event.choices[choiceIndex] || event.choices[0];
+    if (choice.heal) {
+      const healed = Math.min(choice.heal, this.g.p.maxHp - this.g.p.hp);
+      this.g.p.hp += healed;
+      this.bus.emit("notice", { text: `The travelers' gift restores ${healed} health.` });
+      this.bus.emit("audio:sfx", { type: "heal" });
+    }
+    if (choice.hurt) {
+      this.g.p.hp = Math.max(1, this.g.p.hp - choice.hurt);
+      this.bus.emit("notice", { text: `A needle trap bites for ${choice.hurt}.` });
+    }
+    if (choice.curio && !map.pendingCurios.length)
+      map.pendingCurios = this.draftCurios(1);
+    map.event = null;
+    this.advanceRow();
+    return true;
+  }
+  chooseCurio(id) {
+    const map = this.g.map;
+    if (this.mode !== "map" || !map?.pendingCurios.includes(id)) return false;
+    // Pick one of the draft; the unchosen curios are lost with the fallen.
+    map.pendingCurios = [];
+    this.g.curios.push(id);
+    this.checkpoint("map");
+    this.bus.emit("audio:sfx", { type: "upgrade" });
+    // The row was already advanced; auto-march only when the way is now clear.
+    this.arriveAtRow();
+    return true;
+  }
   beginDuel(index = this.g?.roam?.contact ?? -1) {
     if (this.mode !== "exploring" || !this.g?.roam) return false;
     const field = this.g.roam.field;
@@ -283,6 +388,12 @@ export class GameSession {
   }
   clearEncounter() {
     if (!["playing", "exploring"].includes(this.mode)) return;
+    if (this.g.map?.current) {
+      if (!this.g.map.cleared.includes(this.g.map.current))
+        this.g.map.cleared.push(this.g.map.current);
+      if (this.g.map.current.startsWith("elite:"))
+        this.g.map.pendingCurios = this.draftCurios();
+    }
     if (this.g.encounterIndex === this.act.encounters.length - 1) {
       this.finish(true);
       return;
@@ -291,14 +402,34 @@ export class GameSession {
     this.transition("upgrade");
     this.bus.emit("audio:sfx", { type: "upgrade" });
   }
+  /** Seeded draft of three unowned curios, deterministic within a run. */
+  draftCurios(count = 3) {
+    const owned = new Set(this.g.curios);
+    let seed = 0;
+    for (const char of this.g.runId) seed = (seed * 31 + char.charCodeAt(0)) >>> 0;
+    seed = (seed + this.g.map.row * 977) >>> 0;
+    const pool = CURIOS.filter((curio) => !owned.has(curio.id));
+    const picks = [];
+    for (let i = 0; i < count && pool.length; i++) {
+      seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+      picks.push(pool.splice(seed % pool.length, 1)[0].id);
+    }
+    return picks;
+  }
   chooseDiscipline(id) {
     if (this.mode !== "upgrade") return false;
     if (!UPGRADES.some((item) => item.id === id))
       throw new Error("Unknown discipline.");
     applyUpgrade(this.g.p, id);
-    this.g.encounterIndex++;
     this.g.p.hp = Math.min(this.g.p.maxHp, this.g.p.hp + 22);
     this.g.p.flow = Math.min(100, this.g.p.flow + 20);
+    if (this.g.map) {
+      this.g.map.event = null;
+      this.advanceRow();
+      this.bus.emit("audio:sfx", { type: "ui_click" });
+      return true;
+    }
+    this.g.encounterIndex++;
     this.prepareEncounter();
     if (this.g.runMode === "campaign" && this.encounter.bossId) {
       if (BOSSES[this.encounter.bossId]?.planned)
@@ -360,6 +491,15 @@ export class GameSession {
       turns: cp.turns || 0,
     });
     Object.assign(this.g.p, cp.player);
+    if (this.g.map && cp.map) {
+      this.g.map.row = Math.max(0, Math.min(cp.map.row, this.act.map.rows.length - 1));
+      this.g.map.cleared = cp.map.cleared.filter((node) =>
+        this.act.map.rows.some((row) => row.includes(node)));
+      this.g.curios = cp.curios.filter((id) => CURIO_IDS.includes(id));
+      const node = this.act.map.rows[this.g.map.row]?.find((entry) =>
+        entry.endsWith(`:${this.act.encounters[this.g.encounterIndex]?.id}`));
+      if (node) this.g.map.current = node;
+    }
     this.prepareEncounter();
     const dialogueStages = [
       "arrival",
@@ -373,6 +513,7 @@ export class GameSession {
     ];
     if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);
+    else if (cp.stage === "map" && this.g.map) this.arriveAtRow();
     else if (cp.stage === "waystation") this.transition("waystation");
     else if (cp.stage === "upgrade") {
       // Menu-to-upgrade restoration uses a validated encounter entry, without simulating a frame.

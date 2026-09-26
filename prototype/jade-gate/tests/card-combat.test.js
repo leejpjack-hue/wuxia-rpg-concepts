@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { GameSession } from '../src/domain/session.js';
 import { createCardCombat } from '../src/domain/card-combat.js';
 import { SaveStore } from '../src/platform/save-store.js';
-import { memoryStorage, duelPolicy, engageRival } from './helpers.js';
+import { memoryStorage, duelPolicy, engageRival, playCampaign } from './helpers.js';
 const game = (storage = memoryStorage()) => new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
 function finishRun(g) {
   let steps = 0;
@@ -60,7 +60,7 @@ for (const hero of ['zhao-yun', 'lu-zhishen', 'hu-sanniang', 'lu-bu',
   'guan-yu', 'wu-song', 'mu-guiying', 'liang-hongyu', 'nie-yinniang']) {
   test(`${hero} can roam and win all card encounters with deliberate choices`, () => {
     const g = game(); g.start(hero, 'quickplay'); finishRun(g);
-    assert.equal(g.mode, 'victory'); assert(g.g.p.hp > 0); assert.equal(g.g.totalKills, 5);
+    assert.equal(g.mode, 'victory'); assert(g.g.p.hp > 0); assert.equal(g.g.totalKills, 11);
     assert.equal(g.profile.wallet, 0); assert.equal(g.profile.checkpoint, null);
   });
 }
@@ -70,7 +70,7 @@ test('card campaign restores checkpoints, reaches tea house, buys cultivation, a
   const saved = game(storage); saved.continueCheckpoint();
   assert.equal(saved.mode, 'exploring'); saved.beginDuel(0);
   assert.equal(saved.g.enemies[0].hp, saved.g.enemies[0].maxHp);
-  finishRun(saved); assert.equal(saved.mode, 'waystation');
+  finishRun(saved); playCampaign(saved); assert.equal(saved.mode, 'waystation');
   const wallet = saved.profile.wallet; assert(wallet > 0); assert(saved.buy('iron-vessel'));
   assert(saved.profile.wallet < wallet);
   const again = game(storage); again.continueCheckpoint();

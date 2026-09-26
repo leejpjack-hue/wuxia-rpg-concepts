@@ -2,6 +2,7 @@ import { distance } from './math.js';
 import { groundPoint, GROUND, onGround } from './ground.js';
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
+import { techniqueCost } from '../content/curios.js';
 export const ARENA = { width: 1280, height: 720, margin: 64, top: GROUND.top };
 export const PLAYER_SPEED = 300;
 export const SHALLOWS_ROAM_SPEED_FACTOR = .65;
@@ -23,9 +24,12 @@ export function createRoam(g, bus, { encounter } = {}) {
   let serial = 0;
   const field = roster.map((kind, index) => {
     const def = DUEL_ENEMIES[kind];
-    const position = groundPoint(ARENA.margin + (ARENA.width-2*ARENA.margin)*(index+.5)/roster.length, 325+(index%2)*105);
-    return { ...def, ...position, id: `${encounter.id}-field-${index}`, kind,
-      maxHp: def.hp, ranged: isRanged(kind), radius: 36,
+    const position = groundPoint(ARENA.margin + (ARENA.width-2*ARENA.margin)*(index+.5)/roster.length, 325+((index+1)%2)*105);
+    // Elite encounters field hardened rivals.
+    const eliteScale = encounter.elite ? 1.35 : 1;
+    return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*(encounter.elite?1.15:1)),
+      reward: Math.round(def.reward*(encounter.elite?1.5:1)), ...position, id: `${encounter.id}-field-${index}`, kind,
+      maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
       speed: kind === 'warden' ? 70 : 55+index*10,
       homeX: position.x, homeY: position.y, tx: position.x, ty: position.y,
       timer: 0, cooldown: 1.4+index*.4, windup: 0, aim: null,
@@ -46,10 +50,10 @@ export function createRoam(g, bus, { encounter } = {}) {
       bus.emit('audio:sfx', { type: 'dodge' }); return true;
     }
     if (!['strike', 'technique'].includes(action) || roam.strikeCD > 0) return false;
-    if (action === 'technique' && g.p.flow < g.p.cost) return false;
+    if (action === 'technique' && g.p.flow < techniqueCost(g.p, g.curios)) return false;
     const targets = field.filter(e => e.ranged && distance(e, g.p) < (action === 'technique' ? 280 : 175));
     roam.strikeCD = action === 'technique' ? .8 : .38;
-    if (action === 'technique') g.p.flow -= g.p.cost;
+    if (action === 'technique') g.p.flow -= techniqueCost(g.p, g.curios);
     effect(action, g.p.x, g.p.y);
     bus.emit('audio:sfx', { type: action === 'technique' ? 'special' : 'strike', param: g.p.id });
     for (const enemy of targets) {

@@ -1,6 +1,8 @@
 // Card combat tuning is separate from the archived real-time arena rules.
 export const DUEL_ROSTERS = {
   vanguard: ["guard", "guard"],
+  "archer-run": ["archer", "archer", "guard"],
+  "gate-vanguard": ["guard", "guard", "guard"],
   crossfire: ["archer", "guard"],
   warden: ["warden"],
   // Act II stays behind bamboo-crossing.available === false.

@@ -1,5 +1,6 @@
 import { HEROES, HERO_IDS } from "../content/heroes.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
+import { CURIO_IDS } from "../content/curios.js";
 export const SAVE_VERSION = 2;
 export const SAVE_KEY = "blades-profile-v2";
 const number = (v, fallback = 0, max = 1e8) =>
@@ -42,6 +43,7 @@ export function sanitizeCheckpoint(raw) {
   const stages = [
     "arrival",
     "combat",
+    "map",
     "upgrade",
     "warden-intro",
     "warden-fall",
@@ -83,6 +85,22 @@ export function sanitizeCheckpoint(raw) {
     time: number(raw.time),
     totalKills: integer(raw.totalKills, 0, 1000),
     turns: integer(raw.turns),
+    // Run curios and branching-map progress ride along on the checkpoint.
+    curios: Array.isArray(raw.curios)
+      ? [...new Set(raw.curios)].filter((id) => CURIO_IDS.includes(id)).slice(0, 8)
+      : [],
+    map:
+      act.map &&
+      raw.map &&
+      Number.isInteger(raw.map.row) &&
+      Array.isArray(raw.map.cleared)
+        ? {
+            row: Math.max(0, Math.min(raw.map.row, act.map.rows.length - 1)),
+            cleared: raw.map.cleared
+              .filter((node) => typeof node === "string" && node.length <= 40)
+              .slice(0, 12),
+          }
+        : null,
   };
 }
 export function sanitizeProfile(raw) {

@@ -1,4 +1,5 @@
 import { translate } from "../locales/i18n.js";
+import { curioById, techniqueCost } from "../content/curios.js";
 const KEYS = {
   KeyW: "up",
   ArrowUp: "up",
@@ -116,6 +117,16 @@ export class RoamView {
     this.$("roam-score").textContent = this.t(g.score);
     const left = g.roam.field.length;
     this.$("roam-remaining").textContent = this.t(`${left} ${left === 1 ? "RIVAL" : "RIVALS"} ON THE PASS`);
+    const carried = g.curios || [];
+    const chips = this.$("roam-curios");
+    const chipsHtml = carried.map((id) => {
+      const curio = curioById(id);
+      return curio ? `<span class="curio-chip" title="${curio.name}: ${curio.description}">${curio.icon}</span>` : "";
+    }).join("");
+    if (chips && chips.dataset.curios !== carried.join(",")) {
+      chips.dataset.curios = carried.join(",");
+      chips.innerHTML = chipsHtml;
+    }
     const stage = `assets/${session.act.arena || "arena"}.png`;
     if (this.$("roam-arena").dataset.stage !== stage) {
       this.$("roam-arena").dataset.stage = stage;
@@ -173,7 +184,7 @@ export class RoamView {
     if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
     for (const button of this.document.querySelectorAll("[data-roam-action]")) {
       const action = button.dataset.roamAction;
-      button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : g.roam.strikeCD > 0 || action === "technique" && g.p.flow < g.p.cost);
+      button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : g.roam.strikeCD > 0 || action === "technique" && g.p.flow < techniqueCost(g.p, g.curios));
     }
     this.place(this.heroToken || this.$("roam-hero"), g.p.x, g.p.y);
     if (!this.heroToken)

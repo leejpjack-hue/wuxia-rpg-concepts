@@ -96,7 +96,7 @@ test("boss transitions phase once, resists light interruption, and accepts techn
   const game = rtSession();
   game.start("lu-zhishen", "quickplay");
   game.transition("playing");
-  game.g.encounterIndex = 2;
+  game.g.encounterIndex = 4;
   game.prepareEncounter();
   const boss = game.g.enemies.find((e) => e.type === "boss");
   let phases = 0;

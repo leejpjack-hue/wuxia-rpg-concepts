@@ -10,12 +10,35 @@ export const ACTS = [
     next: "bamboo-crossing",
     unlocks: [],
     hazards: [],
+    // Branching pass map: single-node rows auto-march; multi-node rows offer a choice.
+    // Node shape "type:encounterId"; rest/event nodes carry no encounter.
+    map: {
+      rows: [
+        ["duel:vanguard"],
+        ["ambush:archer-run", "elite:gate-vanguard"],
+        ["event:travelers-gift", "rest:roadside", "duel:crossfire"],
+        ["boss:warden"],
+      ],
+    },
     encounters: [
       {
         id: "vanguard",
         title: "Break the vanguard",
         tip: "Strike to build Flow. Green drops restore health.",
         enemies: ["guard", "guard", "guard", "guard", "guard"],
+      },
+      {
+        id: "archer-run",
+        title: "Run the archers' gauntlet",
+        tip: "Two watchers volley from the walls. Keep moving, then close in.",
+        enemies: ["archer", "archer", "guard", "archer"],
+      },
+      {
+        id: "gate-vanguard",
+        title: "Break the gate guard",
+        tip: "Hardened veterans hold the arch. They hit harder and refuse to fall.",
+        enemies: ["guard", "guard", "guard"],
+        elite: true,
       },
       {
         id: "crossfire",

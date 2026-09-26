@@ -1,6 +1,7 @@
 import { SaveStore } from "../src/platform/save-store.js";
 import { GameSession } from "../src/domain/session.js";
 import { createCardCombat } from "../src/domain/card-combat.js";
+import { techniqueCost } from "../src/content/curios.js";
 export function memoryStorage(initial = {}) {
   const data = new Map(Object.entries(initial));
   return {
@@ -24,7 +25,7 @@ export function duelPolicy(game) {
     intent = game.combat.intent();
   return game.g.duel.tea && p.hp < p.maxHp - 35
     ? "tea"
-    : p.flow >= p.cost
+    : p.flow >= techniqueCost(p, game.g.curios)
       ? "technique"
       : ["heavy", "guard"].includes(intent.kind)
         ? "guard"
@@ -52,11 +53,36 @@ export function clearEncounter(game) {
 export function completeCampaign(game) {
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  clearEncounter(game);
-  game.chooseDiscipline("vitality");
-  game.advanceDialogue(true);
-  clearEncounter(game);
-  game.advanceDialogue(true);
+  playCampaign(game);
+}
+/** Resolve map scenes: curio drafts, events, then a picked node of the row. */
+export function walkMap(game, pick = (nodes) => nodes[0]) {
+  let guard = 0;
+  while (game.mode === "map" && guard++ < 40) {
+    const map = game.g.map;
+    if (map.pendingCurios.length) {
+      game.chooseCurio(map.pendingCurios[0]);
+      continue;
+    }
+    if (map.event) {
+      game.resolveEvent(0);
+      continue;
+    }
+    const nodes = game.act.map.rows[map.row].filter((node) => !map.cleared.includes(node));
+    if (!nodes.length) throw new Error("map row has no open nodes");
+    game.chooseNode(pick(nodes));
+  }
+  if (game.mode === "map") throw new Error("map walk stalled");
+  return game.mode;
+}
+/** Full campaign driver: dialogues, combat nodes, disciplines, map choices. */
+export function playCampaign(game, pick) {
+  let guard = 0;
+  while (!["waystation", "victory", "defeat", "menu"].includes(game.mode) && guard++ < 400) {
+    if (game.mode === "dialogue") game.advanceDialogue(true);
+    else if (game.mode === "exploring" || game.mode === "playing") clearEncounter(game);
+    else if (game.mode === "upgrade") game.chooseDiscipline("power");
+    else if (game.mode === "map") walkMap(game, pick);
+  }
+  return game.mode;
 }

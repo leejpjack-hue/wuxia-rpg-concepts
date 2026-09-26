@@ -26,12 +26,22 @@ test('arrows use swept collision, dodge prevents damage, pause freezes projectil
 test('last archer kill advances encounter once, with no orphan arrows or duplicate rewards',()=>{
   const g=crossfire();g.beginDuel(g.g.roam.field.findIndex(e=>!e.ranged));
   while(g.mode==='playing') g.combat.act(g.g.p.flow>=g.g.p.cost?'technique':'attack');
-  assert.equal(g.mode,'exploring');const archer=g.g.roam.field[0];
-  Object.assign(g.g.p,{x:archer.x+70,y:archer.y});archer.hp=1;
-  g.g.roam.shots=[{owner:archer.id}];const kills=g.g.totalKills,score=g.g.score;
-  assert(g.roam.act('strike'));assert.equal(g.mode,'upgrade');assert.equal(g.g.totalKills,kills+1);
-  assert.equal(g.g.score,score+archer.reward);assert.equal(g.g.roam.shots.length,0);
-  assert.equal(g.roam.act('strike'),false);assert.equal(g.g.totalKills,kills+1);
+  assert.equal(g.mode,'exploring');
+  const archers=g.g.roam.field.filter(e=>e.ranged);
+  assert.equal(archers.length,2); // archer-run fields two watchers
+  for(const archer of archers) archer.hp=1;
+  const last=archers.at(-1), kills=g.g.totalKills, score=g.g.score;
+  for(const archer of archers){
+    Object.assign(g.g.p,{x:archer.x+70,y:archer.y});
+    g.g.roam.strikeCD=0;
+    g.g.roam.shots=[{owner:archer.id}];
+    assert(g.roam.act('strike'));
+    if(archer!==last) assert.equal(g.mode,'exploring');
+  }
+  assert.equal(g.mode,'upgrade');assert.equal(g.g.totalKills,kills+2);
+  assert.equal(g.g.score,score+archers.reduce((sum,a)=>sum+a.reward,0));
+  assert.equal(g.g.roam.shots.length,0);
+  assert.equal(g.roam.act('strike'),false);assert.equal(g.g.totalKills,kills+2);
 });
 test('all actors and patrol targets remain on courtyard, including diagonal corners and dodges',()=>{
   for (const point of [{x:-999,y:-999},{x:9999,y:9999},{x:0,y:350},{x:1280,y:350}]) assert(onGround(groundPoint(point.x,point.y)));

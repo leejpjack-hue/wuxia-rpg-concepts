@@ -24,7 +24,7 @@ export function resolveMusicMode(event) {
     return "select";
   }
 
-  if (current === "menu" || current === "waystation") {
+  if (current === "menu" || current === "waystation" || current === "map") {
     return "select";
   }
 

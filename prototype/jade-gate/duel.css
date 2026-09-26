@@ -59,6 +59,14 @@
 #battle-log li { padding: 4px 0; border-bottom: 1px solid #34413a70; }
 #battle-log li:first-child { color: var(--gold); }
 #banner { color: var(--gold); font-size: 12px; }
+/* Carried curios render as glyph chips beside the renown counter. */
+.curio-icons { display: inline-flex; gap: 4px; align-items: center; }
+.curio-chip {
+  display: inline-grid; place-content: center; width: 20px; height: 20px;
+  font-size: 12px; color: var(--gold); background: #1d2823;
+  border: 1px solid #5a5240; border-radius: 6px; cursor: help;
+}
+#intent-next { display: block; font-size: 9px; color: #9fb4a6; margin-top: 3px; min-height: 12px; }
 #app-status, #save-status { max-width: 1100px; margin: 10px auto; padding: 0 24px; color: #f1bb9d; font-size: 12px; }
 #app-status:empty, #save-status:empty { display: none; }
 .animate-attack .ally, .animate-technique .ally { animation: card-strike .42s ease; }

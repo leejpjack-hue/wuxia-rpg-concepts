@@ -6,7 +6,7 @@ import {
   SAVE_VERSION,
   sanitizeProfile,
 } from "../src/platform/save-store.js";
-import { memoryStorage, session, clearEncounter } from "./helpers.js";
+import { memoryStorage, session, clearEncounter, walkMap } from "./helpers.js";
 import { FixedClock } from "../src/engine/clock.js";
 import { StateMachine } from "../src/engine/state-machine.js";
 import { EventBus } from "../src/engine/events.js";
@@ -320,15 +320,25 @@ test("full campaign story progression drives AudioDirector transitions seamlessl
   assert.equal(modes.at(-1), "upgrade");
   assert(sfx.some((s) => s.type === "upgrade"));
 
-  // Choose discipline: encounter 2 (garrison)
+  // Choose discipline: the pass forks (map scene)
   game.chooseDiscipline("power");
+  assert.equal(modes.at(-1), "select");
+  walkMap(game, (nodes) => nodes.find((node) => node.startsWith("ambush:")));
   assert.equal(modes.at(-1), "battle");
 
-  // Clear encounter 2: discipline upgrade before boss
+  // Clear encounter 2: discipline upgrade
   clearEncounter(game);
   assert.equal(modes.at(-1), "upgrade");
 
-  // Choose discipline: boss intro dialogue (warden-intro)
+  // Choose discipline: row 2 map, march into the crossfire duel
+  game.chooseDiscipline("vitality");
+  assert.equal(modes.at(-1), "select");
+  walkMap(game, (nodes) => nodes.find((node) => node.startsWith("duel:")));
+  assert.equal(modes.at(-1), "battle");
+
+  // Clear encounter 3, then the final discipline auto-marches to the boss intro
+  clearEncounter(game);
+  assert.equal(modes.at(-1), "upgrade");
   game.chooseDiscipline("vitality");
   assert.equal(modes.at(-1), "boss");
 

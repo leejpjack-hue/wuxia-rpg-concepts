@@ -3,6 +3,7 @@ import { HEROES } from "../content/heroes.js";
 import { UPGRADES } from "../content/disciplines.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
 import { cultivationCost } from "../domain/progression.js";
+import { curioById, EVENTS } from "../content/curios.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
@@ -196,6 +197,80 @@ export class GameView {
     this.$(parent).appendChild(btn);
     return btn;
   }
+  /** The pass forks: curio drafts and events resolve here, then node choices. */
+  renderMap(g) {
+    const session = this.session;
+    const map = g.map;
+    const carried = (g.curios || [])
+      .map((id) => curioById(id))
+      .filter(Boolean)
+      .map((curio) => `${curio.icon} ${curio.name}`)
+      .join(" · ");
+    if (map.pendingCurios.length) {
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        "A curio recovered",
+        map.pendingCurios.length > 1
+          ? "The fallen carried curios. Choose one to carry for the rest of the run."
+          : "A sealed box from the wayside. Take the curio within.",
+      );
+      for (const id of map.pendingCurios) {
+        const curio = curioById(id);
+        const b = this.button(
+          `${this.t(curio.name)} ${curio.icon} — ${this.t(curio.description)}`,
+          () => session.chooseCurio(id),
+          { parent: "choices", primary: true },
+        );
+        b.className = "upgrade";
+      }
+    } else if (map.event && EVENTS[map.event]) {
+      const event = EVENTS[map.event];
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        event.title,
+        event.text,
+      );
+      event.choices.forEach((choice, index) => {
+        const b = this.button(
+          `${this.t(choice.label)} — ${this.t(choice.description)}`,
+          () => session.resolveEvent(index),
+          { parent: "choices", primary: index === 0 },
+        );
+        b.className = "upgrade";
+      });
+    } else {
+      const rows = session.act.map.rows;
+      const nodes = rows[map.row] || [];
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        "The pass forks ahead",
+        carried
+          ? `Choose your next step. Carried curios: ${this.t(carried)}`
+          : "Choose your next step along the pass.",
+      );
+      for (const node of nodes) {
+        if (map.cleared.includes(node)) continue;
+        const info = session.nodeInfo(node);
+        let label;
+        if (node.startsWith("rest:"))
+          label = "Roadside rest · 路旁 — restore 30 health and 10 Flow";
+        else if (node.startsWith("event:"))
+          label = `${this.t(EVENTS[info.encounterId]?.title || "Travelers by the wayside")}${this.t(" · event")}`;
+        else if (info.encounter?.bossId)
+          label = `${this.t(info.encounter.title)}${this.t(" · BOSS")}`;
+        else if (info.encounter?.elite)
+          label = `${this.t(info.encounter.title)}${this.t(" · ELITE · recovers a curio")}`;
+        else if (node.startsWith("ambush:"))
+          label = `${this.t(info.encounter.title)}${this.t(" · archer ambush")}`;
+        else label = this.t(info.encounter.title);
+        const b = this.button(label, () => session.chooseNode(node), {
+          parent: "choices",
+          primary: !!info.encounter?.bossId,
+        });
+        b.className = "upgrade";
+      }
+    }
+  }
   render() {
     const session = this.session,
       mode = session.mode,
@@ -238,6 +313,8 @@ export class GameView {
         { primary: true },
       );
       this.button("Skip conversation", () => session.advanceDialogue(true));
+    } else if (mode === "map") {
+      this.renderMap(g);
     } else if (mode === "paused") {
       this.modal(
         "A MOMENT OF STILLNESS",

@@ -5,6 +5,8 @@ import {
   memoryStorage,
   clearEncounter,
   completeCampaign,
+  walkMap,
+  playCampaign,
 } from "./helpers.js";
 import { SaveStore, SAVE_KEY } from "../src/platform/save-store.js";
 import { HEROES } from "../src/content/heroes.js";
@@ -39,21 +41,27 @@ test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   game.start("lu-bu", "quickplay");
   assert.equal(game.mode, "exploring");
 });
-test("campaign includes arrival, two disciplines, boss dialogue, resolution and tea house", () => {
+test("campaign walks the branching map to the boss, tea house and unlocks", () => {
   const game = session();
   game.start("zhao-yun", "campaign");
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
-  assert.equal(game.mode, "exploring");
+  assert.equal(game.mode, "exploring"); // row 0 (vanguard) auto-marches
   clearEncounter(game);
   assert.equal(game.mode, "upgrade");
   game.chooseDiscipline("power");
   assert.equal(game.g.p.power, 1.25);
+  assert.equal(game.mode, "map"); // row 1 offers a real choice
+  walkMap(game, (nodes) => nodes.find((n) => n.startsWith("ambush:")) || nodes[0]);
   clearEncounter(game);
   game.chooseDiscipline("vitality");
-  assert.equal(game.mode, "dialogue");
+  assert.equal(game.mode, "map"); // row 2
+  walkMap(game, (nodes) => nodes.find((n) => n.startsWith("duel:")) || nodes[0]);
+  clearEncounter(game);
+  game.chooseDiscipline("power");
+  assert.equal(game.mode, "dialogue"); // row 3 boss auto-marches into the intro
   assert.equal(game.dialogue.key, "warden-intro");
   assert.equal(game.g.p.maxHp, 150);
   game.advanceDialogue(true);
@@ -76,8 +84,8 @@ test("checkpoint resumes encounter boundary and preserves run upgrades", () => {
   game.g.score = 99999;
   const restored = session(storage);
   assert(restored.continueCheckpoint());
-  assert.equal(restored.mode, "exploring");
-  assert.equal(restored.g.encounterIndex, 1);
+  assert.equal(restored.mode, "map"); // saved mid-map after the first node
+  assert.equal(restored.g.map.row, 1);
   assert.equal(restored.g.p.power, 1.25);
   assert.equal(restored.g.p.hp, 120);
   assert.notEqual(restored.g.score, 99999);
@@ -117,12 +125,8 @@ test("a failed attempt does not prevent a continued checkpoint from earning vict
   assert.equal(game.mode, "defeat");
   const restored = session(storage);
   restored.continueCheckpoint();
-  clearEncounter(restored);
-  restored.chooseDiscipline("power");
-  clearEncounter(restored);
-  restored.chooseDiscipline("power");
-  restored.advanceDialogue(true);
-  clearEncounter(restored);
+  playCampaign(restored);
+  assert.equal(restored.mode, "waystation");
   assert(restored.profile.wallet > 0);
 });
 test("cultivation charges once, cannot overspend, persists, and affects campaign only", () => {
@@ -147,9 +151,10 @@ test("cultivation charges once, cannot overspend, persists, and affects campaign
 test("quick-play victory records scores without changing campaign wallet/checkpoint/unlocks", () => {
   const game = session();
   game.start("lu-bu", "quickplay");
-  for (let i = 0; i < 3; i++) {
+  // Quick play stays linear across all five encounters.
+  while (!["victory", "defeat"].includes(game.mode)) {
     clearEncounter(game);
-    if (i < 2) game.chooseDiscipline("power");
+    if (game.mode === "upgrade") game.chooseDiscipline("power");
   }
   assert.equal(game.mode, "victory");
   assert.equal(game.profile.wallet, 0);
