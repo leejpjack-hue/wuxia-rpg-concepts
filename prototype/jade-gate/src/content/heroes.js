@@ -14,7 +14,7 @@ export const HEROES = [
     color: "#bfe9df",
     skill: "Dragon Rush",
     description:
-      "A sword sworn to the people. Dragon Rush deals double damage and halves the rival’s reply.",
+      "A steadfast swordsman from Changshan, Zhao Yun protects refugees with calm precision. His Qinggang blade rewards measured strikes, while Dragon Rush breaks enemy lines and softens the counterattack that follows.",
   },
   {
     id: "lu-zhishen",
@@ -31,7 +31,7 @@ export const HEROES = [
     color: "#efd091",
     skill: "Mountain Bell",
     description:
-      "Stand firm as the mountain. Mountain Bell stuns the rival for a turn and restores health.",
+      "A wandering monk with a fierce sense of justice, Lu Zhishen shields the vulnerable. His iron spade delivers crushing blows, while Mountain Bell restores vitality and leaves opponents unable to answer.",
   },
   {
     id: "hu-sanniang",
@@ -48,7 +48,7 @@ export const HEROES = [
     color: "#f3b0a4",
     skill: "Crimson Waltz",
     description:
-      "Two blades, no hesitation. Crimson Waltz delivers a powerful double-blade strike and restores health.",
+      "The last blade of a ruined manor, Hu Sanniang fights with paired sabers and unwavering resolve. Her Crimson Waltz turns swift, relentless cuts into renewed strength as she pursues justice.",
   },
   {
     id: "lu-bu",
@@ -65,10 +65,11 @@ export const HEROES = [
     color: "#d7afe3",
     skill: "Skybreaker",
     description:
-      "An unstoppable force. Skybreaker delivers devastating damage through the rival’s guard.",
+      "Feared as the Flying General, Lü Bu meets armies with a crescent halberd and unmatched confidence. Skybreaker shatters defensive stances, rewarding players who favor overwhelming power over a cautious exchange.",
   },
   {
     id: "guan-yu",
+    quickPlayOnly: true,
     name: "Guan Yu",
     cn: "關羽",
     title: "The Green Dragon",
@@ -82,10 +83,11 @@ export const HEROES = [
     color: "#a8d5b0",
     skill: "Spring-Autumn Cleave",
     description:
-      "A lord among warriors. Spring-Autumn Cleave sweeps for heavy damage and braces the line behind the blade.",
+      "Bound by an oath of brotherhood, Guan Yu carries the Green Dragon blade with solemn purpose. His sweeping Spring-Autumn Cleave delivers heavy punishment while reducing the force of enemy retaliation.",
   },
   {
     id: "wu-song",
+    quickPlayOnly: true,
     name: "Wu Song",
     cn: "武松",
     title: "The Tiger Slayer",
@@ -99,10 +101,11 @@ export const HEROES = [
     color: "#e8b060",
     skill: "Tiger-Crushing Blow",
     description:
-      "The tiger of Jingyang Ridge. Tiger-Crushing Break lands a brutal strike that leaves the rival reeling.",
+      "The tiger slayer of Jingyang Ridge, Wu Song trusts courage, grit, and his hunting staff. Tiger-Crushing Blow overwhelms a single opponent, leaving them stunned while he prepares the next strike.",
   },
   {
     id: "mu-guiying",
+    quickPlayOnly: true,
     name: "Mu Guiying",
     cn: "穆桂英",
     title: "The Peerless General",
@@ -116,10 +119,11 @@ export const HEROES = [
     color: "#e9a9c0",
     skill: "Pear Blossom Storm",
     description:
-      "The general who took the gate. Pear Blossom Storm strikes in a drifting flurry, then recovers guard and health.",
+      "A brilliant commander with an unyielding spirit, Mu Guiying guides her pear-blossom spear through shifting defenses. Pear Blossom Storm combines precise attacks, protection, and recovery to sustain her through difficult duels.",
   },
   {
     id: "liang-hongyu",
+    quickPlayOnly: true,
     name: "Liang Hongyu",
     cn: "梁紅玉",
     title: "The Drum-War Widow",
@@ -133,10 +137,11 @@ export const HEROES = [
     color: "#9fb9e8",
     skill: "War Drum Barrage",
     description:
-      "Drums on the river walls. War Drum Barrage beats a relentless double-blade rhythm and restores fighting spirit.",
+      "A battlefield leader whose war drums rally wavering allies, Liang Hongyu fights with paired dao. War Drum Barrage builds a fierce rhythm of cutting strikes and restores the strength to continue.",
   },
   {
     id: "nie-yinniang",
+    quickPlayOnly: true,
     name: "Nie Yinniang",
     cn: "聶隱娘",
     title: "The Hidden Blade",
@@ -150,7 +155,7 @@ export const HEROES = [
     color: "#b9aee6",
     skill: "Shadow Step",
     description:
-      "The assassin who vanished mid-strike. Shadow Step cuts deep, then slips beyond the rival’s reply.",
+      "Trained in silence but guided by her own conscience, Nie Yinniang carries a concealed blade. Shadow Step slips through an opponent’s guard, then reduces retaliation as she withdraws into the mist.",
   },
 ];
 

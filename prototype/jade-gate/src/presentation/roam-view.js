@@ -1,3 +1,4 @@
+import { translate } from "../locales/i18n.js";
 const KEYS = {
   KeyW: "up",
   ArrowUp: "up",
@@ -13,6 +14,7 @@ const KEYS = {
 export class RoamView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
+    this.t = text => translate(text, session.profile.settings.language);
     this.document = document;
     this.$ = (id) => document.getElementById(id);
     this.onGesture = onGesture;
@@ -76,7 +78,7 @@ export class RoamView {
     for (const button of document.querySelectorAll("[data-roam-action]")) button.onclick = () => {
       this.onGesture(); this.actions.push(button.dataset.roamAction);
     };
-    this.off = [session.bus.on("state:changed", () => { this.clearKeys(); this.sync(); }),
+    this.off = [session.bus.on("settings:changed", () => this.sync()), session.bus.on("state:changed", () => { this.clearKeys(); this.sync(); }),
       session.bus.on("roam:rival-defeated", () => this.sync())];
     this.sync();
     // Bind once: requestAnimationFrame must not receive an unbound method.
@@ -109,11 +111,11 @@ export class RoamView {
     this.$("roam").hidden = !active;
     if (!active || !session.g?.roam) return;
     const g = session.g;
-    this.$("roam-chapter").textContent = `ACT ${session.act.number} · ${session.act.name.toUpperCase()}`;
-    this.$("roam-objective").textContent = session.encounter.title;
-    this.$("roam-score").textContent = g.score;
+    this.$("roam-chapter").textContent = this.t(`ACT ${session.act.number} · ${session.act.name.toUpperCase()}`);
+    this.$("roam-objective").textContent = this.t(session.encounter.title);
+    this.$("roam-score").textContent = this.t(g.score);
     const left = g.roam.field.length;
-    this.$("roam-remaining").textContent = `${left} ${left === 1 ? "RIVAL" : "RIVALS"} ON THE PASS`;
+    this.$("roam-remaining").textContent = this.t(`${left} ${left === 1 ? "RIVAL" : "RIVALS"} ON THE PASS`);
     const stage = `assets/${session.act.arena || "arena"}.png`;
     if (this.$("roam-arena").dataset.stage !== stage) {
       this.$("roam-arena").dataset.stage = stage;
@@ -138,7 +140,7 @@ export class RoamView {
       this.draw();
     };
     if (hero.getAttribute("src") !== src) hero.src = src;
-    hero.alt = g.p.name;
+    hero.alt = this.t(g.p.name);
     for (const [id, node] of this.sprites)
       if (!g.roam.field.some((enemy) => enemy.id === id)) {
         node.remove();
@@ -149,7 +151,7 @@ export class RoamView {
       if (!node) {
         node = this.document.createElement("img");
         node.className = "roam-rival";
-        node.alt = enemy.name;
+        node.alt = this.t(enemy.name);
         node.draggable = false;
         node.onerror = () => {
           node.hidden = true;
@@ -158,6 +160,7 @@ export class RoamView {
         this.$("roam-arena").appendChild(node);
         this.sprites.set(enemy.id, node);
       }
+      node.alt = this.t(enemy.name);
       node.hidden = false;
     }
     this.draw();
@@ -166,8 +169,8 @@ export class RoamView {
   draw() {
     const g = this.session.g;
     if (!g?.roam) return;
-    const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`;
-    if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = health;
+    const health = this.t(`${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`);
+    if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
     for (const button of this.document.querySelectorAll("[data-roam-action]")) {
       const action = button.dataset.roamAction;
       button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : g.roam.strikeCD > 0 || action === "technique" && g.p.flow < g.p.cost);
@@ -203,7 +206,7 @@ export class RoamView {
     for (const e of g.roam.effects) {
       c.save(); c.globalAlpha=Math.min(1,e.life*3); c.strokeStyle=g.p.color; c.lineWidth=e.kind==='technique'?9:4;
       if (['strike','technique'].includes(e.kind)) { c.beginPath(); c.arc(e.x,e.y-40,(.6-e.life)*220+30,-2.5,.7); c.stroke(); }
-      if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(e.text,e.x,e.y-115-(.55-e.life)*70); }
+      if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(this.t(e.text),e.x,e.y-115-(.55-e.life)*70); }
       c.restore();
     }
   }

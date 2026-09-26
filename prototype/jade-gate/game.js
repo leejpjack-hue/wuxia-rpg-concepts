@@ -1,3 +1,4 @@
+import { translate } from "./src/locales/i18n.js";
 // Card RPG composition root: turns advance only through explicit player commands.
 import * as synth from "./audio.js";
 import { GameSession } from "./src/domain/session.js";
@@ -16,10 +17,11 @@ const store = new SaveStore(storage);
 const session = new GameSession(store, { combatFactory: createCardCombat });
 if (!store.hadSettings)
   session.profile.settings.reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const t = text => translate(text, session.profile.settings.language);
 const audio = new AudioDirector(session.bus, synth, session.profile.settings);
 function gesture() {
   try { audio.unlock(); } catch {
-    document.getElementById("app-status").textContent = "Audio is unavailable in this browser. You can still play the full game.";
+    document.getElementById("app-status").textContent = t("Audio is unavailable in this browser. You can still play the full game.");
   }
 }
 const view = new GameView(session, document, gesture);
@@ -36,12 +38,16 @@ const art = [
   "warden-sprite",
 ];
 view.setReady(true);
+let statusLanguageOff;
 async function prepare() {
   const status = document.getElementById("load-status"), retry = document.getElementById("retry-assets");
   retry.hidden = true;
   const results = await Promise.allSettled(art.map((id) => assets.load(id)));
   const missing = results.filter((r) => r.status === "rejected").length;
-  status.textContent = missing ? `${missing} illustrations could not load. The card duel is still playable.` : "";
+  const renderStatus = () => { status.textContent = missing ? t(`${missing} illustrations could not load. The card duel is still playable.`) : ""; };
+  renderStatus();
+  statusLanguageOff?.();
+  statusLanguageOff = session.bus.on("settings:changed", renderStatus);
   retry.hidden = !missing;
 }
 document.getElementById("retry-assets").onclick = prepare;
@@ -53,6 +59,7 @@ function hidden() {
 }
 function pagehide(event) {
   if (event.persisted) { hidden(); return; }
+  statusLanguageOff?.();
   view.dispose();
   duel.dispose();
   roam.dispose();

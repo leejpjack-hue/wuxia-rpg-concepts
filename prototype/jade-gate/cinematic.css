@@ -40,8 +40,35 @@
 @keyframes technique-title { from{opacity:0;letter-spacing:.5em} to{opacity:1;letter-spacing:.16em} }
 @keyframes twin-dash { 0%{transform:translateX(0)} 45%{transform:translateX(92%) rotate(14deg)} 70%{transform:translateX(35%) rotate(-15deg)} 100%{transform:translateX(70%)} }
 @keyframes heavy-impact { 20%,60%{translate:-5px 3px} 40%,80%{translate:5px -3px} }
+/* Feet stay anchored to the stage while each weapon has its own motion. */
+.film-actor { transform-origin:50% 100%; }
+.style-guan-yu.action-attack[data-phase=strike] .film-hero { transform:translateX(62%) rotate(-15deg); }
+.style-wu-song.action-attack[data-phase=strike] .film-hero { transform:translateX(74%) rotate(10deg); }
+.style-mu-guiying.action-attack[data-phase=strike] .film-hero { transform:translateX(84%) skewX(-7deg); }
+.style-liang-hongyu.action-attack[data-phase=strike] .film-hero { animation:drum-crosscut .35s ease-out both; }
+.style-nie-yinniang.action-attack[data-phase=strike] .film-hero { transform:translateX(88%) scaleX(.92); filter:drop-shadow(-28px 0 4px #b9aee680); }
+.style-guan-yu.action-technique[data-phase=strike] .film-hero { animation:dragon-cleave .6s ease-in-out both; }
+.style-guan-yu.action-technique .film-trail { left:30%; top:22%; width:58%; height:56%; border-top:20px solid #b5ffd0; border-bottom:5px solid #fff6cb; }
+.style-guan-yu.action-technique[data-phase=impact] .film-ring { width:38%; border-width:8px; }
+.style-wu-song.action-technique[data-phase=strike] .film-hero { animation:tiger-drive .6s ease-in both; }
+.style-wu-song.action-technique .film-trail { top:20%; left:52%; width:16%; height:55%; border-top:0; border-right:18px solid #ffdb9b; border-radius:25%; }
+.style-wu-song.action-technique[data-phase=impact] { animation:heavy-impact .3s linear; }
+.style-wu-song.action-technique .film-ring { border-style:dashed; border-width:10px; }
+.style-mu-guiying.action-technique[data-phase=strike] .film-hero { animation:blossom-thrusts .6s ease-in-out both; }
+.style-mu-guiying.action-technique .film-trail { top:48%; height:3%; width:45%; border-radius:10%; transform:rotate(-6deg); box-shadow:0 -30px 0 -4px #ffd4e4,0 30px 0 -4px #fff5da; }
+.style-mu-guiying.action-technique .film-sparks { color:#ffd4e4; font-size:70px; }
+.style-liang-hongyu.action-technique[data-phase=strike] .film-hero { animation:drum-crosscut .6s ease-in-out both; }
+.style-liang-hongyu.action-technique .film-trail { border-top:14px solid #c5dcff; border-bottom:14px solid #fff0bf; transform:rotate(35deg); }
+.style-liang-hongyu.action-technique .film-ring { border-width:7px; box-shadow:0 0 0 15px #9fb9e83b,0 0 0 35px #9fb9e825; }
+.style-nie-yinniang.action-technique[data-phase=strike] .film-hero { animation:shadow-crossing .6s ease-in-out both; filter:drop-shadow(-40px 0 2px #b9aee655) drop-shadow(-80px 0 4px #b9aee633); }
+.style-nie-yinniang.action-technique .film-trail { top:35%; left:48%; width:28%; border-width:6px; filter:drop-shadow(0 0 24px #d8caff); }
+.style-nie-yinniang.action-technique[data-phase=impact] .film-hero { transform:translateX(82%) rotate(6deg); opacity:.8; }
+@keyframes dragon-cleave { 0%{transform:translateX(0) rotate(-24deg)} 45%{transform:translateX(45%) rotate(-18deg)} 100%{transform:translateX(72%) rotate(14deg)} }
+@keyframes tiger-drive { 0%{transform:translateX(-5%) rotate(-17deg)} 40%{transform:translateX(35%) rotate(-28deg)} 100%{transform:translateX(70%) rotate(12deg)} }
+@keyframes blossom-thrusts { 0%,35%,70%{transform:translateX(25%) skewX(4deg)} 20%,55%,100%{transform:translateX(85%) skewX(-8deg)} }
+@keyframes drum-crosscut { 0%{transform:translateX(0) rotate(-8deg)} 35%{transform:translateX(75%) rotate(14deg)} 65%{transform:translateX(42%) rotate(-13deg)} 100%{transform:translateX(80%) rotate(8deg)} }
+@keyframes shadow-crossing { 0%{transform:translateX(0);opacity:1} 25%{transform:translateX(18%);opacity:.15} 65%{transform:translateX(92%) skewX(-8deg);opacity:.55} 100%{transform:translateX(85%);opacity:1} }
 .film-reduced *, .film-reduced { animation:none!important; transition:none!important; }
 .film-reduced .film-actor { transform:none!important; filter:none!important; }
 .film-reduced .film-enemy { transform:scaleX(-1)!important; }
 .film-reduced .film-trail,.film-reduced .film-sparks,.film-reduced .film-ring { display:none; }
-@media(prefers-reduced-motion:reduce) { .strike-film,.strike-film * { animation:none!important;transition:none!important; } }

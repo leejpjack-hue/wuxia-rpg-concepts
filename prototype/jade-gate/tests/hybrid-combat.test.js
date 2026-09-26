@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { session, clearEncounter } from './helpers.js';
 import { groundPoint, onGround } from '../src/domain/ground.js';
+import { HERO_IDS } from '../src/content/heroes.js';
 import { StrikeTimeline } from '../src/presentation/duel-cinematic.js';
 const frames = (g,n,input={}) => { for(let i=0;i<n;i++) g.step(1/60,input); };
 function crossfire() {
@@ -45,7 +46,7 @@ test('all actors and patrol targets remain on courtyard, including diagonal corn
   }
 });
 test('cinematic preview matches actual damage and never consumes a turn',()=>{
-  for(const hero of ['zhao-yun','lu-zhishen','hu-sanniang','lu-bu'])for(const action of ['attack','technique','guard','tea']) {
+  for(const hero of HERO_IDS)for(const action of ['attack','technique','guard','tea']) {
     const g=session();g.start(hero,'quickplay');g.beginDuel(0);g.g.p.hp=50;
     const before=JSON.stringify(g.g), result=g.combat.preview(action);
     assert(result);assert.equal(JSON.stringify(g.g),before);

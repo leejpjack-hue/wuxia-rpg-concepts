@@ -131,6 +131,8 @@ export class GameSession {
       throw new Error("This hero or act is not available in this build.");
     if (act.bossId && BOSSES[act.bossId]?.planned && act.available)
       throw new Error("Cannot launch unbuilt boss.");
+    if (runMode === "campaign" && hero.quickPlayOnly)
+      throw new Error("This hero is available in Quick play only.");
     if (runMode === "campaign" && !this.profile.unlockedHeroes.includes(heroId))
       throw new Error(
         "Defeat Lü Bu in Act III to unlock him in the campaign. Use Quick play to try him now.",
@@ -347,7 +349,7 @@ export class GameSession {
     if (!cp) return false;
     const hero = HEROES.find((h) => h.id === cp.heroId),
       act = actById(cp.actId);
-    if (!hero || !act?.available) return false;
+    if (!hero || hero.quickPlayOnly || !this.profile.unlockedHeroes.includes(hero.id) || !act?.available) return false;
     this.createRun(hero, act, "campaign");
     Object.assign(this.g, {
       runId: cp.runId,
@@ -392,7 +394,9 @@ export class GameSession {
   setSetting(key, value) {
     if (!Object.hasOwn(this.profile.settings, key))
       throw new Error("Unknown setting");
-    if (key.endsWith("Volume")) value = Math.max(0, Math.min(1, Number(value)));
+    if (key === "language") {
+      if (!["ja", "en"].includes(value)) return;
+    } else if (key.endsWith("Volume")) value = Math.max(0, Math.min(1, Number(value)));
     else value = !!value;
     if (typeof value === "number" && !Number.isFinite(value)) return;
     this.profile.settings[key] = value;

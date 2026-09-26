@@ -1,3 +1,4 @@
+import { translate, localizeDocument } from "../locales/i18n.js";
 import { HEROES } from "../content/heroes.js";
 import { UPGRADES } from "../content/disciplines.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
@@ -5,6 +6,7 @@ import { cultivationCost } from "../domain/progression.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
+    this.t = text => translate(text, session.profile.settings.language);
     this.document = document;
     this.$ = (id) => document.getElementById(id);
     this.heroId = HEROES[0].id;
@@ -14,7 +16,7 @@ export class GameView {
     this.onGesture = onGesture;
     this.$("heroes").innerHTML = HEROES.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">0${index + 1} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">0${index + 1} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
@@ -28,11 +30,12 @@ export class GameView {
         this.runMode = button.dataset.mode;
         if (
           this.runMode === "campaign" &&
-          !session.profile.unlockedHeroes.includes(this.heroId)
+          (!session.profile.unlockedHeroes.includes(this.heroId) || HEROES.find(h => h.id === this.heroId)?.quickPlayOnly)
         )
           this.heroId = HEROES[0].id;
         this.refreshMenu();
       };
+    this.$("language").onchange = event => this.perform(() => session.setSetting("language", event.target.value));
     this.$("start").onclick = () =>
       this.perform(() => session.start(this.heroId, this.runMode));
     this.$("continue").onclick = () =>
@@ -70,9 +73,10 @@ export class GameView {
       session.bus.on("state:changed", () => this.render()),
       session.bus.on("dialogue:changed", () => this.render()),
       session.bus.on("profile:changed", () => {
+        const languageChanged = this.language !== session.profile.settings.language;
         this.settings();
         this.refreshMenu();
-        if (session.mode === "waystation") this.render();
+        if (languageChanged || session.mode === "waystation") this.render();
       }),
       session.bus.on("notice", ({ text }) => this.notice(text)),
       session.bus.on("boss:phase", ({ name }) => this.notice(name)),
@@ -86,24 +90,25 @@ export class GameView {
       this.$("app-status").textContent = "";
       fn();
     } catch (error) {
-      this.$("app-status").textContent = error.message;
+      this.$("app-status").textContent = this.t(error.message);
     }
   }
   settings() {
     const s = this.session.profile.settings;
+    this.language = s.language;
+    this.$("language").value = s.language;
+    localizeDocument(this.document, s.language);
     this.document.body.classList.toggle("reduced-motion", s.reducedMotion);
     for (const id of ["sound", "music"]) {
       this.$(id).textContent =
-        `${id === "sound" ? "Sound" : "Music"} ${s[id] ? "on" : "off"}`;
+        this.t(`${id === "sound" ? "Sound" : "Music"} ${s[id] ? "on" : "off"}`);
       this.$(id).setAttribute("aria-pressed", String(s[id]));
     }
-    this.$("motion").textContent = s.reducedMotion
-      ? "Motion reduced"
-      : "Motion on";
+    this.$("motion").textContent = this.t(s.reducedMotion ? "Motion reduced" : "Motion on");
     this.$("motion").setAttribute("aria-pressed", String(s.reducedMotion));
     for (const key of ["masterVolume", "musicVolume", "sfxVolume"])
       this.$(key).value = s[key];
-    this.$("save-status").textContent = this.session.store.warning;
+    this.$("save-status").textContent = this.t(this.session.store.warning);
   }
   refreshMenu() {
     const profile = this.session.profile,
@@ -113,38 +118,46 @@ export class GameView {
         locked =
           this.runMode === "campaign" &&
           !profile.unlockedHeroes.includes(button.dataset.hero);
+      const cardHero = HEROES.find(h => h.id === button.dataset.hero);
+      button.hidden = this.runMode === "campaign" && !!cardHero.quickPlayOnly;
+      button.setAttribute("aria-label", this.t(`Choose ${cardHero.name}`));
+      button.querySelector("img").alt = this.t(`${cardHero.name} character art`);
+      for (const [selector, value] of [[".card-copy small", cardHero.title], ["h2", cardHero.name], [".card-copy p", cardHero.weapon], [".stats", cardHero.style]])
+        button.querySelector(selector).textContent = this.t(value);
+      const biography = button.querySelector(".card-biography");
+      biography.hidden = !selected;
+      biography.textContent = selected ? this.t(cardHero.description) : "";
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
       button.disabled = locked;
-      button.querySelector(".lock-note").textContent = locked
-        ? "Unlock in Act III · try in Quick play"
-        : "";
+      button.querySelector(".lock-note").textContent = this.t(locked ? "Unlock in Act III · try in Quick play" : cardHero.quickPlayOnly ? "Quick play only" : "");
     }
     for (const button of this.document.querySelectorAll("[data-mode]"))
       button.setAttribute(
         "aria-pressed",
         String(button.dataset.mode === this.runMode),
       );
-    this.$("hero-description").textContent = hero.description;
+    this.$("selected-hero-name").textContent = this.t(hero.name);
+    this.$("hero-description").textContent = this.t(hero.description);
     const record = profile.records[this.heroId];
-    this.$("record").textContent = record
+    this.$("record").textContent = this.t(record
       ? `Personal best: ${record.best} renown · ${record.wins} victories`
-      : "A new legend awaits. Your best run is saved on this device.";
+      : "A new legend awaits. Your best run is saved on this device.");
     this.$("start").disabled = !this.ready;
-    this.$("start").textContent = this.ready
+    this.$("start").textContent = this.t(this.ready
       ? this.runMode === "campaign"
         ? "Begin the journey →"
         : "Enter quick play →"
-      : "Preparing your journey…";
+      : "Preparing your journey…");
     this.$("continue").hidden = this.runMode !== "campaign" || !profile.checkpoint;
     this.$("continue").disabled = !this.ready;
     this.$("journey-summary").textContent =
-      this.runMode === "campaign"
+      this.t(this.runMode === "campaign"
         ? `Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`
-        : "Quick play · all four heroes · no permanent cultivation bonuses";
+        : "Quick play · all nine heroes · no permanent cultivation bonuses");
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
-        `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${act.name}<small>${profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development"}</small></span>`,
+        `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,
     ).join("");
   }
   setReady(value) {
@@ -153,7 +166,7 @@ export class GameView {
   }
   notice(text) {
     clearTimeout(this.noticeTimer);
-    this.$("banner").textContent = text;
+    this.$("banner").textContent = this.t(text);
     this.$("banner").classList.add("show");
     this.noticeTime = 2.5;
     // The banner lives outside the scene mains now, so clear it ourselves.
@@ -164,9 +177,9 @@ export class GameView {
   }
   modal(kicker, title, copy) {
     this.$("overlay").hidden = false;
-    this.$("modal-kicker").textContent = kicker;
-    this.$("modal-title").textContent = title;
-    this.$("modal-copy").textContent = copy;
+    this.$("modal-kicker").textContent = this.t(kicker);
+    this.$("modal-title").textContent = this.t(title);
+    this.$("modal-copy").textContent = this.t(copy);
     this.$("choices").innerHTML = "";
     this.$("modal-actions").innerHTML = "";
   }
@@ -176,7 +189,7 @@ export class GameView {
     { primary = false, disabled = false, parent = "modal-actions" } = {},
   ) {
     const btn = this.document.createElement("button");
-    btn.textContent = text;
+    btn.textContent = this.t(text);
     btn.disabled = disabled;
     if (primary) btn.classList.add("primary");
     btn.onclick = () => this.perform(onClick);
@@ -211,7 +224,7 @@ export class GameView {
       const d = session.dialogue,
         line = d.lines[d.index];
       this.modal(
-        `${session.act.name} · ${d.index + 1} / ${d.lines.length}`,
+        `${this.t(session.act.name)} · ${d.index + 1} / ${d.lines.length}`,
         line.speaker,
         line.text,
       );
@@ -241,7 +254,7 @@ export class GameView {
       );
       for (const item of UPGRADES) {
         const b = this.button(
-          `${item.name} — ${item.description}`,
+          `${this.t(item.name)} — ${this.t(item.description)}`,
           () => session.chooseDiscipline(item.id),
           { parent: "choices" },
         );
@@ -256,7 +269,7 @@ export class GameView {
       for (const item of CULTIVATIONS) {
         const { rank, cost, maxed } = cultivationCost(session.profile, item.id);
         const b = this.button(
-          `${item.name} ${rank}/${item.maxRank} · ${maxed ? "Mastered" : cost + " Renown"} · ${item.description}`,
+          `${this.t(item.name)} ${rank}/${item.maxRank} · ${this.t(maxed ? "Mastered" : cost + " Renown")} · ${this.t(item.description)}`,
           () => session.buy(item.id),
           {
             disabled: maxed || cost > session.profile.wallet,

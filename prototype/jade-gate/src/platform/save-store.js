@@ -1,4 +1,4 @@
-import { HERO_IDS } from "../content/heroes.js";
+import { HEROES, HERO_IDS } from "../content/heroes.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
 export const SAVE_VERSION = 2;
 export const SAVE_KEY = "blades-profile-v2";
@@ -9,6 +9,7 @@ const integer = (v, fallback = 0, max = 1e8) =>
 export const defaultProfile = () => ({
   version: SAVE_VERSION,
   settings: {
+    language: "ja",
     sound: true,
     music: true,
     reducedMotion: false,
@@ -19,7 +20,7 @@ export const defaultProfile = () => ({
   records: {},
   wallet: 0,
   ranks: {},
-  unlockedHeroes: HERO_IDS.filter((id) => id !== "lu-bu"),
+  unlockedHeroes: HEROES.filter((hero) => !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
   completedActs: [],
   completedRuns: [],
   checkpoint: null,
@@ -117,6 +118,8 @@ export function sanitizeProfile(raw) {
   for (const key of ["sound", "music", "reducedMotion"])
     if (typeof raw.settings?.[key] === "boolean")
       result.settings[key] = raw.settings[key];
+  if (["ja", "en"].includes(raw.settings?.language))
+    result.settings.language = raw.settings.language;
   for (const key of ["masterVolume", "musicVolume", "sfxVolume"])
     result.settings[key] = number(raw.settings?.[key], result.settings[key], 1);
   result.checkpoint = sanitizeCheckpoint(raw.checkpoint);

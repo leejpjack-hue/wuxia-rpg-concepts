@@ -740,10 +740,9 @@ kbd {
     display: none;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
+.reduced-motion * {
+  transition: none !important;
+  animation: none !important;
 }
 @media (max-width: 900px) {
   .game-top {
@@ -923,3 +922,18 @@ kbd {
     font-size: 9px;
   }
 }
+
+/* Saved language selection and a readable biography for the selected hero. */
+.language-picker { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted,#b4b8af); }
+.language-picker select { color:inherit; background:#111c1d; border:1px solid #65746c; border-radius:3px; padding:8px; font:inherit; }
+.hero-card[hidden] { display:none!important; }
+#selected-hero-name { margin:0 0 8px; font-size:22px; }
+#hero-description { max-width:75ch; line-height:1.8; }
+html[lang=ja] body { font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; }
+html[lang=ja] h1, html[lang=ja] h2 { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
+html[lang=ja] .film-title { letter-spacing:.08em; }
+
+@media (max-width: 700px) { header { height:auto; min-height:90px; gap:12px; flex-wrap:wrap; padding-top:12px; padding-bottom:12px; } nav { flex-wrap:wrap; } .language-picker { font-size:11px; } .language-picker select { padding:5px; } }
+
+.card-copy .card-biography { margin-top:12px; font-size:12px; line-height:1.55; color:#f3eee0; letter-spacing:0; }
+.hero-card.selected:after { inset:10% 0 0; background:linear-gradient(transparent, #10191bea 45%, #10191b 100%); }

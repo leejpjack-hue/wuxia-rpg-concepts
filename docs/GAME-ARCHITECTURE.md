@@ -82,7 +82,7 @@ These rules address the previous empty menu overlay, missing action container, c
 
 `blades-profile-v2` continues to store settings, records, Renown wallet, cultivation ranks, unlocks, completed acts/runs and checkpoint. Existing saves are preserved. Checkpoints restart the current encounter or restore a dialogue, discipline choice or tea house; they do not restore mid-duel health, rival HP, intent or used tea. Old arena checkpoints enter the equivalent card encounter with saved starting stats. Optional `turns` defaults to zero on legacy saves.
 
-The roster is nine heroes: the original four plus Guan Yu, Wu Song, Mu Guiying, Liang Hongyu and Nie Yinniang from the 2026-09-25 Stitch try-run (card art only; they roam as framed standee tokens). Quick play allows every hero and updates personal records, but awards no permanent currency or unlocks. Campaign completes Act I through arrival dialogue, three encounters, two discipline choices, Warden dialogue, resolution, and tea-house cultivation. Reloading the tea house does not award victory twice. Cultivation applies on the next new campaign run. Lü Bu's campaign unlock still depends on the future Act III.
+The roster is nine heroes: the original four plus Guan Yu, Wu Song, Mu Guiying, Liang Hongyu and Nie Yinniang from the 2026-09-25 Stitch try-run (full-body portraits and transparent gameplay sprites; Quick Play only). Quick play allows every hero and updates personal records, but awards no permanent currency or unlocks. Campaign completes Act I through arrival dialogue, three encounters, two discipline choices, Warden dialogue, resolution, and tea-house cultivation. Reloading the tea house does not award victory twice. Cultivation applies on the next new campaign run. Lü Bu's campaign unlock still depends on the future Act III.
 
 Writes continue to detect another tab's newer save, preserve corrupt/future-version data, and report session-only play when storage is unavailable. Browser QA uses a separate localhost origin so the user's normal 127.0.0.1 campaign progress is not replaced.
 
@@ -93,3 +93,11 @@ Run `npm test` and `npm run check` in `prototype/jade-gate`. Card tests cover id
 Browser acceptance: roster → campaign dialogue → the pass (move by buttons and WASD) → contact starts first card duel → win returns to the pass → disciplines → Warden stance change → resolution → tea house → purchase → reload/Continue; also pause/resume from both the pass and a duel, and Quick play. Check narrow layouts, pass sprites, card portraits, keyboard controls and reduced motion.
 
 Delivered: local browser card RPG with Act I, nine heroes, persistent progression, procedural soundtrack and 22 illustrated assets. Deferred: later acts, open-world exploration, equipment inventory, narrative branching, new card illustrations matching the revised weapon canon, 3D meshes/rigs and a Godot port.
+
+### Localization and roster availability (26 September 2026)
+
+`HEROES[].quickPlayOnly` limits the five newer heroes to Quick Play. The menu hides them in Campaign and session validation rejects stale or forged campaign selections. Save normalization preserves records and currency while discarding checkpoints for unavailable heroes. Lü Bu retains the planned Act III unlock.
+
+`profile.settings.language` is `ja` by default or `en` by explicit selection. `src/locales/i18n.js` applies source-key translations to dynamic text and `data-i18n` attributes to static markup. `ja-content.js` contains all nine biographies and story exchanges. Language changes rerender current scenes without advancing dialogue or committing a pending combat turn.
+
+Card cinematics use each hero’s transparent sprite and individual CSS strike styles. Damage remains committed once at timeline completion. The persisted reduced-motion preference controls animation; OS preference initializes it only before the player has saved settings.
