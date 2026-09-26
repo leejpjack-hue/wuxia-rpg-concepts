@@ -15,6 +15,8 @@ python3 prototype/jade-gate/serve.py
 
 Open **http://127.0.0.1:8765/** to play, or **http://127.0.0.1:8765/gallery.html** to browse the artwork. On macOS, double-click `prototype/jade-gate/Play.command`. The [development spec](prototype/jade-gate/docs/development-spec.md) and [complete image prompts](prototype/jade-gate/docs/image-prompts.md) are included. 3D meshes and rigs remain future work.
 
+For Cloudflare Pages, publish `prototype/jade-gate` as the build output directory to serve the RPG at the domain root. Existing projects publishing `prototype` are supported by `prototype/_redirects`, which sends `/` to `/jade-gate/`; all artwork remains inside the published directory. The older four-hero demo at `/index.html` also uses images from `jade-gate/assets`.
+
 ```bash
 npm --prefix prototype/jade-gate test
 npm --prefix prototype/jade-gate run check

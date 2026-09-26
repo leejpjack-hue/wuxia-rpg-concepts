@@ -1,8 +1,8 @@
 const HEROES = [
-  {name:'Zhao Yun',mark:'趙',title:'THE SILVER EDGE',style:'Precision · balanced',color:'#d5dce2',accent:'#b9362e',image:'../characters/zhao-yun/stitch-v2/concept.jpg',speed:265,damage:24,reach:72,signature:'AZURE LINE'},
-  {name:'Lu Zhishen',mark:'魯',title:'THE TEMPLE STORM',style:'Power · control',color:'#bd934c',accent:'#d9b86c',image:'../characters/lu-zhishen/stitch-v2/concept.jpg',speed:220,damage:34,reach:88,signature:'TEMPLE BELL'},
-  {name:'Hu Sanniang',mark:'扈',title:'THE CRIMSON MOON',style:'Speed · risk',color:'#bc4640',accent:'#63a17c',image:'../characters/hu-sanniang/stitch-v2/concept.jpg',speed:300,damage:19,reach:66,signature:'MOON SNARE'},
-  {name:'Lü Bu',mark:'呂',title:'THE SKY-SPLITTER',style:'Reach · force',color:'#732723',accent:'#d0a85d',image:'../characters/lu-bu/grok-v4/concept.jpg',speed:205,damage:38,reach:104,signature:'SKY SPLITTER'}
+  {name:'Zhao Yun',mark:'趙',title:'THE SILVER EDGE',style:'Precision · balanced',color:'#d5dce2',accent:'#b9362e',image:'jade-gate/assets/zhao-yun.png',speed:265,damage:24,reach:72,signature:'AZURE LINE'},
+  {name:'Lu Zhishen',mark:'魯',title:'THE TEMPLE STORM',style:'Power · control',color:'#bd934c',accent:'#d9b86c',image:'jade-gate/assets/lu-zhishen.png',speed:220,damage:34,reach:88,signature:'TEMPLE BELL'},
+  {name:'Hu Sanniang',mark:'扈',title:'THE CRIMSON MOON',style:'Speed · risk',color:'#bc4640',accent:'#63a17c',image:'jade-gate/assets/hu-sanniang.png',speed:300,damage:19,reach:66,signature:'MOON SNARE'},
+  {name:'Lü Bu',mark:'呂',title:'THE SKY-SPLITTER',style:'Reach · force',color:'#732723',accent:'#d0a85d',image:'jade-gate/assets/lu-bu.png',speed:205,damage:38,reach:104,signature:'SKY SPLITTER'}
 ];
 const $=s=>document.querySelector(s), roster=$('#roster'), selection=$('#selection'), gameEl=$('#game'), canvas=$('#arena'), ctx=canvas.getContext('2d');
 let selected=0, running=false, last=0, frame=0, score=0, wave=1, kills=0, keys={}, enemies=[], sparks=[], audioOn=true;
