@@ -98,6 +98,16 @@ export class DuelView {
       node.innerHTML = html;
     }
   }
+  /** Active bleed/poison/stun shown as compact status chips. */
+  renderStatus(elementId, status) {
+    const node = this.$(elementId);
+    if (!node) return;
+    const chips = [];
+    if (status?.bleed) chips.push(`Bleed ${status.bleed.amount}×${status.bleed.turns}`);
+    if (status?.poison) chips.push(`Poison ${status.poison.amount}×${status.poison.turns}`);
+    if (status?.stunned) chips.push("Stunned");
+    node.textContent = this.t(chips.join(" · "));
+  }
   render() {
     const { g, mode } = this.session;
     if (!g?.duel) return;
@@ -139,13 +149,15 @@ export class DuelView {
         ? this.t(`Then: ${after.name}${after.damage ? ` · ${after.damage} damage` : ""}`) : "";
       this.$("enemy-card").dataset.intent = intent.kind;
       this.$("attack-detail").textContent = this.t(`${Math.round(p.damage * p.power * (intent.kind === "guard" ? 0.5 : 1))} damage · +${12 + p.flowBonus} Flow`);
+      this.renderStatus("enemy-status", d.status?.enemy);
     }
     const technique = HERO_TECHNIQUES[p.id];
     const cost = techniqueCost(p, g.curios);
     this.$("technique-name").textContent = this.t(p.skill);
     this.$("technique-detail").textContent = this.t(`${Math.round(p.damage * p.power * technique.multiplier)} damage · ${cost} Flow`);
     this.$("technique-help").textContent = `${this.t(p.skill)}: ${this.t(technique.description)} ${this.t("All techniques pierce guard.")}`;
-    this.$("tea-detail").textContent = this.t(`Recover ${30 + (g.curios?.includes("river-charm") ? 15 : 0)} health · ${d.tea} left this encounter`);
+    this.$("tea-detail").textContent = this.t(`Recover ${30 + (g.curios?.includes("river-charm") ? 15 : 0)} health, clear bleed and poison · ${d.tea} left this encounter`);
+    this.renderStatus("hero-status", d.status?.hero);
     this.renderCurios("curio-icons", g.curios);
     for (const button of this.document.querySelectorAll("[data-action]")) {
       button.disabled = this.busy || mode !== "playing" ||

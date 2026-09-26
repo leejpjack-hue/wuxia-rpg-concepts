@@ -22,10 +22,13 @@ export function rtSession(storage = memoryStorage()) {
 }
 export function duelPolicy(game) {
   const p = game.g.p,
+    d = game.g.duel,
     intent = game.combat.intent();
-  return game.g.duel.tea && p.hp < p.maxHp - 35
-    ? "tea"
-    : p.flow >= techniqueCost(p, game.g.curios)
+  // Tea doubles as the cleanse for bleed and poison.
+  const afflicted = d.status && (d.status.hero.bleed || d.status.hero.poison);
+  if (d.tea && (afflicted || p.hp < p.maxHp - 35))
+    return "tea";
+  return p.flow >= techniqueCost(p, game.g.curios)
       ? "technique"
       : ["heavy", "guard"].includes(intent.kind)
         ? "guard"

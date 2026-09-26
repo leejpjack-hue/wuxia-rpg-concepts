@@ -56,6 +56,20 @@ export const CURIOS = [
     icon: "帶",
     description: "Your first Technique each duel also blocks half the reply.",
   },
+  {
+    id: "venom-vial",
+    name: "Venom Vial",
+    cn: "毒瓶",
+    icon: "毒",
+    description: "Techniques also poison the rival for 3 damage over 3 turns.",
+  },
+  {
+    id: "rending-fang",
+    name: "Rending Fang",
+    cn: "裂牙",
+    icon: "牙",
+    description: "Every fourth Strike opens a bleeding wound: 3 damage over 2 turns.",
+  },
 ];
 
 export const CURIO_IDS = CURIOS.map((curio) => curio.id);

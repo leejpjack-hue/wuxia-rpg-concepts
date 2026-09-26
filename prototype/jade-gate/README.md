@@ -17,7 +17,7 @@ Inside a card duel:
 - **1 — Strike:** deal weapon damage and build Flow.
 - **2 — Guard:** block 80% of the rival's next attack and gain 20 Flow.
 - **3 — Technique:** spend Flow on your hero's signature attack. All techniques pierce guard.
-- **4 — Healing tea:** recover up to 30 health once per encounter; the rival still replies.
+- **4 — Healing tea:** recover up to 30 health once per encounter and clear bleed/poison; the rival still replies.
 - **Esc — Pause/resume.** Mouse and touch buttons offer the same choices.
 
 Each card action plays a short combat sequence with weapon trails, impact numbers and a counterstrike. Dragon Rush dashes with afterimages, Mountain Bell creates a shockwave, Crimson Waltz makes twin passes, and Skybreaker delivers a heavy cleave. The five newer heroes also have distinct strikes: Guan Yu’s sweeping dragon cleave, Wu Song’s staff slam, Mu Guiying’s repeated spear thrusts, Liang Hongyu’s crosscuts and shock rings, and Nie Yinniang’s shadow dash. Finishing blows complete before leaving the duel; pause cancels an unfinished animation without consuming the turn. Reduced motion uses a short static sequence.
@@ -25,6 +25,10 @@ Each card action plays a short combat sequence with weapon trails, impact number
 Only an action advances a duel turn — no timers or idle damage inside a duel. The rival's next move and exact damage are shown before you choose. Defeating a rival restores 12 health and 8 Flow and returns you to the pass; one pot of healing tea is shared across the whole encounter. Choose a discipline between encounters. Reduced motion, sound/music and volume controls are in the menu/header.
 
 Music is synthesized in the browser. Each scene has a 32-bar arrangement with changing melody and instrumentation, lasting roughly 49–80 seconds before it loops. The soundtrack resumes its place after switching tabs; volume and music toggles are in Settings.
+
+## Rival status effects
+
+Rivals do more than strike and guard. **Rending Slash** (Scarred Bandit) opens a bleed that ignores guard for two turns; the **Venom Adept** poisons over three turns and siphons your Flow; the **Iron Pugilist's** pommel smash stuns you and steals a whole turn; the **Ashen Priest** mends its wounds and washes away your poisons; twin strikes land two blows you can blunt separately. Status chips show under each health bar, healing tea is the cleanse, and two curios weaponize it back at the rival: the Venom Vial poisons through techniques, the Rending Fang opens bleeds on every fourth strike.
 
 ## RPG progression
 

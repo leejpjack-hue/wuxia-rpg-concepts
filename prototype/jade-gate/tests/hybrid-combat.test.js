@@ -24,24 +24,24 @@ test('arrows use swept collision, dodge prevents damage, pause freezes projectil
   g.resume();g.g.roam.invulnerable=0;g.g.roam.dash=0;g.g.p.hp=1;g.g.roam.shots=[arrow()];frames(g,1);assert.equal(g.mode,'defeat');
 });
 test('last archer kill advances encounter once, with no orphan arrows or duplicate rewards',()=>{
-  const g=crossfire();g.beginDuel(g.g.roam.field.findIndex(e=>!e.ranged));
-  while(g.mode==='playing') g.combat.act(g.g.p.flow>=g.g.p.cost?'technique':'attack');
+  const g=crossfire();
+  // archer-run fields an archer, a venom adept and a guard: duel both melee first.
+  for(let duel=0; duel<2; duel++) {
+    g.beginDuel(g.g.roam.field.findIndex(e=>!e.ranged));
+    while(g.mode==='playing') g.combat.act(g.g.p.flow>=g.g.p.cost?'technique':'attack');
+  }
   assert.equal(g.mode,'exploring');
   const archers=g.g.roam.field.filter(e=>e.ranged);
-  assert.equal(archers.length,2); // archer-run fields two watchers
+  assert.equal(archers.length,1); // archer-run now fields a single watcher
   for(const archer of archers) archer.hp=1;
-  const last=archers.at(-1), kills=g.g.totalKills, score=g.g.score;
-  for(const archer of archers){
-    Object.assign(g.g.p,{x:archer.x+70,y:archer.y});
-    g.g.roam.strikeCD=0;
-    g.g.roam.shots=[{owner:archer.id}];
-    assert(g.roam.act('strike'));
-    if(archer!==last) assert.equal(g.mode,'exploring');
-  }
-  assert.equal(g.mode,'upgrade');assert.equal(g.g.totalKills,kills+2);
-  assert.equal(g.g.score,score+archers.reduce((sum,a)=>sum+a.reward,0));
+  const kills=g.g.totalKills, score=g.g.score;
+  Object.assign(g.g.p,{x:archers[0].x+70,y:archers[0].y});
+  g.g.roam.shots=[{owner:archers[0].id}];
+  assert(g.roam.act('strike'));
+  assert.equal(g.mode,'upgrade');assert.equal(g.g.totalKills,kills+1);
+  assert.equal(g.g.score,score+archers[0].reward);
   assert.equal(g.g.roam.shots.length,0);
-  assert.equal(g.roam.act('strike'),false);assert.equal(g.g.totalKills,kills+2);
+  assert.equal(g.roam.act('strike'),false);assert.equal(g.g.totalKills,kills+1);
 });
 test('all actors and patrol targets remain on courtyard, including diagonal corners and dodges',()=>{
   for (const point of [{x:-999,y:-999},{x:9999,y:9999},{x:0,y:350},{x:1280,y:350}]) assert(onGround(groundPoint(point.x,point.y)));

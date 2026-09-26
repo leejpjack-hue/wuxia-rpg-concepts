@@ -1,9 +1,10 @@
 // Card combat tuning is separate from the archived real-time arena rules.
+// Roster totals are kept stable across reshuffles so run stats stay comparable.
 export const DUEL_ROSTERS = {
-  vanguard: ["guard", "guard"],
-  "archer-run": ["archer", "archer", "guard"],
-  "gate-vanguard": ["guard", "guard", "guard"],
-  crossfire: ["archer", "guard"],
+  vanguard: ["guard", "bandit"],
+  "archer-run": ["archer", "venom-adept", "guard"],
+  "gate-vanguard": ["pugilist", "bandit", "guard"],
+  crossfire: ["archer", "ashen-priest"],
   warden: ["warden"],
   // Act II stays behind bamboo-crossing.available === false.
   "bamboo-ambush": ["shadow-assassin", "shadow-assassin"],
@@ -21,6 +22,26 @@ export const DUEL_ENEMIES = {
     name: "Pass Watcher", title: "THE CROSSFIRE", art: "archer-sprite",
     hp: 62, damage: 14, reward: 150,
     pattern: ["heavy", "strike", "guard"],
+  },
+  bandit: {
+    name: "Scarred Bandit", title: "RED PASS BRIGAND", art: "guard-sprite",
+    hp: 60, damage: 11, reward: 130,
+    pattern: ["bleed", "strike", "double"],
+  },
+  "venom-adept": {
+    name: "Venom Adept", title: "THE SILENT ADDER", art: "archer-sprite",
+    hp: 52, damage: 12, reward: 160,
+    pattern: ["poison", "drain", "guard"],
+  },
+  pugilist: {
+    name: "Iron Pugilist", title: "FISTS OF THE GATE", art: "guard-sprite",
+    hp: 78, damage: 13, reward: 150,
+    pattern: ["concuss", "strike", "heavy"],
+  },
+  "ashen-priest": {
+    name: "Ashen Priest", title: "BANNER CHOIR", art: "warden-sprite",
+    hp: 64, damage: 10, reward: 170,
+    pattern: ["mend", "poison", "strike"],
   },
   warden: {
     name: "The Ashen Warden", title: "KEEPER OF THE JADE GATE", art: "warden-sprite",

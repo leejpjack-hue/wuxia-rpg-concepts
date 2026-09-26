@@ -41,16 +41,18 @@ test("elite victory drafts three curios; the pick is carried and applied in duel
   assert.equal(game.g.map.pendingCurios.length, 0); // unchosen drafts are lost
   assert.equal(game.mode, "map"); // still choosing row 2's node
   // The carried curio changes duel rules: Jade Pendant heals on first guard.
-  game.chooseNode("duel:crossfire");
-  game.beginDuel(game.g.roam.field.findIndex((e) => !e.ranged));
-  game.g.curios = ["jade-pendant"];
-  game.g.p.hp = 60;
-  const before = game.g.p.hp;
-  game.combat.act("guard");
-  const afterFirst = game.g.p.hp;
-  assert.equal(afterFirst, before - game.g.duel.lastIncoming + 6);
-  game.combat.act("guard");
-  assert.equal(game.g.p.hp, afterFirst - game.g.duel.lastIncoming); // pendant is once per duel
+  // Use a plain guard (quick play vanguard) so no status effects disturb the math.
+  const pendant = session();
+  pendant.start("zhao-yun", "quickplay");
+  pendant.beginDuel(0);
+  pendant.g.curios = ["jade-pendant"];
+  pendant.g.p.hp = 60;
+  const before = pendant.g.p.hp;
+  pendant.combat.act("guard");
+  const afterFirst = pendant.g.p.hp;
+  assert.equal(afterFirst, before - pendant.g.duel.lastIncoming + 6);
+  pendant.combat.act("guard");
+  assert.equal(pendant.g.p.hp, afterFirst - pendant.g.duel.lastIncoming); // pendant is once per duel
 });
 
 test("event and rest nodes resolve without combat and advance the map", () => {

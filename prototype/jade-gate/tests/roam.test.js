@@ -127,7 +127,7 @@ test("removeContacted only removes the contacted rival", () => {
   assert.equal(roam.removeContacted(), null); // no contact yet
   g.g.roam.contact = 1;
   const removed = roam.removeContacted();
-  assert.equal(removed.kind, "guard");
+  assert.equal(removed.kind, "bandit"); // vanguard's second rival is the brigand
   assert.equal(g.g.roam.field.length, 1);
   assert.equal(g.g.roam.contact, -1);
 });
