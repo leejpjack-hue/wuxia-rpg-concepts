@@ -127,6 +127,8 @@ export const messages = {
   'Blocks half of a normal attack. Techniques pierce guard.': '通常攻撃のダメージを半減。奥義は防御を貫通します。',
   'You guard and gather 20 Flow.': '防御し、気を20ためた。',
   'The Warden enters his second stance. Incoming damage rises by 20%.': '守将が第二の構えに移行。受けるダメージが20%増加。',
+  '{name} enters a second stance. Incoming damage rises by 20%.': '{name}が第二の構えに移行。受けるダメージが20%増加。',
+  'Cut down the mist stalkers': '霧の刺客を討て', 'Duel with the Night Heron': '夜鷺との決闘',
   'Warden · Unbroken fury': '守将 · 不屈の怒り',
   'Zhao Yun': '趙雲', 'Lu Zhishen': '魯智深', 'Hu Sanniang': '扈三娘', 'Lü Bu': '呂布', 'Guan Yu': '関羽', 'Wu Song': '武松', 'Mu Guiying': '穆桂英', 'Liang Hongyu': '梁紅玉', 'Nie Yinniang': '聶隠娘',
   'The White Dragon': '白龍', 'The Flower Monk': '花和尚', 'The Crimson Moon': '紅月', 'The Flying General': '飛将', 'The Green Dragon': '青龍', 'The Tiger Slayer': '虎を討つ者', 'The Peerless General': '無双の女将', 'The Drum-War Widow': '戦鼓の女傑', 'The Hidden Blade': '隠れ刃',

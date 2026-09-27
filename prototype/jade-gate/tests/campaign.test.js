@@ -31,9 +31,45 @@ test("campaign validates and incomplete future acts cannot be launched", () => {
   );
   const game = session();
   assert.throws(
-    () => game.start("zhao-yun", "campaign", "bamboo-crossing"),
+    () => game.start("zhao-yun", "campaign", "mount-canglan"),
     /not available/,
   );
+  // Act II unlocks only after Act I is reclaimed.
+  assert.throws(() => game.start("zhao-yun", "campaign", "bamboo-crossing"), /preceding act/);
+});
+test("Act II plays end to end: travel, map rows, shallows, Night Heron, tea house return", () => {
+  const storage = memoryStorage(),
+    game = session(storage);
+  completeCampaign(game); // Act I cleared; resting at the tea house
+  assert.equal(game.mode, "waystation");
+  // Travel button route: start the next act directly.
+  game.start("zhao-yun", "campaign", "bamboo-crossing");
+  assert.equal(game.mode, "dialogue");
+  assert.equal(game.dialogue.key, "bamboo-arrival");
+  game.advanceDialogue(true);
+  assert.equal(game.mode, "exploring");
+  assert.equal(game.act.number, 2);
+  // Water shallows slow the pass throughout the act.
+  assert.equal(game.g.shallows, true);
+  // The full walk: rows, elite curio drop, boss intro and fall.
+  const picks = [];
+  let guard = 0;
+  while (!["waystation", "victory", "defeat"].includes(game.mode) && guard++ < 600) {
+    if (game.mode === "dialogue") {
+      if (game.dialogue.key === "night-heron-intro") picks.push("boss-intro");
+      if (game.dialogue.key === "night-heron-fall") picks.push("boss-fall");
+      game.advanceDialogue(true);
+    } else if (game.mode === "exploring" || game.mode === "playing") clearEncounter(game);
+    else if (game.mode === "upgrade") game.chooseDiscipline("power");
+    else if (game.mode === "map") walkMap(game, (nodes) => nodes.find((n) => n.startsWith("elite:")) || nodes[0]);
+  }
+  assert.equal(game.mode, "waystation");
+  assert.ok(picks.includes("boss-intro") && picks.includes("boss-fall"));
+  assert(game.profile.completedActs.includes("bamboo-crossing"));
+  assert.equal(game.g.actId, "bamboo-crossing");
+  // The next waystation points at still-gated Act III.
+  const next = ACTS.find((a) => a.id === "mount-canglan");
+  assert.equal(next.available, false);
 });
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
@@ -189,32 +225,38 @@ test("invalid content references fail before launching", () => {
   );
 });
 
-test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and availability gates", () => {
+test("Act II is live: map rows, elite encounter, boss duel content, and later acts stay gated", () => {
   const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
   assert(act2, "Act II must be registered in ACTS");
   assert.equal(act2.number, 2);
   assert.equal(act2.name, "Whispering Bamboo & the River Crossing");
   assert.equal(act2.cn, "幽篁夜渡");
-  assert.equal(act2.available, false, "Act II must be gated (available: false)");
+  assert.equal(act2.available, true, "Act II is playable");
   assert.equal(act2.bossId, "night-heron");
   assert.deepEqual(act2.hazards, ["shallows", "razor-wire"]);
+  assert.deepEqual(act2.map.rows, [
+    ["duel:bamboo-ambush"],
+    ["ambush:river-skiff", "elite:bamboo-elite"],
+    ["event:travelers-gift", "rest:roadside", "duel:river-skiff"],
+    ["boss:night-heron"],
+  ]);
 
-  // Encounter roster stubs
-  assert.equal(act2.encounters.length, 3, "Act II must have 3 encounter stubs");
-  assert(act2.encounters.every((e) => e.enemies.length > 0));
+  // Encounter pool includes the hardened mist-stalker elite.
+  assert.equal(act2.encounters.length, 4);
+  assert(act2.encounters.some((e) => e.id === "bamboo-elite" && e.elite));
   assert(act2.encounters.some((e) => e.bossId === "night-heron"));
 
-  // Night Heron boss design metadata
+  // Night Heron boss metadata: built, phased, and duel-ready.
   const boss = BOSSES["night-heron"];
   assert(boss, "Night Heron must be in BOSSES");
-  assert.equal(boss.planned, true, "Night Heron must remain planned while Act II is gated");
+  assert(!boss.planned, "Night Heron is no longer planned");
   assert.equal(boss.name, "The Night Heron");
   assert.equal(boss.cn, "夜鷺娘子");
   assert(boss.phases && boss.phases.length >= 2, "Boss design metadata must include phases");
   assert(boss.mechanics.includes("sonic-rings"));
   assert(boss.mechanics.includes("razor-wire"));
 
-  // Validation passes with available: false
+  // Validation passes with Act II available.
   assert(
     validateContent({
       heroes: HEROES,
@@ -225,9 +267,9 @@ test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and
     }),
   );
 
-  // Content validation fails if prematurely marked available without playable boss implementation
+  // Content validation still guards premature availability of unbuilt acts.
   const unbuiltActs = structuredClone(ACTS);
-  unbuiltActs[1].available = true;
+  unbuiltActs[2].available = true; // mount-canglan has no encounters
   assert.throws(
     () =>
       validateContent({
@@ -240,10 +282,10 @@ test("Act II campaign scaffolding: identity, encounter stubs, boss metadata, and
     /Incomplete playable act/,
   );
 
-  // Domain gate: cannot launch unbuilt act or boss
+  // Domain gate: cannot launch Act III directly.
   const game = session();
   assert.throws(
-    () => game.start("zhao-yun", "campaign", "bamboo-crossing"),
+    () => game.start("zhao-yun", "campaign", "mount-canglan"),
     /not available/,
   );
 });
@@ -285,9 +327,9 @@ test("Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and r
   assert.equal(resolveMusicMode({ current: "dialogue", dialogueKey: "heron-fall" }), "victory");
 });
 
-test("Night Heron checkpoint keys: canonical round-trip and legacy alias support without unlocking Act II", () => {
+test("Night Heron checkpoint keys: canonical round-trip and legacy alias support", () => {
   const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
-  assert.equal(act2.available, false, "Act II must remain gated");
+  assert.equal(act2.available, true, "Act II is live");
 
   // Verify runtime derived keys
   assert.equal(`${act2.bossId}-intro`, "night-heron-intro");
@@ -417,12 +459,12 @@ test("Night Heron checkpoint keys: canonical round-trip and legacy alias support
   assert.equal(gameLegacyFall.mode, "waystation");
 });
 
-test("Act II card duel content: DUEL_ROSTERS, DUEL_ENEMIES behind the gate and roam creation", () => {
+test("Act II card duel content: rosters, enemies, elite and roam creation", () => {
   const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
-  assert.equal(act2.available, false, "Act II bamboo-crossing must remain available: false");
+  assert.equal(act2.available, true, "Act II is live");
 
   // Roster registration for all Act II encounter IDs
-  const act2EncounterIds = ["bamboo-ambush", "river-skiff", "night-heron"];
+  const act2EncounterIds = ["bamboo-ambush", "bamboo-elite", "river-skiff", "night-heron"];
   for (const encId of act2EncounterIds) {
     assert(DUEL_ROSTERS[encId], `DUEL_ROSTERS must contain encounter ${encId}`);
     assert(DUEL_ROSTERS[encId].length > 0, `DUEL_ROSTERS[${encId}] must have enemies`);
@@ -439,8 +481,7 @@ test("Act II card duel content: DUEL_ROSTERS, DUEL_ENEMIES behind the gate and r
   assert.equal(DUEL_ENEMIES["skiff-archer"].name, "Skiff Archer");
   assert.equal(DUEL_ENEMIES["night-heron"].name, "The Night Heron");
   assert(DUEL_ENEMIES["night-heron"].pattern.length >= 3);
-  assert.equal(BOSSES["night-heron"].planned, true);
-  assert.equal(act2.available, false);
+  assert(!BOSSES["night-heron"].planned);
 
   const bus = { emit() {} };
   for (const encId of act2EncounterIds) {

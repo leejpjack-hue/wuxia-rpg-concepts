@@ -292,8 +292,8 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       enemy.move++;
       if (enemy.type === "boss" && enemy.phase === 0 && enemy.hp <= enemy.maxHp / 2) {
         enemy.phase = 1;
-        log("The Warden enters his second stance. Incoming damage rises by 20%.");
-        bus.emit("boss:phase", { name: "Warden · Unbroken fury" });
+        log(`${enemy.name} enters a second stance. Incoming damage rises by 20%.`);
+        bus.emit("boss:phase", { name: `${enemy.name} · second stance` });
       }
       if (p.hp > 0 && g.enemies.length) {
         tickStatuses();

@@ -2,7 +2,7 @@
 
 ## Current direction
 
-The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a melee rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Act I is playable; Acts II–IV remain visibly gated.
+The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a melee rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Acts I and II are playable (Act II: shallows-slowed pass, bamboo map with a mist-stalker elite, Night Heron boss duel); Acts III–IV remain visibly gated.
 
 ## Runtime
 

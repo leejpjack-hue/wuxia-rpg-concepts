@@ -68,18 +68,35 @@ export const ACTS = [
     number: 2,
     name: "Whispering Bamboo & the River Crossing",
     cn: "幽篁夜渡",
-    available: false,
+    available: true,
     arena: "bamboo-ambush",
     bossId: "night-heron",
     next: "mount-canglan",
     unlocks: [],
     hazards: ["shallows", "razor-wire"],
+    // Water shallows slow every step of this act; the map forks like Act I.
+    map: {
+      rows: [
+        ["duel:bamboo-ambush"],
+        ["ambush:river-skiff", "elite:bamboo-elite"],
+        ["event:travelers-gift", "rest:roadside", "duel:river-skiff"],
+        ["boss:night-heron"],
+      ],
+    },
     encounters: [
       {
         id: "bamboo-ambush",
         title: "Ambush in the bamboo grove",
         tip: "Water shallows impede movement. Watch for sudden lunges through the fog.",
         enemies: ["guard", "guard", "guard", "guard"],
+        hazards: ["shallows"],
+      },
+      {
+        id: "bamboo-elite",
+        title: "Cut down the mist stalkers",
+        tip: "Hardened assassins between the stalks. They hit harder and refuse to fall.",
+        enemies: ["guard", "guard", "guard"],
+        elite: true,
         hazards: ["shallows"],
       },
       {
@@ -163,7 +180,6 @@ export const BOSSES = {
     name: "The Night Heron",
     cn: "夜鷺娘子",
     title: "The Blind Zither-Assassin",
-    planned: true,
     hp: 620,
     arena: "pagoda-crossing",
     mechanics: ["sonic-rings", "razor-wire"],

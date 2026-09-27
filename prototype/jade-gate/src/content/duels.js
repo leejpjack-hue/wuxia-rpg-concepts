@@ -6,8 +6,9 @@ export const DUEL_ROSTERS = {
   "gate-vanguard": ["pugilist", "bandit", "guard"],
   crossfire: ["archer", "ashen-priest"],
   warden: ["warden"],
-  // Act II stays behind bamboo-crossing.available === false.
+  // Act II: the whispering bamboo and the river crossing.
   "bamboo-ambush": ["shadow-assassin", "shadow-assassin"],
+  "bamboo-elite": ["shadow-assassin", "shadow-assassin", "shadow-assassin"],
   "river-skiff": ["skiff-archer", "shadow-assassin"],
   "night-heron": ["night-heron"],
 };
@@ -60,8 +61,8 @@ export const DUEL_ENEMIES = {
   },
   "night-heron": {
     name: "The Night Heron", title: "THE BLIND ZITHER-ASSASSIN", art: "warden-sprite",
-    hp: 95, damage: 24, reward: 800,
-    pattern: ["heavy", "strike", "guard", "heavy"],
+    hp: 210, damage: 18, reward: 800,
+    pattern: ["poison", "heavy", "strike", "guard", "heavy"],
   },
 };
 

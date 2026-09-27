@@ -264,7 +264,7 @@ test("roam shallows impedance: hero displacement is 60–70% of dry ground", () 
 
   const act2 = ACTS.find((a) => a.id === "bamboo-crossing");
   const ambush = act2.encounters.find((e) => e.id === "bamboo-ambush");
-  assert.equal(act2.available, false);
+  assert.equal(act2.available, true);
   assert(isRoamInShallows(ambush, {}));
   const ambushG = blank();
   const ambushDist = walkRight(ambushG, createRoam(ambushG, bus, { encounter: ambush }), 1);
