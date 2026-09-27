@@ -32,10 +32,12 @@ const art = [
   ...HERO_IDS,
   ...HERO_IDS.map((id) => `${id}-sprite`),
   "arena",
-  "bamboo-ambush",
   "guard-sprite",
   "archer-sprite",
   "warden-sprite",
+  "bamboo-river", "mount-canglan",
+  "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
+  "canglan-monk-sprite", "lu-bu-rival-sprite",
 ];
 view.setReady(true);
 let statusLanguageOff;

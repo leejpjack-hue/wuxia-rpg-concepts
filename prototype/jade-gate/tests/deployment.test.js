@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const output = resolve(new URL("../../", import.meta.url).pathname);
+const output = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 
 test("Pages output routes its root to the RPG and keeps legacy portraits inside the output", () => {
   const redirects = readFileSync(resolve(output, "_redirects"), "utf8");

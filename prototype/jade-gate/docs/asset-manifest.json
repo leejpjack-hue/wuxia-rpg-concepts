@@ -170,5 +170,54 @@
     "file": "assets/bamboo-ambush.png",
     "method": "Google Stitch try-run 2026-09-25 (concepts/stitch-try-2026-09-25*)",
     "prompt": "Act II Whispering Bamboo pass background. Stored as converted PNG; no dedicated sprite or turnaround yet."
+  },
+  {
+    "id": "bamboo-river",
+    "file": "assets/bamboo-river.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Playable Act II bamboo ford background, wide clear ground, no characters. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/bamboo-ambush.png"
+  },
+  {
+    "id": "night-heron-sprite",
+    "file": "assets/night-heron-sprite.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Blind zither assassin boss, grounded full-body transparent sprite. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/warden-sprite.png"
+  },
+  {
+    "id": "shadow-assassin-sprite",
+    "file": "assets/shadow-assassin-sprite.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Bamboo mist assassin, grounded full-body transparent sprite. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/guard-sprite.png"
+  },
+  {
+    "id": "skiff-archer-sprite",
+    "file": "assets/skiff-archer-sprite.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: River skiff archer, grounded full-body transparent sprite. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/archer-sprite.png"
+  },
+  {
+    "id": "mount-canglan",
+    "file": "assets/mount-canglan.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Playable Act III cloud terrace background, wide clear ground, no characters. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/arena.png"
+  },
+  {
+    "id": "canglan-monk-sprite",
+    "file": "assets/canglan-monk-sprite.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Armored mountain monk with iron staff, transparent sprite. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/guard-sprite.png"
+  },
+  {
+    "id": "lu-bu-rival-sprite",
+    "file": "assets/lu-bu-rival-sprite.png",
+    "method": "built-in image_gen · 2026-09-27",
+    "prompt": "Use case: stylized-concept. Asset type: Cursed Lü Bu rival, identity-preserved from hero sprite, transparent. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
+    "reference": "assets/lu-bu-sprite.png"
   }
 ]

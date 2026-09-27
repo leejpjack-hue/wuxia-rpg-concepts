@@ -45,6 +45,13 @@
           <button data-mode="campaign" aria-pressed="true"><span data-i18n="Campaign">物語</span></button
           ><button data-mode="quickplay" aria-pressed="false" data-i18n="Quick play">クイックプレイ</button>
         </div>
+        <label id="quick-act-picker" hidden><span data-i18n="Quick play stage">試す章</span>
+          <select id="quick-act" aria-label="試す章" data-i18n-aria="Quick play stage">
+            <option value="jade-gate" data-i18n="The Jade Gate">翠門関</option>
+            <option value="bamboo-crossing" data-i18n="Whispering Bamboo & the River Crossing">竹林の囁きと渡河</option>
+            <option value="mount-canglan" data-i18n="The Clouds of Mount Canglan">滄嵐山の雲</option>
+          </select>
+        </label>
         <span id="journey-summary"></span
         ><button id="continue" hidden data-i18n="Continue journey">旅を続ける</button>
       </section>

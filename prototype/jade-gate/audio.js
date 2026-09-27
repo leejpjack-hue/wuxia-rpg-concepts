@@ -1055,7 +1055,7 @@ export function setMusicMode(mode) {
   if (currentMode === mode) return;
   const oldMode = currentMode;
   currentMode = mode;
-  if (["select", "waystation", "battle", "boss", "upgrade"].includes(mode)) {
+  if (["select", "waystation", "upgrade"].includes(mode) || mode.startsWith("battle") || mode.startsWith("boss")) {
     const priorMode = oldMode === "paused" ? lastPlayingMode : oldMode;
     const scoreMode = (value) => value === "waystation" ? "select" : value;
     if (scoreMode(mode) !== scoreMode(priorMode)) currentStep = 0;
@@ -1068,12 +1068,12 @@ export function setMusicMode(mode) {
     tempo = 96;
     if (filterNode && ctx)
       filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
-  } else if (mode === "battle") {
-    tempo = 138;
+  } else if (mode.startsWith("battle")) {
+    tempo = mode === "battle-bamboo" ? 126 : mode === "battle-canglan" ? 144 : 138;
     if (filterNode && ctx)
       filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
-  } else if (mode === "boss") {
-    tempo = 158;
+  } else if (mode.startsWith("boss")) {
+    tempo = mode === "boss-heron" ? 142 : mode === "boss-lubu" ? 164 : 158;
     if (filterNode && ctx)
       filterNode.frequency.setTargetAtTime(20000, ctx.currentTime, 0.2);
     // Opening crash cymbal for boss duel

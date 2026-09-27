@@ -100,7 +100,7 @@ export function dialogueFor(key, hero) {
       ),
       line(
         "The road ahead",
-        "Smoke rises from the river crossing. Tonight, the four blades find shelter at the tea house.",
+        "Smoke rises from the river crossing. Guan Yu secures the gate and joins your road; tonight, the company shelters at the tea house.",
       ),
     ];
   if (key === "bamboo-arrival" || key === "act2-arrival" || key === "heron-arrival")
@@ -124,8 +124,25 @@ export function dialogueFor(key, hero) {
       ),
       line(
         "The road ahead",
-        "The pagoda falls silent over the river shallows. Ahead, the treacherous road climbs toward the clouds of Mount Canglan.",
+        "The pagoda falls silent. Wu Song frees the river boats and joins your road toward the clouds of Mount Canglan.",
       ),
+    ];
+  if (key === "canglan-arrival")
+    return [
+      line("Mount Canglan", "Above the clouds, armored monks guard the path to Lü Bu. Mu Guiying's scouts are pinned below the first terrace."),
+      line(hero.name, "We climb together. A broken oath can be cut without abandoning those it binds."),
+    ];
+  if (key === "lu-bu-rival-intro")
+    return [
+      line("Lü Bu", hero.id === "lu-bu"
+        ? "The mountain mirrors my cursed oath. Defeat this shadow, and the bond finally breaks."
+        : "The Ashen Oath binds my halberd. Stand aside, or meet the full weight of it."),
+      line(hero.name, "Then I will break the oath, not the man. Draw your halberd."),
+    ];
+  if (key === "lu-bu-rival-fall")
+    return [
+      line("Lü Bu", "The curse is gone. My blade is mine again. I will ride beside you to the citadel."),
+      line("The road ahead", "The clouds part over Mount Canglan. Five new allies now answer the call, and the capital waits beyond the pass."),
     ];
   throw new Error(`Unknown dialogue: ${key}`);
 }

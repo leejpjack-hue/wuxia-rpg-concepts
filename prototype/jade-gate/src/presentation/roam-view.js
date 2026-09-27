@@ -221,6 +221,12 @@ export class RoamView {
         c.beginPath(); c.arc(e.aim.x,e.aim.y,28,0,Math.PI*2); c.stroke();
       }
     }
+    if (g.roam.pillar) {
+      const {x, y, time} = g.roam.pillar;
+      c.save(); c.setLineDash([12, 7]); c.strokeStyle = time < .4 ? '#ff6868' : '#e6b46a';
+      c.lineWidth = time < .4 ? 7 : 4; c.beginPath(); c.arc(x, y, 55, 0, Math.PI*2); c.stroke();
+      c.setLineDash([]); c.fillStyle = '#2a100f66'; c.beginPath(); c.arc(x,y,55,0,Math.PI*2); c.fill(); c.restore();
+    }
     for (const s of g.roam.shots) {
       c.save(); c.translate(s.x,s.y-40); c.rotate(Math.atan2(s.vy,s.vx));
       c.strokeStyle='#fff0bb'; c.lineWidth=3; c.beginPath(); c.moveTo(-32,0);c.lineTo(10,0);c.lineTo(2,-5);c.moveTo(10,0);c.lineTo(2,5);c.stroke(); c.restore();

@@ -10,16 +10,18 @@
  */
 export function resolveMusicMode(event) {
   if (!event) return "select";
-  const { current, boss, dialogueKey, stage } = event;
+  const { current, boss, dialogueKey, stage, actId } = event;
+  const bossMode = actId === "bamboo-crossing" ? "boss-heron" : actId === "mount-canglan" ? "boss-lubu" : "boss";
+  const sceneMode = boss ? bossMode : actId === "bamboo-crossing" ? "battle-bamboo" : actId === "mount-canglan" ? "battle-canglan" : "battle";
 
   if (current === "playing" || current === "exploring") {
-    return boss ? "boss" : "battle";
+    return sceneMode;
   }
 
   if (current === "dialogue") {
     const key = dialogueKey || stage;
     if (key === "warden-fall" || key === "heron-fall" || key?.endsWith("-fall")) return "victory";
-    if (key === "warden-intro" || key === "heron-intro" || key?.endsWith("-intro")) return "boss";
+    if (key === "warden-intro" || key === "heron-intro" || key?.endsWith("-intro")) return bossMode;
     if (key === "arrival" || key === "bamboo-arrival" || key?.endsWith("-arrival")) return "select";
     return "select";
   }

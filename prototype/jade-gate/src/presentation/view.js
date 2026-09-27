@@ -1,4 +1,5 @@
 import { translate, localizeDocument } from "../locales/i18n.js";
+import { campaignHeroUnlocked } from "../domain/unlocks.js";
 import { HEROES } from "../content/heroes.js";
 import { UPGRADES } from "../content/disciplines.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
@@ -13,6 +14,7 @@ export class GameView {
     this.$ = (id) => document.getElementById(id);
     this.heroId = HEROES[0].id;
     this.runMode = "campaign";
+    this.quickAct = "jade-gate";
     this.ready = false;
     this.noticeTime = 0;
     this.onGesture = onGesture;
@@ -32,14 +34,15 @@ export class GameView {
         this.runMode = button.dataset.mode;
         if (
           this.runMode === "campaign" &&
-          (!session.profile.unlockedHeroes.includes(this.heroId) || HEROES.find(h => h.id === this.heroId)?.quickPlayOnly)
+          !campaignHeroUnlocked(session.profile, this.heroId)
         )
           this.heroId = HEROES[0].id;
         this.refreshMenu();
       };
     this.$("language").onchange = event => this.perform(() => session.setSetting("language", event.target.value));
+    this.$("quick-act").onchange = event => { this.quickAct = event.target.value; };
     this.$("start").onclick = () =>
-      this.perform(() => session.start(this.heroId, this.runMode));
+      this.perform(() => session.start(this.heroId, this.runMode, this.runMode === "quickplay" ? this.quickAct : "jade-gate"));
     this.$("continue").onclick = () =>
       this.perform(() => session.continueCheckpoint());
     for (const id of ["pause", "roam-pause"])
@@ -119,9 +122,9 @@ export class GameView {
       const selected = button.dataset.hero === this.heroId,
         locked =
           this.runMode === "campaign" &&
-          !profile.unlockedHeroes.includes(button.dataset.hero);
+          !campaignHeroUnlocked(profile, button.dataset.hero);
       const cardHero = HEROES.find(h => h.id === button.dataset.hero);
-      button.hidden = this.runMode === "campaign" && !!cardHero.quickPlayOnly;
+      button.hidden = this.runMode === "campaign" && !!cardHero.quickPlayOnly && locked;
       button.setAttribute("aria-label", this.t(`Choose ${cardHero.name}`));
       button.querySelector("img").alt = this.t(`${cardHero.name} character art`);
       for (const [selector, value] of [[".card-copy small", cardHero.title], ["h2", cardHero.name], [".card-copy p", cardHero.weapon], [".stats", cardHero.style]])
@@ -132,13 +135,15 @@ export class GameView {
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
       button.disabled = locked;
-      button.querySelector(".lock-note").textContent = this.t(locked ? "Unlock in Act III · try in Quick play" : cardHero.quickPlayOnly ? "Quick play only" : "");
+      button.querySelector(".lock-note").textContent = this.t(locked ? "Unlock in Act III · try in Quick play" : "");
     }
     for (const button of this.document.querySelectorAll("[data-mode]"))
       button.setAttribute(
         "aria-pressed",
         String(button.dataset.mode === this.runMode),
       );
+    this.$("quick-act-picker").hidden = this.runMode !== "quickplay";
+    this.$("quick-act").value = this.quickAct;
     this.$("selected-hero-name").textContent = this.t(hero.name);
     this.$("hero-description").textContent = this.t(hero.description);
     const record = profile.records[this.heroId];
@@ -328,7 +333,9 @@ export class GameView {
       this.modal(
         `ENCOUNTER ${g.wave} COMPLETE`,
         "A lesson earned.",
-        "Choose a discipline for this run. The next encounter restores 22 health and 20 Flow.",
+        (session.encounter.unlockStory && session.g.runMode === "campaign")
+          ? `${this.t(session.encounter.unlockStory)} ${this.t("Choose a discipline for this run. The next encounter restores 22 health and 20 Flow.")}`
+          : "Choose a discipline for this run. The next encounter restores 22 health and 20 Flow.",
       );
       for (const item of UPGRADES) {
         const b = this.button(

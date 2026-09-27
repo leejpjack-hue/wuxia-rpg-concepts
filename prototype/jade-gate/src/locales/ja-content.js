@@ -35,14 +35,16 @@ const heron = {
 };
 const scenes = {
   arrival: ['灰旗軍が峠を押さえている。城壁の向こうでは、最後の避難民が山を越える道を待ち続けていた。', 'ならば、この門を開こう。'],
-  'warden-fall': ['翠門関は、ただの入口にすぎぬ……皇帝はすでに都を歩いている。', '川の渡し場から煙が上がる。今宵、四人の刃は茶屋に身を寄せる。'],
+  'warden-fall': ['翠門関は、ただの入口にすぎぬ……皇帝はすでに都を歩いている。', '川の渡し場から煙が上がる。関羽は関所を守り、旅の仲間となる。今宵、一行は茶屋に身を寄せる。'],
   'bamboo-arrival': ['冷たい雨が竹の葉を打つ。浅瀬は深くなり、川霧の下では見えぬ刃がうごめいていた。', '浅瀬を越えよう。刺客ごときに、この旅は止められない。'],
-  'heron-fall': ['弦は切れた……だが霧は晴れぬ。滄嵐山の高みを見よ……飛将が、お前たちを待つ。', '川の浅瀬に建つ塔は静まり返った。前には、滄嵐山の雲へと続く険しい道が待っている。'],
+  'heron-fall': ['弦は切れた……だが霧は晴れぬ。滄嵐山の高みを見よ……飛将が、お前たちを待つ。', '塔は静まり返った。武松は川舟を解き放ち、滄嵐山の雲へ向かう旅の仲間となる。'],
+  'canglan-arrival': ['雲の上では鉄甲僧が呂布への道を守る。第一の石段の下には、穆桂英の斥候が釘付けにされている。', '共に登ろう。誓約に縛られた者を、見捨てずに救い出す。'],
+  'lu-bu-rival-fall': ['呪いは消えた。この刃は再び俺のものだ。帝都まで共に駆けよう。', '滄嵐山の雲が割れる。新たな五人の仲間が応え、峠の先には帝都が待つ。'],
 };
-export const contentMessages = {'The road ahead': 'この先の道', 'Whispering Bamboo': '囁く竹林'};
+export const contentMessages = {'The road ahead': 'この先の道', 'Whispering Bamboo': '囁く竹林', 'Mount Canglan': '滄嵐山'};
 for (const hero of HEROES) {
   contentMessages[hero.description] = biographies[hero.id];
-  for (const [key, texts] of Object.entries({...scenes, 'warden-intro': warden[hero.id], 'heron-intro': heron[hero.id]}))
+  for (const [key, texts] of Object.entries({...scenes, 'warden-intro': warden[hero.id], 'heron-intro': heron[hero.id], 'lu-bu-rival-intro': hero.id === 'lu-bu' ? ['山は呪われた俺の誓約を映す。この影を倒せば、ついに鎖は切れる。', 'ならば人ではなく、誓約を断つ。戟を取れ。'] : ['灰の誓約が俺の戟を縛る。退け。さもなくば、その重みを知ることになる。', 'ならば人ではなく、誓約を断つ。戟を取れ。']}))
     if (texts) dialogueFor(key, hero).forEach((line, index) => {
       if (texts[index]) contentMessages[line.text] = texts[index];
     });

@@ -19,7 +19,7 @@ import { resolveMusicMode } from "../src/platform/audio-director.js";
 import { DUEL_ROSTERS, DUEL_ENEMIES } from "../src/content/duels.js";
 import { createRoam } from "../src/domain/roam.js";
 
-test("campaign validates and incomplete future acts cannot be launched", () => {
+test("campaign validates playable acts and gates travel by preceding victories", () => {
   assert(
     validateContent({
       heroes: HEROES,
@@ -32,7 +32,7 @@ test("campaign validates and incomplete future acts cannot be launched", () => {
   const game = session();
   assert.throws(
     () => game.start("zhao-yun", "campaign", "mount-canglan"),
-    /not available/,
+    /preceding act/,
   );
   // Act II unlocks only after Act I is reclaimed.
   assert.throws(() => game.start("zhao-yun", "campaign", "bamboo-crossing"), /preceding act/);
@@ -67,9 +67,9 @@ test("Act II plays end to end: travel, map rows, shallows, Night Heron, tea hous
   assert.ok(picks.includes("boss-intro") && picks.includes("boss-fall"));
   assert(game.profile.completedActs.includes("bamboo-crossing"));
   assert.equal(game.g.actId, "bamboo-crossing");
-  // The next waystation points at still-gated Act III.
+  // The next waystation now leads to Mount Canglan.
   const next = ACTS.find((a) => a.id === "mount-canglan");
-  assert.equal(next.available, false);
+  assert.equal(next.available, true);
 });
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
@@ -269,7 +269,7 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
 
   // Content validation still guards premature availability of unbuilt acts.
   const unbuiltActs = structuredClone(ACTS);
-  unbuiltActs[2].available = true; // mount-canglan has no encounters
+  unbuiltActs[3].available = true; // the citadel has no encounters
   assert.throws(
     () =>
       validateContent({
@@ -286,7 +286,7 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
   const game = session();
   assert.throws(
     () => game.start("zhao-yun", "campaign", "mount-canglan"),
-    /not available/,
+    /preceding act/,
   );
 });
 

@@ -23,6 +23,7 @@ export const defaultProfile = () => ({
   wallet: 0,
   ranks: {},
   meridian: [],
+  earnedHeroes: [],
   unlockedHeroes: HEROES.filter((hero) => !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
   completedActs: [],
   completedRuns: [],
@@ -55,6 +56,9 @@ export function sanitizeCheckpoint(raw) {
     "night-heron-fall",
     "heron-intro",
     "heron-fall",
+    "canglan-arrival",
+    "lu-bu-rival-intro",
+    "lu-bu-rival-fall",
   ];
   if (
     !act?.available ||
@@ -134,13 +138,17 @@ export function sanitizeProfile(raw) {
     (act) =>
       Array.isArray(raw.completedActs) && raw.completedActs.includes(act.id),
   ).map((act) => act.id);
-  // Unlocks are derived from campaign completion, never from a legacy quick-play win.
+  // Mid-Act III rescues are permanent; older saves derive Act I/II rewards on load.
+  result.earnedHeroes = Array.isArray(raw.earnedHeroes)
+    ? [...new Set(raw.earnedHeroes)].filter((id) => ["mu-guiying", "liang-hongyu", "nie-yinniang"].includes(id))
+    : [];
   result.unlockedHeroes = [
     ...new Set([
       ...result.unlockedHeroes,
       ...ACTS.filter((act) => result.completedActs.includes(act.id)).flatMap(
         (act) => act.unlocks,
       ),
+      ...result.earnedHeroes,
     ]),
   ];
   result.completedRuns = Array.isArray(raw.completedRuns)

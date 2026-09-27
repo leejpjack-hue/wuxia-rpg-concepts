@@ -112,6 +112,7 @@ export class DuelView {
     const { g, mode } = this.session;
     if (!g?.duel) return;
     const p = g.p, d = g.duel, enemy = g.enemies[0];
+    this.$("duel-table").style.setProperty("--arena-image", `url("assets/${this.session.act.arena}.png")`);
     this.$("chapter").textContent = this.t(`ACT ${this.session.act.number} · ${this.session.act.name.toUpperCase()}`);
     this.$("objective").textContent = this.t(this.session.encounter.title);
     this.$("score").textContent = this.t(g.score);

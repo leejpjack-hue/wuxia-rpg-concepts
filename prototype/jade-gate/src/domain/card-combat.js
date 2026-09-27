@@ -42,7 +42,7 @@ export function createCardCombat(g, bus, { encounter } = {}) {
         ...rival,
         id,
         kind,
-        type: kind === "warden" ? "boss" : kind,
+        type: rival.boss ? "boss" : kind,
         hp,
         maxHp: hp,
         damage: Math.round(rival.damage * (encounter.elite ? 1.15 : 1)),

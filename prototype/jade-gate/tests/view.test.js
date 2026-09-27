@@ -56,6 +56,18 @@ test('fresh menu is unobstructed and Quick play opens the pass, not the duel tab
   assert.equal($('selection').hidden, true);
   assert.equal($('overlay').hidden, true); assert.equal($('app-status').textContent, '');
 });
+test('Quick play can launch Acts II and III without changing campaign progress', () => {
+  for (const actId of ['bamboo-crossing', 'mount-canglan']) {
+    const { session, modes, $ } = fixture();
+    modes[1].onclick();
+    assert.equal($('quick-act-picker').hidden, false);
+    $('quick-act').onchange({ target: { value: actId } });
+    $('start').onclick();
+    assert.equal(session.mode, 'exploring');
+    assert.equal(session.act.id, actId);
+    assert.deepEqual(session.profile.completedActs, []);
+  }
+});
 test('campaign dialogue buttons work against actual HTML IDs and reach the pass and the duel', () => {
   const { session, $ } = fixture(); $('start').onclick();
   assert.equal(session.mode, 'dialogue'); assert.equal($('overlay').hidden, false);

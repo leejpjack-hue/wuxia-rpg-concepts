@@ -1,4 +1,5 @@
 import { StateMachine } from "../engine/state-machine.js";
+import { campaignHeroUnlocked } from "./unlocks.js";
 import { EventBus } from "../engine/events.js";
 import { HEROES } from "../content/heroes.js";
 import { UPGRADES, applyUpgrade } from "../content/disciplines.js";
@@ -136,9 +137,9 @@ export class GameSession {
       throw new Error("This hero or act is not available in this build.");
     if (act.bossId && BOSSES[act.bossId]?.planned && act.available)
       throw new Error("Cannot launch unbuilt boss.");
-    if (runMode === "campaign" && hero.quickPlayOnly)
+    if (runMode === "campaign" && hero.quickPlayOnly && !campaignHeroUnlocked(this.profile, heroId))
       throw new Error("This hero is available in Quick play only.");
-    if (runMode === "campaign" && !this.profile.unlockedHeroes.includes(heroId))
+    if (runMode === "campaign" && !campaignHeroUnlocked(this.profile, heroId))
       throw new Error(
         "Defeat Lü Bu in Act III to unlock him in the campaign. Use Quick play to try him now.",
       );
@@ -151,7 +152,7 @@ export class GameSession {
       throw new Error("Complete the preceding act first.");
     this.createRun(hero, act, runMode);
     if (runMode === "campaign") {
-      const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : "arrival";
+      const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : act.id === "mount-canglan" ? "canglan-arrival" : "arrival";
       this.beginDialogue(arrivalKey);
     } else this.transition("exploring");
     this.bus.emit("audio:sfx", { type: "ui_click" });
@@ -398,6 +399,14 @@ export class GameSession {
       if (this.g.map.current.startsWith("elite:"))
         this.g.map.pendingCurios = this.draftCurios();
     }
+    if (this.g.runMode === "campaign") {
+      for (const heroId of this.encounter.unlocks || []) {
+        if (this.profile.unlockedHeroes.includes(heroId)) continue;
+        this.profile.earnedHeroes.push(heroId);
+        this.profile.unlockedHeroes.push(heroId);
+        this.bus.emit("notice", { text: `${HEROES.find(h => h.id === heroId).name} joins your campaign roster!` });
+      }
+    }
     if (this.g.encounterIndex === this.act.encounters.length - 1) {
       this.finish(true);
       return;
@@ -484,7 +493,7 @@ export class GameSession {
     if (!cp) return false;
     const hero = HEROES.find((h) => h.id === cp.heroId),
       act = actById(cp.actId);
-    if (!hero || hero.quickPlayOnly || !this.profile.unlockedHeroes.includes(hero.id) || !act?.available) return false;
+    if (!hero || !campaignHeroUnlocked(this.profile, hero.id) || !act?.available) return false;
     this.createRun(hero, act, "campaign");
     Object.assign(this.g, {
       runId: cp.runId,
@@ -514,6 +523,9 @@ export class GameSession {
       "night-heron-fall",
       "heron-intro",
       "heron-fall",
+      "canglan-arrival",
+      "lu-bu-rival-intro",
+      "lu-bu-rival-fall",
     ];
     if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);

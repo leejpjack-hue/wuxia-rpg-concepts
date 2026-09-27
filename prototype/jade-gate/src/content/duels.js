@@ -11,6 +11,11 @@ export const DUEL_ROSTERS = {
   "bamboo-elite": ["shadow-assassin", "shadow-assassin", "shadow-assassin"],
   "river-skiff": ["skiff-archer", "shadow-assassin"],
   "night-heron": ["night-heron"],
+  "canglan-approach": ["canglan-monk", "canglan-monk", "archer"],
+  "bell-terrace": ["canglan-monk", "canglan-monk", "archer"],
+  "monk-trial": ["canglan-monk", "canglan-monk", "canglan-monk"],
+  "windward-cloister": ["shadow-assassin", "archer", "canglan-monk"],
+  "lu-bu-rival": ["lu-bu-rival"],
 };
 
 export const DUEL_ENEMIES = {
@@ -45,24 +50,37 @@ export const DUEL_ENEMIES = {
     pattern: ["mend", "poison", "strike"],
   },
   warden: {
+    boss: true,
     name: "The Ashen Warden", title: "KEEPER OF THE JADE GATE", art: "warden-sprite",
     hp: 240, damage: 18, reward: 700,
     pattern: ["strike", "heavy", "guard", "heavy"],
   },
   "shadow-assassin": {
-    name: "Shadow Assassin", title: "BAMBOO MIST STALKER", art: "guard-sprite",
+    name: "Shadow Assassin", title: "BAMBOO MIST STALKER", art: "shadow-assassin-sprite",
     hp: 44, damage: 15, reward: 140,
     pattern: ["strike", "guard", "heavy"],
   },
   "skiff-archer": {
-    name: "Skiff Archer", title: "RIVER VOLLEY", art: "archer-sprite",
+    name: "Skiff Archer", title: "RIVER VOLLEY", art: "skiff-archer-sprite",
     hp: 36, damage: 16, reward: 160,
     pattern: ["strike", "heavy", "guard"],
   },
   "night-heron": {
-    name: "The Night Heron", title: "THE BLIND ZITHER-ASSASSIN", art: "warden-sprite",
+    boss: true,
+    name: "The Night Heron", title: "THE BLIND ZITHER-ASSASSIN", art: "night-heron-sprite",
     hp: 210, damage: 18, reward: 800,
     pattern: ["poison", "heavy", "strike", "guard", "heavy"],
+  },
+  "canglan-monk": {
+    name: "Canglan Iron Monk", title: "BELL OF THE CLOUDS", art: "canglan-monk-sprite",
+    hp: 88, damage: 15, reward: 190,
+    pattern: ["guard", "heavy", "concuss", "strike"],
+  },
+  "lu-bu-rival": {
+    boss: true,
+    name: "Lü Bu", title: "THE FLYING GENERAL", art: "lu-bu-rival-sprite",
+    hp: 300, damage: 23, reward: 1000,
+    pattern: ["heavy", "double", "guard", "heavy", "strike"],
   },
 };
 
