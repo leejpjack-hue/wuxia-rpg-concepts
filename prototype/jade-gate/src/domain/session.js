@@ -13,7 +13,8 @@ import { createRoam, isRanged } from "./roam.js";
 import {
   applyCultivation,
   awardResult,
-  purchaseCultivation,
+  hasPerk,
+  strikeNode,
 } from "./progression.js";
 let sequence = 0;
 export class GameSession {
@@ -366,10 +367,13 @@ export class GameSession {
     for (const rival of field) { rival.windup = 0; rival.aim = null; rival.cooldown = Math.max(1, rival.cooldown); }
     this.g.roam.contact = index;
     const enemy = field[index];
-    this.combat.begin?.(enemy.kind, enemy.id);
+    // First blood on the pass or a sneak contact: the duel opens with a reel.
+    const ambush = !!(enemy.firstBlood || this.g.roam.sneaking);
+    this.g.roam.sneaking = false;
+    this.combat.begin?.(enemy.kind, enemy.id, ambush);
     this.transition("playing");
     this.bus.emit("audio:sfx", { type: "ui_click" });
-    this.bus.emit("notice", { text: `${enemy.name} bars your way` });
+    this.bus.emit("notice", { text: ambush ? `${enemy.name} reels from your ambush` : `${enemy.name} bars your way` });
     return true;
   }
   endDuel() {
@@ -403,7 +407,7 @@ export class GameSession {
     this.bus.emit("audio:sfx", { type: "upgrade" });
   }
   /** Seeded draft of three unowned curios, deterministic within a run. */
-  draftCurios(count = 3) {
+  draftCurios(count = hasPerk(this.profile, "phoenix-eye") ? 4 : 3) {
     const owned = new Set(this.g.curios);
     let seed = 0;
     for (const char of this.g.runId) seed = (seed * 31 + char.charCodeAt(0)) >>> 0;
@@ -525,7 +529,7 @@ export class GameSession {
   }
   buy(id) {
     if (this.mode !== "waystation") return false;
-    const bought = purchaseCultivation(this.profile, id);
+    const bought = strikeNode(this.profile, id);
     if (bought) {
       this.save();
       this.bus.emit("audio:sfx", { type: "upgrade" });

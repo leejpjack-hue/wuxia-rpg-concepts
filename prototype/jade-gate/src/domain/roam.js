@@ -37,7 +37,8 @@ export function createRoam(g, bus, { encounter } = {}) {
   });
   Object.assign(g.p, { x: 640, y: 500 });
   g.roam = { field, contact: -1, defeated: 0, shots: [], effects: [],
-    strikeCD: 0, dodgeCD: 0, invulnerable: 0, dash: 0, facingX: 1, facingY: 0 };
+    strikeCD: 0, dodgeCD: 0, invulnerable: 0, dash: 0, facingX: 1, facingY: 0,
+    sneaking: false, sneakMaster: g.p.id === 'nie-yinniang' };
   const roam = g.roam;
   function effect(kind, x, y, text = '') {
     roam.effects.push({ id: ++serial, kind, x, y, text, life: .55 });
@@ -49,14 +50,28 @@ export function createRoam(g, bus, { encounter } = {}) {
       roam.dodgeCD = 1.2; roam.invulnerable = .3; roam.dash = .18;
       bus.emit('audio:sfx', { type: 'dodge' }); return true;
     }
+    if (action === 'sneak') {
+      roam.sneaking = !roam.sneaking;
+      bus.emit('audio:sfx', { type: 'ui_click' }); return true;
+    }
     if (!['strike', 'technique'].includes(action) || roam.strikeCD > 0) return false;
     if (action === 'technique' && g.p.flow < techniqueCost(g.p, g.curios)) return false;
-    const targets = field.filter(e => e.ranged && distance(e, g.p) < (action === 'technique' ? 280 : 175));
+    const range = action === 'technique' ? 280 : 175;
+    const targets = field.filter(e => distance(e, g.p) < range);
     roam.strikeCD = action === 'technique' ? .8 : .38;
     if (action === 'technique') g.p.flow -= techniqueCost(g.p, g.curios);
     effect(action, g.p.x, g.p.y);
     bus.emit('audio:sfx', { type: action === 'technique' ? 'special' : 'strike', param: g.p.id });
     for (const enemy of targets) {
+      // Melee rivals take no real-time damage: a clean hit marks first blood,
+      // and the contact duel opens with them reeling.
+      if (!enemy.ranged) {
+        if (!enemy.firstBlood) {
+          enemy.firstBlood = true;
+          effect('firstblood', enemy.x, enemy.y, 'FIRST BLOOD');
+        }
+        continue;
+      }
       const damage = Math.round(g.p.damage*g.p.power*(action === 'technique' ? HERO_TECHNIQUES[g.p.id].multiplier : 1));
       enemy.hp = Math.max(0, enemy.hp-damage);
       g.p.flow = Math.min(100, g.p.flow+ (action === 'strike' ? 12+g.p.flowBonus : 0));
@@ -98,7 +113,9 @@ export function createRoam(g, bus, { encounter } = {}) {
       }
     } else {
       enemy.cooldown -= dt;
-      if (enemy.cooldown <= 0 && distance(enemy,g.p)<850) {
+      // Sneaking closes the watchful range; the Hidden Blade near-erases it.
+      const aggro = roam.sneaking ? (roam.sneakMaster ? 300 : 420) : 850;
+      if (enemy.cooldown <= 0 && distance(enemy,g.p)<aggro) {
         enemy.windup = .85; enemy.aim = {x:g.p.x,y:g.p.y};
         bus.emit('audio:sfx',{type:'enemy_windup'});
       }
@@ -113,7 +130,8 @@ export function createRoam(g, bus, { encounter } = {}) {
     const {dx=0,dy=0} = input || {}, len = Math.hypot(dx,dy);
     if (len) { roam.facingX=dx/len; roam.facingY=dy/len; }
     if (len || roam.dash>0) {
-      const speed = roam.dash>0 ? 720 : PLAYER_SPEED*(isRoamInShallows(encounter,g) ? SHALLOWS_ROAM_SPEED_FACTOR : 1);
+      const sneakFactor = roam.sneaking ? 0.45 : 1;
+      const speed = roam.dash>0 ? 720 : PLAYER_SPEED*sneakFactor*(isRoamInShallows(encounter,g) ? SHALLOWS_ROAM_SPEED_FACTOR : 1);
       Object.assign(g.p, groundPoint(g.p.x+roam.facingX*speed*dt,g.p.y+roam.facingY*speed*dt));
       if (roam.facingX) g.p.dx=roam.facingX>0?1:-1;
     }
@@ -138,7 +156,8 @@ export function createRoam(g, bus, { encounter } = {}) {
     roam.shots=roam.shots.filter(s=>s.life>0 && onGround(s));
     for(let i=0;i<field.length;i++) {
       if(!field[i].ranged && distance(g.p,field[i])<34+field[i].radius) {
-        roam.contact=i; bus.emit('roam:contact',{index:i,kind:field[i].kind}); break;
+        roam.contact=i; bus.emit('roam:contact',{index:i,kind:field[i].kind,
+          ambush: !!(field[i].firstBlood || roam.sneaking)}); break;
       }
     }
   }

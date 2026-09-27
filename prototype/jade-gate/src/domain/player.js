@@ -20,6 +20,8 @@ export function makePlayer(hero) {
     flowBonus: 0,
     cost: 40,
     kills: 0,
+    // Meridian perk: 2 pots per encounter once Dragon's Cavity is struck.
+    teaPots: 1,
     damageTaken: 0,
     moving: false,
     perfectWindow: 0,

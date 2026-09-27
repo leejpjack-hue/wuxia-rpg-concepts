@@ -71,7 +71,7 @@ test('card campaign restores checkpoints, reaches tea house, buys cultivation, a
   assert.equal(saved.mode, 'exploring'); saved.beginDuel(0);
   assert.equal(saved.g.enemies[0].hp, saved.g.enemies[0].maxHp);
   finishRun(saved); playCampaign(saved); assert.equal(saved.mode, 'waystation');
-  const wallet = saved.profile.wallet; assert(wallet > 0); assert(saved.buy('iron-vessel'));
+  const wallet = saved.profile.wallet; assert(wallet > 0); assert(saved.buy('du-1'));
   assert(saved.profile.wallet < wallet);
   const again = game(storage); again.continueCheckpoint();
   assert.equal(again.mode, 'waystation'); assert.equal(again.profile.wallet, saved.profile.wallet);

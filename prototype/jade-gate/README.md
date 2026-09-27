@@ -26,6 +26,14 @@ Only an action advances a duel turn — no timers or idle damage inside a duel. 
 
 Music is synthesized in the browser. Each scene has a 32-bar arrangement with changing melody and instrumentation, lasting roughly 49–80 seconds before it loops. The soundtrack resumes its place after switching tabs; volume and music toggles are in Settings.
 
+## Engagement on the pass
+
+The pass and the duel are one fight. **First blood**: land a real-time strike on a swordsman before contact and they open the duel reeling — their first reply is lost. **Sneak (C)**: crouch to halve your speed and shrink the archers' watchful range (Nie Yinniang, the Hidden Blade, sneaks closest of all); sneaking into a rival ambushes the duel the same way. First-blood rivals glow on the pass.
+
+## Meridian cultivation
+
+The tea house trades Renown for acupoints on a meridian map: the Conception Vessel (health), Governing Vessel (Flow) and Girding Vessel (power) run three points each in order, and three crossing cavities unlock gated perks — Dantian Core (cheaper techniques), Phoenix Eye (a fourth curio choice) and Dragon's Cavity (a second pot of tea every encounter). Legacy flat-track saves migrate onto their vessel points automatically.
+
 ## Rival status effects
 
 Rivals do more than strike and guard. **Rending Slash** (Scarred Bandit) opens a bleed that ignores guard for two turns; the **Venom Adept** poisons over three turns and siphons your Flow; the **Iron Pugilist's** pommel smash stuns you and steals a whole turn; the **Ashen Priest** mends its wounds and washes away your poisons; twin strikes land two blows you can blunt separately. Status chips show under each health bar, healing tea is the cleanse, and two curios weaponize it back at the rival: the Venom Vial poisons through techniques, the Rending Fang opens bleeds on every fourth strike.

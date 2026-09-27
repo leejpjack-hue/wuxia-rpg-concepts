@@ -30,7 +30,7 @@ export class RoamView {
     this.cancel = view?.cancelAnimationFrame?.bind(view) || null;
     this.keydown = (event) => {
       if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
-      const action = {KeyJ:"strike", Digit1:"strike", Space:"dodge", KeyK:"dodge", KeyE:"technique", Digit3:"technique"}[event.code];
+      const action = {KeyJ:"strike", Digit1:"strike", Space:"dodge", KeyK:"dodge", KeyE:"technique", Digit3:"technique", KeyC:"sneak"}[event.code];
       if (action && session.mode === "exploring") { event.preventDefault(); this.onGesture(); this.actions.push(action); }
       if (event.code === "Escape" && session.mode === "exploring") {
         event.preventDefault();
@@ -180,19 +180,30 @@ export class RoamView {
   draw() {
     const g = this.session.g;
     if (!g?.roam) return;
-    const health = this.t(`${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`);
+    const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW${g.roam.sneaking ? " · SNEAKING" : ""}`;
     if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
+    const sneak = this.$("roam-sneak");
+    if (sneak) sneak.setAttribute("aria-pressed", String(!!g.roam.sneaking));
     for (const button of this.document.querySelectorAll("[data-roam-action]")) {
       const action = button.dataset.roamAction;
-      button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : g.roam.strikeCD > 0 || action === "technique" && g.p.flow < techniqueCost(g.p, g.curios));
+      button.disabled = this.session.mode !== "exploring" || (action === "dodge" ? g.roam.dodgeCD > 0 : action !== "sneak" && g.roam.strikeCD > 0 || action === "technique" && g.p.flow < techniqueCost(g.p, g.curios));
     }
-    this.place(this.heroToken || this.$("roam-hero"), g.p.x, g.p.y);
+    const heroNode = this.heroToken || this.$("roam-hero");
+    heroNode.style.opacity = g.roam.sneaking ? 0.62 : 1;
+    this.place(heroNode, g.p.x, g.p.y);
     if (!this.heroToken)
       this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
     this.drawEffects(g);
     for (const enemy of g.roam.field) {
       const node = this.sprites.get(enemy.id);
-      if (node) this.place(node, enemy.x, enemy.y);
+      if (node) {
+        this.place(node, enemy.x, enemy.y);
+        // First blood reads on the sprite: the duel will open in your favor.
+        if (node.dataset.firstBlood !== String(!!enemy.firstBlood)) {
+          node.dataset.firstBlood = String(!!enemy.firstBlood);
+          node.classList.toggle("first-blood", !!enemy.firstBlood);
+        }
+      }
     }
   }
   drawEffects(g) {

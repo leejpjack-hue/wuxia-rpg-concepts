@@ -129,24 +129,27 @@ test("a failed attempt does not prevent a continued checkpoint from earning vict
   assert.equal(restored.mode, "waystation");
   assert(restored.profile.wallet > 0);
 });
-test("cultivation charges once, cannot overspend, persists, and affects campaign only", () => {
+test("meridian strikes charge once, gate on prerequisites, persist, and affect campaign only", () => {
   const storage = memoryStorage(),
     game = session(storage);
   completeCampaign(game);
   game.profile.wallet = 1000;
-  assert(game.buy("iron-vessel"));
+  assert(game.buy("ren-1"));
   assert.equal(game.profile.wallet, 700);
-  assert.equal(game.profile.ranks["iron-vessel"], 1);
+  assert(game.profile.meridian.includes("ren-1"));
+  assert(!game.buy("ren-1")); // already struck
+  assert(game.buy("ren-2")); // prerequisite met, affordable
+  assert(!game.buy("dantian")); // requires du-1 as well: locked
   game.profile.wallet = 0;
-  assert(!game.buy("iron-vessel"));
+  assert(!game.buy("ren-3")); // cannot afford
   game.save();
   game.menu();
   game.start("zhao-yun", "campaign");
-  assert.equal(game.g.p.maxHp, 135);
+  assert.equal(game.g.p.maxHp, 150); // two Conception points: +30
   game.menu();
   game.start("zhao-yun", "quickplay");
   assert.equal(game.g.p.maxHp, 120);
-  assert.equal(session(storage).profile.ranks["iron-vessel"], 1);
+  assert.equal(session(storage).profile.meridian.length, 2);
 });
 test("quick-play victory records scores without changing campaign wallet/checkpoint/unlocks", () => {
   const game = session();

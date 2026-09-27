@@ -32,7 +32,7 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   };
 
   /** One duel per contacted rival; tea and progress persist within the encounter. */
-  function begin(kind, id = `${encounter.id}-card`) {
+  function begin(kind, id = `${encounter.id}-card`, opening = false) {
     const rival = DUEL_ENEMIES[kind];
     if (!rival) throw new Error(`Unknown rival: ${kind}`);
     const eliteScale = encounter.elite ? 1.35 : 1;
@@ -56,7 +56,7 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       round: 1,
       total: roster.length,
       defeated: g.roam?.defeated ?? g.duel?.defeated ?? 0,
-      tea: g.duel?.tea ?? 1,
+      tea: g.duel?.tea ?? g.p.teaPots ?? 1,
       log: [],
       lastAction: null,
       lastDamage: 0,
@@ -65,6 +65,7 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       fangStrikes: 0,
       pendantUsed: false,
       sashUsed: false,
+      openingStun: opening,
       status: {
         hero: { bleed: null, poison: null, stunned: false },
         enemy: { bleed: null, poison: null },
@@ -112,6 +113,12 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     const p = g.p, d = g.duel, spec = INTENTS[next.kind] || INTENTS.strike;
     if (rivalStunned) {
       log(`${enemy.name} is stunned and cannot reply.`);
+      return;
+    }
+    // First blood or a sneak ambush on the pass: the rival opens reeling.
+    if (d.openingStun) {
+      d.openingStun = false;
+      log(`${enemy.name} reels from your ambush and cannot reply.`);
       return;
     }
     if (spec.mend) {

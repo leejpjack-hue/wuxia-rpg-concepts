@@ -2,7 +2,8 @@ import { translate, localizeDocument } from "../locales/i18n.js";
 import { HEROES } from "../content/heroes.js";
 import { UPGRADES } from "../content/disciplines.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
-import { cultivationCost } from "../domain/progression.js";
+import { meridianState } from "../domain/progression.js";
+import { VESSELS, MERIDIAN_NODES, nodeById } from "../content/meridians.js";
 import { curioById, EVENTS } from "../content/curios.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
@@ -341,17 +342,41 @@ export class GameView {
       this.modal(
         "THE TEA HOUSE · 草庵茶肆",
         "Rest between the storms.",
-        `${session.profile.wallet} Renown available. Cultivation and weapon honing apply on your next campaign run. Your checkpoint is saved here.`,
+        `${session.profile.wallet} Renown available. Strike acupoints along the meridian map — points and cavities apply on your next campaign run. Your checkpoint is saved here.`,
       );
-      for (const item of CULTIVATIONS) {
-        const { rank, cost, maxed } = cultivationCost(session.profile, item.id);
+      for (const vessel of VESSELS) {
+        const heading = this.document.createElement("p");
+        heading.className = "vessel-heading";
+        heading.textContent = `${this.t(vessel.name)} ${vessel.cn} · ${this.t(`+${vessel.amount} ${vessel.unit} per point`)}`;
+        this.$("choices").appendChild(heading);
+        for (const node of MERIDIAN_NODES.filter((item) => item.vessel === vessel.id)) {
+          const state = meridianState(session.profile, node.id);
+          const b = this.button(
+            state.struck
+              ? `✓ ${node.point}`
+              : state.locked
+                ? `${node.point} · ${this.t("requires")} ${node.requires.map((need) => nodeById(need).point).join(" + ")}`
+                : `${node.point} · ${node.cost} ${this.t("Renown")}`,
+            () => session.buy(node.id),
+            { disabled: state.struck || state.locked || !state.affordable, parent: "choices" },
+          );
+          b.className = "upgrade";
+        }
+      }
+      const crossHeading = this.document.createElement("p");
+      crossHeading.className = "vessel-heading";
+      crossHeading.textContent = this.t("Crossing cavities · gated perks");
+      this.$("choices").appendChild(crossHeading);
+      for (const node of MERIDIAN_NODES.filter((item) => item.vessel === "cross")) {
+        const state = meridianState(session.profile, node.id);
         const b = this.button(
-          `${this.t(item.name)} ${rank}/${item.maxRank} · ${this.t(maxed ? "Mastered" : cost + " Renown")} · ${this.t(item.description)}`,
-          () => session.buy(item.id),
-          {
-            disabled: maxed || cost > session.profile.wallet,
-            parent: "choices",
-          },
+          state.struck
+            ? `✓ ${node.point}`
+            : state.locked
+              ? `${node.point} · ${this.t("requires")} ${node.requires.map((need) => nodeById(need).point).join(" + ")}`
+              : `${node.point} · ${this.t(node.effect)} · ${node.cost} ${this.t("Renown")}`,
+          () => session.buy(node.id),
+          { disabled: state.struck || state.locked || !state.affordable, parent: "choices" },
         );
         b.className = "upgrade";
       }

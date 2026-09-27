@@ -1,6 +1,7 @@
 import { HEROES, HERO_IDS } from "../content/heroes.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
 import { CURIO_IDS } from "../content/curios.js";
+import { MERIDIAN_NODES, migrateRanks } from "../content/meridians.js";
 export const SAVE_VERSION = 2;
 export const SAVE_KEY = "blades-profile-v2";
 const number = (v, fallback = 0, max = 1e8) =>
@@ -21,6 +22,7 @@ export const defaultProfile = () => ({
   records: {},
   wallet: 0,
   ranks: {},
+  meridian: [],
   unlockedHeroes: HEROES.filter((hero) => !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
   completedActs: [],
   completedRuns: [],
@@ -115,6 +117,19 @@ export function sanitizeProfile(raw) {
       };
   for (const item of CULTIVATIONS)
     result.ranks[item.id] = integer(raw.ranks?.[item.id], 0, item.maxRank);
+  // Meridian tree: legacy flat ranks migrate onto their vessel points.
+  result.meridian = [
+    ...new Set([
+      ...migrateRanks(raw.ranks),
+      ...(Array.isArray(raw.meridian)
+        ? raw.meridian.filter(
+            (id) =>
+              typeof id === "string" &&
+              MERIDIAN_NODES.some((node) => node.id === id),
+          )
+        : []),
+    ]),
+  ].slice(0, MERIDIAN_NODES.length);
   result.completedActs = ACTS.filter(
     (act) =>
       Array.isArray(raw.completedActs) && raw.completedActs.includes(act.id),

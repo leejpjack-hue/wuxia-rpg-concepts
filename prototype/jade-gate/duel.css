@@ -67,6 +67,12 @@
   border: 1px solid #5a5240; border-radius: 6px; cursor: help;
 }
 #intent-next { display: block; font-size: 9px; color: #9fb4a6; margin-top: 3px; min-height: 12px; }
+/* Meridian vessel headings inside the tea-house choice list. */
+.vessel-heading {
+  margin: 14px 0 4px; font-size: 9px; letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--jade); border-bottom: 1px solid var(--line); padding-bottom: 3px;
+}
+.vessel-heading:first-child { margin-top: 0; }
 /* Bleed/poison/stun readouts under the health bars. */
 .status-line {
   margin: 7px 0 0; min-height: 14px; font-size: 10px; letter-spacing: 0.6px;
