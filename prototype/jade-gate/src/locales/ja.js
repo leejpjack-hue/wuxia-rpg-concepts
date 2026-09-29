@@ -123,6 +123,7 @@ export const messages = {
   'BLADES MEET': '刃が交わる', 'IRON RESOLVE': '鉄の覚悟', 'A MOMENT OF RESPITE': '束の間の休息',
   'FINISHING BLOW': 'とどめの一撃', 'STAGGERED': '体勢崩し', 'GUARD PIERCED': '防御貫通', 'IMPACT': '命中',
   'RIVAL DEFEATED': '敵を撃破', 'ENEMY STUNNED · NO REPLY': '敵は気絶 · 反撃なし', 'THE ENEMY HOLDS GUARD': '敵は防御を固めた', 'Blades meet…': '刃が交わる…',
+  'THE DUEL BEGINS': '決闘開始', 'AMBUSH · THE RIVAL REELS': '奇襲 · 敵は体勢を崩した',
   'EVADE': '回避',
   'Heavy strike': '強攻撃', 'Iron guard': '鉄壁の構え', 'Weapon strike': '武器攻撃', 'Your strike': 'あなたの攻撃',
   'Blocks half of a normal attack. Techniques pierce guard.': '通常攻撃のダメージを半減。奥義は防御を貫通します。',
