@@ -37,6 +37,18 @@ const replies = {
     "A hidden blade out of the mist… assassins have no place in honest war.",
     "I was trained to end tyrants quietly. Tonight the mist does not need me quiet.",
   ],
+  "sun-shangxiang": [
+    "A Wu princess with two swords… did your brother send you to die at our gate?",
+    "Wu stands whether he watches or not. These blades open the pass.",
+  ],
+  "gu-dasao": [
+    "The inn-keeper of Dengzhou, knives still wet… this gate is no tavern brawl.",
+    "Every brawl I won started with a man who thought the same. Step aside.",
+  ],
+  "qin-liangyu": [
+    "The white-shaft general of the frontier… your spear is a long way from Sichuan.",
+    "The shaft is white so the fallen can see who held the line. It holds here too.",
+  ],
 };
 
 const heronReplies = {
@@ -75,6 +87,18 @@ const heronReplies = {
   "nie-yinniang": [
     "A shadow meeting a shadow… we are the same trade, you and I.",
     "No. You sold your strings to a tyrant. My blades were never for sale.",
+  ],
+  "sun-shangxiang": [
+    "The archer-princess, far from the river Wu… your twin blades sing too loudly for fog.",
+    "Then let them sing. I did not come to hide.",
+  ],
+  "gu-dasao": [
+    "Gu Dasao… the sash is red enough already. The river will drink the rest.",
+    "Drink, then. My cleavers have fed worse nights than this.",
+  ],
+  "qin-liangyu": [
+    "One spear against a zither in the fog… reach means nothing when you cannot see.",
+    "I do not need to see the string. I only need the hand that plucks it.",
   ],
 };
 

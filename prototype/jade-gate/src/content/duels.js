@@ -103,4 +103,10 @@ export const HERO_TECHNIQUES = {
     description: "Deal 2.3× damage and recover 6 health." },
   "nie-yinniang": { multiplier: 1.8, protect: 0.6, heal: 0, stun: false,
     description: "Deal 1.8× damage and evade 60% of the reply." },
+  "sun-shangxiang": { multiplier: 2.2, protect: 0.2, heal: 4, stun: false,
+    description: "Deal 2.2× damage, blunt the reply by 20%, and recover 4 health." },
+  "gu-dasao": { multiplier: 2.4, protect: 0, heal: 0, stun: true,
+    description: "Deal 2.4× damage and stun the enemy." },
+  "qin-liangyu": { multiplier: 1.7, protect: 0.45, heal: 4, stun: false,
+    description: "Deal 1.7× damage, blunt the reply by 45%, and recover 4 health." },
 };

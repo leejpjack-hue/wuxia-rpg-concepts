@@ -120,9 +120,10 @@ test("Rending Fang opens a bleed on every fourth strike", () => {
   assert.equal(game.g.duel.status.enemy.bleed.turns, 2);
 });
 
-test("all nine heroes still clear quick play against the wider rival pool", () => {
+test("every hero still clears quick play against the wider rival pool", () => {
   for (const hero of ["zhao-yun", "lu-zhishen", "hu-sanniang", "lu-bu", "guan-yu",
-    "wu-song", "mu-guiying", "liang-hongyu", "nie-yinniang"]) {
+    "wu-song", "mu-guiying", "liang-hongyu", "nie-yinniang",
+    "sun-shangxiang", "gu-dasao", "qin-liangyu"]) {
     const game = session();
     game.start(hero, "quickplay");
     let guard = 0;

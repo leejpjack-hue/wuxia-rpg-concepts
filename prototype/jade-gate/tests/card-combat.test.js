@@ -57,7 +57,8 @@ test('Mountain Bell stuns the reply and Dragon Rush pierces enemy guard', () => 
   z.combat.act('technique'); assert.equal(z.g.enemies[0].hp, 14);
 });
 for (const hero of ['zhao-yun', 'lu-zhishen', 'hu-sanniang', 'lu-bu',
-  'guan-yu', 'wu-song', 'mu-guiying', 'liang-hongyu', 'nie-yinniang']) {
+  'guan-yu', 'wu-song', 'mu-guiying', 'liang-hongyu', 'nie-yinniang',
+  'sun-shangxiang', 'gu-dasao', 'qin-liangyu']) {
   test(`${hero} can roam and win all card encounters with deliberate choices`, () => {
     const g = game(); g.start(hero, 'quickplay'); finishRun(g);
     assert.equal(g.mode, 'victory'); assert(g.g.p.hp > 0); assert.equal(g.g.totalKills, 11);

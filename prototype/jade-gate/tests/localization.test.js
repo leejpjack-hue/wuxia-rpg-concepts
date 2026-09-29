@@ -34,7 +34,7 @@ test('bonus heroes cannot enter the campaign even through a forged unlock list',
   }
 });
 
-test('all nine heroes have roughly 30-word biographies and translated display content', () => {
+test('every hero has a roughly 30-word biography and translated display content', () => {
   for (const hero of HEROES) {
     const words = hero.description.split(/\s+/).length;
     assert(words >= 28 && words <= 35, `${hero.id}: ${words} words`);

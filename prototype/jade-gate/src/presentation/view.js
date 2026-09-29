@@ -20,7 +20,7 @@ export class GameView {
     this.onGesture = onGesture;
     this.$("heroes").innerHTML = HEROES.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">0${index + 1} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
@@ -161,7 +161,7 @@ export class GameView {
     this.$("journey-summary").textContent =
       this.t(this.runMode === "campaign"
         ? `Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`
-        : "Quick play · all nine heroes · no permanent cultivation bonuses");
+        : "Quick play · all twelve heroes · no permanent cultivation bonuses");
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
         `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,
