@@ -31,8 +31,8 @@ The composition root injects `createCardCombat` into `GameSession`. The session 
 | `src/content/duels.js` | Act I pass rosters, enemy stats/patterns, hero technique effects |
 | `src/domain/roam.js` | Grounded movement, deterministic patrols, archer telegraphs/projectiles, real-time strike/dodge/technique, melee hand-off; fixed 60 Hz step |
 | `src/domain/ground.js` | Courtyard trapezoid, shared actor/target clamping and projectile boundaries |
-| `src/presentation/duel-cinematic.js` | Cancellable strike/impact/reply timeline; defers a single domain action until animation completes |
-| `cinematic.css` | Four hero techniques, full-body actors, trails, impacts, finishers and reduced-motion variants |
+| `src/presentation/duel-cinematic.js` | `CUTS` shot lists (duel intro, strike, technique, still) on a cancellable timeline; defers a single domain action until the film ends; the intro never blocks input |
+| `cinematic.css` | Camera layer (dolly, whip pan, shake), letterbox, hit-stop, speed lines, slash/flash, per-hero techniques, finishers and reduced-motion variants |
 | `src/domain/card-combat.js` | One explicit action plus at most one enemy reply; one duel per contacted rival; no idle damage |
 | `src/domain/session.js` | Scene transitions; injected combat factory; encounter preparation; upgrades and saves |
 | `src/presentation/view.js` | Roster, dialogue, disciplines, pause, results, tea house; screen visibility and focus |
