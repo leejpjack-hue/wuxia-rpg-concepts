@@ -92,12 +92,12 @@ test('pause, resume, and return to roster restore visibility and interaction', (
   assert.equal($('play').hidden, true); assert.equal($('overlay').hidden, true);
 });
 
-test('five bonus heroes only appear in Quick play and switching back selects a campaign hero', () => {
+test('bonus heroes only appear in Quick play and switching back selects a campaign hero', () => {
   const {view, cards, modes, $} = fixture();
   assert.equal(cards.filter(card => !card.hidden).length, 4);
   assert.equal(cards[3].disabled, true);
   modes[1].onclick();
-  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 9);
+  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 12);
   cards[4].onclick();
   assert.equal(view.heroId, 'guan-yu');
   assert.equal($('selected-hero-name').textContent, '関羽');

@@ -63,6 +63,15 @@
 .style-nie-yinniang.action-technique[data-phase=strike] .film-hero { animation:shadow-crossing .6s ease-in-out both; filter:drop-shadow(-40px 0 2px #b9aee655) drop-shadow(-80px 0 4px #b9aee633); }
 .style-nie-yinniang.action-technique .film-trail { top:35%; left:48%; width:28%; border-width:6px; filter:drop-shadow(0 0 24px #d8caff); }
 .style-nie-yinniang.action-technique[data-phase=impact] .film-hero { transform:translateX(82%) rotate(6deg); opacity:.8; }
+.style-sun-shangxiang.action-attack[data-phase=strike] .film-hero { animation:twin-dash .35s ease-out both; }
+.style-sun-shangxiang.action-technique[data-phase=strike] .film-hero { animation:twin-dash .6s ease-in-out both; }
+.style-sun-shangxiang.action-technique .film-trail { border-top:12px solid #f0c14a; border-bottom:8px solid #e24b3b; transform:rotate(28deg); }
+.style-gu-dasao.action-attack[data-phase=strike] .film-hero { transform:translateX(70%) rotate(12deg); }
+.style-gu-dasao.action-technique[data-phase=strike] .film-hero { animation:tiger-drive .55s ease-in both; }
+.style-gu-dasao.action-technique .film-trail { top:28%; left:46%; width:22%; height:42%; border-top:0; border-right:16px solid #c44536; border-radius:20%; }
+.style-qin-liangyu.action-attack[data-phase=strike] .film-hero { transform:translateX(86%) skewX(-8deg); }
+.style-qin-liangyu.action-technique[data-phase=strike] .film-hero { animation:blossom-thrusts .6s ease-in-out both; }
+.style-qin-liangyu.action-technique .film-trail { top:46%; height:2%; width:48%; border-radius:8%; transform:rotate(-4deg); border-top-color:#f4f1e8; box-shadow:0 -18px 0 -6px #c23b3b; }
 @keyframes dragon-cleave { 0%{transform:translateX(0) rotate(-24deg)} 45%{transform:translateX(45%) rotate(-18deg)} 100%{transform:translateX(72%) rotate(14deg)} }
 @keyframes tiger-drive { 0%{transform:translateX(-5%) rotate(-17deg)} 40%{transform:translateX(35%) rotate(-28deg)} 100%{transform:translateX(70%) rotate(12deg)} }
 @keyframes blossom-thrusts { 0%,35%,70%{transform:translateX(25%) skewX(4deg)} 20%,55%,100%{transform:translateX(85%) skewX(-8deg)} }

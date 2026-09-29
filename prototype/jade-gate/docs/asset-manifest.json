@@ -219,5 +219,44 @@
     "method": "built-in image_gen · 2026-09-27",
     "prompt": "Use case: stylized-concept. Asset type: Cursed Lü Bu rival, identity-preserved from hero sprite, transparent. Premium painterly Chinese wuxia RPG art matching reference. No text, UI, watermark, duplicate figures or weapons.",
     "reference": "assets/lu-bu-sprite.png"
+  },
+  {
+    "id": "sun-shangxiang",
+    "file": "assets/sun-shangxiang.png",
+    "method": "Antigravity remake · Jack-approved 2026-09-28; key LANCZOS-upscaled only to clear npm check ≥900×1400",
+    "prompt": "Locked Antigravity remake, Jack-approved 2026-09-28. Sun Shangxiang, adult Wu archer-princess, high ponytail, vermilion and gold lamellar, red scarf, exactly two straight jian. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait key LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "sun-shangxiang-sprite",
+    "file": "assets/sun-shangxiang-sprite.png",
+    "method": "Antigravity remake · Jack-approved transparent sprite 2026-09-28",
+    "prompt": "Locked Antigravity remake, Jack-approved 2026-09-28. Same adult Sun Shangxiang: high ponytail, vermilion and gold armor, red scarf, exactly two straight jian. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/sun-shangxiang.png"
+  },
+  {
+    "id": "gu-dasao",
+    "file": "assets/gu-dasao.png",
+    "method": "Antigravity remake · Jev ~0.75 2026-09-29; key LANCZOS-upscaled only to clear npm check ≥900×1400",
+    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Gu Dasao, adult Water Margin inn-fighter, red headband, charcoal kit, blood-red sash, exactly two broad cleaver-knives. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait key LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "gu-dasao-sprite",
+    "file": "assets/gu-dasao-sprite.png",
+    "method": "Antigravity remake · Jev ~0.75 transparent sprite 2026-09-29",
+    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Gu Dasao: red headband, charcoal kit, blood-red sash, exactly two broad cleaver-knives. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/gu-dasao.png"
+  },
+  {
+    "id": "qin-liangyu",
+    "file": "assets/qin-liangyu.png",
+    "method": "Antigravity remake · Jev ~0.75 2026-09-29; key LANCZOS-upscaled only to clear npm check ≥900×1400",
+    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Qin Liangyu, adult frontier commander, lamellar with crimson trim and cape, exactly one white-shaft spear. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait key LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "qin-liangyu-sprite",
+    "file": "assets/qin-liangyu-sprite.png",
+    "method": "Antigravity remake · Jev ~0.75 transparent sprite 2026-09-29",
+    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Qin Liangyu: crimson-trimmed lamellar, red cape, exactly one white-shaft spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/qin-liangyu.png"
   }
 ]
