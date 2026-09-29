@@ -17,7 +17,7 @@
 [data-phase=strike] .film-hero { transform:translateX(65%) rotate(-9deg); }
 [data-phase=impact] .film-hero { transform:translateX(55%) rotate(7deg); }
 [data-phase=impact] .film-enemy { transform:translateX(17%) scaleX(-1) rotate(-12deg); filter:brightness(1.7) drop-shadow(0 0 20px var(--strike-color)); animation:struck .42s linear both; }
-[data-phase=reply].counter .film-enemy { transform:translateX(-60%) scaleX(-1) rotate(-8deg); }
+[data-phase=reply].counter .film-enemy { transform:translateX(-60%) scaleX(-1) rotate(-8deg); transition-delay:.14s; }
 [data-phase=reply].counter .film-hero { transform:translateX(-12%) rotate(-12deg); filter:brightness(1.7); }
 .finisher[data-phase=reply] .film-enemy { transform:translateX(34%) translateY(6%) scaleX(-1) rotate(-32deg); opacity:0; transition-duration:.9s; }
 .film-trail,.film-ring,.film-sparks { position:absolute; opacity:0; pointer-events:none; }
@@ -142,7 +142,7 @@
 @keyframes versus-slam { 0%{opacity:0;scale:2.6;filter:blur(8px)} 55%{opacity:1;filter:blur(0)} 100%{opacity:1;scale:1} }
 @keyframes plate-left { 0%{opacity:0;transform:translateX(-40px)} 100%{opacity:1;transform:none} }
 @keyframes plate-right { 0%{opacity:0;transform:translateX(40px)} 100%{opacity:1;transform:none} }
-@keyframes film-out { 100%{opacity:0} }
+@keyframes film-out { 100%{clip-path:inset(0 0 0 100%)} }
 /* Feet stay anchored to the stage while each weapon has its own motion. */
 .film-actor { transform-origin:50% 100%; }
 .style-guan-yu.action-attack[data-phase=strike] .film-hero { transform:translateX(62%) rotate(-15deg); }
