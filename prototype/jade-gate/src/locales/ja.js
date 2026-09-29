@@ -17,6 +17,7 @@ export const messages = {
   '3 encounters · 12 legends · your next move': '三つの戦場 · 十二人の英雄 · 次の一手はあなたに',
   'Game mode': '遊び方', 'Campaign': '物語', 'Quick play': 'クイックプレイ',
   'Quick play stage': '試す章',
+  'Trailer ↗': '予告編 ↗',
   'Choose your hero': '英雄を選択', 'Continue journey': '旅を続ける',
   'Campaign route': '旅路', 'Retry loading artwork': '画像の読み込みを再試行',
   'Audio mix': '音量設定', 'Master': '全体', 'Music': '音楽', 'Effects': '効果音',

@@ -6,6 +6,8 @@ The playable browser build is a wuxia RPG with two phases per encounter. The her
 
 ## Runtime
 
+The optional `prototype/jade-gate/trailer.html` teaser is a standalone 10-second presentation linked from the game header. `src/content/trailer.js` owns the scene intervals, bilingual wording and narration cues. `trailer.js` renders from the shared Web Audio clock; `src/platform/trailer-audio.js` schedules a one-shot score, effects and bundled WAV narration. Pause suspends that clock, replay cancels old sources, and hidden tabs pause automatically. It reads the saved language preference but never writes campaign state. Existing game artwork supplies the montage, two-card clash and title screen.
+
 ```mermaid
 flowchart LR
   Boot[game.js] --> Session[GameSession]

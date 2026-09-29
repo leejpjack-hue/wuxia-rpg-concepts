@@ -8,6 +8,8 @@ Run `python3 serve.py` here and open http://127.0.0.1:8765/. On macOS, double-cl
 
 ## How to travel and fight
 
+Watch `trailer.html` (also linked from the game header) for a 10-second HTML/JavaScript teaser with Japanese or English narration, captions, original synthesized music and sound effects. Press Play to enable audio; pause, replay and mute are available. Hiding the tab pauses the picture and sound together. The trailer never changes campaign saves.
+
 Between duels you roam the pass. Move the hero with the on-screen arrow buttons or **WASD / arrow keys**; rivals patrol their own ground. Walking into a swordsman starts that rival's card duel, and winning removes them from the pass. Clear every rival to finish the encounter. **Esc** pauses.
 
 Archers fight entirely in real time. Their amber aiming line locks before release: move away or **Space / K** to dodge, close in and **J / 1** to strike, or **E / 3** for a longer-range technique. Touch buttons provide the same actions. Characters and patrol targets stay on the stone courtyard.

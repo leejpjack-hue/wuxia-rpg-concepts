@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d0e">
+  <title>四人の刃 — 10秒トレーラー</title>
+  <link rel="stylesheet" href="trailer.css">
+</head>
+<body>
+  <header><a class="wordmark" href="./"><span class="seal">四</span> <span>BLADES OF THE FOUR<small>A WUXIA CARD RPG</small></span></a><a id="back" href="./">ゲームへ ↗</a></header>
+  <main>
+    <div class="editorial"><p id="eyebrow">江湖の物語 · 公式ティーザー</p><span>01 / 10 SECONDS</span></div>
+    <section id="screen" class="screen" aria-label="ゲームトレーラー" data-scene="title">
+      <div class="letterbox top"></div><div class="letterbox bottom"></div>
+      <div class="scene" data-shot="pass"><img class="backdrop" src="assets/arena.png" alt=""><div class="mist"></div><img class="wanderer" src="assets/zhao-yun-sprite.png" alt=""><span class="vertical-script">山河有盡<br>寸刃不移</span></div>
+      <div class="scene" data-shot="legends"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="hero-line"><img src="assets/guan-yu-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/qin-liangyu-sprite.png" alt=""><img src="assets/lu-bu-sprite.png" alt=""></div></div>
+      <div class="scene" data-shot="duel"><img class="backdrop" src="assets/mount-canglan.png" alt=""><div class="duel-grid"></div><div class="duel-card hero"><span>趙雲 · 白龍</span><img src="assets/zhao-yun-sprite.png" alt="趙雲"><small>龍の突撃 / DRAGON RUSH</small></div><span class="versus">對</span><div class="duel-card rival"><span>呂布 · 飛将</span><img src="assets/lu-bu-rival-sprite.png" alt="呂布"><small>SKYBREAKER</small></div><div class="slash"></div><div class="impact"></div><div class="impact-word">蒼龍破</div></div>
+      <div class="scene" data-shot="journey"><img class="backdrop" src="assets/mount-canglan.png" alt=""><div id="roster" class="roster"></div></div>
+      <div class="scene title-scene" data-shot="title"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="title-art"><img src="assets/lu-zhishen-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""></div><div class="title-lockup"><span class="title-seal">四</span><p>BLADES OF THE FOUR</p><h1 id="end-title">四人の刃</h1><span id="end-line">今、江湖へ。</span></div></div>
+      <div class="vignette"></div><div id="embers" class="embers" aria-hidden="true"></div>
+      <div id="copy" class="copy"><p id="shot-kicker"></p><h2 id="shot-title"></h2></div>
+      <p id="subtitle" class="subtitle"></p>
+      <div class="film-meta"><span>四俠傳</span><span id="film-time">00:00 / 00:10</span></div>
+      <button id="cover" class="cover"><span class="play-circle">▶</span><span id="cover-label">音声付きで再生</span><small>10 SEC · MUSIC + VOICE</small></button>
+    </section>
+    <div class="transport">
+      <button id="play" class="primary" disabled>準備中…</button>
+      <div class="track" role="progressbar" aria-label="再生位置" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress"></span></div>
+      <span id="timer">00:00 / 00:10</span>
+      <button id="mute" aria-pressed="false">音声：入</button>
+      <label><span class="sr-only">Language / 言語</span><select id="trailer-language"><option value="ja">日本語</option><option value="en">English</option></select></label>
+    </div>
+    <div class="below"><p id="description">刃が交わる、その一瞬を。探索とカード決闘で紡ぐ武侠RPG。</p><a id="cta" href="./">物語を始める ↗</a></div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <details><summary id="transcript-label">ナレーション全文</summary><p id="transcript"></p></details>
+  </main>
+  <footer><span>BLADES OF THE FOUR</span><span id="footer-copy">十二の伝説 · 三つの章 · 一つの誓い</span></footer>
+  <script type="module" src="trailer.js"></script>
+</body>
+</html>
