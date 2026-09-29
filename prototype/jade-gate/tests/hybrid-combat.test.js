@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { session, clearEncounter } from './helpers.js';
 import { groundPoint, onGround } from '../src/domain/ground.js';
-import { HERO_IDS } from '../src/content/heroes.js';
-import { StrikeTimeline } from '../src/presentation/duel-cinematic.js';
+import { HERO_IDS, HEROES } from '../src/content/heroes.js';
+import { StrikeTimeline, DuelCinematic, CUTS, cutFor } from '../src/presentation/duel-cinematic.js';
+import { translate } from '../src/locales/i18n.js';
 const frames = (g,n,input={}) => { for(let i=0;i<n;i++) g.step(1/60,input); };
 function crossfire() {
   const g=session();g.start('zhao-yun','quickplay');clearEncounter(g);g.chooseDiscipline('power');return g;
@@ -66,15 +67,72 @@ test('cinematic preview matches actual damage and never consumes a turn',()=>{
 test('cinematic cancellation invalidates queued callbacks; finishing frame commits exactly once',()=>{
   let callbacks=[],phases=[],commits=0;
   const timeline=new StrikeTimeline((fn,ms)=>{callbacks.push({fn,ms});return callbacks.length;},()=>{});
-  timeline.play(true,false,p=>phases.push(p),()=>commits++);
-  assert.deepEqual(callbacks.map(c=>c.ms),[450,1050,1550,2150]);
-  callbacks.slice(0,3).forEach(c=>c.fn());assert.equal(commits,0);assert.equal(phases.at(-1),'reply');
-  callbacks[3].fn();callbacks[3].fn();assert.equal(commits,1);
-  callbacks=[];timeline.play(false,true,()=>{},()=>commits++);assert.equal(callbacks.at(-1).ms,220);
+  timeline.play(cutFor('technique',false),p=>phases.push(p),()=>commits++);
+  callbacks.slice(0,-1).forEach(c=>c.fn());assert.equal(commits,0);assert.equal(phases.at(-1),'reply');
+  callbacks.at(-1).fn();callbacks.at(-1).fn();assert.equal(commits,1);
+  callbacks=[];timeline.play(cutFor('technique',true),()=>{},()=>commits++);assert.equal(callbacks.at(-1).ms,220);
   timeline.cancel();callbacks.forEach(c=>c.fn());assert.equal(commits,1);
 });
 test('default browser-compatible timer scheduler completes a reduced-motion turn',async()=>{
   const timeline=new StrikeTimeline();const phases=[];
-  await new Promise(resolve=>timeline.play(false,true,p=>phases.push(p),resolve));
+  await new Promise(resolve=>timeline.play(cutFor('attack',true),p=>phases.push(p),resolve));
   assert.deepEqual(phases,['prepare','strike','impact','reply']);
+});
+test('film cuts run in time order; a technique charges up before it strikes, a plain strike does not',()=>{
+  for(const cut of Object.values(CUTS)){
+    assert.equal(cut.at(-1)[0],'end');
+    cut.slice(1).forEach(([,ms],i)=>assert(ms>=cut[i][1]));
+  }
+  const beats=cut=>cut.map(([beat])=>beat);
+  assert.deepEqual(beats(cutFor('technique',false)),['prepare','focus','strike','impact','reply','end']);
+  assert(!beats(cutFor('attack',false)).includes('focus'));
+  assert(!beats(cutFor('technique',true)).includes('focus'));
+  assert(cutFor('technique',false).at(-1)[1]>cutFor('attack',false).at(-1)[1]);
+});
+
+function filmFixture(){
+  const parts=new Map(), cues=[], callbacks=[];
+  const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(){}},classList:{toggle(){}},setAttribute(){},
+    querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:''});return parts.get(selector);}};
+  const table={appendChild(){}};
+  const timeline=new StrikeTimeline((fn,ms)=>{callbacks.push({fn,ms});return callbacks.length;},()=>{});
+  const film=new DuelCinematic({createElement:()=>node},table,cue=>cues.push(cue.type),text=>text,timeline);
+  const flush=()=>{while(callbacks.length)callbacks.shift().fn();};
+  return {film,node,cues,callbacks,flush};
+}
+const hero=HEROES.find(h=>h.id==='zhao-yun');
+const rival={name:'Ashen Swordsman',title:'Gate sentry',art:'guard-sprite',type:'grunt'};
+test('duel intro opens with a gong and names both fighters, then leaves the table',()=>{
+  const {film,node,cues,flush}=filmFixture();
+  film.intro(hero,rival,true,false);
+  assert.equal(node.hidden,false);assert.match(node.className,/film-intro/);assert.match(node.className,/ambush/);
+  assert.equal(node.querySelector('.film-plate-hero b').textContent,'Zhao Yun');
+  assert.equal(node.querySelector('.film-plate-enemy b').textContent,'Ashen Swordsman');
+  flush();
+  assert.deepEqual(cues,['dodge','duel_open']);
+  assert.equal(node.querySelector('.film-caption').textContent,'AMBUSH · THE RIVAL REELS');
+  assert.equal(node.hidden,true);
+});
+test('reduced motion skips the duel intro entirely',()=>{
+  const {film,node,cues,callbacks}=filmFixture();node.hidden=true;
+  film.intro(hero,rival,false,true);
+  assert.equal(node.hidden,true);assert.equal(callbacks.length,0);assert.deepEqual(cues,[]);
+});
+test('acting during the intro cuts to the technique film; intro beats never fire and the turn commits once',()=>{
+  const {film,node,cues,callbacks,flush}=filmFixture();
+  film.intro(hero,rival,false,false);
+  const stale=callbacks.splice(0);
+  let commits=0;
+  film.play('technique',hero,rival,{damage:54,incoming:6},false,()=>commits++);
+  stale.forEach(c=>c.fn());
+  assert.deepEqual(cues,['dodge']);
+  flush();
+  assert.deepEqual(cues,['dodge','charge','special','hit','hurt']);
+  assert.equal(commits,1);assert.equal(node.hidden,true);
+  assert.equal(node.querySelector('.film-seal').textContent,'趙雲');
+});
+test('new duel film captions have Japanese translations',()=>{
+  for(const text of ['THE DUEL BEGINS','AMBUSH · THE RIVAL REELS']){
+    assert.notEqual(translate(text),text);assert.equal(translate(text,'en'),text);
+  }
 });

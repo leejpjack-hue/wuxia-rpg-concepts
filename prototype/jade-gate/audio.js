@@ -947,6 +947,25 @@ export function playSfx(type, param = null) {
         break;
       }
 
+      case "duel_open": {
+        // Struck gong: detuned partials with a slow shimmer tail
+        [[98, 0.5], [147.8, 0.26], [233, 0.16], [311, 0.1]].forEach(([freq, level]) => {
+          const osc = ctx.createOscillator();
+          const oGain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq * 1.04, t);
+          osc.frequency.exponentialRampToValueAtTime(freq, t + 0.3);
+          oGain.gain.setValueAtTime(level, t);
+          oGain.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+          osc.connect(oGain);
+          oGain.connect(sfxGain);
+          osc.start(t);
+          osc.stop(t + 1.65);
+        });
+        break;
+      }
+
+      case "charge":
       case "enemy_windup": {
         // Rising overdriven feedback pitch swell
         const osc = ctx.createOscillator();

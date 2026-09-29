@@ -1,18 +1,25 @@
 .duel-table { position: relative; isolation: isolate; }
-.strike-film { position:absolute; inset:0; z-index:10; overflow:hidden; border-radius:20px; background:linear-gradient(#07100c55,#06110ebb),var(--arena-image, url('assets/arena.png')) center/cover; box-shadow:inset 0 36px #030906,inset 0 -40px #030906; pointer-events:none; --strike-color:#8ce1c3; }
+.strike-film { position:absolute; inset:0; z-index:10; overflow:hidden; border-radius:20px; background:#030906; pointer-events:none; container-type:size; --strike-color:#8ce1c3; --ease-whip:cubic-bezier(.7,0,.2,1); }
 .strike-film[hidden] { display:none; }
-.film-title { position:absolute; top:9%; width:100%; text-align:center; font:700 clamp(15px,3vw,36px) Georgia,serif; letter-spacing:.16em; color:var(--strike-color); text-shadow:0 3px 16px #000; }
-.film-caption { position:absolute; bottom:12px; width:100%; text-align:center; font-size:12px; letter-spacing:.12em; color:#fff3ce; }
+/* The camera carries backdrop and actors, so dolly, pan and shake move the whole shot. Shake uses `translate` to compose with zoom. */
+.film-camera { position:absolute; inset:0; transform-origin:50% 60%; transition:transform .45s cubic-bezier(.2,.7,.2,1),transform-origin .45s cubic-bezier(.2,.7,.2,1),filter .25s; }
+.film-backdrop { position:absolute; inset:-8%; background:linear-gradient(#07100c55,#06110ebb),var(--arena-image, url('assets/arena.png')) center/cover; transition:filter .35s; }
+.film-aura { position:absolute; inset:0; opacity:0; transition:opacity .45s; background:radial-gradient(circle at 26% 60%,color-mix(in srgb,var(--strike-color) 55%,transparent) 0 9%,transparent 27%,#020605dd 64%); }
+.film-bars { position:absolute; inset:0; z-index:7; }
+.film-bars::before,.film-bars::after { content:''; position:absolute; left:0; right:0; height:8%; background:#030906; transition:height .4s cubic-bezier(.2,.7,.2,1); }
+.film-bars::before { top:0; } .film-bars::after { bottom:0; }
+.film-title { position:absolute; z-index:8; top:12%; left:0; width:100%; text-align:center; font:700 clamp(15px,3vw,36px) Georgia,serif; letter-spacing:.16em; color:var(--strike-color); text-shadow:0 3px 16px #000; transition:top .3s,left .3s,width .3s,opacity .3s; }
+.film-caption { position:absolute; z-index:9; bottom:12px; width:100%; text-align:center; font-size:12px; letter-spacing:.12em; color:#fff3ce; }
 .film-floor { position:absolute; left:10%; right:10%; bottom:16%; height:9%; background:#02060499; filter:blur(15px); border-radius:50%; }
 .film-actor { position:absolute; bottom:19%; height:66%; width:42%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 8px #0008); transition:transform .32s cubic-bezier(.12,.8,.25,1),filter .2s,opacity .3s; }
 .film-hero { left:4%; transform:translateX(-8%); }
 .film-enemy { right:4%; transform:scaleX(-1); }
 [data-phase=strike] .film-hero { transform:translateX(65%) rotate(-9deg); }
 [data-phase=impact] .film-hero { transform:translateX(55%) rotate(7deg); }
-[data-phase=impact] .film-enemy { transform:translateX(17%) scaleX(-1) rotate(-12deg); filter:brightness(2) drop-shadow(0 0 20px var(--strike-color)); }
-[data-phase=reply].counter .film-enemy { transform:translateX(-60%) scaleX(-1) rotate(-8deg); }
+[data-phase=impact] .film-enemy { transform:translateX(17%) scaleX(-1) rotate(-12deg); filter:brightness(1.7) drop-shadow(0 0 20px var(--strike-color)); animation:struck .42s linear both; }
+[data-phase=reply].counter .film-enemy { transform:translateX(-60%) scaleX(-1) rotate(-8deg); transition-delay:.14s; }
 [data-phase=reply].counter .film-hero { transform:translateX(-12%) rotate(-12deg); filter:brightness(1.7); }
-.finisher[data-phase=reply] .film-enemy { transform:translateX(30%) scaleX(-1) rotate(-28deg); opacity:0; }
+.finisher[data-phase=reply] .film-enemy { transform:translateX(34%) translateY(6%) scaleX(-1) rotate(-32deg); opacity:0; transition-duration:.9s; }
 .film-trail,.film-ring,.film-sparks { position:absolute; opacity:0; pointer-events:none; }
 .film-trail { left:39%; top:29%; width:39%; height:35%; border-top:9px solid #fff9dd; border-radius:50%; transform:rotate(-35deg); filter:drop-shadow(0 0 12px var(--strike-color)); }
 [data-phase=strike] .film-trail { animation:blade-trail .5s ease-out both; }
@@ -20,9 +27,56 @@
 [data-phase=impact] .film-ring { animation:impact-ring .5s ease-out both; }
 .film-sparks { left:57%; top:32%; font-size:100px; color:#fff8d3; text-shadow:70px -40px var(--strike-color),-90px 50px var(--strike-color),35px 100px #fff; }
 [data-phase=impact] .film-sparks { animation:impact-ring .45s ease-out both; }
-.film-number { position:absolute; left:63%; top:23%; color:#fff6ce; font:800 clamp(24px,6vw,68px) Georgia,serif; text-shadow:0 4px #7a291f,0 0 25px #000; }
+.film-number { position:absolute; z-index:8; left:63%; top:23%; color:#fff6ce; font:800 clamp(24px,6vw,68px) Georgia,serif; text-shadow:0 4px #7a291f,0 0 25px #000; }
+[data-phase=impact] .film-number,[data-phase=reply].counter .film-number { animation:number-slam .42s cubic-bezier(.2,1.5,.4,1) both; }
 .counter .film-number { left:20%; color:#ff9c90; }
-.action-technique .film-title { animation:technique-title .45s ease-out both; }
+
+/* Overlays: speed lines, calligraphy seal, full-frame slash, impact flash. */
+.film-lines { position:absolute; z-index:2; inset:0; opacity:0; overflow:hidden; }
+.film-lines::before { content:''; position:absolute; inset:0; opacity:0; background:repeating-conic-gradient(from 0deg at 26% 60%,#fff0 0 2.6deg,#ffffff38 2.6deg 3deg); -webkit-mask:radial-gradient(circle at 26% 60%,transparent 20%,#000 62%); mask:radial-gradient(circle at 26% 60%,transparent 20%,#000 62%); }
+.film-lines i { position:absolute; left:0; width:34%; height:2px; border-radius:2px; background:linear-gradient(90deg,transparent,#fffc 65%,transparent); opacity:0; }
+.film-lines i:nth-child(1){top:21%} .film-lines i:nth-child(2){top:33%;--d:-.2s} .film-lines i:nth-child(3){top:44%;--d:-.08s} .film-lines i:nth-child(4){top:52%;--d:-.26s}
+.film-lines i:nth-child(5){top:61%;--d:-.14s} .film-lines i:nth-child(6){top:70%;--d:-.3s} .film-lines i:nth-child(7){top:79%;--d:-.04s}
+[data-phase=strike] .film-lines { opacity:.55; }
+[data-phase=strike] .film-lines i,.film-intro[data-phase=open] .film-lines i { animation:streak .34s linear var(--d,0s) infinite; }
+.film-seal { position:absolute; z-index:1; right:5%; top:17%; writing-mode:vertical-rl; font:900 24cqh/1 "Noto Serif CJK JP","Hiragino Mincho ProN","Songti SC",serif; color:var(--strike-color); opacity:0; mix-blend-mode:screen; text-shadow:0 0 30px var(--strike-color); transition:opacity .2s; }
+.film-slash { position:absolute; z-index:4; left:-10%; right:-10%; top:47%; height:3px; background:linear-gradient(90deg,transparent,#fff 18%,#fff 82%,transparent); box-shadow:0 0 14px var(--strike-color),0 0 42px var(--strike-color); opacity:0; transform:rotate(-14deg) scaleX(0); }
+[data-phase=impact] .film-slash { animation:slash-cut .4s ease-out both; }
+.film-flash { position:absolute; z-index:5; inset:0; opacity:0; mix-blend-mode:screen; background:radial-gradient(circle at 68% 50%,#fff 0,color-mix(in srgb,var(--strike-color) 70%,#fff) 30%,transparent 75%); }
+.film-plate { display:none; }
+
+/* Strike: push in on contact, whip streaks, short hit-stop, shake. */
+.action-attack[data-phase=strike] .film-camera { transform-origin:62% 58%; transform:scale(1.1); }
+.action-attack[data-phase=impact] .film-camera { transform-origin:68% 55%; transform:scale(1.16); animation:cam-shake .3s linear .08s; }
+[data-phase=reply] .film-camera { transform:scale(1.02); transition-duration:.6s; }
+[data-phase=reply].counter .film-camera { transform-origin:28% 58%; transform:scale(1.12); animation:cam-shake .28s linear .12s; }
+.finisher[data-phase=impact] .film-backdrop,.finisher[data-phase=reply] .film-backdrop { filter:grayscale(.85) brightness(.55); }
+.finisher .film-slash { height:5px; background:linear-gradient(90deg,transparent,#ffe9e0 14%,#c8102e 50%,#ffe9e0 86%,transparent); box-shadow:0 0 18px #c8102e,0 0 54px #8b1e1e; }
+
+/* Technique: charge close-up, title slam, whip pan, long hit-stop, flash, heavy shake, pull-out. */
+.action-technique[data-phase=prepare] .film-title { opacity:0; }
+.action-technique[data-phase=focus] .film-camera { transform-origin:26% 60%; transform:scale(1.55); transition-duration:.85s; transition-timing-function:cubic-bezier(.35,0,.15,1); }
+.action-technique[data-phase=focus] .film-aura { opacity:1; }
+.action-technique[data-phase=focus] .film-backdrop { filter:saturate(.3) brightness(.65); }
+.action-technique[data-phase=focus] .film-hero { transform:translateX(-6%) translateY(-1.5%) scale(1.03); filter:brightness(1.18) drop-shadow(0 0 14px var(--strike-color)) drop-shadow(0 0 38px var(--strike-color)); transition-duration:.8s; }
+.action-technique[data-phase=focus] .film-enemy { filter:brightness(.4) blur(2px); }
+.action-technique[data-phase=focus] .film-lines { opacity:1; }
+.action-technique[data-phase=focus] .film-lines::before { opacity:1; animation:focus-lines .16s steps(2) infinite; }
+.action-technique[data-phase=focus] .film-seal { animation:seal-in .75s cubic-bezier(.2,.8,.2,1) both; }
+.action-technique[data-phase=focus] .film-title { top:40%; left:36%; width:60%; font-size:clamp(24px,5.4vw,64px); animation:title-slam .55s cubic-bezier(.2,1.4,.4,1) .12s both; }
+.action-technique[data-phase=focus] .film-bars::before,.action-technique[data-phase=focus] .film-bars::after { height:15%; transition-duration:.7s; }
+.action-technique[data-phase=strike] .film-bars::before,.action-technique[data-phase=strike] .film-bars::after,
+.action-technique[data-phase=impact] .film-bars::before,.action-technique[data-phase=impact] .film-bars::after { height:11%; }
+.action-technique[data-phase=strike] .film-camera { transform-origin:64% 56%; transform:scale(1.22); transition-duration:.26s; transition-timing-function:var(--ease-whip); animation:whip-blur .32s ease-out; }
+.action-technique[data-phase=strike] .film-lines { opacity:1; }
+.action-technique[data-phase=impact] .film-camera { transform-origin:70% 55%; transform:scale(1.34); transition-duration:.08s; animation:cam-shake-heavy .55s linear .13s; }
+.action-technique[data-phase=impact] .film-hero { transition-delay:.13s; }
+.action-technique[data-phase=impact] .film-enemy { animation-duration:.6s; }
+.action-technique[data-phase=impact] .film-flash { animation:flash .28s ease-out both; }
+.action-technique[data-phase=impact] .film-slash { height:6px; animation-duration:.55s; }
+.action-technique[data-phase=impact] .film-number { font-size:clamp(30px,8vw,92px); }
+.action-technique[data-phase=reply] .film-camera { transform:scale(1.04); transition-duration:.75s; }
+.action-technique[data-phase=reply].counter .film-camera { transform-origin:28% 58%; transform:scale(1.12); }
 .action-technique .film-trail { border-width:18px; box-shadow:0 -18px 0 -10px var(--strike-color),0 -38px 0 -24px #fff; }
 .style-zhao-yun.action-technique[data-phase=strike] .film-hero { transform:translateX(85%) skewX(-12deg); filter:drop-shadow(-30px 0 2px #8efeea88) drop-shadow(-65px 0 3px #b7fff633); }
 .style-lu-zhishen.action-technique .film-ring { left:25%; top:48%; width:55%; transform:scaleY(.4); border-width:14px; }
@@ -31,15 +85,64 @@
 .style-hu-sanniang.action-technique[data-phase=strike] .film-hero { animation:twin-dash .75s ease-in-out both; filter:drop-shadow(-45px 0 1px #f093a888); }
 .style-lu-bu.action-technique .film-trail { top:12%; height:65%; width:25%; border-top:0; border-right:24px solid #efceff; box-shadow:12px 0 22px #b863ff; }
 .style-lu-bu.action-technique[data-phase=impact] { animation:heavy-impact .35s linear; }
-.action-guard .film-trail,.action-tea .film-trail { display:none; }
+
+/* Guard and tea: close on the hero, no slash or speed lines. */
+.action-guard[data-phase=strike] .film-camera,.action-tea[data-phase=strike] .film-camera,
+.action-guard[data-phase=impact] .film-camera,.action-tea[data-phase=impact] .film-camera { transform-origin:26% 60%; transform:scale(1.14); }
+.action-guard .film-trail,.action-tea .film-trail,.action-guard .film-slash,.action-tea .film-slash,.action-guard .film-lines,.action-tea .film-lines { display:none; }
 .action-guard .film-hero,.action-tea .film-hero { transform:translateX(0); }
 .action-guard .film-ring,.action-tea .film-ring { left:14%; }
-.action-guard[data-phase=impact] .film-enemy,.action-tea[data-phase=impact] .film-enemy { transform:scaleX(-1); filter:none; }
+.action-guard[data-phase=impact] .film-enemy,.action-tea[data-phase=impact] .film-enemy { transform:scaleX(-1); filter:none; animation:none; }
+
+/* Duel intro: bars open, fighters rush in, the frame cuts on 對 with name plates. */
+.film-intro .film-camera { animation:intro-dolly 1.9s cubic-bezier(.25,.6,.2,1) both; }
+.film-intro .film-hero { animation:intro-hero .62s cubic-bezier(.12,.8,.2,1) both; }
+.film-intro .film-enemy { animation:intro-enemy .62s cubic-bezier(.12,.8,.2,1) .08s both; }
+.film-intro.ambush[data-phase=clash] .film-enemy,.film-intro.ambush[data-phase=out] .film-enemy { animation:intro-reel .45s ease-out both; }
+.film-intro .film-bars::before,.film-intro .film-bars::after { height:12%; animation:bars-open .7s cubic-bezier(.6,0,.2,1) both; }
+.film-intro[data-phase=open] .film-lines { opacity:.8; }
+.film-intro .film-title { top:50%; font-size:clamp(56px,13vw,150px); line-height:1; color:#f3ead7; text-shadow:0 0 34px var(--strike-color),0 6px 24px #000; opacity:0; translate:0 -50%; }
+.film-intro[data-phase=clash] .film-title { animation:versus-slam .5s cubic-bezier(.2,1.5,.4,1) both; }
+.film-intro[data-phase=out] .film-title,.film-intro[data-phase=out] .film-plate { opacity:1; }
+.film-intro[data-phase=clash] { animation:heavy-impact .3s linear; }
+.film-intro[data-phase=clash] .film-flash { background:radial-gradient(circle at 50% 50%,#fff 0,color-mix(in srgb,var(--strike-color) 60%,#fff) 25%,transparent 70%); animation:flash .3s ease-out both; }
+.film-intro .film-slash { top:50%; }
+.film-intro[data-phase=clash] .film-slash { animation:slash-cut-steep .55s ease-out both; }
+.film-intro[data-phase=out] { animation:film-out .3s ease-in both; }
+.film-intro .film-plate { display:block; position:absolute; z-index:6; opacity:0; }
+.film-plate small { display:block; font-size:10px; letter-spacing:.22em; color:#d6c9a8; }
+.film-plate b { font:700 clamp(18px,3.2vw,34px) Georgia,serif; color:#fff3ce; text-shadow:0 3px 14px #000; }
+.film-plate-hero { left:5%; bottom:15%; padding-left:12px; border-left:3px solid var(--strike-color); }
+.film-plate-enemy { right:5%; top:15%; padding-right:12px; text-align:right; border-right:3px solid #e3a798; }
+.film-intro[data-phase=clash] .film-plate-hero { animation:plate-left .45s cubic-bezier(.15,.9,.25,1) .08s both; }
+.film-intro[data-phase=clash] .film-plate-enemy { animation:plate-right .45s cubic-bezier(.15,.9,.25,1) .16s both; }
+
 @keyframes blade-trail { 0%{opacity:0;scale:.3} 30%{opacity:1} 100%{opacity:0;scale:1.25} }
 @keyframes impact-ring { 0%{opacity:1;scale:.4} 100%{opacity:0;scale:1.8} }
-@keyframes technique-title { from{opacity:0;letter-spacing:.5em} to{opacity:1;letter-spacing:.16em} }
 @keyframes twin-dash { 0%{transform:translateX(0)} 45%{transform:translateX(92%) rotate(14deg)} 70%{transform:translateX(35%) rotate(-15deg)} 100%{transform:translateX(70%)} }
 @keyframes heavy-impact { 20%,60%{translate:-5px 3px} 40%,80%{translate:5px -3px} }
+/* The first quarter holds the contact frame: hit-stop with a chromatic split. */
+@keyframes struck { 0%,24%{transform:translateX(2%) scaleX(-1);filter:brightness(3) drop-shadow(5px 0 #ff4d6d) drop-shadow(-5px 0 #4dd8ff)} 38%{transform:translateX(24%) scaleX(-1) rotate(-16deg)} 100%{transform:translateX(17%) scaleX(-1) rotate(-12deg);filter:brightness(1.7) drop-shadow(0 0 20px var(--strike-color))} }
+@keyframes cam-shake { 0%,100%{translate:0 0} 20%{translate:-7px 4px} 40%{translate:6px -3px} 60%{translate:-4px 2px} 80%{translate:2px -1px} }
+@keyframes cam-shake-heavy { 0%,100%{translate:0 0} 10%{translate:-14px 8px} 22%{translate:12px -9px} 36%{translate:-10px 5px} 50%{translate:8px -4px} 66%{translate:-5px 3px} 82%{translate:3px -1px} }
+@keyframes whip-blur { 0%{filter:blur(0)} 35%{filter:blur(5px)} 100%{filter:blur(0)} }
+@keyframes streak { 0%{transform:translateX(300%);opacity:0} 20%{opacity:1} 100%{transform:translateX(-110%);opacity:0} }
+@keyframes focus-lines { 50%{opacity:.55} }
+@keyframes seal-in { 0%{opacity:0;scale:1.35} 100%{opacity:.4;scale:1} }
+@keyframes title-slam { 0%{opacity:0;scale:1.9;letter-spacing:.6em;filter:blur(6px)} 100%{opacity:1;scale:1;letter-spacing:.14em;filter:blur(0)} }
+@keyframes number-slam { 0%{opacity:0;scale:2.4;filter:blur(4px)} 60%{opacity:1;filter:blur(0)} 100%{scale:1} }
+@keyframes flash { 0%{opacity:.85} 100%{opacity:0} }
+@keyframes slash-cut { 0%{opacity:1;transform:rotate(-14deg) scaleX(0)} 30%{opacity:1;transform:rotate(-14deg) scaleX(1)} 100%{opacity:0;transform:rotate(-14deg) scaleX(1) scaleY(.2)} }
+@keyframes slash-cut-steep { 0%{opacity:1;transform:rotate(-24deg) scaleX(0)} 30%{opacity:1;transform:rotate(-24deg) scaleX(1)} 100%{opacity:0;transform:rotate(-24deg) scaleX(1) scaleY(.2)} }
+@keyframes intro-dolly { 0%{transform:scale(1.35) translateX(5%)} 100%{transform:scale(1.04)} }
+@keyframes intro-hero { 0%{opacity:.3;transform:translateX(-140%) skewX(-12deg)} 100%{opacity:1;transform:translateX(-8%)} }
+@keyframes intro-enemy { 0%{opacity:.3;transform:translateX(140%) scaleX(-1) skewX(-12deg)} 100%{opacity:1;transform:scaleX(-1)} }
+@keyframes intro-reel { 0%{transform:scaleX(-1)} 100%{transform:translateX(9%) scaleX(-1) rotate(-11deg);filter:brightness(1.5) drop-shadow(0 0 16px #ff9c90)} }
+@keyframes bars-open { 0%{height:50%} 100%{height:12%} }
+@keyframes versus-slam { 0%{opacity:0;scale:2.6;filter:blur(8px)} 55%{opacity:1;filter:blur(0)} 100%{opacity:1;scale:1} }
+@keyframes plate-left { 0%{opacity:0;transform:translateX(-40px)} 100%{opacity:1;transform:none} }
+@keyframes plate-right { 0%{opacity:0;transform:translateX(40px)} 100%{opacity:1;transform:none} }
+@keyframes film-out { 100%{clip-path:inset(0 0 0 100%)} }
 /* Feet stay anchored to the stage while each weapon has its own motion. */
 .film-actor { transform-origin:50% 100%; }
 .style-guan-yu.action-attack[data-phase=strike] .film-hero { transform:translateX(62%) rotate(-15deg); }
@@ -78,6 +181,6 @@
 @keyframes drum-crosscut { 0%{transform:translateX(0) rotate(-8deg)} 35%{transform:translateX(75%) rotate(14deg)} 65%{transform:translateX(42%) rotate(-13deg)} 100%{transform:translateX(80%) rotate(8deg)} }
 @keyframes shadow-crossing { 0%{transform:translateX(0);opacity:1} 25%{transform:translateX(18%);opacity:.15} 65%{transform:translateX(92%) skewX(-8deg);opacity:.55} 100%{transform:translateX(85%);opacity:1} }
 .film-reduced *, .film-reduced { animation:none!important; transition:none!important; }
-.film-reduced .film-actor { transform:none!important; filter:none!important; }
+.film-reduced .film-actor,.film-reduced .film-camera { transform:none!important; filter:none!important; }
 .film-reduced .film-enemy { transform:scaleX(-1)!important; }
-.film-reduced .film-trail,.film-reduced .film-sparks,.film-reduced .film-ring { display:none; }
+.film-reduced .film-trail,.film-reduced .film-sparks,.film-reduced .film-ring,.film-reduced .film-lines,.film-reduced .film-seal,.film-reduced .film-slash,.film-reduced .film-flash,.film-reduced .film-aura { display:none; }

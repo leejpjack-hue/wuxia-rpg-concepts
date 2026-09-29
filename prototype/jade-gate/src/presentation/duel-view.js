@@ -38,11 +38,13 @@ export class DuelView {
         }
       }),
       session.bus.on("card:changed", () => this.render()),
-      session.bus.on("state:changed", () => {
+      session.bus.on("state:changed", ({ previous, current }) => {
         this.cinematic.cancel();
         this.busy = false;
         this.$("duel-table").className = "duel-table";
         this.render();
+        if (previous === "exploring" && current === "playing" && session.g?.duel)
+          this.cinematic.intro(session.g.p, session.g.enemies[0], !!session.g.duel.openingStun, session.profile.settings.reducedMotion);
       }),
     ];
     this.render();
