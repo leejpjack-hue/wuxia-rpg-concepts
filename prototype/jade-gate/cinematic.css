@@ -39,7 +39,7 @@
 .film-lines i:nth-child(5){top:61%;--d:-.14s} .film-lines i:nth-child(6){top:70%;--d:-.3s} .film-lines i:nth-child(7){top:79%;--d:-.04s}
 [data-phase=strike] .film-lines { opacity:.55; }
 [data-phase=strike] .film-lines i,.film-intro[data-phase=open] .film-lines i { animation:streak .34s linear var(--d,0s) infinite; }
-.film-seal { position:absolute; z-index:1; right:5%; top:9%; writing-mode:vertical-rl; font:900 24cqh/1 "Noto Serif CJK JP","Hiragino Mincho ProN","Songti SC",serif; color:var(--strike-color); opacity:0; mix-blend-mode:screen; text-shadow:0 0 30px var(--strike-color); transition:opacity .2s; }
+.film-seal { position:absolute; z-index:1; right:5%; top:17%; writing-mode:vertical-rl; font:900 24cqh/1 "Noto Serif CJK JP","Hiragino Mincho ProN","Songti SC",serif; color:var(--strike-color); opacity:0; mix-blend-mode:screen; text-shadow:0 0 30px var(--strike-color); transition:opacity .2s; }
 .film-slash { position:absolute; z-index:4; left:-10%; right:-10%; top:47%; height:3px; background:linear-gradient(90deg,transparent,#fff 18%,#fff 82%,transparent); box-shadow:0 0 14px var(--strike-color),0 0 42px var(--strike-color); opacity:0; transform:rotate(-14deg) scaleX(0); }
 [data-phase=impact] .film-slash { animation:slash-cut .4s ease-out both; }
 .film-flash { position:absolute; z-index:5; inset:0; opacity:0; mix-blend-mode:screen; background:radial-gradient(circle at 68% 50%,#fff 0,color-mix(in srgb,var(--strike-color) 70%,#fff) 30%,transparent 75%); }
@@ -51,7 +51,6 @@
 [data-phase=reply] .film-camera { transform:scale(1.02); transition-duration:.6s; }
 [data-phase=reply].counter .film-camera { transform-origin:28% 58%; transform:scale(1.12); animation:cam-shake .28s linear .12s; }
 .finisher[data-phase=impact] .film-backdrop,.finisher[data-phase=reply] .film-backdrop { filter:grayscale(.85) brightness(.55); }
-.finisher[data-phase=reply] .film-camera { transform-origin:76% 62%; transform:scale(1.2); transition-duration:1.3s; }
 .finisher .film-slash { height:5px; background:linear-gradient(90deg,transparent,#ffe9e0 14%,#c8102e 50%,#ffe9e0 86%,transparent); box-shadow:0 0 18px #c8102e,0 0 54px #8b1e1e; }
 
 /* Technique: charge close-up, title slam, whip pan, long hit-stop, flash, heavy shake, pull-out. */
