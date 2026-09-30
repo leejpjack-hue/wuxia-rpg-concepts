@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { GameSession } from '../src/domain/session.js';
-import { createCardCombat } from '../src/domain/card-combat.js';
+import { createCardCombat, ASSIST_DAMAGE } from '../src/domain/card-combat.js';
 import { SaveStore } from '../src/platform/save-store.js';
 import { memoryStorage, duelPolicy, engageRival, playCampaign, quickParty } from './helpers.js';
 const game = (storage = memoryStorage()) => new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
@@ -85,4 +85,70 @@ test('defeat rejects extra turns and retry starts a fresh card encounter', () =>
   g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));
   assert.equal(g.mode, 'exploring'); assert.equal(g.g.p.hp, 120); assert.equal(g.g.turns, 0);
   g.beginDuel(0); assert.equal(g.g.duel.round, 1); assert.equal(g.g.duel.tea, 1);
+});
+
+test('WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow spend', () => {
+  const g = game();
+  g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun', 'hu-sanniang', 'lu-zhishen'));
+  g.beginDuel(0);
+  assert.equal(g.g.duel.assistUsed, false);
+  assert.equal(g.g.duel.assistReady, false);
+  assert.equal(g.combat.assistStrike(), false); // not ready yet
+  const enemy = g.g.enemies[0];
+  const hpBefore = enemy.hp;
+  const flowBefore = g.g.p.flow;
+  assert(g.combat.act('attack'));
+  assert.equal(g.g.duel.assistReady, true);
+  assert.equal(g.g.duel.assistUsed, false);
+  const afterLead = g.g.enemies[0].hp;
+  assert(afterLead < hpBefore);
+  const result = g.combat.assistStrike();
+  assert.equal(result.followerId, 'hu-sanniang');
+  assert.equal(result.damage, ASSIST_DAMAGE);
+  assert.equal(g.g.enemies[0].hp, afterLead - ASSIST_DAMAGE);
+  assert.equal(g.g.p.flow, flowBefore + 12 + g.g.p.flowBonus); // no extra Flow from assist
+  assert.equal(g.g.duel.assistUsed, true);
+  assert.equal(g.combat.assistStrike(), false); // second press no-op
+  assert(g.g.duel.log.some((line) => line.includes('Hu Sanniang assists')));
+});
+
+test('WU-PARTY-09I: assist hidden/no-op without followers; resets on new duel', () => {
+  const g = game();
+  g.start('zhao-yun', 'campaign'); // campaign party has no followers
+  g.advanceDialogue(true);
+  g.beginDuel(0);
+  assert.deepEqual(g.g.party.followers, []);
+  g.combat.act('attack');
+  assert.equal(g.combat.assistStrike(), false);
+  // Quick play with followers: new duel resets assist
+  const q = game();
+  q.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));
+  q.beginDuel(0);
+  q.combat.act('attack');
+  assert(q.combat.assistStrike());
+  assert.equal(q.g.duel.assistUsed, true);
+  // Finish rival quickly then open next duel
+  while (q.mode === 'playing') assert(q.combat.act(duelPolicy(q)));
+  assert.equal(q.mode, 'exploring');
+  assert(q.beginDuel(0));
+  assert.equal(q.g.duel.assistUsed, false);
+  assert.equal(q.g.duel.assistReady, false);
+  assert.equal(q.combat.assistStrike(), false);
+  q.combat.act('attack');
+  assert(q.combat.assistStrike());
+});
+
+test('WU-PARTY-09I: mid-roam assistStrike is a no-op; HUD swapLead still between-encounter only', () => {
+  const g = game();
+  g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun', 'hu-sanniang', 'lu-zhishen'));
+  assert.equal(g.mode, 'exploring');
+  assert.equal(g.combat?.assistStrike?.() ?? false, false);
+  g.beginDuel(0);
+  g.combat.act('attack');
+  assert(g.combat.assistStrike());
+  while (g.mode === 'playing') assert(g.combat.act(duelPolicy(g)));
+  assert.equal(g.mode, 'exploring');
+  assert.equal(g.g.roam.swapCue, true);
+  assert.equal(g.swapLead('hu-sanniang'), true);
+  assert.equal(g.g.party.lead, 'hu-sanniang');
 });

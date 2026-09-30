@@ -1,6 +1,8 @@
 import { translate } from "../locales/i18n.js";
 import { DuelCinematic } from "./duel-cinematic.js";
 import { HERO_TECHNIQUES } from "../content/duels.js";
+import { ASSIST_DAMAGE } from "../domain/card-combat.js";
+import { HEROES } from "../content/heroes.js";
 import { curioById, techniqueCost } from "../content/curios.js";
 
 export class DuelView {
@@ -15,6 +17,8 @@ export class DuelView {
     this.cinematic = new DuelCinematic(document, this.$("duel-table"), cue => session.bus.emit("audio:sfx", cue), text => this.t(text));
     for (const button of document.querySelectorAll("[data-action]"))
       button.onclick = () => this.act(button.dataset.action);
+    const assistBtn = this.$("card-assist");
+    if (assistBtn) assistBtn.onclick = () => this.assist();
     for (const id of ["hero-image", "enemy-image"])
       this.$(id).onerror = () => { this.$(id).hidden = true; };
     this.keydown = (event) => {
@@ -70,6 +74,15 @@ export class DuelView {
       this.$("app-status").textContent = this.t(error.message);
       this.render();
     }
+  }
+
+  /** WU-PARTY-09I: once-per-duel free assist after lead dealt damage. */
+  assist() {
+    if (this.busy || this.session.mode !== "playing") return;
+    this.onGesture();
+    const result = this.session.combat?.assistStrike?.();
+    this.render();
+    return result;
   }
 
   image(id, art, name, focus) {
@@ -167,11 +180,38 @@ export class DuelView {
         (button.dataset.action === "technique" && p.flow < cost) ||
         (button.dataset.action === "tea" && (d.tea < 1 || p.hp >= p.maxHp));
     }
+    this.renderAssist(mode, d, enemy);
     this.$("turn-status").textContent = this.t(this.busy ? "Blades meet…" : d.log[0] || "Your turn. Take your time.");
     this.$("journal-count").textContent = this.t(`${g.turns} turns taken`);
     this.$("battle-log").replaceChildren(...d.log.map((text) => {
       const li = this.document.createElement("li"); li.textContent = this.t(text); return li;
     }));
+  }
+
+  /** Show Assist under rival intent when followers exist; enable after lead damage. */
+  renderAssist(mode, d, enemy) {
+    const btn = this.$("card-assist");
+    if (!btn) return;
+    const followers = this.session.g?.party?.followers;
+    const hasFollowers = Array.isArray(followers) && followers.length >= 1;
+    const inDuel = mode === "playing" && !!enemy && !this.session.g?.encounterDone;
+    if (!inDuel || !hasFollowers) {
+      btn.hidden = true;
+      btn.disabled = true;
+      return;
+    }
+    btn.hidden = false;
+    const ready = !!d.assistReady && !d.assistUsed;
+    btn.disabled = this.busy || mode !== "playing" || !ready;
+    const detail = this.$("assist-detail");
+    if (detail) {
+      if (d.assistUsed) detail.textContent = this.t("Assist used");
+      else {
+        const name = HEROES.find((h) => h.id === followers[0])?.name || "";
+        const base = this.t(`Assist · ${ASSIST_DAMAGE} damage · free once`);
+        detail.textContent = name ? `${base} · ${this.t(name)}` : base;
+      }
+    }
   }
   dispose() {
     this.cinematic.cancel();

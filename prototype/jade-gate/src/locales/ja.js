@@ -240,5 +240,10 @@ export const messages = {
   'Tap to take the lead': 'タップして先頭になる',
   'Follower 1': '従者1', 'Follower 2': '従者2', 'LEAD': '先頭',
   '{name} takes the lead': '{name}が先頭になった',
+  'Assist': '援護',
+  'Assist · {damage} damage · free once': '援護 · {damage}ダメージ · 1回無料',
+  'Assist used': '援護済み',
+  '{name} assists: {damage} damage.': '{name}の援護：{damage}ダメージ。',
+  '{name} assists (+{damage} damage)': '{name}の援護（＋{damage}ダメージ）',
 
 };

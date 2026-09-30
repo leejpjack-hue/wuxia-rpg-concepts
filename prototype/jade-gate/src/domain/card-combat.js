@@ -1,5 +1,9 @@
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
 import { techniqueCost } from "../content/curios.js";
+import { HEROES } from "../content/heroes.js";
+
+/** Fixed small assist bump (WU-PARTY-09I). Modest vs hero strikes (~19–40). */
+export const ASSIST_DAMAGE = 8;
 
 /** Pure, synchronous turns. No timers, DOM, random hit chance, or background damage. */
 export function createCardCombat(g, bus, { encounter } = {}) {
@@ -65,6 +69,9 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       fangStrikes: 0,
       pendantUsed: false,
       sashUsed: false,
+      // WU-PARTY-09I: one free assist strike per duel (no Flow; no follower HP).
+      assistUsed: false,
+      assistReady: false,
       openingStun: opening,
       status: {
         hero: { bleed: null, poison: null, stunned: false },
@@ -284,7 +291,11 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     }
     d.lastDamage = Math.min(enemy.hp, damage);
     enemy.hp = Math.max(0, enemy.hp - damage);
-    if (damage) log(`${action === "technique" ? p.skill : "Your strike"} deals ${d.lastDamage} damage.`);
+    if (damage) {
+      log(`${action === "technique" ? p.skill : "Your strike"} deals ${d.lastDamage} damage.`);
+      // Assist unlocks after lead deals outgoing damage this duel.
+      d.assistReady = true;
+    }
     if (enemy.hp <= 0) {
       defeatRival(enemy);
     } else {
@@ -303,5 +314,30 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     bus.emit("card:changed");
     return true;
   }
-  return { act, preview, intent, begin, clearInput() {}, step() {} };
+  /**
+   * WU-PARTY-09I: once-per-duel free assist strike from first party follower.
+   * Pure damage flavor — no Flow cost, no follower HP, no tag-in.
+   */
+  function assistStrike() {
+    if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
+    const d = g.duel;
+    if (d.assistUsed || !d.assistReady) return false;
+    const followers = g.party?.followers;
+    if (!Array.isArray(followers) || !followers.length) return false;
+    const followerId = followers[0];
+    const follower = HEROES.find((h) => h.id === followerId);
+    if (!follower) return false;
+    const enemy = g.enemies[0];
+    const dealt = Math.min(enemy.hp, ASSIST_DAMAGE);
+    enemy.hp = Math.max(0, enemy.hp - dealt);
+    d.assistUsed = true;
+    d.lastDamage = dealt;
+    log(`${follower.name} assists: ${dealt} damage.`);
+    bus.emit("audio:sfx", { type: "strike" });
+    if (enemy.hp <= 0) defeatRival(enemy);
+    bus.emit("card:changed");
+    bus.emit("notice", { text: `${follower.name} assists (+${dealt} damage)` });
+    return { followerId, followerName: follower.name, damage: dealt };
+  }
+  return { act, preview, intent, begin, assistStrike, clearInput() {}, step() {} };
 }

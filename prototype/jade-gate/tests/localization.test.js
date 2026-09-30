@@ -62,3 +62,11 @@ test('combat messages translate names and values while retaining English logs fo
   assert.equal(translate('ACT 1 · THE JADE GATE'), '第1章 · 翠門関');
   assert.equal(translate('Personal best: 850 renown · 3 victories'), '最高記録：名声850 · 3勝');
 });
+
+test('WU-PARTY-09I assist strings translate', () => {
+  assert.equal(translate('Assist'), '援護');
+  assert.equal(translate('Assist used'), '援護済み');
+  assert.equal(translate('Assist · 8 damage · free once'), '援護 · 8ダメージ · 1回無料');
+  assert.equal(translate('Hu Sanniang assists: 8 damage.'), '扈三娘の援護：8ダメージ。');
+  assert.equal(translate('Hu Sanniang assists (+8 damage)'), '扈三娘の援護（＋8ダメージ）');
+});
