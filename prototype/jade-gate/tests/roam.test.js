@@ -655,6 +655,53 @@ test("swap lead after a duel returns to the pass before next contact", () => {
   assert.equal(session.g.enemies.length, 1);
 });
 
+test("post-duel swap cue highlights follower chips then clears on swap", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  assert.equal(session.g.roam.swapCue, undefined);
+  assert(pursue(session));
+  let turns = 0;
+  while (session.mode === "playing" && turns++ < 100)
+    assert(session.combat.act(duelPolicy(session)));
+  assert.equal(session.mode, "exploring");
+  assert.equal(session.g.roam.contact, -1);
+  assert.equal(session.g.roam.swapCue, true);
+  const { hud, draw } = partyHud(session);
+  draw();
+  assert.ok(hud.children[0].className.includes("lead"));
+  assert.ok(!hud.children[0].className.includes("swap-cue"));
+  assert.ok(hud.children[1].className.includes("swap-ready"));
+  assert.ok(hud.children[1].className.includes("swap-cue"));
+  assert.ok(hud.children[2].className.includes("swap-cue"));
+  assert.equal(session.swapLead("hu-sanniang"), true);
+  assert.equal(session.g.roam.swapCue, false);
+  draw();
+  assert.equal(hud.children[0].dataset.heroId, "hu-sanniang");
+  assert.ok(hud.children[0].className.includes("lead"));
+  assert.ok(!hud.children[0].className.includes("swap-cue"));
+  assert.ok(hud.children[1].className.includes("swap-ready"));
+  assert.ok(!hud.children[1].className.includes("swap-cue"));
+});
+
+test("swap cue dismissed by timeout and blocked mid-duel still holds", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  assert(pursue(session));
+  let turns = 0;
+  while (session.mode === "playing" && turns++ < 100)
+    assert(session.combat.act(duelPolicy(session)));
+  assert.equal(session.g.roam.swapCue, true);
+  const { draw } = partyHud(session);
+  session.g.time = (session.g.roam.swapCueAt || 0) + 7;
+  draw();
+  assert.equal(session.g.roam.swapCue, false);
+  // Mid-duel block unchanged.
+  assert.equal(session.beginDuel(0), true);
+  assert.equal(session.swapLead("lu-zhishen"), false);
+});
+
 test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", () => {
   const png = readFileSync(new URL("../assets/bamboo-maze.png", import.meta.url));
   assert.equal(png.subarray(1, 4).toString(), "PNG");

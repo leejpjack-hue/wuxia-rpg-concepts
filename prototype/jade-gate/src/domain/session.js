@@ -175,7 +175,14 @@ export class GameSession {
     if (runMode === "campaign") {
       const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : act.id === "mount-canglan" ? "canglan-arrival" : "arrival";
       this.beginDialogue(arrivalKey);
-    } else this.transition("exploring");
+    } else {
+      this.transition("exploring");
+      // WU-PLAY-01: one-line demo beat toast on Quick Play roam entry.
+      if (resolvedParty.followers.length)
+        this.bus.emit("notice", {
+          text: "Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival",
+        });
+    }
     this.bus.emit("audio:sfx", { type: "ui_click" });
   }
   prepareEncounter() {
@@ -427,6 +434,7 @@ export class GameSession {
     roam.trail = seedTrail;
     roam.sneakMaster = next.id === "nie-yinniang";
     if (!roam.sneakMaster) roam.sneaking = false;
+    roam.swapCue = false;
 
     this.bus.emit("notice", { text: `${hero.name} takes the lead` });
     this.bus.emit("audio:sfx", { type: "ui_click" });
@@ -448,6 +456,7 @@ export class GameSession {
     const field = this.g.roam.field;
     if (index < 0 || index >= field.length || isRanged(field[index].kind)) return false;
     this.g.roam.shots = [];
+    this.g.roam.swapCue = false;
     for (const rival of field) { rival.windup = 0; rival.aim = null; rival.cooldown = Math.max(1, rival.cooldown); }
     this.g.roam.contact = index;
     const enemy = field[index];
@@ -470,8 +479,16 @@ export class GameSession {
     const left = this.g.roam.field.length;
     this.g.encounterDone = false;
     this.transition("exploring");
+    // WU-PLAY-01: between-encounter soft invite to swap lead via follower HUD chip.
+    const canSwap = !!(this.g.party?.followers?.length);
+    if (canSwap) {
+      this.g.roam.swapCue = true;
+      this.g.roam.swapCueAt = this.g.time || 0;
+    }
     this.bus.emit("notice", {
-      text: `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
+      text: canSwap
+        ? "Tap a follower chip to swap lead before the next rival"
+        : `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
     });
   }
   clearEncounter() {

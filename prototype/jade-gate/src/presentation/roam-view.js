@@ -283,11 +283,19 @@ export class RoamView {
     })];
     const hud = this.$("roam-health");
     const roster = members.map(member => member.id).join(",");
+    // WU-PLAY-01: brief one-shot pulse on follower chips after a won duel.
+    if (g.roam?.swapCue) {
+      const elapsed = (g.time || 0) - (g.roam.swapCueAt || 0);
+      if (elapsed > 6) g.roam.swapCue = false;
+    }
+    const cue = !!(g.roam?.swapCue) && (g.roam.contact ?? -1) < 0;
     if (hud.dataset.roster !== roster) {
       hud.replaceChildren();
       this.partyChips = members.map((member, index) => {
         const chip = this.document.createElement("div");
-        chip.className = `party-hp-chip${index === 0 ? " lead" : " swap-ready"}`;
+        chip.className = index === 0
+          ? "party-hp-chip lead"
+          : `party-hp-chip swap-ready${cue ? " swap-cue" : ""}`;
         chip.dataset.partyRole = index === 0 ? "lead" : "follower";
         chip.dataset.heroId = member.id;
         const name = this.document.createElement("strong");
@@ -306,9 +314,18 @@ export class RoamView {
             this.onGesture?.();
             this.session.swapLead(member.id);
           };
+        } else {
+          // Dismiss the post-duel swap cue without swapping.
+          chip.onclick = (event) => {
+            event?.preventDefault?.();
+            if (this.session.g?.roam?.swapCue) {
+              this.session.g.roam.swapCue = false;
+              this.onGesture?.();
+            }
+          };
         }
         hud.appendChild(chip);
-        return { name, hp };
+        return { name, hp, el: chip };
       });
       hud.dataset.roster = roster;
     }
@@ -320,7 +337,17 @@ export class RoamView {
         : `${member.hp} / ${member.maxHp} ${this.t("HEALTH")}`;
       if (chip.name.textContent !== name) chip.name.textContent = name;
       if (chip.hp.textContent !== vitals) chip.hp.textContent = vitals;
+      const el = chip.el || hud.children[index];
+      if (el) {
+        el.className = index === 0
+          ? "party-hp-chip lead"
+          : `party-hp-chip swap-ready${cue ? " swap-cue" : ""}`;
+      }
     });
+    if (typeof hud.classList?.toggle === "function")
+      hud.classList.toggle("swap-cue-active", cue);
+    else
+      hud.className = cue ? "roam-party-hud swap-cue-active" : "roam-party-hud";
   }
   draw() {
     const g = this.session.g;

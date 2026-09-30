@@ -229,7 +229,7 @@ export class GameView {
     this.$("journey-summary").textContent =
       this.runMode === "campaign"
         ? this.t(`Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`)
-        : `${this.t("Party of three · tap follower to set lead · followers are cosmetic")} · ${this.partyIds.length}/3`;
+        : `${this.t("Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival")} · ${this.partyIds.length}/3`;
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
         `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,

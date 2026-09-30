@@ -233,4 +233,12 @@ export const messages = {
   'Break the warding patrol before facing the Flying General.': '飛将と対峙する前に、巡回の守りを破ろう。',
   'Read the halberd sweep; guard against the heavy lunge and spend Flow on openings.': '戟の薙ぎ払いを読み、重い突進は防御し、隙に気を使おう。',
 
+  'Party of three · tap follower to set lead · followers are cosmetic': '3人編成 · 従者をタップして先頭を決める · 従者は見た目のみ',
+  'Choose exactly three distinct heroes. Tap a selected follower to set the lead before start; followers are cosmetic on the pass.': '英雄を3人選んでください。選んだ従者をタップすると先頭を変えられます。従者は峠では見た目のみです。',
+  'Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival': '3人選ぶ → 竹林を歩く → 決闘 → 従者チップで先頭交代 → 次の敵',
+  'Tap a follower chip to swap lead before the next rival': '次の敵の前に、従者チップをタップして先頭を交代しよう',
+  'Tap to take the lead': 'タップして先頭になる',
+  'Follower 1': '従者1', 'Follower 2': '従者2', 'LEAD': '先頭',
+  '{name} takes the lead': '{name}が先頭になった',
+
 };
