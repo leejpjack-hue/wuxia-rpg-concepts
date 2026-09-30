@@ -1,4 +1,4 @@
-import { BLOCKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
+import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
 import { HEROES } from "../src/content/heroes.js";
@@ -412,32 +412,50 @@ test("lead and cosmetic followers route through the gap past the barrier", () =>
 });
 
 
-
-test("first courtyard spawn and rival lane stay west of the corridor barrier", () => {
+test("hero stays in the first courtyard while spawn markers cover the maze path", () => {
   const g = game();
   g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert.equal(g.g.p.x, 640);
   assert.equal(g.g.p.y, 500);
-  assert(onGround(g.g.p));
+  assertClear(g.g.p);
   assert(!inSecondZone(g.g.p));
   assert(g.g.p.x < 1400);
-  // Near-lane rivals stay in the first courtyard (west of CAM-02 barrier).
-  // A far CAM-04 rival may sit past the first screen in the CAM-03 pocket.
-  let near = 0;
-  for (const enemy of g.g.roam.field) {
-    assert(onGround(enemy));
-    if (enemy.x < SECOND_ZONE.left) {
-      near++;
-      assert(enemy.x < 1400, `rival ${enemy.id} must spawn in first courtyard`);
-      assert(enemy.x < VIEWPORT.width);
-    } else {
-      assert(inSecondZone(enemy), `far rival ${enemy.id} must sit in second pocket`);
-      assert(enemy.x > VIEWPORT.width);
-    }
+  assert(SPAWN_MARKERS.length >= 3);
+  for (const marker of SPAWN_MARKERS) {
+    assert.equal(typeof marker.id, "string");
+    assert(marker.id.length > 0);
+    assert(Number.isFinite(marker.x) && Number.isFinite(marker.y));
+    assertClear(marker);
   }
-  assert(near >= 1, "at least one rival remains in the first courtyard lane");
-  assert(onGround(groundPoint(640, 500)));
-  assert(onGround(groundPoint(900, 430)));
+  assert(SPAWN_MARKERS.some(m => m.x < 1400));
+  assert(SPAWN_MARKERS.some(m => m.x < VIEWPORT.width && Math.hypot(m.x - 640, m.y - 500) < 400));
+  assert(SPAWN_MARKERS.some(m => m.x >= 1400 && m.x <= 1550 && m.y >= 460 && m.y <= 560));
+  assert(SPAWN_MARKERS.some(inSecondZone));
+});
+
+test("field homes use spawn markers in roster order, including past the barrier", () => {
+  const g = game();
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+  const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
+  for (const id of ["vanguard", "gate-vanguard", "warden"]) {
+    const roam = createRoam(g.g, g.bus, { encounter: { id } });
+    const count = roam.field.length;
+    assert.equal(count, id === "vanguard" ? 2 : id === "warden" ? 1 : 3);
+    roam.field.forEach((enemy, index) => {
+      const marker = (far.length && (count === 1 || index === count - 1))
+        ? far[index % far.length]
+        : near[index % near.length];
+      assert.deepEqual({ x: enemy.x, y: enemy.y }, { x: marker.x, y: marker.y });
+      assert.deepEqual({ x: enemy.homeX, y: enemy.homeY }, { x: marker.x, y: marker.y });
+      assertClear(enemy);
+    });
+    assert(
+      roam.field.some(e => e.x > VIEWPORT.width || e.y > VIEWPORT.height),
+      `${id} needs a rival beyond the first screen`,
+    );
+    if (id === "gate-vanguard") assert(roam.field.some(e => e.homeX >= 1400));
+  }
 });
 
 test("corridor opens into a roamable second pocket past the barrier", () => {
