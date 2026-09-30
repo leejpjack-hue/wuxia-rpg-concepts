@@ -1,4 +1,4 @@
-import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
+import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone, THIRD_ZONE, inThirdZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
 import { ACTS } from "../src/content/campaign.js";
@@ -432,6 +432,7 @@ test("hero stays in the first courtyard while spawn markers cover the maze path"
   assert(SPAWN_MARKERS.some(m => m.x < VIEWPORT.width && Math.hypot(m.x - 640, m.y - 500) < 400));
   assert(SPAWN_MARKERS.some(m => m.x >= 1400 && m.x <= 1550 && m.y >= 460 && m.y <= 560));
   assert(SPAWN_MARKERS.some(inSecondZone));
+  assert(SPAWN_MARKERS.some(m => m.id === "third-pocket" && inThirdZone(m)));
 });
 
 test("field homes use spawn markers in roster order, including past the barrier", () => {
@@ -467,9 +468,10 @@ test("corridor opens into a roamable second pocket past the barrier", () => {
   const mid = { x: (SECOND_ZONE.left + SECOND_ZONE.right) / 2, y: (SECOND_ZONE.top + SECOND_ZONE.bottom) / 2 };
   assertClear(resolveBlockers(mid.x, mid.y));
   assert(inSecondZone(mid));
-  // North / south / east pocket walls reject clipping.
+  // North / south-remnant / east pocket walls reject clipping.
   assert.notDeepEqual(resolveBlockers(1800, 320), { x: 1800, y: 320 });
-  assert.notDeepEqual(resolveBlockers(1800, 1000), { x: 1800, y: 1000 });
+  // South remnant west of third-pocket mouth (x < THIRD_ZONE.left)
+  assert.notDeepEqual(resolveBlockers(1550, 1000), { x: 1550, y: 1000 });
   assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, SECOND_ZONE.right - 18);
   // Long step still cannot tunnel the CAM-02 corridor walls.
   assert.equal(resolveBlockers(1800, 700, 18, { x: 1300, y: 700 }).x, 1382);
@@ -481,10 +483,16 @@ test("lead paths through corridor into second zone and cannot clip pocket walls"
   assert(g.g.p.x > SECOND_ZONE.left, `expected into second zone, got x=${g.g.p.x}`);
   assert(inSecondZone(g.g.p));
   assertClear(g.g.p);
-  // Roam inside the pocket (down toward south wall, then up).
+  // Steer into the west south-wall remnant (left of third mouth) — blocked.
+  // Approach from second-zone interior so X-then-Y sweep does not slide into the mouth.
+  Object.assign(g.g.p, { x: 1580, y: 700 });
+  g.g.roam.trail = [{ x: 1580, y: 700 }];
+  for (const [i, f] of g.g.roam.followers.entries()) {
+    Object.assign(f, { x: 1580 - 48 * (i + 1), y: 700 + 12 * (i + 1) });
+  }
   walk(g, 2, { dy: 1 });
   assert(g.g.p.y <= SECOND_ZONE.bottom - 18);
-  assert(inSecondZone(g.g.p) || g.g.p.y >= SECOND_ZONE.bottom - 18);
+  assert(g.g.p.x < THIRD_ZONE.left);
   walk(g, 1, { dy: -1 });
   assert(inSecondZone(g.g.p));
   // East end wall stops further travel.
@@ -494,6 +502,42 @@ test("lead paths through corridor into second zone and cannot clip pocket walls"
   // First-courtyard ground math unchanged for spawn lane points.
   assert(onGround(groundPoint(640, 500)));
   assert(onGround(groundPoint(400, 430)));
+});
+
+test("second pocket opens into a roamable third spur with spawn marker", () => {
+  assert(THIRD_ZONE.right - THIRD_ZONE.left >= 350);
+  assert(THIRD_ZONE.bottom - THIRD_ZONE.top >= 250);
+  assert.equal(THIRD_ZONE.top, SECOND_ZONE.bottom);
+  assert(THIRD_ZONE.left > SECOND_ZONE.left);
+  assert(THIRD_ZONE.right < SECOND_ZONE.right);
+  const mid = { x: (THIRD_ZONE.left + THIRD_ZONE.right) / 2, y: (THIRD_ZONE.top + THIRD_ZONE.bottom) / 2 };
+  assertClear(resolveBlockers(mid.x, mid.y));
+  assert(inThirdZone(mid));
+  // Mouth from second pocket is clear; south end wall rejects clipping.
+  assert.deepEqual(resolveBlockers(1900, 900), { x: 1900, y: 900 });
+  assert.equal(resolveBlockers(1900, 1300, 18, { x: 1900, y: 1000 }).y, THIRD_ZONE.bottom - 18);
+  // West / east remnants still block cutting around the spur.
+  assert.notDeepEqual(resolveBlockers(1550, 1000), { x: 1550, y: 1000 });
+  assert.notDeepEqual(resolveBlockers(2150, 1000), { x: 2150, y: 1000 });
+  const marker = SPAWN_MARKERS.find(m => m.id === "third-pocket");
+  assert(marker);
+  assert(inThirdZone(marker));
+  assertClear(marker);
+});
+
+test("lead paths from second zone into third spur and stops at end wall", () => {
+  const g = emptyPass();
+  walk(g, 4, { dx: 1 }); // into second pocket via corridor
+  assert(inSecondZone(g.g.p));
+  // Walk south through the third-pocket mouth.
+  walk(g, 3, { dy: 1 });
+  assert(inThirdZone(g.g.p), `expected third zone, got x=${g.g.p.x} y=${g.g.p.y}`);
+  assertClear(g.g.p);
+  // South end wall stops further travel.
+  walk(g, 3, { dy: 1 });
+  assert.equal(g.g.p.y, THIRD_ZONE.bottom - 18);
+  assert(inThirdZone(g.g.p) || g.g.p.y >= THIRD_ZONE.bottom - 18);
+  assertClear(g.g.p);
 });
 
 // Exercise the shipped HUD renderer with a minimal DOM adapter.
