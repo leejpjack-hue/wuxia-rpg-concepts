@@ -10,7 +10,7 @@ import { memoryStorage, quickParty } from './helpers.js';
 
 // Minimal injected document adapter. IDs come from the shipped HTML, so stale
 // selectors fail here too. Layout, focus traversal and real clicks are browser-checked.
-function fixture() {
+function fixture(storage = memoryStorage()) {
   const elements = new Map();
   const document = {
     getElementById: id => elements.get(id) || null,
@@ -40,7 +40,7 @@ function fixture() {
   });
   const modes = ['campaign','quickplay'].map(mode => Object.assign(element(), {dataset:{mode}}));
   document.body = element();
-  const session = new GameSession(new SaveStore(memoryStorage()), { combatFactory: createCardCombat });
+  const session = new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
   const view = new GameView(session, document);
   view.setReady(true);
   return { session, view, cards, modes, document, $: document.getElementById };
@@ -167,4 +167,38 @@ test('Quick play restart preserves the ordered party', () => {
   viewSession.start(viewSession.g.p.id, viewSession.g.runMode, viewSession.g.actId, viewSession.g.party);
   assert.equal(session.mode, 'exploring');
   assert.deepEqual(session.g.party, { lead: 'guan-yu', followers: ['zhao-yun', 'hu-sanniang'] });
+});
+
+test('last Quick Play party of three persists and preselects on the next Quick Play', () => {
+  const storage = memoryStorage();
+  const party = { lead: 'guan-yu', followers: ['zhao-yun', 'hu-sanniang'] };
+  const first = fixture(storage);
+  const unlocks = [...first.session.profile.unlockedHeroes];
+  const acts = [...first.session.profile.completedActs];
+  pickQuickParty(first.cards, first.modes, [party.lead, ...party.followers]);
+  first.$('start').onclick();
+  assert.equal(first.session.mode, 'exploring');
+  assert.equal(first.session.g.p.id, party.lead);
+  assert.deepEqual(first.session.g.party, party);
+  assert.deepEqual(first.session.profile.lastQuickParty, party);
+  assert.deepEqual(first.session.profile.unlockedHeroes, unlocks);
+  assert.deepEqual(first.session.profile.completedActs, acts);
+  assert.equal(first.session.profile.wallet, 0);
+  assert.equal(first.session.profile.checkpoint, null);
+
+  const next = fixture(storage);
+  assert.deepEqual(next.session.profile.lastQuickParty, party);
+  assert.deepEqual(next.session.profile.unlockedHeroes, unlocks);
+  assert.deepEqual(next.session.profile.completedActs, acts);
+  assert.deepEqual(next.view.partyIds, []);
+  next.modes[1].onclick();
+  assert.deepEqual(next.view.partyIds, [party.lead, ...party.followers]);
+  assert.equal(next.view.heroId, party.lead);
+  assert.equal(next.$('start').disabled, false);
+  next.$('start').onclick();
+  assert.equal(next.session.mode, 'exploring');
+  assert.equal(next.session.g.p.id, party.lead);
+  assert.deepEqual(next.session.g.party, party);
+  assert.deepEqual(next.session.profile.completedActs, acts);
+  assert(!next.session.profile.unlockedHeroes.includes('guan-yu'));
 });

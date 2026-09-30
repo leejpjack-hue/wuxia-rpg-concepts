@@ -41,7 +41,10 @@ export class GameView {
     for (const button of document.querySelectorAll("[data-mode]"))
       button.onclick = () => {
         const next = button.dataset.mode;
-        if (next !== this.runMode) this.partyIds = [];
+        if (next !== this.runMode) {
+          this.partyIds = next === "quickplay" ? this.rememberedParty() : [];
+          if (this.partyIds[0]) this.heroId = this.partyIds[0];
+        }
         this.runMode = next;
         if (
           this.runMode === "campaign" &&
@@ -108,6 +111,10 @@ export class GameView {
     ];
     this.settings();
     this.render();
+  }
+  rememberedParty() {
+    const party = this.session.profile.lastQuickParty;
+    return party ? [party.lead, ...party.followers] : [];
   }
   perform(fn) {
     try {
