@@ -68,23 +68,25 @@ Key art (`assets/<id>.png`) and legacy idle sprite (`assets/<id>-sprite.png`) st
 
 ### Manifest
 
-Extend `docs/asset-manifest.json` (and any per-hero record) with a sheet block. Frame indices are `[col, row]` zero-based:
+`docs/asset-manifest.json` is a flat array. The action sheet is a **sibling** record, not nested under the key-art entry. `anims` live on the sheet row. Frame indices are `[col, row]` zero-based:
 
 ```json
 {
-  "id": "<hero-id>",
-  "sheet": "assets/<hero-id>-sheet.png",
+  "id": "<hero-id>-sheet",
+  "file": "assets/<hero-id>-sheet.png",
   "frameW": 512,
   "frameH": 512,
   "anims": {
     "idle":   { "frames": [[0,0], [1,0]], "fps": 6, "loop": true },
     "walk":   { "frames": [[0,1], [1,1], [2,1], [3,1]], "fps": 10, "loop": true },
     "attack": { "frames": [[0,2], [1,2], [2,2]], "fps": 12, "loop": false }
-  }
+  },
+  "method": "…",
+  "prompt": "…"
 }
 ```
 
-If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** read `anims.walk` when the sheet is present; cinematic strike **must** prefer `anims.attack` frames, then fall back to transforming the idle sprite. Missing sheet = legacy still behavior (no crash).
+If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** read `anims.walk` on that sibling record when it is present; cinematic strike **must** prefer `anims.attack` frames, then fall back to transforming the idle sprite. Missing sheet record = legacy still behavior (no crash).
 
 ### Copy-ready sheet prompt (guidance)
 
@@ -92,7 +94,7 @@ If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** rea
 
 ### Integration checklist (add)
 
-6. Save `assets/<hero-id>-sheet.png` on the locked grid; add the sheet + `anims` block to the manifest.
+6. Save `assets/<hero-id>-sheet.png` on the locked grid; add a sibling manifest record (`id` `<hero-id>-sheet`) with `anims` on that row.
 7. Run `npm run check` once sheet rules exist; until then, Art Dir QA via visual Read of every cell + Jack/PO spot-check.
 8. In browser: roam shows walk cycle while moving; strike film plays attack frames once; idle sprite still works if sheet omitted.
 
