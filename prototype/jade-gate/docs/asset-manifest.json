@@ -258,5 +258,44 @@
     "method": "Antigravity remake · Jev ~0.75 transparent sprite 2026-09-29",
     "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Qin Liangyu: crimson-trimmed lamellar, red cape, exactly one white-shaft spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
     "reference": "assets/qin-liangyu.png"
+  },
+  {
+    "id": "bao-sanniang",
+    "file": "assets/bao-sanniang.png",
+    "method": "Antigravity remake · 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848×1264→939×1400",
+    "prompt": "Locked Antigravity remake 2026-09-30. Bao Sanniang, adult Shu spear heroine, jade-green charcoal wrap armor, crimson sash, exactly one long Chinese spear. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "bao-sanniang-sprite",
+    "file": "assets/bao-sanniang-sprite.png",
+    "method": "Antigravity remake · transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
+    "prompt": "Locked Antigravity remake 2026-09-30. Same adult Bao Sanniang: jade-green charcoal kit, crimson sash, long spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/bao-sanniang.png"
+  },
+  {
+    "id": "dian-wei",
+    "file": "assets/dian-wei.png",
+    "method": "Antigravity remake · 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848×1264→939×1400",
+    "prompt": "Locked Antigravity remake 2026-09-30. Dian Wei, adult Three Kingdoms bodyguard, iron headband, charcoal dark-bronze lamellar, crimson sash, exactly two matched Chinese dual halberds. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "dian-wei-sprite",
+    "file": "assets/dian-wei-sprite.png",
+    "method": "Antigravity remake · transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
+    "prompt": "Locked Antigravity remake 2026-09-30. Same adult Dian Wei: iron headband, charcoal dark-bronze lamellar, dual Chinese halberds. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/dian-wei.png"
+  },
+  {
+    "id": "yang-zhi",
+    "file": "assets/yang-zhi.png",
+    "method": "Antigravity remake · 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848×1264→939×1400",
+    "prompt": "Locked Antigravity remake 2026-09-30. Yang Zhi, adult Water Margin garrison officer, cool blue facial birthmark (not clown), steel-blue charcoal ivory kit, crimson sash, exactly one Chinese sabre. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait LANCZOS-upscaled only to clear ≥900×1400. No collage, text, scenery, or extra figures."
+  },
+  {
+    "id": "yang-zhi-sprite",
+    "file": "assets/yang-zhi-sprite.png",
+    "method": "Antigravity remake · transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
+    "prompt": "Locked Antigravity remake 2026-09-30. Same adult Yang Zhi: blue birthmark, steel-blue kit, Chinese sabre. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "reference": "assets/yang-zhi.png"
   }
 ]

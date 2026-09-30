@@ -123,7 +123,7 @@ test("Rending Fang opens a bleed on every fourth strike", () => {
 test("every hero still clears quick play against the wider rival pool", () => {
   for (const hero of ["zhao-yun", "lu-zhishen", "hu-sanniang", "lu-bu", "guan-yu",
     "wu-song", "mu-guiying", "liang-hongyu", "nie-yinniang",
-    "sun-shangxiang", "gu-dasao", "qin-liangyu"]) {
+    "sun-shangxiang", "gu-dasao", "qin-liangyu", "bao-sanniang", "dian-wei", "yang-zhi"]) {
     const game = session();
     game.start(hero, "quickplay");
     let guard = 0;
