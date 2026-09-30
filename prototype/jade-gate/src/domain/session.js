@@ -96,7 +96,21 @@ export class GameSession {
       encounterIndex: this.g?.encounterIndex ?? null,
     });
   }
-  createRun(hero, act, runMode) {
+
+  normalizeParty(heroId, party) {
+    const followers = Array.isArray(party?.followers) ? party.followers : null;
+    if (!party || party.lead !== heroId || !followers || followers.length !== 2)
+      throw new Error("Quick play needs a party of exactly three distinct heroes.");
+    const ids = [party.lead, ...followers];
+    if (new Set(ids).size !== 3)
+      throw new Error("Quick play party heroes must be distinct.");
+    for (const id of ids) {
+      if (!HEROES.some((hero) => hero.id === id))
+        throw new Error("This hero or act is not available in this build.");
+    }
+    return { lead: party.lead, followers: [...followers] };
+  }
+  createRun(hero, act, runMode, party = null) {
     const p = makePlayer(hero);
     if (runMode === "campaign") applyCultivation(p, this.profile);
     this.g = {
@@ -121,12 +135,13 @@ export class GameSession {
       hitStop: 0,
       encounterDone: false,
       curios: [],
+      party: party ? { lead: party.lead, followers: [...party.followers] } : { lead: hero.id, followers: [] },
       // Campaign-only branching map; null in Quick play (linear encounters).
       map: runMode === "campaign" && act.map ? { row: 0, cleared: [], pendingCurios: [], event: null } : null,
     };
     this.prepareEncounter();
   }
-  start(heroId, runMode = "campaign", actId = "jade-gate") {
+  start(heroId, runMode = "campaign", actId = "jade-gate", party = null) {
     if (!["menu", "defeat", "victory", "waystation"].includes(this.mode))
       throw new Error("Return to the menu before starting a new run.");
     if (!["campaign", "quickplay"].includes(runMode))
@@ -150,7 +165,9 @@ export class GameSession {
       !this.profile.completedActs.includes(previous.id)
     )
       throw new Error("Complete the preceding act first.");
-    this.createRun(hero, act, runMode);
+    const resolvedParty =
+      runMode === "quickplay" ? this.normalizeParty(heroId, party) : { lead: heroId, followers: [] };
+    this.createRun(hero, act, runMode, resolvedParty);
     if (runMode === "campaign") {
       const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : act.id === "mount-canglan" ? "canglan-arrival" : "arrival";
       this.beginDialogue(arrivalKey);

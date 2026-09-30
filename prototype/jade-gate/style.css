@@ -940,3 +940,22 @@ html[lang=ja] .film-title { letter-spacing:.08em; }
 
 .card-copy .card-biography { margin-top:12px; font-size:12px; line-height:1.55; color:#f3eee0; letter-spacing:0; }
 .hero-card.selected:after { inset:10% 0 0; background:linear-gradient(transparent, #10191bea 45%, #10191b 100%); }
+
+
+/* Quick Play party-of-3: lead chip on the first selected hero card. */
+.lead-chip {
+  position: absolute;
+  left: 18px;
+  top: 42px;
+  z-index: 3;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--bg);
+  font: 700 11px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hero-card.party-lead {
+  box-shadow: inset 0 0 0 2px var(--gold), 0 0 18px #c9a45a55;
+}

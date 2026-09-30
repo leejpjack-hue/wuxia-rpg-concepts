@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { session, memoryStorage } from "./helpers.js";
+import { session, memoryStorage, quickParty } from './helpers.js';
 import { applyCultivation, hasPerk, strikeNode } from "../src/domain/progression.js";
 import { MERIDIAN_NODES, migrateRanks } from "../src/content/meridians.js";
 import { makePlayer } from "../src/domain/player.js";
@@ -96,7 +96,7 @@ test("every meridian node has resolvable requirements and unique ids", () => {
 
 test("sneaking halves movement speed and shrinks archer aggro", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   const startX = game.g.p.x;
   for (let i = 0; i < 60; i++) game.step(1 / 60, { dx: 1, dy: 0 });
   const walkDist = game.g.p.x - startX;
@@ -121,13 +121,13 @@ test("sneaking halves movement speed and shrinks archer aggro", () => {
 
 test("the Hidden Blade sneaks closer than the others", () => {
   const game = session();
-  game.start("nie-yinniang", "quickplay");
+  game.start("nie-yinniang", "quickplay", "jade-gate", quickParty("nie-yinniang"));
   assert.equal(game.g.roam.sneakMaster, true);
 });
 
 test("first blood on the pass opens the duel with the rival reeling", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   const melee = game.g.roam.field.find((e) => !e.ranged);
   const hpBefore = melee.hp;
   Object.assign(game.g.p, { x: melee.x + 80, y: melee.y });
@@ -148,7 +148,7 @@ test("first blood on the pass opens the duel with the rival reeling", () => {
 
 test("sneaking into a rival ambushes the duel even without first blood", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert(game.roam.act("sneak"));
   const melee = game.g.roam.field.find((e) => !e.ranged);
   Object.assign(game.g.p, { x: melee.x, y: melee.y });

@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { session } from "./helpers.js";
+import { session, quickParty } from './helpers.js';
 
 /** Duel a specific rival kind directly on a quick-play field. */
 function rivalOf(kind, curios = []) {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   game.beginDuel(0);
   game.combat.begin(kind, `test-${kind}`);
   game.g.enemies[0].pattern = PATTERN[kind];
@@ -125,7 +125,7 @@ test("every hero still clears quick play against the wider rival pool", () => {
     "wu-song", "mu-guiying", "liang-hongyu", "nie-yinniang",
     "sun-shangxiang", "gu-dasao", "qin-liangyu", "bao-sanniang", "dian-wei", "yang-zhi"]) {
     const game = session();
-    game.start(hero, "quickplay");
+    game.start(hero, "quickplay", "jade-gate", quickParty(hero));
     let guard = 0;
     while (!["victory", "defeat", "menu"].includes(game.mode)) {
       if (game.mode === "upgrade") { game.chooseDiscipline("power"); continue; }

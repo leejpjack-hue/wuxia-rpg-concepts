@@ -13,6 +13,7 @@ export class GameView {
     this.document = document;
     this.$ = (id) => document.getElementById(id);
     this.heroId = HEROES[0].id;
+    this.partyIds = [];
     this.runMode = "campaign";
     this.quickAct = "jade-gate";
     this.ready = false;
@@ -20,18 +21,28 @@ export class GameView {
     this.onGesture = onGesture;
     this.$("heroes").innerHTML = HEROES.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
         this.onGesture();
-        this.heroId = button.dataset.hero;
+        const id = button.dataset.hero;
+        if (this.runMode === "quickplay") {
+          const index = this.partyIds.indexOf(id);
+          if (index >= 0) this.partyIds.splice(index, 1);
+          else if (this.partyIds.length < 3) this.partyIds.push(id);
+          this.heroId = this.partyIds[0] || HEROES[0].id;
+        } else {
+          this.heroId = id;
+        }
         this.refreshMenu();
         session.bus.emit("audio:sfx", { type: "ui_click" });
       };
     for (const button of document.querySelectorAll("[data-mode]"))
       button.onclick = () => {
-        this.runMode = button.dataset.mode;
+        const next = button.dataset.mode;
+        if (next !== this.runMode) this.partyIds = [];
+        this.runMode = next;
         if (
           this.runMode === "campaign" &&
           !campaignHeroUnlocked(session.profile, this.heroId)
@@ -42,7 +53,16 @@ export class GameView {
     this.$("language").onchange = event => this.perform(() => session.setSetting("language", event.target.value));
     this.$("quick-act").onchange = event => { this.quickAct = event.target.value; };
     this.$("start").onclick = () =>
-      this.perform(() => session.start(this.heroId, this.runMode, this.runMode === "quickplay" ? this.quickAct : "jade-gate"));
+      this.perform(() =>
+        session.start(
+          this.runMode === "quickplay" ? this.partyIds[0] : this.heroId,
+          this.runMode,
+          this.runMode === "quickplay" ? this.quickAct : "jade-gate",
+          this.runMode === "quickplay"
+            ? { lead: this.partyIds[0], followers: this.partyIds.slice(1) }
+            : undefined,
+        ),
+      );
     this.$("continue").onclick = () =>
       this.perform(() => session.continueCheckpoint());
     for (const id of ["pause", "roam-pause"])
@@ -119,7 +139,10 @@ export class GameView {
     const profile = this.session.profile,
       hero = HEROES.find((h) => h.id === this.heroId);
     for (const button of this.document.querySelectorAll("[data-hero]")) {
-      const selected = button.dataset.hero === this.heroId,
+      const selected =
+        this.runMode === "quickplay"
+          ? this.partyIds.includes(button.dataset.hero)
+          : button.dataset.hero === this.heroId,
         locked =
           this.runMode === "campaign" &&
           !campaignHeroUnlocked(profile, button.dataset.hero);
@@ -130,9 +153,24 @@ export class GameView {
       for (const [selector, value] of [[".card-copy small", cardHero.title], ["h2", cardHero.name], [".card-copy p", cardHero.weapon], [".stats", cardHero.style]])
         button.querySelector(selector).textContent = this.t(value);
       const biography = button.querySelector(".card-biography");
-      biography.hidden = !selected;
-      biography.textContent = selected ? this.t(cardHero.description) : "";
+      const showBio =
+        this.runMode === "quickplay"
+          ? selected && button.dataset.hero === this.partyIds[0]
+          : selected;
+      biography.hidden = !showBio;
+      biography.textContent = showBio ? this.t(cardHero.description) : "";
       button.classList.toggle("selected", selected);
+      button.classList.toggle(
+        "party-lead",
+        this.runMode === "quickplay" && button.dataset.hero === this.partyIds[0],
+      );
+      const leadChip = button.querySelector(".lead-chip");
+      if (leadChip) {
+        leadChip.hidden = !(
+          this.runMode === "quickplay" && button.dataset.hero === this.partyIds[0]
+        );
+        leadChip.textContent = this.t("Lead");
+      }
       button.setAttribute("aria-pressed", String(selected));
       button.disabled = locked;
       button.querySelector(".lock-note").textContent = this.t(locked ? "Unlock in Act III · try in Quick play" : "");
@@ -144,24 +182,36 @@ export class GameView {
       );
     this.$("quick-act-picker").hidden = this.runMode !== "quickplay";
     this.$("quick-act").value = this.quickAct;
-    this.$("selected-hero-name").textContent = this.t(hero.name);
-    this.$("hero-description").textContent = this.t(hero.description);
+    if (this.runMode === "quickplay") {
+      this.$("selected-hero-name").textContent = this.partyIds.length
+        ? `${this.t("Lead")}: ${this.t(hero.name)}`
+        : this.t("Select 3 heroes");
+      this.$("hero-description").textContent = this.partyIds.length
+        ? this.t(hero.description)
+        : this.t("Choose exactly three distinct heroes. The first selected leads; the other two follow on the pass.");
+    } else {
+      this.$("selected-hero-name").textContent = this.t(hero.name);
+      this.$("hero-description").textContent = this.t(hero.description);
+    }
     const record = profile.records[this.heroId];
     this.$("record").textContent = this.t(record
       ? `Personal best: ${record.best} renown · ${record.wins} victories`
       : "A new legend awaits. Your best run is saved on this device.");
-    this.$("start").disabled = !this.ready;
+    const partyReady = this.runMode !== "quickplay" || this.partyIds.length === 3;
+    this.$("start").disabled = !this.ready || !partyReady;
     this.$("start").textContent = this.t(this.ready
       ? this.runMode === "campaign"
         ? "Begin the journey →"
-        : "Enter quick play →"
+        : partyReady
+          ? "Enter quick play →"
+          : `Select ${3 - this.partyIds.length} more`
       : "Preparing your journey…");
     this.$("continue").hidden = this.runMode !== "campaign" || !profile.checkpoint;
     this.$("continue").disabled = !this.ready;
     this.$("journey-summary").textContent =
-      this.t(this.runMode === "campaign"
-        ? `Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`
-        : "Quick play · all twelve heroes · no permanent cultivation bonuses");
+      this.runMode === "campaign"
+        ? this.t(`Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`)
+        : `${this.t("Party of three · first selected leads · followers are cosmetic")} · ${this.partyIds.length}/3`;
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
         `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,
@@ -405,7 +455,7 @@ export class GameView {
       );
       this.button(
         "Walk the path again",
-        () => session.start(g.p.id, g.runMode, g.actId),
+        () => session.start(g.p.id, g.runMode, g.actId, g.party),
         { primary: true },
       );
       this.button("Choose another hero", () => session.menu());

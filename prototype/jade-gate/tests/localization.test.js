@@ -4,7 +4,7 @@ import { HEROES } from '../src/content/heroes.js';
 import { dialogueFor } from '../src/content/dialogue.js';
 import { translate } from '../src/locales/i18n.js';
 import { SaveStore, SAVE_KEY, defaultProfile, sanitizeProfile } from '../src/platform/save-store.js';
-import { session, memoryStorage } from './helpers.js';
+import { session, memoryStorage, quickParty } from './helpers.js';
 
 test('Japanese defaults on fresh and older saves; a language choice persists without losing progress', () => {
   assert.equal(defaultProfile().settings.language, 'ja');
@@ -29,7 +29,7 @@ test('bonus heroes cannot enter the campaign even through a forged unlock list',
     const game = session();
     game.profile.unlockedHeroes.push(hero.id);
     assert.throws(() => game.start(hero.id, 'campaign'), /Quick play only/);
-    game.start(hero.id, 'quickplay');
+    game.start(hero.id, 'quickplay', 'jade-gate', quickParty(hero.id));
     assert.equal(game.mode, 'exploring');
   }
 });
@@ -52,7 +52,7 @@ test('every hero has a roughly 30-word biography and translated display content'
 });
 
 test('combat messages translate names and values while retaining English logs for switching', () => {
-  const game = session(); game.start('wu-song', 'quickplay'); game.beginDuel(0);
+  const game = session(); game.start('wu-song', 'quickplay', 'jade-gate', quickParty('wu-song')); game.beginDuel(0);
   game.combat.act('guard'); game.combat.act('attack');
   for (const message of game.g.duel.log) {
     assert.notEqual(translate(message), message);

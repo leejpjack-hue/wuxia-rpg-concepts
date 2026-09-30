@@ -6,8 +6,7 @@ import {
   clearEncounter,
   completeCampaign,
   walkMap,
-  playCampaign,
-} from "./helpers.js";
+  playCampaign, quickParty } from './helpers.js';
 import { SaveStore, SAVE_KEY } from "../src/platform/save-store.js";
 import { HEROES } from "../src/content/heroes.js";
 import { ACTS, BOSSES, CULTIVATIONS } from "../src/content/campaign.js";
@@ -74,7 +73,7 @@ test("Act II plays end to end: travel, map rows, shallows, Night Heron, tea hous
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
   assert.throws(() => game.start("lu-bu", "campaign"), /Act III/);
-  game.start("lu-bu", "quickplay");
+  game.start("lu-bu", "quickplay", "jade-gate", quickParty("lu-bu"));
   assert.equal(game.mode, "exploring");
 });
 test("campaign walks the branching map to the boss, tea house and unlocks", () => {
@@ -183,13 +182,13 @@ test("meridian strikes charge once, gate on prerequisites, persist, and affect c
   game.start("zhao-yun", "campaign");
   assert.equal(game.g.p.maxHp, 150); // two Conception points: +30
   game.menu();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert.equal(game.g.p.maxHp, 120);
   assert.equal(session(storage).profile.meridian.length, 2);
 });
 test("quick-play victory records scores without changing campaign wallet/checkpoint/unlocks", () => {
   const game = session();
-  game.start("lu-bu", "quickplay");
+  game.start("lu-bu", "quickplay", "jade-gate", quickParty("lu-bu"));
   // Quick play stays linear across all five encounters.
   while (!["victory", "defeat"].includes(game.mode)) {
     clearEncounter(game);
@@ -203,7 +202,7 @@ test("quick-play victory records scores without changing campaign wallet/checkpo
 });
 test("Act III completion is the declarative campaign unlock boundary", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   game.g.runMode = "campaign";
   awardResult(game.profile, game.g, true, ACTS[2]);
   game.save();

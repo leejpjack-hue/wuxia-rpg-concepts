@@ -37,7 +37,12 @@ export function createRoam(g, bus, { encounter } = {}) {
       rng: seededRandom(1337+g.encounterIndex*7+index*131) };
   });
   Object.assign(g.p, { x: 640, y: 500 });
+  const partyFollowers = (g.party?.followers || []).map((id, index) => {
+    const point = groundPoint(g.p.x - 48 * (index + 1), g.p.y + 12 * (index + 1));
+    return { id, x: point.x, y: point.y, dx: g.p.dx || 1 };
+  });
   g.roam = { field, contact: -1, defeated: 0, shots: [], effects: [],
+    followers: partyFollowers, trail: [{ x: g.p.x, y: g.p.y }],
     strikeCD: 0, dodgeCD: 0, invulnerable: 0, dash: 0, facingX: 1, facingY: 0,
     sneaking: false, sneakMaster: g.p.id === 'nie-yinniang',
     windTime: 0, windX: 0, pillarTimer: 3, pillar: null };
@@ -164,6 +169,21 @@ export function createRoam(g, bus, { encounter } = {}) {
     if (!len && roam.dash <= 0 && roam.windX)
       Object.assign(g.p, groundPoint(g.p.x + roam.windX * dt, g.p.y));
     g.p.moving = !!len;
+    const last = roam.trail[roam.trail.length - 1];
+    if (!last || Math.hypot(g.p.x - last.x, g.p.y - last.y) > 14)
+      roam.trail.push({ x: g.p.x, y: g.p.y });
+    while (roam.trail.length > 28) roam.trail.shift();
+    for (let i = 0; i < roam.followers.length; i++) {
+      const follower = roam.followers[i];
+      const target = roam.trail[Math.max(0, roam.trail.length - 1 - (i + 1) * 8)] || last || g.p;
+      const dx = target.x - follower.x, dy = target.y - follower.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 2) {
+        const step = Math.min(dist, PLAYER_SPEED * 0.9 * dt);
+        Object.assign(follower, groundPoint(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step));
+        if (dx) follower.dx = dx > 0 ? 1 : -1;
+      }
+    }
     for (const action of pending.splice(0)) {
       act(action); if (g.mode !== 'exploring') return;
     }

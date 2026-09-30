@@ -6,7 +6,7 @@ import {
   SAVE_VERSION,
   sanitizeProfile,
 } from "../src/platform/save-store.js";
-import { memoryStorage, session, clearEncounter, walkMap } from "./helpers.js";
+import { memoryStorage, session, clearEncounter, walkMap, quickParty } from './helpers.js';
 import { FixedClock } from "../src/engine/clock.js";
 import { StateMachine } from "../src/engine/state-machine.js";
 import { EventBus } from "../src/engine/events.js";
@@ -78,7 +78,7 @@ test("version 1 structured profiles migrate to current schema", () => {
 test("fixed simulation is identical at 30 and 120 render FPS", () => {
   function run(fps) {
     const game = session();
-    game.start("zhao-yun", "quickplay");
+    game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
     const clock = new FixedClock();
     for (let n = 0; n < fps * 2; n++)
       clock.advance(1 / fps, (dt) => game.step(dt, { dx: 1, dy: 0 }));

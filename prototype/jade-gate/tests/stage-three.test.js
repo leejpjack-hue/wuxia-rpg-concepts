@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { memoryStorage, session, completeCampaign, playCampaign, clearEncounter, walkMap } from './helpers.js';
+import { memoryStorage, session, completeCampaign, playCampaign, clearEncounter, walkMap, quickParty } from './helpers.js';
 import { SaveStore, SAVE_KEY } from '../src/platform/save-store.js';
 import { ACTS } from '../src/content/campaign.js';
 import { DUEL_ENEMIES, DUEL_ROSTERS } from '../src/content/duels.js';
@@ -87,7 +87,7 @@ test('Acts II and III use their own illustrated enemies, translated story and lo
 });
 
 test('mountain wind stays on the ground and a telegraphed pillar respects dodge invulnerability', () => {
-  const game=session();game.start('zhao-yun','quickplay','mount-canglan');
+  const game=session();game.start('zhao-yun', 'quickplay', 'mount-canglan', quickParty('zhao-yun'));
   game.g.roam.field.length=0;
   const startX=game.g.p.x;
   for(let i=0;i<60;i++) game.step(1/60,{});

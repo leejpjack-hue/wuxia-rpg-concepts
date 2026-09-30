@@ -23,6 +23,7 @@ export class RoamView {
     this.actions = [];
     this.context = this.$("roam-effects")?.getContext("2d");
     this.sprites = new Map();
+    this.followers = new Map();
     this.frame = 0;
     this.last = 0;
     const view = document.defaultView;
@@ -174,6 +175,28 @@ export class RoamView {
       node.alt = this.t(enemy.name);
       node.hidden = false;
     }
+    for (const [id, node] of this.followers)
+      if (!(g.roam.followers || []).some((follower) => follower.id === id)) {
+        node.remove();
+        this.followers.delete(id);
+      }
+    for (const follower of g.roam.followers || []) {
+      let node = this.followers.get(follower.id);
+      if (!node) {
+        node = this.document.createElement("img");
+        node.className = "roam-follower";
+        node.draggable = false;
+        node.onerror = () => {
+          node.hidden = true;
+        };
+        node.src = `assets/${follower.id}-sprite.png`;
+        this.$("roam-arena").appendChild(node);
+        this.followers.set(follower.id, node);
+      }
+      node.alt = follower.id;
+      node.hidden = false;
+      node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
+    }
     this.draw();
     this.$("roam").focus({ preventScroll: true });
   }
@@ -193,6 +216,13 @@ export class RoamView {
     this.place(heroNode, g.p.x, g.p.y);
     if (!this.heroToken)
       this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
+    for (const follower of g.roam.followers || []) {
+      const node = this.followers.get(follower.id);
+      if (!node) continue;
+      this.place(node, follower.x, follower.y);
+      node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
+      node.style.opacity = g.roam.sneaking ? 0.5 : 0.92;
+    }
     this.drawEffects(g);
     for (const enemy of g.roam.field) {
       const node = this.sprites.get(enemy.id);
@@ -209,7 +239,7 @@ export class RoamView {
   drawEffects(g) {
     const c = this.context; if (!c) return;
     c.clearRect(0,0,1280,720);
-    for (const actor of [g.p, ...g.roam.field]) {
+    for (const actor of [g.p, ...(g.roam.followers || []), ...g.roam.field]) {
       c.fillStyle = '#06141088'; c.beginPath(); c.ellipse(actor.x,actor.y,32,9,0,0,Math.PI*2); c.fill();
     }
     for (const e of g.roam.field) if (e.ranged) {
