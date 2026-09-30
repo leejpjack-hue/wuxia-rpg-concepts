@@ -2,11 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   loadSheetManifest,
+  loadSheet,
   sampleAnim,
   applySheetFrame,
   clearSheetFrame,
   sheetGrid,
   drawFrame,
+  drawAnimFrame,
 } from "../src/platform/sheet-anim.js";
 import assetManifest from "../docs/asset-manifest.json" with { type: "json" };
 
@@ -112,4 +114,64 @@ test("drawFrame canvas helper blits one cell (optional FRAME-02 surface)", () =>
   assert.equal(drawFrame(ctx, image, FRAME00, { col: 2, row: 1 }, 10, 20, 64, 64), true);
   assert.deepEqual(calls[0], [image, 1024, 512, 512, 512, 10, 20, 64, 64]);
   assert.equal(drawFrame(null, image, FRAME00, { col: 0, row: 0 }), false);
+});
+
+test("loadSheet skips missing or incomplete rows without loading", async () => {
+  const store = { load: () => assert.fail("missing sheet must not load") };
+  assert.equal(await loadSheet(store, [], "zhao-yun"), null);
+  assert.equal(await loadSheet(store, null, "zhao-yun"), null);
+  assert.equal(await loadSheet(store, [FRAME00], ""), null);
+  assert.equal(await loadSheet(store, [{ id: FRAME00.id }], "zhao-yun"), null);
+});
+
+test("loadSheet loads the PNG by extensionless sibling id", async () => {
+  const image = {};
+  const ids = [];
+  const store = { load: async (id) => { ids.push(id); return image; } };
+  assert.deepEqual(await loadSheet(store, [FRAME00], "zhao-yun"), { image, sheet: FRAME00 });
+  assert.deepEqual(ids, ["zhao-yun-sheet"]);
+});
+
+test("loadSheet returns null on rejected, thrown or empty image loads", async () => {
+  for (const store of [
+    { load: async () => { throw new Error("missing PNG"); } },
+    { load: () => { throw new Error("image creation failed"); } },
+    { load: async () => null },
+    null,
+  ]) {
+    assert.equal(await loadSheet(store, [FRAME00], "zhao-yun"), null);
+  }
+});
+
+test("drawAnimFrame samples walk time and wraps with a destination", () => {
+  const calls = [];
+  const ctx = { drawImage: (...args) => calls.push(args) };
+  const image = {};
+  const dest = { x: 10, y: 20, width: 64, height: 96 };
+  assert.equal(drawAnimFrame(ctx, image, FRAME00, "walk", 0.35, dest), true);
+  assert.equal(drawAnimFrame(ctx, image, FRAME00, "walk", 0.4), true);
+  assert.deepEqual(calls, [
+    [image, 1536, 512, 512, 512, 10, 20, 64, 96],
+    [image, 0, 512, 512, 512, 0, 0, 512, 512],
+  ]);
+});
+
+test("drawAnimFrame samples attack objects and clamps at the final frame", () => {
+  const calls = [];
+  const ctx = { drawImage: (...args) => calls.push(args) };
+  const image = {};
+  assert.equal(drawAnimFrame(ctx, image, FRAME00, FRAME00.anims.attack, 0.1), true);
+  assert.equal(drawAnimFrame(ctx, image, FRAME00, "attack", 10), true);
+  assert.deepEqual(calls, [
+    [image, 512, 1024, 512, 512, 0, 0, 512, 512],
+    [image, 1024, 1024, 512, 512, 0, 0, 512, 512],
+  ]);
+});
+
+test("drawAnimFrame no-ops on missing animation, image or sheet", () => {
+  const ctx = { drawImage: () => assert.fail("missing input must not draw") };
+  assert.equal(drawAnimFrame(ctx, {}, FRAME00, "missing", 0), false);
+  assert.equal(drawAnimFrame(ctx, {}, FRAME00, { frames: [] }, 0), false);
+  assert.equal(drawAnimFrame(ctx, null, FRAME00, "walk", 0), false);
+  assert.equal(drawAnimFrame(ctx, {}, null, "walk", 0), false);
 });
