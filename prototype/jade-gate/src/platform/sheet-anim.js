@@ -1,10 +1,8 @@
 /**
- * WU-FRAME-02 stub (owned by Codex on #19) — minimal SheetAnim helper so
- * WU-FRAME-03 (#20) can ship self-contained. Codex: absorb / replace this
- * module when landing the real loader; keep the exported names stable or
- * update roam-view.js in the same change.
+ * WU-FRAME-02 (#19): SheetAnim PNG loading, sampling and canvas blits.
+ * Keeps the FRAME-03 roam CSS path and its exported helpers stable.
  *
- * Contract: sibling manifest row id `${heroId}-sheet` with frameW/frameH/anims
+ * FRAME-00 contract: sibling manifest row id `${heroId}-sheet` with frameW/frameH/anims
  * (see docs/character-image-requirements.md Action spritesheet). Missing
  * record → null / no-op (legacy still <img>).
  */
@@ -31,6 +29,19 @@ export function loadSheetManifest(manifestRows, heroId) {
   const row = manifestRows.find((entry) => entry?.id === id);
   if (!row?.file || !(row.frameW > 0) || !(row.frameH > 0) || !row.anims) return null;
   return row;
+}
+
+/** Load the sibling PNG through AssetStore; missing art keeps legacy stills. */
+export async function loadSheet(assetStore, manifestRows, heroId) {
+  const sheet = loadSheetManifest(manifestRows, heroId);
+  if (!sheet) return null;
+  try {
+    // AssetStore resolves assets/${id}.png; never pass the file path to load.
+    const image = await assetStore.load(sheet.id);
+    return image ? { image, sheet } : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -113,8 +124,7 @@ export function clearSheetFrame(node) {
 }
 
 /**
- * Optional canvas blit (FRAME-02 surface). Roam uses the CSS path; strike film
- * may prefer this later.
+ * Canvas blit for an already sampled cell. Roam uses the CSS path.
  */
 export function drawFrame(ctx, image, sheet, cell, dx = 0, dy = 0, dw, dh) {
   if (!ctx || !image || !sheet || !cell) return false;
@@ -133,4 +143,17 @@ export function drawFrame(ctx, image, sheet, cell, dx = 0, dy = 0, dw, dh) {
     dh ?? fh,
   );
   return true;
+}
+
+/**
+ * Timed canvas blit: animation name or FRAME-00 anim object, time in seconds.
+ * Optional dest = { x, y, width, height }; defaults to the cell's native size.
+ * Missing animation/image/sheet returns false without drawing.
+ */
+export function drawAnimFrame(ctx, image, sheet, animNameOrAnim, tSeconds = 0, dest = {}) {
+  const anim = typeof animNameOrAnim === "string"
+    ? sheet?.anims?.[animNameOrAnim]
+    : animNameOrAnim;
+  return drawFrame(ctx, image, sheet, sampleAnim(anim, tSeconds),
+    dest.x, dest.y, dest.width, dest.height);
 }
