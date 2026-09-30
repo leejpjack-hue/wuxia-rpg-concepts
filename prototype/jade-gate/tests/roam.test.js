@@ -1,6 +1,7 @@
 import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
+import { ACTS } from "../src/content/campaign.js";
 import { HEROES } from "../src/content/heroes.js";
 import { translate } from "../src/locales/i18n.js";
 import test from "node:test";
@@ -652,4 +653,50 @@ test("swap lead after a duel returns to the pass before next contact", () => {
   assert.equal(session.beginDuel(0), true);
   assert.equal(session.g.p.id, "hu-sanniang");
   assert.equal(session.g.enemies.length, 1);
+});
+
+test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", () => {
+  const png = readFileSync(new URL("../assets/bamboo-maze.png", import.meta.url));
+  assert.equal(png.subarray(1, 4).toString(), "PNG");
+  assert.equal(png.readUInt32BE(16), WORLD.width);
+  assert.equal(png.readUInt32BE(20), WORLD.height);
+
+  const arena = { style: {}, dataset: {} };
+  const view = Object.create(RoamView.prototype);
+  view.$ = (id) => {
+    assert.equal(id, "roam-arena");
+    return arena;
+  };
+  const paint = (cam) => {
+    view.applyCamera(cam);
+    return arena.style;
+  };
+
+  const origin = paint({ x: 0, y: 0 });
+  assert.equal(arena.dataset.stage, "assets/bamboo-maze.png");
+  assert.equal(origin.backgroundImage, 'url("assets/bamboo-maze.png")');
+  assert.equal(origin.backgroundRepeat, "no-repeat");
+  assert.equal(origin.backgroundSize, `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`);
+  assert.equal(origin.backgroundPosition, "0% 0%");
+
+  const far = paint({ x: WORLD.width - VIEWPORT.width, y: WORLD.height - VIEWPORT.height });
+  assert.equal(far.backgroundPosition, "100% 100%");
+  assert.equal(far.backgroundImage, 'url("assets/bamboo-maze.png")');
+
+  const mid = paint({
+    x: (WORLD.width - VIEWPORT.width) / 2,
+    y: (WORLD.height - VIEWPORT.height) / 2,
+  });
+  assert.equal(mid.backgroundPosition, "50% 50%");
+
+  // Backdrop only: act gates and duel arena ids stay as shipped.
+  assert.deepEqual(
+    ACTS.map((act) => [act.id, act.available, act.arena]),
+    [
+      ["jade-gate", true, "arena"],
+      ["bamboo-crossing", true, "bamboo-river"],
+      ["mount-canglan", true, "mount-canglan"],
+      ["meridian-citadel", false, null],
+    ],
+  );
 });

@@ -371,6 +371,15 @@
     "reference": "assets/bamboo-ambush.png"
   },
   {
+    "id": "bamboo-maze",
+    "file": "assets/bamboo-maze.png",
+    "width": 2560,
+    "height": 1440,
+    "mode": "RGB",
+    "method": "Antigravity Ops · WU-CAM-06P · remake v2 elevated-oblique prompt (camera still somewhat eye-level)",
+    "prompt": "(see prompts/bamboo-maze.txt)"
+  },
+  {
     "id": "night-heron-sprite",
     "file": "assets/night-heron-sprite.png",
     "method": "built-in image_gen · 2026-09-27",
