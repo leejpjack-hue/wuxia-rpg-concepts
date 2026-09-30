@@ -90,14 +90,16 @@ test('film cuts run in time order; a technique charges up before it strikes, a p
   assert(cutFor('technique',false).at(-1)[1]>cutFor('attack',false).at(-1)[1]);
 });
 
-function filmFixture(){
+function filmFixture(manifest=[]){
   const parts=new Map(), cues=[], callbacks=[];
   const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(){}},classList:{toggle(){}},setAttribute(){},
-    querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:''});return parts.get(selector);}};
+    querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:'',dataset:{},style:{},classList:{
+      values:new Set(),add(name){this.values.add(name);},remove(name){this.values.delete(name);},contains(name){return this.values.has(name);}
+    }});return parts.get(selector);}};
   const table={appendChild(){}};
   const timeline=new StrikeTimeline((fn,ms)=>{callbacks.push({fn,ms});return callbacks.length;},()=>{});
-  const film=new DuelCinematic({createElement:()=>node},table,cue=>cues.push(cue.type),text=>text,timeline);
-  const flush=()=>{while(callbacks.length)callbacks.shift().fn();};
+  const film=new DuelCinematic({createElement:()=>node},table,cue=>cues.push(cue.type),text=>text,timeline,manifest);
+  const flush=()=>{callbacks.sort((a,b)=>a.ms-b.ms);while(callbacks.length)callbacks.shift().fn();};
   return {film,node,cues,callbacks,flush};
 }
 const hero=HEROES.find(h=>h.id==='zhao-yun');
@@ -135,4 +137,65 @@ test('new duel film captions have Japanese translations',()=>{
   for(const text of ['THE DUEL BEGINS','AMBUSH · THE RIVAL REELS']){
     assert.notEqual(translate(text),text);assert.equal(translate(text,'en'),text);
   }
+});
+
+const attackSheet={id:`${hero.id}-sheet`,file:'assets/test-sheet.png',frameW:128,frameH:128,
+  anims:{attack:{frames:[[0,1],[1,1],[2,1]],fps:20,loop:false}}};
+const assertStill=img=>{
+  assert.equal(img.src,`assets/${hero.id}-sprite.png`);
+  assert.equal(img.classList.contains('sheet-anim'),false);
+  assert.equal(img.style.backgroundImage,'');
+};
+test('strike without a sheet or attack animation keeps the idle sprite throughout',()=>{
+  for(const manifest of [[],[{...attackSheet,anims:{}}]]){
+    const {film,node,callbacks}=filmFixture(manifest);
+    film.play('attack',hero,rival,{damage:10},false,()=>{});
+    const img=node.querySelector('.film-hero');assertStill(img);
+    for(const {fn} of callbacks){fn();assertStill(img);}
+  }
+});
+test('attack and technique sample every attack frame once, then restore the still before impact',()=>{
+  for(const [action,fps] of [['attack',20],['technique',20],['attack',12],['technique',12]]){
+    const sheet={...attackSheet,anims:{attack:{...attackSheet.anims.attack,fps}}};
+    const {film,node,callbacks}=filmFixture([sheet]);let commits=0;
+    film.play(action,hero,rival,{damage:10},false,()=>commits++);
+    const img=node.querySelector('.film-hero');assertStill(img);
+    const positions=[];
+    for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
+      fn();
+      if(img.classList.contains('sheet-anim')){
+        assert.match(img.src,/^data:/);assert.equal(img.style.backgroundImage,'url("assets/test-sheet.png")');
+        positions.push(img.style.backgroundPosition);
+        assert.equal(node.dataset.phase,'strike');
+      }else assertStill(img);
+    }
+    assert.deepEqual(positions,['0% 100%','50% 100%','100% 100%']);
+    assert.equal(commits,1);assert.equal(node.hidden,true);
+  }
+});
+test('long attacks clear at impact; cancelling invalidates frame ticks and cleans the next intro',()=>{
+  const {film,node,callbacks,flush}=filmFixture([{...attackSheet,anims:{attack:{...attackSheet.anims.attack,fps:5}}}]);
+  let commits=0;film.play('attack',hero,rival,{damage:10},false,()=>commits++);
+  const img=node.querySelector('.film-hero');
+  callbacks.sort((a,b)=>a.ms-b.ms);
+  callbacks.shift().fn();assert.equal(img.classList.contains('sheet-anim'),true);
+  callbacks.shift().fn();assert.equal(img.style.backgroundPosition,'50% 100%');
+  callbacks.shift().fn();assert.equal(node.dataset.phase,'impact');assertStill(img);
+  flush();assert.equal(commits,1);
+  film.play('attack',hero,rival,{damage:10},false,()=>commits++);
+  callbacks.shift().fn();assert.equal(img.classList.contains('sheet-anim'),true);
+  const stale=callbacks.splice(0);film.cancel();assertStill(img);
+  film.intro(hero,rival,false,false);stale.forEach(({fn})=>fn());assertStill(img);
+  flush();assertStill(img);assert.equal(commits,1);
+});
+test('guard, tea, reduced motion and intro keep still sprites with a sheet available',()=>{
+  const {film,node,callbacks,flush}=filmFixture([attackSheet]);
+  const img=node.querySelector('.film-hero');
+  for(const [action,reduced] of [['guard',false],['tea',false],['attack',true],['technique',true]]){
+    film.play(action,hero,rival,{},reduced,()=>{});assertStill(img);
+    for(const {fn} of callbacks.splice(0)){fn();assertStill(img);}
+  }
+  film.intro(hero,rival,false,false);flush();assertStill(img);
+  film.play('attack',hero,rival,{},false,()=>{});callbacks.shift().fn();
+  film.intro(hero,rival,false,true);assertStill(img);flush();assertStill(img);
 });

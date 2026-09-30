@@ -12,6 +12,7 @@
 .film-caption { position:absolute; z-index:9; bottom:12px; width:100%; text-align:center; font-size:12px; letter-spacing:.12em; color:#fff3ce; }
 .film-floor { position:absolute; left:10%; right:10%; bottom:16%; height:9%; background:#02060499; filter:blur(15px); border-radius:50%; }
 .film-actor { position:absolute; bottom:19%; height:66%; width:42%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 8px #0008); transition:transform .32s cubic-bezier(.12,.8,.25,1),filter .2s,opacity .3s; }
+.film-hero.sheet-anim { object-fit:fill; }
 .film-hero { left:4%; transform:translateX(-8%); }
 .film-enemy { right:4%; transform:scaleX(-1); }
 [data-phase=strike] .film-hero { transform:translateX(65%) rotate(-9deg); }
