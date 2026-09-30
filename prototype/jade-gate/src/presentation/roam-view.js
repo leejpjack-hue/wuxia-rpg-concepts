@@ -1,6 +1,14 @@
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
 import { VIEWPORT, cameraFocus, worldToScreen } from "../domain/ground.js";
+import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
+// FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
+import {
+  loadSheetManifest,
+  sampleAnim,
+  applySheetFrame,
+  clearSheetFrame,
+} from "../platform/sheet-anim.js";
 const KEYS = {
   KeyW: "up",
   ArrowUp: "up",
@@ -27,6 +35,10 @@ export class RoamView {
     this.followers = new Map();
     this.frame = 0;
     this.last = 0;
+    this.animTime = 0;
+    this.sheetByHero = new Map();
+    this.followerPrev = new Map();
+    this.manifest = assetManifest;
     const view = document.defaultView;
     this.request = view?.requestAnimationFrame?.bind(view) || null;
     this.cancel = view?.cancelAnimationFrame?.bind(view) || null;
@@ -99,6 +111,7 @@ export class RoamView {
     this.frame = this.request(this.tick);
     const dt = Math.min(0.1, (now - this.last) / 1000 || 0);
     this.last = now;
+    this.animTime += dt;
     if (this.session.mode === "exploring" && !this.document.hidden)
       this.session.step(dt, this.axes());
     this.draw();
@@ -149,8 +162,11 @@ export class RoamView {
     this.heroToken?.remove();
     this.heroToken = null;
     hero.hidden = false;
+    if (hero.dataset) hero.dataset.stillSrc = src;
     hero.onerror = () => {
-      if (hero.getAttribute("src") !== src) return;
+      const shown = hero.getAttribute("src");
+      if (shown !== src && shown !== hero.dataset?.stillSrc) return;
+      clearSheetFrame(hero);
       hero.hidden = true;
       const token = this.document.createElement("div");
       token.className = "roam-token";
@@ -161,7 +177,13 @@ export class RoamView {
       this.heroToken = token;
       this.draw();
     };
-    if (hero.getAttribute("src") !== src) hero.src = src;
+    // Still path when no sheet; sheet mode is applied each draw().
+    if (!this.sheetFor(g.p.id)) {
+      clearSheetFrame(hero);
+      if (hero.getAttribute("src") !== src) hero.src = src;
+    } else if (hero.getAttribute("src") !== src && !hero.classList?.contains?.("sheet-anim")) {
+      hero.src = src;
+    }
     hero.alt = this.t(g.p.name);
     for (const [id, node] of this.sprites)
       if (!g.roam.field.some((enemy) => enemy.id === id)) {
@@ -199,12 +221,15 @@ export class RoamView {
         node.onerror = () => {
           node.hidden = true;
         };
-        node.src = `assets/${follower.id}-sprite.png`;
+        const still = `assets/${follower.id}-sprite.png`;
+        node.src = still;
+        if (node.dataset) node.dataset.stillSrc = still;
         this.$("roam-arena").appendChild(node);
         this.followers.set(follower.id, node);
       }
       node.alt = follower.id;
       node.hidden = false;
+      if (node.dataset) node.dataset.stillSrc = `assets/${follower.id}-sprite.png`;
       node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
     }
     this.draw();
@@ -226,14 +251,19 @@ export class RoamView {
     const heroNode = this.heroToken || this.$("roam-hero");
     heroNode.style.opacity = g.roam.sneaking ? 0.62 : 1;
     this.place(heroNode, g.p.x, g.p.y, cam);
-    if (!this.heroToken)
+    if (!this.heroToken) {
       this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
+      // Lead: walk while axes drive movement (g.p.moving); else idle or still.
+      this.applyActorSheet(this.$("roam-hero"), g.p.id, !!g.p.moving);
+    }
     for (const follower of g.roam.followers || []) {
       const node = this.followers.get(follower.id);
       if (!node) continue;
       this.place(node, follower.x, follower.y, cam);
       node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
       node.style.opacity = g.roam.sneaking ? 0.5 : 0.92;
+      // Followers stay still sprites unless ${id}-sheet exists in the manifest.
+      this.applyActorSheet(node, follower.id, this.followerMoved(follower));
     }
     this.drawEffects(g, cam);
     for (const enemy of g.roam.field) {
@@ -286,6 +316,45 @@ export class RoamView {
       if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(this.t(e.text), p.x, p.y-115-(.55-e.life)*70); }
       c.restore();
     }
+  }
+  /** Cached FRAME-00 sheet row for heroId, or null (legacy still). */
+  sheetFor(heroId) {
+    if (this.sheetByHero.has(heroId)) return this.sheetByHero.get(heroId);
+    const sheet = loadSheetManifest(this.manifest, heroId);
+    this.sheetByHero.set(heroId, sheet);
+    return sheet;
+  }
+  /** Detect follower locomotion from position deltas (no domain flag). */
+  followerMoved(follower) {
+    const prev = this.followerPrev.get(follower.id);
+    this.followerPrev.set(follower.id, { x: follower.x, y: follower.y });
+    if (!prev) return false;
+    return Math.hypot(follower.x - prev.x, follower.y - prev.y) > 0.5;
+  }
+  /**
+   * Sample walk while moving, idle when stopped (if present); else clear to still.
+   * Missing sheet record → clearSheetFrame (no crash).
+   */
+  applyActorSheet(node, heroId, moving) {
+    if (!node) return;
+    const sheet = this.sheetFor(heroId);
+    if (!sheet?.anims) {
+      clearSheetFrame(node);
+      return;
+    }
+    const anim =
+      moving && sheet.anims.walk
+        ? sheet.anims.walk
+        : !moving && sheet.anims.idle
+          ? sheet.anims.idle
+          : null;
+    if (!anim) {
+      clearSheetFrame(node);
+      return;
+    }
+    const cell = sampleAnim(anim, this.animTime);
+    if (cell) applySheetFrame(node, sheet, cell);
+    else clearSheetFrame(node);
   }
   dispose() {
     if (this.cancel && this.frame) this.cancel(this.frame);
