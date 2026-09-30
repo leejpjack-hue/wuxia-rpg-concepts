@@ -15,6 +15,7 @@ let storage = null;
 try { storage = window.localStorage; } catch {}
 const store = new SaveStore(storage);
 const session = new GameSession(store, { combatFactory: createCardCombat });
+window.__jadeSession = session;
 if (!store.hadSettings)
   session.profile.settings.reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const t = text => translate(text, session.profile.settings.language);

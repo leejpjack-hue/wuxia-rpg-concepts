@@ -105,6 +105,18 @@
 .party-hp-chip.lead { border-color:var(--jade); box-shadow:inset 0 2px var(--jade); }
 .party-hp-chip.swap-ready { cursor:pointer; }
 .party-hp-chip.swap-ready:hover { border-color:var(--jade); }
+/* WU-PLAY-01: one-shot post-duel invite — follower chips pulse as tappable. */
+.party-hp-chip.swap-cue {
+  border-color: var(--jade);
+  box-shadow: 0 0 0 2px #5dcaa866, 0 0 14px #5dcaa855;
+  animation: swap-cue-pulse 1.1s ease-in-out 3;
+}
+.roam-party-hud.swap-cue-active { outline: 1px dashed #5dcaa855; outline-offset: 4px; border-radius: 8px; }
+@keyframes swap-cue-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 2px #5dcaa866, 0 0 10px #5dcaa844; }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 3px #5dcaa8aa, 0 0 18px #5dcaa888; }
+}
+.reduced-motion .party-hp-chip.swap-cue { animation: none; }
 .chip-name { color:var(--jade); }
 .chip-hp { font-size:11px; }
 .roam-controls > .hint { flex-basis:100%; text-align:center; max-width:680px; }
@@ -140,11 +152,12 @@
 .roam-spawn-marker {
   position: absolute;
   box-sizing: border-box;
-  width: 2.5%;
+  width: 3.2%;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
-  border: 3px solid #c9a227;
+  border: 3px solid #e8c547;
   border-radius: 50%;
-  background: #c9a22740;
+  background: #e8c54755;
+  box-shadow: 0 0 14px #c9a22799, inset 0 0 8px #c9a22766;
   pointer-events: none;
 }
