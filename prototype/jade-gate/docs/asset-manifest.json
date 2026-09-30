@@ -18,6 +18,70 @@
     "prompt": "Use case: identity-preserve. Asset type: 3D modeler turnaround and materials reference sheet for wuxia RPG. Reference image is approved character identity and costume. Zhao Yun, a poised athletic adult Chinese male spear master, silver lamellar armor, ivory robes, muted jade sash, black hair in a high knot, long straight spear with a restrained white tassel. Calm heroic face, lean disciplined silhouette. Create an accurate production concept sheet showing the SAME character in three evenly spaced full-body orthographic views: FRONT, SIDE, BACK, identical scale and neutral A pose, flat studio lighting, boots aligned on one baseline. Consistent face, proportions, outfit layers and equipment in all views. At right a small separate isolated full weapon and three material swatches for cloth, armor, leather. Clean warm grey background. Wide 16:9 composition. Small clear uppercase labels FRONT, SIDE, BACK, EQUIPMENT only. No UI, no perspective, no extra people, no exaggerated ornaments, no cropped feet or weapons. Painterly realistic concept visualization with crisp construction details. Equipment should be separate from body views to reveal outfit construction."
   },
   {
+    "id": "zhao-yun-sheet",
+    "file": "assets/zhao-yun-sheet.png",
+    "frameW": 512,
+    "frameH": 512,
+    "anims": {
+      "idle": {
+        "frames": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "fps": 6,
+        "loop": true
+      },
+      "walk": {
+        "frames": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "fps": 10,
+        "loop": true
+      },
+      "attack": {
+        "frames": [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "fps": 12,
+        "loop": false
+      }
+    },
+    "method": "Ops produce · identity-preserve from key+sprite · tip d06ce423 · Stitch GEMINI_3_8_FLASH",
+    "prompt": "(see prompts/zhao-yun-sheet.txt)"
+  },
+  {
     "id": "lu-zhishen",
     "file": "assets/lu-zhishen.png",
     "method": "built-in image_gen",
