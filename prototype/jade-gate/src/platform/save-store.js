@@ -28,6 +28,8 @@ export const defaultProfile = () => ({
   completedActs: [],
   completedRuns: [],
   checkpoint: null,
+  // Last Quick Play party. Cosmetic followers only; never an unlock source.
+  lastQuickParty: null,
 });
 const playerFields = {
   hp: 1000,
@@ -39,6 +41,17 @@ const playerFields = {
   kills: 1000,
   damageTaken: 1e6,
 };
+/** `{ lead, followers[2] }` of distinct known heroes, or null. Does not grant unlocks. */
+export function sanitizeQuickParty(raw) {
+  const followers = Array.isArray(raw?.followers) ? raw.followers : null;
+  if (typeof raw?.lead !== "string" || !followers || followers.length !== 2)
+    return null;
+  const ids = [raw.lead, followers[0], followers[1]];
+  if (ids.some((id) => typeof id !== "string" || !HERO_IDS.includes(id)))
+    return null;
+  if (new Set(ids).size !== 3) return null;
+  return { lead: ids[0], followers: [ids[1], ids[2]] };
+}
 export function sanitizeCheckpoint(raw) {
   if (!raw || typeof raw !== "object" || !HERO_IDS.includes(raw.heroId))
     return null;
@@ -169,6 +182,7 @@ export function sanitizeProfile(raw) {
     !result.unlockedHeroes.includes(result.checkpoint.heroId)
   )
     result.checkpoint = null;
+  result.lastQuickParty = sanitizeQuickParty(raw.lastQuickParty);
   return result;
 }
 export class SaveStore {

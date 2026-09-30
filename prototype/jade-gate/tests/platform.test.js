@@ -5,6 +5,7 @@ import {
   SAVE_KEY,
   SAVE_VERSION,
   sanitizeProfile,
+  sanitizeQuickParty,
 } from "../src/platform/save-store.js";
 import { memoryStorage, session, clearEncounter, walkMap, quickParty } from './helpers.js';
 import { FixedClock } from "../src/engine/clock.js";
@@ -159,6 +160,33 @@ test("audio director maps scenes, persists mixer values and disposes subscriptio
   const after = calls.length;
   bus.emit("audio:sfx", { type: "hit" });
   assert.equal(calls.length, after);
+});
+test("last Quick Play party round-trips and a bad party does not unlock anyone", () => {
+  const party = { lead: "nie-yinniang", followers: ["bao-sanniang", "yang-zhi"] };
+  const storage = memoryStorage();
+  const game = session(storage);
+  const unlocks = [...game.profile.unlockedHeroes];
+  game.start(party.lead, "quickplay", "jade-gate", party);
+  game.menu();
+  game.start("zhao-yun", "campaign");
+  const again = session(storage);
+  assert.deepEqual(again.profile.lastQuickParty, party);
+  assert.deepEqual(again.profile.unlockedHeroes, unlocks);
+  assert.deepEqual(again.profile.completedActs, []);
+  assert.equal(again.profile.wallet, 0);
+  assert.equal(again.profile.checkpoint.heroId, "zhao-yun");
+  assert.equal(sanitizeQuickParty({ lead: "lu-bu", followers: ["zhao-yun"] }), null);
+  assert.equal(sanitizeQuickParty({ lead: "lu-bu", followers: ["lu-bu", "zhao-yun"] }), null);
+  assert.equal(sanitizeQuickParty({ lead: "no-such", followers: ["zhao-yun", "hu-sanniang"] }), null);
+  const dirty = sanitizeProfile({
+    wallet: 40,
+    completedActs: ["jade-gate"],
+    lastQuickParty: { lead: "lu-bu", followers: ["zhao-yun", "not-a-hero"] },
+  });
+  assert.equal(dirty.lastQuickParty, null);
+  assert.equal(dirty.wallet, 40);
+  assert.deepEqual(dirty.completedActs, ["jade-gate"]);
+  assert.ok(!dirty.unlockedHeroes.includes("lu-bu"));
 });
 test("two tabs cannot silently overwrite a newer campaign save", () => {
   const storage = memoryStorage(),

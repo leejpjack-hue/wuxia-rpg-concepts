@@ -168,6 +168,10 @@ export class GameSession {
     const resolvedParty =
       runMode === "quickplay" ? this.normalizeParty(heroId, party) : { lead: heroId, followers: [] };
     this.createRun(hero, act, runMode, resolvedParty);
+    if (runMode === "quickplay") {
+      this.profile.lastQuickParty = resolvedParty;
+      this.save();
+    }
     if (runMode === "campaign") {
       const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : act.id === "mount-canglan" ? "canglan-arrival" : "arrival";
       this.beginDialogue(arrivalKey);
