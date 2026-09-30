@@ -563,3 +563,75 @@ test("at least one rival spawns past the old 1280×720 screen (camera must scrol
       assert(Math.hypot(enemy.x - g.g.p.x, enemy.y - g.g.p.y) > 200);
   }
 });
+
+test("swap lead allowed between encounters reshuffles party HUD and followers", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  session.profile.settings.language = "en";
+  assert.equal(session.mode, "exploring");
+  assert.equal(session.g.roam.contact, -1);
+  const beforePos = { x: session.g.p.x, y: session.g.p.y };
+  assert.equal(session.swapLead("hu-sanniang"), true);
+  assert.equal(session.g.p.id, "hu-sanniang");
+  assert.equal(session.g.party.lead, "hu-sanniang");
+  assert.deepEqual(session.g.party.followers, ["zhao-yun", "lu-zhishen"]);
+  assert.deepEqual(session.g.roam.followers.map((f) => f.id), ["zhao-yun", "lu-zhishen"]);
+  assert.equal(session.g.p.x, beforePos.x);
+  assert.equal(session.g.p.y, beforePos.y);
+  const { hud, draw } = partyHud(session);
+  draw();
+  assert.deepEqual(hud.children.map((chip) => chip.dataset.heroId), ["hu-sanniang", "zhao-yun", "lu-zhishen"]);
+  assert.deepEqual(hud.children.map((chip) => chip.dataset.partyRole), ["lead", "follower", "follower"]);
+  assert.ok(hud.children[0].className.includes("lead"));
+  assert.ok(hud.children[1].className.includes("swap-ready"));
+  // New lead fights the next duel 1v1.
+  assert.equal(session.beginDuel(0), true);
+  assert.equal(session.mode, "playing");
+  assert.equal(session.g.p.id, "hu-sanniang");
+  assert.equal(session.g.enemies.length, 1);
+});
+
+test("swap lead blocked mid-duel and mid-roam contact", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  assert.equal(session.beginDuel(0), true);
+  assert.equal(session.mode, "playing");
+  assert.ok(session.g.roam.contact >= 0);
+  assert.equal(session.swapLead("hu-sanniang"), false);
+  assert.equal(session.g.p.id, "zhao-yun");
+  assert.deepEqual(session.g.party, party);
+  // Mid-contact handoff while still exploring (contact set, duel not yet cleared).
+  session.transition("exploring");
+  session.g.roam.contact = 0;
+  assert.equal(session.swapLead("lu-zhishen"), false);
+  assert.equal(session.g.p.id, "zhao-yun");
+  // Safe again once contact clears (between encounters on the pass).
+  session.g.roam.contact = -1;
+  assert.equal(session.swapLead("lu-zhishen"), true);
+  assert.equal(session.g.p.id, "lu-zhishen");
+  assert.deepEqual(session.g.party.followers, ["zhao-yun", "hu-sanniang"]);
+});
+
+test("swap lead after a duel returns to the pass before next contact", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  assert(pursue(session));
+  assert.equal(session.mode, "playing");
+  assert.equal(session.swapLead("hu-sanniang"), false);
+  let turns = 0;
+  while (session.mode === "playing" && turns++ < 100)
+    assert(session.combat.act(duelPolicy(session)));
+  assert.equal(session.mode, "exploring");
+  assert.equal(session.g.roam.contact, -1);
+  assert.equal(session.swapLead("hu-sanniang"), true);
+  assert.equal(session.g.p.id, "hu-sanniang");
+  assert.deepEqual(session.g.party, { lead: "hu-sanniang", followers: ["zhao-yun", "lu-zhishen"] });
+  assert.deepEqual(session.g.roam.followers.map((f) => f.id), ["zhao-yun", "lu-zhishen"]);
+  // Next contact still opens as lead 1v1 with the new lead.
+  assert.equal(session.beginDuel(0), true);
+  assert.equal(session.g.p.id, "hu-sanniang");
+  assert.equal(session.g.enemies.length, 1);
+});
