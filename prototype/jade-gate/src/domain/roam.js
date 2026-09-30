@@ -196,7 +196,6 @@ export function createRoam(g, bus, { encounter } = {}) {
         const pace = dist > 220 ? PLAYER_SPEED * 1.05 : dist > 48 ? PLAYER_SPEED * 0.88 : PLAYER_SPEED * 0.55;
         const step = Math.min(dist, pace * dt);
         Object.assign(follower, resolveBlockers(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step, 18, follower));
-        if (dx) follower.dx = dx > 0 ? 1 : -1;
       }
       // Soft separation from the prior party member so they do not stack.
       const prior = i === 0 ? g.p : roam.followers[i - 1];
@@ -206,6 +205,8 @@ export function createRoam(g, bus, { encounter } = {}) {
         const push = ((36 - sep) / 36) * PLAYER_SPEED * 0.35 * dt;
         Object.assign(follower, resolveBlockers(follower.x + (sepX / sep) * push, follower.y + (sepY / sep) * push, 18, follower));
       }
+      // WU-PARTY-07: cosmetic facing mirrors lead, not chase delta.
+      follower.dx = g.p.dx;
     }
     for (const action of pending.splice(0)) {
       act(action); if (g.mode !== 'exploring') return;

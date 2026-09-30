@@ -107,8 +107,9 @@
 .roam-controls > .hint { flex-basis:100%; text-align:center; max-width:680px; }
 
 
-/* Cosmetic party followers trail the lead; smaller and slightly muted. */
-.roam-follower {
+/* Cosmetic party followers trail the lead; smaller and slightly muted.
+   WU-PARTY-07: beat .roam-stage img specificity so scaleX(var(--face)) applies. */
+.roam-stage img.roam-follower {
   height: 22%;
   transform: translate(-50%, -100%) scaleX(var(--face, 1));
   z-index: 1;

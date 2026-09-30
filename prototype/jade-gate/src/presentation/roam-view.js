@@ -252,7 +252,8 @@ export class RoamView {
       node.alt = follower.id;
       node.hidden = false;
       if (node.dataset) node.dataset.stillSrc = `assets/${follower.id}-sprite.png`;
-      node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
+      // WU-PARTY-07: followers face with the lead (belt-and-suspenders with domain dx).
+      node.style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
     }
     this.draw();
     this.$("roam").focus({ preventScroll: true });
@@ -325,7 +326,7 @@ export class RoamView {
       const node = this.followers.get(follower.id);
       if (!node) continue;
       this.place(node, follower.x, follower.y, cam);
-      node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
+      node.style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
       node.style.opacity = g.roam.sneaking ? 0.5 : 0.92;
       // Followers stay still sprites unless ${id}-sheet exists in the manifest.
       this.applyActorSheet(node, follower.id, this.followerMoved(follower));
