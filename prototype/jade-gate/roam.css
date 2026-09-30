@@ -111,3 +111,12 @@
   filter: drop-shadow(0 8px 10px #0007) saturate(0.92);
   opacity: 0.92;
 }
+
+/* WU-FRAME-03: sheet cell via CSS background; still src → transparent pixel. */
+#roam-hero.sheet-anim,
+.roam-follower.sheet-anim {
+  aspect-ratio: 1 / 1;
+  width: auto;
+  background-repeat: no-repeat;
+  /* Keep painted height from #roam-hero (27%) / .roam-follower (22%). */
+}
