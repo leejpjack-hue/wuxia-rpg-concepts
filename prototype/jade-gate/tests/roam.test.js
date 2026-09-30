@@ -197,6 +197,38 @@ test("hero can walk past the old single-screen courtyard edges", () => {
   assert(onGround(groundPoint(9999, 9999)));
 });
 
+
+test("followers ease along a lagged trail without teleporting or stacking", () => {
+  const g = game();
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun", "hu-sanniang", "lu-zhishen"));
+  g.g.roam.field.length = 0;
+  const samples = [];
+  for (let i = 0; i < 60 * 4; i++) {
+    g.step(1 / 60, { dx: 1, dy: 0 });
+    if (i % 15 === 0) {
+      const [a, b] = g.g.roam.followers;
+      samples.push({
+        lead: { x: g.g.p.x, y: g.g.p.y },
+        a: { x: a.x, y: a.y },
+        b: { x: b.x, y: b.y },
+        ab: Math.hypot(a.x - b.x, a.y - b.y),
+        aLead: Math.hypot(a.x - g.g.p.x, a.y - g.g.p.y),
+        bLead: Math.hypot(b.x - g.g.p.x, b.y - g.g.p.y),
+      });
+    }
+  }
+  assert(samples.length > 4);
+  for (let i = 1; i < samples.length; i++) {
+    const prev = samples[i - 1], cur = samples[i];
+    // No teleport: follower displacement per sample window stays bounded.
+    assert(Math.hypot(cur.a.x - prev.a.x, cur.a.y - prev.a.y) < 220);
+    assert(Math.hypot(cur.b.x - prev.b.x, cur.b.y - prev.b.y) < 220);
+    assert(cur.ab > 20, "followers should not stack on each other");
+    assert(cur.aLead > 20, "follower 1 should lag the lead");
+    assert(cur.bLead > cur.aLead * 0.9, "follower 2 should trail at least as far as follower 1");
+  }
+});
+
 test("followers remain on ground while camera would scroll with the lead", () => {
   const g = game();
   g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun", "hu-sanniang", "lu-zhishen"));
@@ -208,8 +240,8 @@ test("followers remain on ground while camera would scroll with the lead", () =>
   assert(cam.x > 0, "lead past old edge scrolls camera");
   for (const follower of g.g.roam.followers) {
     assert(onGround(follower));
-    // Followers trail in world space; same camera would place them on-screen.
-    assert(Math.abs(follower.x - g.g.p.x) < 400);
+    // Followers trail in world space with PARTY-04 lag; stay in a readable train behind the lead.
+    assert(Math.abs(follower.x - g.g.p.x) < 700);
   }
 });
 

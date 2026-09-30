@@ -42,8 +42,14 @@ export function createRoam(g, bus, { encounter } = {}) {
     const point = groundPoint(g.p.x - 48 * (index + 1), g.p.y + 12 * (index + 1));
     return { id, x: point.x, y: point.y, dx: g.p.dx || 1 };
   });
+  // Seed a short trail behind the lead so followers start staggered (no stack/teleport).
+  const seedTrail = [];
+  for (let i = 16; i >= 0; i--) {
+    const point = groundPoint(g.p.x - 12 * i, g.p.y);
+    seedTrail.push({ x: point.x, y: point.y });
+  }
   g.roam = { field, contact: -1, defeated: 0, shots: [], effects: [],
-    followers: partyFollowers, trail: [{ x: g.p.x, y: g.p.y }],
+    followers: partyFollowers, trail: seedTrail,
     strikeCD: 0, dodgeCD: 0, invulnerable: 0, dash: 0, facingX: 1, facingY: 0,
     sneaking: false, sneakMaster: g.p.id === 'nie-yinniang',
     windTime: 0, windX: 0, pillarTimer: 3, pillar: null };
@@ -170,19 +176,35 @@ export function createRoam(g, bus, { encounter } = {}) {
     if (!len && roam.dash <= 0 && roam.windX)
       Object.assign(g.p, resolveBlockers(g.p.x + roam.windX * dt, g.p.y, 18, g.p));
     g.p.moving = !!len;
+    // WU-PARTY-04: denser trail + larger lag so followers ease along the path
+    // instead of stacking on the lead or snapping across the courtyard.
+    const TRAIL_SAMPLE = 10;
+    const TRAIL_MAX = 56;
+    const LAG_PER_FOLLOWER = 14;
     const last = roam.trail[roam.trail.length - 1];
-    if (!last || Math.hypot(g.p.x - last.x, g.p.y - last.y) > 14)
+    if (!last || Math.hypot(g.p.x - last.x, g.p.y - last.y) > TRAIL_SAMPLE)
       roam.trail.push({ x: g.p.x, y: g.p.y });
-    while (roam.trail.length > 28) roam.trail.shift();
+    while (roam.trail.length > TRAIL_MAX) roam.trail.shift();
     for (let i = 0; i < roam.followers.length; i++) {
       const follower = roam.followers[i];
-      const target = roam.trail[Math.max(0, roam.trail.length - 1 - (i + 1) * 8)] || last || g.p;
+      const lag = (i + 1) * LAG_PER_FOLLOWER;
+      const target = roam.trail[Math.max(0, roam.trail.length - 1 - lag)] || last || g.p;
       const dx = target.x - follower.x, dy = target.y - follower.y;
       const dist = Math.hypot(dx, dy);
-      if (dist > 2) {
-        const step = Math.min(dist, PLAYER_SPEED * 0.9 * dt);
+      if (dist > 4) {
+        // Pace toward the lagged point — never teleport; ease when close, catch up when far.
+        const pace = dist > 220 ? PLAYER_SPEED * 1.05 : dist > 48 ? PLAYER_SPEED * 0.88 : PLAYER_SPEED * 0.55;
+        const step = Math.min(dist, pace * dt);
         Object.assign(follower, resolveBlockers(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step, 18, follower));
         if (dx) follower.dx = dx > 0 ? 1 : -1;
+      }
+      // Soft separation from the prior party member so they do not stack.
+      const prior = i === 0 ? g.p : roam.followers[i - 1];
+      const sepX = follower.x - prior.x, sepY = follower.y - prior.y;
+      const sep = Math.hypot(sepX, sepY);
+      if (sep > 0 && sep < 36) {
+        const push = ((36 - sep) / 36) * PLAYER_SPEED * 0.35 * dt;
+        Object.assign(follower, resolveBlockers(follower.x + (sepX / sep) * push, follower.y + (sepY / sep) * push, 18, follower));
       }
     }
     for (const action of pending.splice(0)) {
