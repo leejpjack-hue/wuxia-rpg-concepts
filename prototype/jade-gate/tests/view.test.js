@@ -97,7 +97,7 @@ test('bonus heroes only appear in Quick play and switching back selects a campai
   assert.equal(cards.filter(card => !card.hidden).length, 4);
   assert.equal(cards[3].disabled, true);
   modes[1].onclick();
-  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 12);
+  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 15);
   cards[4].onclick();
   assert.equal(view.heroId, 'guan-yu');
   assert.equal($('selected-hero-name').textContent, '関羽');

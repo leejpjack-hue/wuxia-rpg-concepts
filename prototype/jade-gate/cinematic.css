@@ -184,3 +184,13 @@
 .film-reduced .film-actor,.film-reduced .film-camera { transform:none!important; filter:none!important; }
 .film-reduced .film-enemy { transform:scaleX(-1)!important; }
 .film-reduced .film-trail,.film-reduced .film-sparks,.film-reduced .film-ring,.film-reduced .film-lines,.film-reduced .film-seal,.film-reduced .film-slash,.film-reduced .film-flash,.film-reduced .film-aura { display:none; }
+
+.style-bao-sanniang.action-attack[data-phase=strike] .film-hero { transform:translateX(82%) skewX(-6deg); }
+.style-bao-sanniang.action-technique[data-phase=strike] .film-hero { animation:blossom-thrusts .55s ease-in-out both; }
+.style-bao-sanniang.action-technique .film-trail { top:44%; height:2%; width:50%; border-radius:8%; transform:rotate(-6deg); border-top-color:#7fbf9a; box-shadow:0 -16px 0 -6px #c45c4a; }
+.style-dian-wei.action-attack[data-phase=strike] .film-hero { transform:translateX(68%) rotate(-8deg); }
+.style-dian-wei.action-technique[data-phase=strike] .film-hero { animation:tiger-drive .5s ease-in both; }
+.style-dian-wei.action-technique .film-trail { top:30%; left:44%; width:24%; height:40%; border-top:0; border-right:14px solid #8a6b4a; border-left:14px solid #c44536; border-radius:18%; }
+.style-yang-zhi.action-attack[data-phase=strike] .film-hero { transform:translateX(78%) rotate(10deg); }
+.style-yang-zhi.action-technique[data-phase=strike] .film-hero { animation:twin-dash .45s ease-out both; }
+.style-yang-zhi.action-technique .film-trail { border-top:10px solid #4a6f8a; border-bottom:8px solid #c44536; transform:rotate(-18deg); }

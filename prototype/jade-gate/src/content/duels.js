@@ -109,4 +109,10 @@ export const HERO_TECHNIQUES = {
     description: "Deal 2.4× damage and stun the enemy." },
   "qin-liangyu": { multiplier: 1.7, protect: 0.45, heal: 4, stun: false,
     description: "Deal 1.7× damage, blunt the reply by 45%, and recover 4 health." },
+  "bao-sanniang": { multiplier: 2.0, protect: 0.25, heal: 4, stun: false,
+    description: "Deal 2× damage, blunt the reply by 25%, and recover 4 health." },
+  "dian-wei": { multiplier: 2.5, protect: 0, heal: 0, stun: true,
+    description: "Deal 2.5× damage and stun the enemy." },
+  "yang-zhi": { multiplier: 2.1, protect: 0.3, heal: 3, stun: false,
+    description: "Deal 2.1× damage, blunt the reply by 30%, and recover 3 health." },
 };

@@ -49,6 +49,18 @@ const replies = {
     "The white-shaft general of the frontier… your spear is a long way from Sichuan.",
     "The shaft is white so the fallen can see who held the line. It holds here too.",
   ],
+  "bao-sanniang": [
+    "A Shu spear from the cavalry lines… jade green does not frighten this gate.",
+    "This spear opened roads for the people of Shu. It opens this pass the same way.",
+  ],
+  "dian-wei": [
+    "Twin iron halberds and a bodyguard's stare… Cao's dog, so far from the capital?",
+    "I guard who I choose. Today I choose this gate — and you are in the way.",
+  ],
+  "yang-zhi": [
+    "The blue-faced beast of the marches… that sabre looks stolen from better men.",
+    "It was earned. The mark is mine. Step aside or learn both.",
+  ],
 };
 
 const heronReplies = {
@@ -99,6 +111,18 @@ const heronReplies = {
   "qin-liangyu": [
     "One spear against a zither in the fog… reach means nothing when you cannot see.",
     "I do not need to see the string. I only need the hand that plucks it.",
+  ],
+  "bao-sanniang": [
+    "A jade-green spear crossing the shallows… Shu cavalry far from home.",
+    "Home is wherever the spear still answers. Cross, or be swept aside.",
+  ],
+  "dian-wei": [
+    "Twin iron in the rain… a bodyguard makes a loud corpse in fog.",
+    "Then dig two graves. These blades do not travel alone.",
+  ],
+  "yang-zhi": [
+    "Blue-faced beast on the water… that birthmark shines even in fog.",
+    "Good. Then you will see the sabre coming.",
   ],
 };
 
