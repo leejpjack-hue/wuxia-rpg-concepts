@@ -116,11 +116,31 @@ export function worldToScreen(wx, wy, cam) {
   return { x: wx - cam.x, y: wy - cam.y };
 }
 
-// A vertical barrier across the pass; the 100px opening keeps the spawn lane
-// walkable while travel at other heights must route through the corridor.
+/** East courtyard past the CAM-02 corridor — intentional second roam pocket. */
+export const SECOND_ZONE = {
+  left: 1500,
+  right: 2200,
+  top: 370,
+  bottom: 880,
+};
+
+export function inSecondZone({ x, y }) {
+  return x >= SECOND_ZONE.left && x <= SECOND_ZONE.right
+    && y >= SECOND_ZONE.top && y <= SECOND_ZONE.bottom;
+}
+
+// CAM-02 vertical barrier + CAM-03 walls that carve the east pocket.
+// Corridor gap ~y 460–560 at x=1400 remains the only west↔east passage;
+// first-courtyard spawn/contact lane (left of barrier) stays clear.
 export const BLOCKERS = [
   { x: 1400, y: GROUND.top, w: 100, h: 170 },
   { x: 1400, y: 560, w: 100, h: GROUND.bottom - 560 },
+  // East pocket north wall (above SECOND_ZONE.top)
+  { x: SECOND_ZONE.left, y: GROUND.top, w: SECOND_ZONE.right - SECOND_ZONE.left, h: SECOND_ZONE.top - GROUND.top },
+  // East pocket south wall (below SECOND_ZONE.bottom)
+  { x: SECOND_ZONE.left, y: SECOND_ZONE.bottom, w: SECOND_ZONE.right - SECOND_ZONE.left, h: GROUND.bottom - SECOND_ZONE.bottom },
+  // East pocket end wall — encloses the room; leave no east bypass
+  { x: SECOND_ZONE.right, y: GROUND.top, w: 80, h: GROUND.bottom - GROUND.top },
 ];
 
 /** Resolve feet against radius-expanded AABBs, sweeping X then Y to slide.

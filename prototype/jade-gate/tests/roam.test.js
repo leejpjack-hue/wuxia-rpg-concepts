@@ -1,4 +1,4 @@
-import { BLOCKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint } from "../src/domain/ground.js";
+import { BLOCKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRoam } from "../src/domain/roam.js";
@@ -48,7 +48,7 @@ test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass",
     b = JSON.parse(run(120));
   assert.deepEqual(a, b);
   assert.equal(a.mode, "exploring");
-  assert.equal(a.p.x, groundEdges(a.p.y).right); // expanded courtyard edge
+  assert.equal(a.p.x, SECOND_ZONE.right - 18); // east pocket end wall (radius 18)
 });
 
 test("roam requires a statted encounter and parks the hero away from rivals", () => {
@@ -346,4 +346,59 @@ test("lead and cosmetic followers route through the gap past the barrier", () =>
   walk(g, 2, {}); // let the trail catch up
   assert.equal(g.g.roam.followers.length, 2);
   for (const follower of g.g.roam.followers) assert(follower.x > 1518);
+});
+
+
+test("first courtyard spawn and rival lane stay west of the corridor barrier", () => {
+  const g = game();
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  assert.equal(g.g.p.x, 640);
+  assert.equal(g.g.p.y, 500);
+  assert(onGround(g.g.p));
+  assert(!inSecondZone(g.g.p));
+  assert(g.g.p.x < 1400);
+  for (const enemy of g.g.roam.field) {
+    assert(onGround(enemy));
+    assert(enemy.x < 1400, `rival ${enemy.id} must spawn in first courtyard`);
+    assert(enemy.x < VIEWPORT.width);
+  }
+  assert(onGround(groundPoint(640, 500)));
+  assert(onGround(groundPoint(900, 430)));
+});
+
+test("corridor opens into a roamable second pocket past the barrier", () => {
+  assert(SECOND_ZONE.right - SECOND_ZONE.left >= 500);
+  assert(SECOND_ZONE.bottom - SECOND_ZONE.top >= 400);
+  assert(SECOND_ZONE.left >= 1500);
+  // Pocket interior is clear of wall bodies.
+  const mid = { x: (SECOND_ZONE.left + SECOND_ZONE.right) / 2, y: (SECOND_ZONE.top + SECOND_ZONE.bottom) / 2 };
+  assertClear(resolveBlockers(mid.x, mid.y));
+  assert(inSecondZone(mid));
+  // North / south / east pocket walls reject clipping.
+  assert.notDeepEqual(resolveBlockers(1800, 320), { x: 1800, y: 320 });
+  assert.notDeepEqual(resolveBlockers(1800, 1000), { x: 1800, y: 1000 });
+  assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, SECOND_ZONE.right - 18);
+  // Long step still cannot tunnel the CAM-02 corridor walls.
+  assert.equal(resolveBlockers(1800, 700, 18, { x: 1300, y: 700 }).x, 1382);
+});
+
+test("lead paths through corridor into second zone and cannot clip pocket walls", () => {
+  const g = emptyPass();
+  walk(g, 4, { dx: 1 }); // corridor height y=500 → through gap
+  assert(g.g.p.x > SECOND_ZONE.left, `expected into second zone, got x=${g.g.p.x}`);
+  assert(inSecondZone(g.g.p));
+  assertClear(g.g.p);
+  // Roam inside the pocket (down toward south wall, then up).
+  walk(g, 2, { dy: 1 });
+  assert(g.g.p.y <= SECOND_ZONE.bottom - 18);
+  assert(inSecondZone(g.g.p) || g.g.p.y >= SECOND_ZONE.bottom - 18);
+  walk(g, 1, { dy: -1 });
+  assert(inSecondZone(g.g.p));
+  // East end wall stops further travel.
+  walk(g, 4, { dx: 1 });
+  assert.equal(g.g.p.x, SECOND_ZONE.right - 18);
+  assertClear(g.g.p);
+  // First-courtyard ground math unchanged for spawn lane points.
+  assert(onGround(groundPoint(640, 500)));
+  assert(onGround(groundPoint(400, 430)));
 });
