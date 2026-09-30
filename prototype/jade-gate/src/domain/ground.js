@@ -38,8 +38,9 @@ export function onGround({ x, y }) {
 }
 
 /**
- * Camera top-left in world space: keep the focus near viewport center, clamped
- * so the view never shows past WORLD edges. Followers share this same cam.
+ * Camera top-left in world space: ideal target that keeps the focus near
+ * viewport center, clamped so the view never shows past WORLD edges.
+ * Soft follow uses this as the chase target; followers share the same cam.
  */
 export function cameraFocus(focus, world = WORLD, viewport = VIEWPORT) {
   const maxX = Math.max(0, world.width - viewport.width);
@@ -47,6 +48,67 @@ export function cameraFocus(focus, world = WORLD, viewport = VIEWPORT) {
   return {
     x: clamp(focus.x - viewport.width / 2, 0, maxX),
     y: clamp(focus.y - viewport.height / 2, 0, maxY),
+  };
+}
+
+/**
+ * Half-size of the soft-follow deadzone in world/screen px (centered on the
+ * viewport). Lead fidgets inside this box do not chase the camera.
+ * Modest: ~100×75 (within ~80–120 × ~60–90).
+ */
+export const DEADZONE = { halfW: 100, halfH: 75 };
+
+/** Soft-camera chase rate (units of fraction toward ideal per second). */
+export const CAMERA_LERP_RATE = 6;
+
+function cameraBounds(world = WORLD, viewport = VIEWPORT) {
+  return {
+    maxX: Math.max(0, world.width - viewport.width),
+    maxY: Math.max(0, world.height - viewport.height),
+  };
+}
+
+/**
+ * Soft camera: if the focus's screen position relative to prevCam is still
+ * inside a centered deadzone, keep prevCam. Otherwise lerp toward
+ * cameraFocus(focus). Always clamp to WORLD edges.
+ *
+ * @param {{x:number,y:number}|null|undefined} prevCam prior top-left (null snaps)
+ * @param {{x:number,y:number}} focus lead world position
+ * @param {number} dt seconds since last frame
+ * @param {{world?:object,viewport?:object,deadzone?:{halfW:number,halfH:number},rate?:number}} [opts]
+ */
+export function smoothCamera(prevCam, focus, dt, opts = {}) {
+  const world = opts.world ?? WORLD;
+  const viewport = opts.viewport ?? VIEWPORT;
+  const deadzone = opts.deadzone ?? DEADZONE;
+  const rate = opts.rate ?? CAMERA_LERP_RATE;
+  const ideal = cameraFocus(focus, world, viewport);
+  const { maxX, maxY } = cameraBounds(world, viewport);
+
+  if (!prevCam) {
+    return { x: ideal.x, y: ideal.y };
+  }
+
+  const screenX = focus.x - prevCam.x;
+  const screenY = focus.y - prevCam.y;
+  const cx = viewport.width / 2;
+  const cy = viewport.height / 2;
+  const inDeadzone =
+    Math.abs(screenX - cx) <= deadzone.halfW &&
+    Math.abs(screenY - cy) <= deadzone.halfH;
+
+  if (inDeadzone) {
+    return {
+      x: clamp(prevCam.x, 0, maxX),
+      y: clamp(prevCam.y, 0, maxY),
+    };
+  }
+
+  const t = Math.min(1, Math.max(0, rate) * Math.max(0, dt));
+  return {
+    x: clamp(prevCam.x + (ideal.x - prevCam.x) * t, 0, maxX),
+    y: clamp(prevCam.y + (ideal.y - prevCam.y) * t, 0, maxY),
   };
 }
 

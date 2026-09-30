@@ -1,6 +1,6 @@
 import { distance } from './math.js';
-import { groundPoint, GROUND, onGround, WORLD, VIEWPORT, cameraFocus } from './ground.js';
-export { WORLD, VIEWPORT, cameraFocus };
+import { groundPoint, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
+export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
 import { techniqueCost } from '../content/curios.js';
