@@ -1,11 +1,12 @@
 # Character image requirements
 
-A playable hero needs **two distinct approved PNGs** with the same face, costume, colors and weapon:
+A playable hero needs **two distinct approved PNGs** with the same face, costume, colors and weapon. An action spritesheet is also supported (required for walk/attack heroes once FRAME-01+ ships):
 
 | Asset | Filename | Canvas | Used in |
 |---|---|---|---|
 | Full-body key art | `assets/<hero-id>.png` | Portrait 2:3, at least 900×1400, opaque | Roster, card duel, gallery |
 | Gameplay sprite | `assets/<hero-id>-sprite.png` | Square, at least 1024×1024, RGBA with real transparency | Courtyard, strike film, gallery |
+| Action sheet | `assets/<hero-id>-sheet.png` | One spritesheet PNG; cell **512×512** RGBA preferred (**256×256** allowed for light pilots); whole sheet = `cols × rows × cell` | Roam walk cycle; strike film attack frames (CSS transform of still sprite remains fallback) |
 
 A concept sheet, turnaround or collage is **not** either asset. Save a modeling sheet separately as `assets/<hero-id>-turnaround.png` only after its front, side and back views agree. The gallery lists approved sprites and turnarounds separately.
 
@@ -33,3 +34,71 @@ Generate and approve key art first. Use it as the reference for the sprite, then
 3. Run `npm run check`; it verifies the manifest entry, format and basic dimensions for every hero. Inspect the alpha visually because a PNG header alone cannot prove clean transparency.
 4. Run `npm test`. In the browser, choose the hero and verify portrait in the roster and duel, transparent body in the courtyard and strike film, no missing-image notice, and a complete weapon and boots at narrow and wide widths.
 5. If a turnaround is actually approved, add its ID to `TURNAROUND_HEROES` in `core.js`; sprite gallery membership derives from the playable hero roster.
+
+## Action spritesheet (WU-FRAME-00)
+
+**Signed 2026-09-30.** Docs-only contract. Keeps existing key + idle sprite. No batch art tonight. Pilot = WU-FRAME-01 Zhao Yun.
+
+A playable hero that supports roam walk and cinematic strike frames also needs a **third** approved PNG:
+
+| Asset | Filename | Canvas | Used in |
+|---|---|---|---|
+| Action sheet | `assets/<hero-id>-sheet.png` | One spritesheet PNG; cell **512×512** RGBA preferred (**256×256** allowed for light pilots); whole sheet = `cols × rows × cell` | Roam walk cycle; strike film attack frames (CSS transform of still sprite remains fallback) |
+
+Key art (`assets/<id>.png`) and legacy idle sprite (`assets/<id>-sprite.png`) stay required and unchanged. Do **not** crop concept sheets or turnarounds into sheet cells.
+
+### Layout (locked)
+
+- **Cell size:** `512×512` RGBA (preferred) or `256×256` RGBA. All cells on one sheet share one size. No padding between cells (tight grid).
+- **Grid:** **3 rows × 4 columns** (12 cells). Unused cells stay fully transparent.
+  - **Row 0 — idle:** frames 0–1 used (2 frames); cells 2–3 unused.
+  - **Row 1 — walk:** frames 0–3 used (4 frames).
+  - **Row 2 — attack:** frames 0–2 used (3 frames); cell 3 unused.
+- **Facing:** every frame faces **right** (same as idle sprite).
+- **Feet:** character feet sit near the **bottom** of each cell (same vertical anchor across all frames so the figure does not hop). Leave ~8% margin at top/sides; no ground plane, cast shadow, glow, text, UI, or extra figures.
+- **Identity:** same face, costume, colors, and primary weapon as the approved key + idle sprite. Painterly realistic wuxia; one primary weapon only.
+
+### Minimum animations v1
+
+| Anim | Frames | Loop | fps (guidance) | Consumer |
+|---|---|---|---|---|
+| `idle` | 2 | yes | ~6 | Roam standing; optional micro-breath |
+| `walk` | 4 | yes | ~10 | Roam movement |
+| `attack` | 3 | no (play once) | ~12 | Strike film before CSS fallback |
+
+### Manifest
+
+Extend `docs/asset-manifest.json` (and any per-hero record) with a sheet block. Frame indices are `[col, row]` zero-based:
+
+```json
+{
+  "id": "<hero-id>",
+  "sheet": "assets/<hero-id>-sheet.png",
+  "frameW": 512,
+  "frameH": 512,
+  "anims": {
+    "idle":   { "frames": [[0,0], [1,0]], "fps": 6, "loop": true },
+    "walk":   { "frames": [[0,1], [1,1], [2,1], [3,1]], "fps": 10, "loop": true },
+    "attack": { "frames": [[0,2], [1,2], [2,2]], "fps": 12, "loop": false }
+  }
+}
+```
+
+If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** read `anims.walk` when the sheet is present; cinematic strike **must** prefer `anims.attack` frames, then fall back to transforming the idle sprite. Missing sheet = legacy still behavior (no crash).
+
+### Copy-ready sheet prompt (guidance)
+
+“Using the approved key art and idle sprite as the only identity references, create a single spritesheet PNG: 3 rows × 4 columns of [512 or 256]px square RGBA cells. Row0 idle×2, row1 walk×4, row2 attack×3; unused cells empty transparent. Same adult hero, face right, feet near cell bottom, full weapon visible, no ground/shadow/text/UI. Painterly realistic Chinese wuxia. Transparent outside the character.”
+
+### Integration checklist (add)
+
+6. Save `assets/<hero-id>-sheet.png` on the locked grid; add the sheet + `anims` block to the manifest.
+7. Run `npm run check` once sheet rules exist; until then, Art Dir QA via visual Read of every cell + Jack/PO spot-check.
+8. In browser: roam shows walk cycle while moving; strike film plays attack frames once; idle sprite still works if sheet omitted.
+
+### Out of scope (this contract)
+
+- No 3D / skeletal rigs / Godot import (deferred).
+- No extra anims (run, hit, death, face-left) until a later WU-FRAME story.
+- No batch art production under WU-FRAME-00 — pilot is **WU-FRAME-01 Zhao Yun** only.
+
