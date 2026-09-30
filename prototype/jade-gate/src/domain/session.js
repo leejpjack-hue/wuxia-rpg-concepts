@@ -381,7 +381,69 @@ export class GameSession {
     this.arriveAtRow();
     return true;
   }
+  /** Promote a follower to lead only between encounters (not mid-duel / mid-contact). */
+  swapLead(heroId) {
+    if (this.mode !== "exploring" || !this.g?.roam || !this.g.party) return false;
+    // Hard reject mid-contact handoff (duel is mode "playing"; g.duel may linger after a win).
+    if (this.g.roam.contact >= 0) return false;
+    const party = this.g.party;
+    if (!Array.isArray(party.followers) || !party.followers.includes(heroId)) return false;
+    if (heroId === party.lead || heroId === this.g.p.id) return false;
+    const hero = HEROES.find((h) => h.id === heroId);
+    if (!hero) return false;
+
+    const prev = this.g.p;
+    const prevId = prev.id;
+    const next = makePlayer(hero);
+    // Keep pass position/facing; carry run modifiers that live on the lead body.
+    Object.assign(next, {
+      x: prev.x,
+      y: prev.y,
+      dx: prev.dx || 1,
+      dy: prev.dy || 0,
+      power: prev.power,
+      flowBonus: prev.flowBonus,
+      cost: prev.cost,
+      teaPots: prev.teaPots,
+      flow: prev.flow,
+    });
+    const followers = [prevId, ...party.followers.filter((id) => id !== heroId)];
+    this.g.party = { lead: heroId, followers };
+    this.g.p = next;
+
+    const roam = this.g.roam;
+    const byId = new Map((roam.followers || []).map((f) => [f.id, f]));
+    const promoted = byId.get(heroId);
+    roam.followers = followers.map((id, index) => {
+      if (id === prevId && promoted)
+        return { id, x: promoted.x, y: promoted.y, dx: promoted.dx || 1 };
+      const existing = byId.get(id);
+      if (existing) return { id, x: existing.x, y: existing.y, dx: existing.dx || 1 };
+      return { id, x: next.x - 48 * (index + 1), y: next.y + 12 * (index + 1), dx: next.dx || 1 };
+    });
+    // Reseed trail behind the new lead so followers do not yank across the courtyard.
+    const seedTrail = [];
+    for (let i = 16; i >= 0; i--) seedTrail.push({ x: next.x - 12 * i, y: next.y });
+    roam.trail = seedTrail;
+    roam.sneakMaster = next.id === "nie-yinniang";
+    if (!roam.sneakMaster) roam.sneaking = false;
+
+    this.bus.emit("notice", { text: `${hero.name} takes the lead` });
+    this.bus.emit("audio:sfx", { type: "ui_click" });
+    this.bus.emit("state:changed", {
+      previous: this.mode,
+      current: this.mode,
+      boss: !!this.encounter?.bossId,
+      dialogueKey: null,
+      stage: this.mode,
+      runMode: this.g.runMode,
+      actId: this.g.actId,
+      encounterIndex: this.g.encounterIndex,
+    });
+    return true;
+  }
   beginDuel(index = this.g?.roam?.contact ?? -1) {
+
     if (this.mode !== "exploring" || !this.g?.roam) return false;
     const field = this.g.roam.field;
     if (index < 0 || index >= field.length || isRanged(field[index].kind)) return false;

@@ -270,7 +270,7 @@ export class RoamView {
       hud.replaceChildren();
       this.partyChips = members.map((member, index) => {
         const chip = this.document.createElement("div");
-        chip.className = `party-hp-chip${index === 0 ? " lead" : ""}`;
+        chip.className = `party-hp-chip${index === 0 ? " lead" : " swap-ready"}`;
         chip.dataset.partyRole = index === 0 ? "lead" : "follower";
         chip.dataset.heroId = member.id;
         const name = this.document.createElement("strong");
@@ -279,6 +279,17 @@ export class RoamView {
         hp.className = "chip-hp";
         chip.appendChild(name);
         chip.appendChild(hp);
+        // PARTY-03: tap a follower chip between encounters to promote them.
+        if (index > 0) {
+          if (typeof chip.setAttribute === "function") chip.setAttribute("role", "button");
+          chip.tabIndex = 0;
+          chip.title = this.t("Tap to take the lead");
+          chip.onclick = (event) => {
+            event?.preventDefault?.();
+            this.onGesture?.();
+            this.session.swapLead(member.id);
+          };
+        }
         hud.appendChild(chip);
         return { name, hp };
       });
