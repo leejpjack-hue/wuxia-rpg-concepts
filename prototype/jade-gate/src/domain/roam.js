@@ -1,9 +1,10 @@
 import { distance } from './math.js';
-import { groundPoint, GROUND, onGround } from './ground.js';
+import { groundPoint, GROUND, onGround, WORLD, VIEWPORT, cameraFocus } from './ground.js';
+export { WORLD, VIEWPORT, cameraFocus };
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
 import { techniqueCost } from '../content/curios.js';
-export const ARENA = { width: 1280, height: 720, margin: 64, top: GROUND.top };
+export const ARENA = { width: WORLD.width, height: WORLD.height, margin: 64, top: GROUND.top };
 export const PLAYER_SPEED = 300;
 export const SHALLOWS_ROAM_SPEED_FACTOR = .65;
 export const isRanged = kind => kind === 'archer' || kind === 'skiff-archer';
@@ -25,7 +26,7 @@ export function createRoam(g, bus, { encounter } = {}) {
   const hazardRandom = seededRandom(7171 + g.encounterIndex * 37);
   const field = roster.map((kind, index) => {
     const def = DUEL_ENEMIES[kind];
-    const position = groundPoint(ARENA.margin + (ARENA.width-2*ARENA.margin)*(index+.5)/roster.length, 325+((index+1)%2)*105);
+    const position = groundPoint(ARENA.margin + (VIEWPORT.width-2*ARENA.margin)*(index+.5)/roster.length, 325+((index+1)%2)*105);
     // Elite encounters field hardened rivals.
     const eliteScale = encounter.elite ? 1.35 : 1;
     return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*(encounter.elite?1.15:1)),
@@ -149,7 +150,7 @@ export function createRoam(g, bus, { encounter } = {}) {
           roam.pillar = null;
         }
       } else if ((roam.pillarTimer -= dt) <= 0) {
-        roam.pillar = groundPoint(250 + hazardRandom() * 780, 375 + hazardRandom() * 175);
+        roam.pillar = groundPoint(250 + hazardRandom() * (WORLD.width - 500), 375 + hazardRandom() * Math.min(400, GROUND.bottom - 450));
         roam.pillar.time = 1.15;
         roam.pillarTimer = 4.5 + hazardRandom() * 2;
         bus.emit('audio:sfx', {type:'enemy_windup'});

@@ -1,5 +1,6 @@
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
+import { VIEWPORT, cameraFocus, worldToScreen } from "../domain/ground.js";
 const KEYS = {
   KeyW: "up",
   ArrowUp: "up",
@@ -102,10 +103,19 @@ export class RoamView {
       this.session.step(dt, this.axes());
     this.draw();
   }
-  place(node, x, y) {
+  place(node, x, y, cam = { x: 0, y: 0 }) {
+    const screen = worldToScreen(x, y, cam);
     node.style.zIndex = Math.round(y);
-    node.style.left = `${(x / 1280) * 100}%`;
-    node.style.top = `${(y / 720) * 100}%`;
+    node.style.left = `${(screen.x / VIEWPORT.width) * 100}%`;
+    node.style.top = `${(screen.y / VIEWPORT.height) * 100}%`;
+  }
+  /** Scroll tiled courtyard art; followers share this camera. */
+  applyCamera(cam) {
+    const arena = this.$("roam-arena");
+    if (!arena) return;
+    arena.style.backgroundSize = "100% 100%";
+    arena.style.backgroundRepeat = "repeat";
+    arena.style.backgroundPosition = `${-(cam.x / VIEWPORT.width) * 100}% ${-(cam.y / VIEWPORT.height) * 100}%`;
   }
   sync() {
     const { session } = this;
@@ -203,6 +213,8 @@ export class RoamView {
   draw() {
     const g = this.session.g;
     if (!g?.roam) return;
+    const cam = cameraFocus(g.p);
+    this.applyCamera(cam);
     const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW${g.roam.sneaking ? " · SNEAKING" : ""}`;
     if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
     const sneak = this.$("roam-sneak");
@@ -213,21 +225,21 @@ export class RoamView {
     }
     const heroNode = this.heroToken || this.$("roam-hero");
     heroNode.style.opacity = g.roam.sneaking ? 0.62 : 1;
-    this.place(heroNode, g.p.x, g.p.y);
+    this.place(heroNode, g.p.x, g.p.y, cam);
     if (!this.heroToken)
       this.$("roam-hero").style.setProperty("--face", g.p.dx < 0 ? "-1" : "1");
     for (const follower of g.roam.followers || []) {
       const node = this.followers.get(follower.id);
       if (!node) continue;
-      this.place(node, follower.x, follower.y);
+      this.place(node, follower.x, follower.y, cam);
       node.style.setProperty("--face", follower.dx < 0 ? "-1" : "1");
       node.style.opacity = g.roam.sneaking ? 0.5 : 0.92;
     }
-    this.drawEffects(g);
+    this.drawEffects(g, cam);
     for (const enemy of g.roam.field) {
       const node = this.sprites.get(enemy.id);
       if (node) {
-        this.place(node, enemy.x, enemy.y);
+        this.place(node, enemy.x, enemy.y, cam);
         // First blood reads on the sprite: the duel will open in your favor.
         if (node.dataset.firstBlood !== String(!!enemy.firstBlood)) {
           node.dataset.firstBlood = String(!!enemy.firstBlood);
@@ -236,35 +248,42 @@ export class RoamView {
       }
     }
   }
-  drawEffects(g) {
+  drawEffects(g, cam = { x: 0, y: 0 }) {
     const c = this.context; if (!c) return;
-    c.clearRect(0,0,1280,720);
+    const to = (x, y) => worldToScreen(x, y, cam);
+    c.clearRect(0, 0, VIEWPORT.width, VIEWPORT.height);
     for (const actor of [g.p, ...(g.roam.followers || []), ...g.roam.field]) {
-      c.fillStyle = '#06141088'; c.beginPath(); c.ellipse(actor.x,actor.y,32,9,0,0,Math.PI*2); c.fill();
+      const p = to(actor.x, actor.y);
+      c.fillStyle = '#06141088'; c.beginPath(); c.ellipse(p.x, p.y, 32, 9, 0, 0, Math.PI*2); c.fill();
     }
     for (const e of g.roam.field) if (e.ranged) {
-      c.fillStyle = '#100e12'; c.fillRect(e.x-32,e.y-150,64,6);
-      c.fillStyle = '#efbd79'; c.fillRect(e.x-32,e.y-150,64*e.hp/e.maxHp,6);
+      const p = to(e.x, e.y);
+      c.fillStyle = '#100e12'; c.fillRect(p.x-32, p.y-150, 64, 6);
+      c.fillStyle = '#efbd79'; c.fillRect(p.x-32, p.y-150, 64*e.hp/e.maxHp, 6);
       if (e.aim) {
+        const a = to(e.aim.x, e.aim.y);
         c.setLineDash([12,10]); c.lineWidth=3; c.strokeStyle='#ffb466aa'; c.beginPath();
-        c.moveTo(e.x,e.y-40); c.lineTo(e.aim.x,e.aim.y-40); c.stroke(); c.setLineDash([]);
-        c.beginPath(); c.arc(e.aim.x,e.aim.y,28,0,Math.PI*2); c.stroke();
+        c.moveTo(p.x, p.y-40); c.lineTo(a.x, a.y-40); c.stroke(); c.setLineDash([]);
+        c.beginPath(); c.arc(a.x, a.y, 28, 0, Math.PI*2); c.stroke();
       }
     }
     if (g.roam.pillar) {
       const {x, y, time} = g.roam.pillar;
+      const p = to(x, y);
       c.save(); c.setLineDash([12, 7]); c.strokeStyle = time < .4 ? '#ff6868' : '#e6b46a';
-      c.lineWidth = time < .4 ? 7 : 4; c.beginPath(); c.arc(x, y, 55, 0, Math.PI*2); c.stroke();
-      c.setLineDash([]); c.fillStyle = '#2a100f66'; c.beginPath(); c.arc(x,y,55,0,Math.PI*2); c.fill(); c.restore();
+      c.lineWidth = time < .4 ? 7 : 4; c.beginPath(); c.arc(p.x, p.y, 55, 0, Math.PI*2); c.stroke();
+      c.setLineDash([]); c.fillStyle = '#2a100f66'; c.beginPath(); c.arc(p.x, p.y, 55, 0, Math.PI*2); c.fill(); c.restore();
     }
     for (const s of g.roam.shots) {
-      c.save(); c.translate(s.x,s.y-40); c.rotate(Math.atan2(s.vy,s.vx));
+      const p = to(s.x, s.y);
+      c.save(); c.translate(p.x, p.y-40); c.rotate(Math.atan2(s.vy, s.vx));
       c.strokeStyle='#fff0bb'; c.lineWidth=3; c.beginPath(); c.moveTo(-32,0);c.lineTo(10,0);c.lineTo(2,-5);c.moveTo(10,0);c.lineTo(2,5);c.stroke(); c.restore();
     }
     for (const e of g.roam.effects) {
+      const p = to(e.x, e.y);
       c.save(); c.globalAlpha=Math.min(1,e.life*3); c.strokeStyle=g.p.color; c.lineWidth=e.kind==='technique'?9:4;
-      if (['strike','technique'].includes(e.kind)) { c.beginPath(); c.arc(e.x,e.y-40,(.6-e.life)*220+30,-2.5,.7); c.stroke(); }
-      if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(this.t(e.text),e.x,e.y-115-(.55-e.life)*70); }
+      if (['strike','technique'].includes(e.kind)) { c.beginPath(); c.arc(p.x, p.y-40, (.6-e.life)*220+30, -2.5, .7); c.stroke(); }
+      if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(this.t(e.text), p.x, p.y-115-(.55-e.life)*70); }
       c.restore();
     }
   }
