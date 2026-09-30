@@ -78,8 +78,8 @@
         "loop": false
       }
     },
-    "method": "Ops produce · identity-preserve from key+sprite · tip d06ce423 · Stitch GEMINI_3_8_FLASH",
-    "prompt": "(see prompts/zhao-yun-sheet.txt)"
+    "method": "Sprite Forge · Grok GenerateImage · identity from reverted key+sprite · chroma matte · height-locked 512² pack",
+    "prompt": "(see Sprite Forge pack 2026-10-01 · PASS-WITH-NOTES)"
   },
   {
     "id": "lu-zhishen",
