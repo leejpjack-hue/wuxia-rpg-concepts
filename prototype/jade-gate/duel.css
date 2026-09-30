@@ -120,3 +120,16 @@
   .duel-meta button { padding: 7px; font-size: 10px; }
   .duel-heading .eyebrow { letter-spacing: 1px; font-size: 8px; }
 }
+
+/* WU-PARTY-09I: one Assist under rival intent (not HUD chips). */
+.assist-btn {
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  margin-top: 8px; padding: 8px 12px; min-height: 0;
+  background: #2a2420; border: 1px solid #a68c61; border-radius: 6px;
+  color: #e4ddc9; cursor: pointer; font: inherit; width: 100%;
+}
+.assist-btn span { font-family: Georgia, serif; font-size: 14px; letter-spacing: 0.4px; }
+.assist-btn small { font-size: 10px; color: #b5c2b9; }
+.assist-btn:hover:enabled { background: #3a3228; border-color: #c4a574; }
+.assist-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.assist-btn[hidden] { display: none; }
