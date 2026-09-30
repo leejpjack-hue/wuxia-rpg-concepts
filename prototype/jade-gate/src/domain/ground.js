@@ -38,6 +38,7 @@ export const SPAWN_MARKERS = [
   { id: 'courtyard-approach', x: 1200, y: 500 },
   { id: 'corridor-gap', x: 1450, y: 500 },
   { id: 'second-pocket', x: 1850, y: 600 },
+  { id: 'third-pocket', x: 1900, y: 1050 },
 ].map(marker => ({ id: marker.id, ...groundPoint(marker.x, marker.y) }));
 
 export function onGround({ x, y }) {
@@ -137,16 +138,35 @@ export function inSecondZone({ x, y }) {
     && y >= SECOND_ZONE.top && y <= SECOND_ZONE.bottom;
 }
 
-// CAM-02 vertical barrier + CAM-03 walls that carve the east pocket.
+/** South spur off the second pocket — third walkable courtyard (CAM-10). */
+export const THIRD_ZONE = {
+  left: 1700,
+  right: 2100,
+  top: SECOND_ZONE.bottom,
+  bottom: 1180,
+};
+
+export function inThirdZone({ x, y }) {
+  return x >= THIRD_ZONE.left && x <= THIRD_ZONE.right
+    && y >= THIRD_ZONE.top && y <= THIRD_ZONE.bottom;
+}
+
+// CAM-02 vertical barrier + CAM-03 walls that carve the east pocket +
+// CAM-10 south-spur walls for the third pocket.
 // Corridor gap ~y 460–560 at x=1400 remains the only west↔east passage;
 // first-courtyard spawn/contact lane (left of barrier) stays clear.
+// Second→third mouth spans THIRD_ZONE.left–right at SECOND_ZONE.bottom.
 export const BLOCKERS = [
   { x: 1400, y: GROUND.top, w: 100, h: 170 },
   { x: 1400, y: 560, w: 100, h: GROUND.bottom - 560 },
   // East pocket north wall (above SECOND_ZONE.top)
   { x: SECOND_ZONE.left, y: GROUND.top, w: SECOND_ZONE.right - SECOND_ZONE.left, h: SECOND_ZONE.top - GROUND.top },
-  // East pocket south wall (below SECOND_ZONE.bottom)
-  { x: SECOND_ZONE.left, y: SECOND_ZONE.bottom, w: SECOND_ZONE.right - SECOND_ZONE.left, h: GROUND.bottom - SECOND_ZONE.bottom },
+  // South wall west remnant (left of third-pocket mouth)
+  { x: SECOND_ZONE.left, y: SECOND_ZONE.bottom, w: THIRD_ZONE.left - SECOND_ZONE.left, h: GROUND.bottom - SECOND_ZONE.bottom },
+  // South wall east remnant (right of third-pocket mouth)
+  { x: THIRD_ZONE.right, y: SECOND_ZONE.bottom, w: SECOND_ZONE.right - THIRD_ZONE.right, h: GROUND.bottom - SECOND_ZONE.bottom },
+  // Third pocket south end wall — encloses the spur
+  { x: THIRD_ZONE.left, y: THIRD_ZONE.bottom, w: THIRD_ZONE.right - THIRD_ZONE.left, h: GROUND.bottom - THIRD_ZONE.bottom },
   // East pocket end wall — encloses the room; leave no east bypass
   { x: SECOND_ZONE.right, y: GROUND.top, w: 80, h: GROUND.bottom - GROUND.top },
 ];
