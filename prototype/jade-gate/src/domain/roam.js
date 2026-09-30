@@ -1,5 +1,5 @@
 import { distance } from './math.js';
-import { groundPoint, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
+import { groundPoint, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
 export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
@@ -158,17 +158,17 @@ export function createRoam(g, bus, { encounter } = {}) {
     }
     for (const item of roam.effects) item.life -= dt;
     roam.effects = roam.effects.filter(e => e.life>0);
-    Object.assign(g.p, groundPoint(g.p.x,g.p.y));
+    Object.assign(g.p, resolveBlockers(g.p.x,g.p.y));
     const {dx=0,dy=0} = input || {}, len = Math.hypot(dx,dy);
     if (len) { roam.facingX=dx/len; roam.facingY=dy/len; }
     if (len || roam.dash>0) {
       const sneakFactor = roam.sneaking ? 0.45 : 1;
       const speed = roam.dash>0 ? 720 : PLAYER_SPEED*sneakFactor*(isRoamInShallows(encounter,g) ? SHALLOWS_ROAM_SPEED_FACTOR : 1);
-      Object.assign(g.p, groundPoint(g.p.x+(roam.facingX*speed+roam.windX)*dt,g.p.y+roam.facingY*speed*dt));
+      Object.assign(g.p, resolveBlockers(g.p.x+(roam.facingX*speed+roam.windX)*dt,g.p.y+roam.facingY*speed*dt, 18, g.p));
       if (roam.facingX) g.p.dx=roam.facingX>0?1:-1;
     }
     if (!len && roam.dash <= 0 && roam.windX)
-      Object.assign(g.p, groundPoint(g.p.x + roam.windX * dt, g.p.y));
+      Object.assign(g.p, resolveBlockers(g.p.x + roam.windX * dt, g.p.y, 18, g.p));
     g.p.moving = !!len;
     const last = roam.trail[roam.trail.length - 1];
     if (!last || Math.hypot(g.p.x - last.x, g.p.y - last.y) > 14)
@@ -181,7 +181,7 @@ export function createRoam(g, bus, { encounter } = {}) {
       const dist = Math.hypot(dx, dy);
       if (dist > 2) {
         const step = Math.min(dist, PLAYER_SPEED * 0.9 * dt);
-        Object.assign(follower, groundPoint(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step));
+        Object.assign(follower, resolveBlockers(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step, 18, follower));
         if (dx) follower.dx = dx > 0 ? 1 : -1;
       }
     }

@@ -120,3 +120,11 @@
   background-repeat: no-repeat;
   /* Keep painted height from #roam-hero (27%) / .roam-follower (22%). */
 }
+
+.roam-blocker {
+  position: absolute;
+  box-sizing: border-box;
+  background: #1a2a28;
+  border: 3px solid #667b69;
+  pointer-events: none;
+}

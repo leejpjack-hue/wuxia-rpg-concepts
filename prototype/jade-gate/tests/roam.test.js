@@ -1,4 +1,4 @@
-import { groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint } from "../src/domain/ground.js";
+import { BLOCKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint } from "../src/domain/ground.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRoam } from "../src/domain/roam.js";
@@ -214,7 +214,6 @@ test("followers remain on ground while camera would scroll with the lead", () =>
 });
 
 
-
 test("soft camera deadzone holds when lead fidgets inside", () => {
   const focus0 = { x: WORLD.width / 2, y: WORLD.height / 2 };
   const cam0 = cameraFocus(focus0);
@@ -279,4 +278,72 @@ test("smoothCamera uses cameraFocus as the chase target", () => {
   const prev = { x: 0, y: 0 };
   const snapped = smoothCamera(prev, focus, 10, { rate: 100 });
   assert.deepEqual(snapped, ideal);
+});
+
+function assertClear(point) {
+  assert(onGround(point));
+  for (const b of BLOCKERS)
+    assert(!(point.x > b.x-18 && point.x < b.x+b.w+18 &&
+      point.y > b.y-18 && point.y < b.y+b.h+18), `wall penetration at ${point.x},${point.y}`);
+}
+
+function emptyPass() {
+  const g = game();
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  g.g.roam.field.length = 0;
+  return g;
+}
+
+function walk(g, seconds, input) {
+  for (let i = 0; i < seconds * 60; i++) {
+    g.step(1/60, input);
+    for (const point of [g.g.p, ...g.g.roam.followers]) assertClear(point);
+  }
+}
+
+test("world AABBs block wall bodies but leave a traversable corridor", () => {
+  assert(BLOCKERS.length >= 2);
+  for (const b of BLOCKERS) {
+    for (const key of ['x', 'y', 'w', 'h']) assert(Number.isFinite(b[key]));
+    assert(b.w > 0 && b.h > 0);
+  }
+  assert(BLOCKERS[0].y + BLOCKERS[0].h + 36 < BLOCKERS[1].y);
+  assertClear(resolveBlockers(1450, 700));
+  assert.notDeepEqual(resolveBlockers(1450, 700), { x: 1450, y: 700 });
+  assert.deepEqual(resolveBlockers(1450, 500), { x: 1450, y: 500 });
+  // A long move cannot skip the entire wall, including for follower steps.
+  assert.equal(resolveBlockers(1800, 700, 18, { x: 1300, y: 700 }).x, 1382);
+  assert.equal(resolveBlockers(1200, 700, 18, { x: 1600, y: 700 }).x, 1518);
+  assert.equal(resolveBlockers(1450, 900, 18, { x: 1450, y: 500 }).y, 542);
+});
+
+test("lead stops at walls, slides, and dash and wind cannot cross", () => {
+  const g = emptyPass();
+  walk(g, 2/3, { dy: 1 }); // y=700, below the opening
+  walk(g, 4, { dx: 1 });
+  assert.equal(g.g.p.x, 1382);
+  g.roam.act('dodge');
+  walk(g, 1, { dx: 1 });
+  assert.equal(g.g.p.x, 1382);
+  g.g.hazards = ['wind-gust'];
+  walk(g, 2, {});
+  assert(g.g.p.x <= 1382);
+  g.g.hazards = [];
+  const before = g.g.p.y;
+  walk(g, .5, { dx: 1, dy: 1 });
+  assert.equal(g.g.p.x, 1382);
+  assert(g.g.p.y > before);
+});
+
+test("lead and cosmetic followers route through the gap past the barrier", () => {
+  const g = emptyPass();
+  walk(g, 2/3, { dy: 1 });
+  walk(g, 4, { dx: 1 });
+  assert.equal(g.g.p.x, 1382); // straight through the wall fails
+  walk(g, 2/3, { dy: -1 }); // return to the corridor
+  walk(g, 2, { dx: 1 });
+  assert(g.g.p.x > 1800); // passage through the gap succeeds
+  walk(g, 2, {}); // let the trail catch up
+  assert.equal(g.g.roam.followers.length, 2);
+  for (const follower of g.g.roam.followers) assert(follower.x > 1518);
 });

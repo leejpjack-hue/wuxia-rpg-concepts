@@ -1,6 +1,6 @@
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { BLOCKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
@@ -33,6 +33,13 @@ export class RoamView {
     this.context = this.$("roam-effects")?.getContext("2d");
     this.sprites = new Map();
     this.followers = new Map();
+    this.blockers = BLOCKERS.map(() => {
+      const node = document.createElement("div");
+      node.className = "roam-blocker";
+      node.setAttribute("aria-hidden", "true");
+      this.$("roam-arena").appendChild(node);
+      return node;
+    });
     this.frame = 0;
     this.last = 0;
     this.animTime = 0;
@@ -254,6 +261,12 @@ export class RoamView {
     const cam = smoothCamera(this.cam, g.p, this.dt);
     this.cam = cam;
     this.applyCamera(cam);
+    BLOCKERS.forEach((b, index) => {
+      const node = this.blockers[index];
+      this.place(node, b.x, b.y, cam);
+      node.style.width = `${b.w / VIEWPORT.width * 100}%`;
+      node.style.height = `${b.h / VIEWPORT.height * 100}%`;
+    });
     const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW${g.roam.sneaking ? " · SNEAKING" : ""}`;
     if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
     const sneak = this.$("roam-sneak");
@@ -373,6 +386,7 @@ export class RoamView {
   dispose() {
     if (this.cancel && this.frame) this.cancel(this.frame);
     this.off.forEach((off) => off());
+    this.blockers.forEach((node) => node.remove());
     this.document.defaultView?.removeEventListener("blur", this.clearKeys);
     this.document.removeEventListener("visibilitychange", this.clearKeys);
     this.document.removeEventListener("keydown", this.keydown);
