@@ -25,14 +25,14 @@ const FRAME00 = {
 };
 
 test("loadSheetManifest returns null when sheet row is missing (legacy still)", () => {
-  assert.equal(loadSheetManifest(assetManifest, "zhao-yun"), null);
+  assert.equal(loadSheetManifest(assetManifest, "gu-dasao"), null);
   assert.equal(loadSheetManifest([], "zhao-yun"), null);
   assert.equal(loadSheetManifest(null, "zhao-yun"), null);
   assert.equal(loadSheetManifest([FRAME00], ""), null);
 });
 
-test("lu-zhishen and hu-sanniang sheets resolve from the live manifest", () => {
-  for (const heroId of ["lu-zhishen", "hu-sanniang"]) {
+test("wired FRAME-00 sheets resolve from the live manifest", () => {
+  for (const heroId of ["zhao-yun", "lu-zhishen", "hu-sanniang"]) {
     const sheet = loadSheetManifest(assetManifest, heroId);
     assert.equal(sheet.id, `${heroId}-sheet`);
     assert.equal(sheet.file, `assets/${heroId}-sheet.png`);
@@ -40,10 +40,14 @@ test("lu-zhishen and hu-sanniang sheets resolve from the live manifest", () => {
     assert.equal(sheet.frameH, 512);
     assert.equal(sheet.anims.idle.frames.length, 2);
     assert.equal(sheet.anims.walk.frames.length, 4);
+    assert.equal(sheet.anims.attack.frames.length, 3);
     assert.equal(sheet.anims.attack.loop, false);
     assert.deepEqual(sheetGrid(sheet), { cols: 4, rows: 3 });
+    assert.deepEqual(
+      Object.keys(sheet).sort(),
+      ["anims", "file", "frameH", "frameW", "id", "method", "prompt"],
+    );
   }
-  assert.equal(loadSheetManifest(assetManifest, "zhao-yun"), null);
 });
 
 test("loadSheetManifest finds FRAME-00 sibling row by ${heroId}-sheet", () => {
