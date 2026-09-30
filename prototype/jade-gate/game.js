@@ -35,7 +35,7 @@ const art = [
   "guard-sprite",
   "archer-sprite",
   "warden-sprite",
-  "bamboo-river", "mount-canglan",
+  "bamboo-river", "bamboo-maze", "mount-canglan",
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
 ];

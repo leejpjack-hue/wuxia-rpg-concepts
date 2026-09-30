@@ -1,7 +1,7 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { BLOCKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { BLOCKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
@@ -20,6 +20,9 @@ const KEYS = {
   KeyD: "right",
   ArrowRight: "right",
 };
+
+/** WORLD-sized roam plate. One image; the camera pans it. Act arenas stay on the duel table. */
+const ROAM_BACKDROP = "assets/bamboo-maze.png";
 
 /** Arena roaming scene: d-pad/keyboard movement drives the domain roam step. */
 export class RoamView {
@@ -136,13 +139,25 @@ export class RoamView {
     node.style.left = `${(screen.x / VIEWPORT.width) * 100}%`;
     node.style.top = `${(screen.y / VIEWPORT.height) * 100}%`;
   }
-  /** Scroll tiled courtyard art; followers share this camera. */
+  /**
+   * Pan the WORLD-sized bamboo plate. One image covers the roam world;
+   * CSS % position maps cam onto that plate (0% origin, 100% far edge).
+   * Followers share this camera.
+   */
   applyCamera(cam) {
     const arena = this.$("roam-arena");
     if (!arena) return;
-    arena.style.backgroundSize = "100% 100%";
-    arena.style.backgroundRepeat = "repeat";
-    arena.style.backgroundPosition = `${-(cam.x / VIEWPORT.width) * 100}% ${-(cam.y / VIEWPORT.height) * 100}%`;
+    const spanX = WORLD.width - VIEWPORT.width;
+    const spanY = WORLD.height - VIEWPORT.height;
+    const px = spanX > 0 ? (cam.x / spanX) * 100 : 0;
+    const py = spanY > 0 ? (cam.y / spanY) * 100 : 0;
+    if (arena.dataset.stage !== ROAM_BACKDROP) {
+      arena.dataset.stage = ROAM_BACKDROP;
+      arena.style.backgroundImage = `url("${ROAM_BACKDROP}")`;
+    }
+    arena.style.backgroundRepeat = "no-repeat";
+    arena.style.backgroundSize = `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`;
+    arena.style.backgroundPosition = `${px}% ${py}%`;
   }
   sync() {
     const { session } = this;
@@ -170,11 +185,6 @@ export class RoamView {
     if (chips && chips.dataset.curios !== carried.join(",")) {
       chips.dataset.curios = carried.join(",");
       chips.innerHTML = chipsHtml;
-    }
-    const stage = `assets/${session.act.arena || "arena"}.png`;
-    if (this.$("roam-arena").dataset.stage !== stage) {
-      this.$("roam-arena").dataset.stage = stage;
-      this.$("roam-arena").style.backgroundImage = `url("${stage}")`;
     }
     const hero = this.$("roam-hero"),
       src = `assets/${g.p.id}-sprite.png`;

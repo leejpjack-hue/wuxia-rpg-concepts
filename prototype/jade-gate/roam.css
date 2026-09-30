@@ -22,7 +22,8 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: center / cover no-repeat url("assets/arena.png"), #16232a;
+  /* WORLD plate (2560×1440) on the 1280×720 frame. applyCamera pans it. */
+  background: 0 0 / 200% 200% no-repeat url("assets/bamboo-maze.png"), #16232a;
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
