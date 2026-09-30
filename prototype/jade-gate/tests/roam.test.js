@@ -1,4 +1,4 @@
-import { groundEdges, WORLD, VIEWPORT, cameraFocus, onGround, groundPoint } from "../src/domain/ground.js";
+import { groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint } from "../src/domain/ground.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRoam } from "../src/domain/roam.js";
@@ -213,3 +213,70 @@ test("followers remain on ground while camera would scroll with the lead", () =>
   }
 });
 
+
+
+test("soft camera deadzone holds when lead fidgets inside", () => {
+  const focus0 = { x: WORLD.width / 2, y: WORLD.height / 2 };
+  const cam0 = cameraFocus(focus0);
+  // Fidget well inside the deadzone (half of DEADZONE half-size).
+  const fidget = {
+    x: focus0.x + DEADZONE.halfW * 0.4,
+    y: focus0.y - DEADZONE.halfH * 0.4,
+  };
+  const held = smoothCamera(cam0, fidget, 1 / 60);
+  assert.deepEqual(held, cam0);
+  // Still held after several frames.
+  let cam = cam0;
+  for (let i = 0; i < 30; i++) cam = smoothCamera(cam, fidget, 1 / 60);
+  assert.deepEqual(cam, cam0);
+});
+
+test("soft camera lerps toward cameraFocus ideal when outside deadzone", () => {
+  const startFocus = { x: WORLD.width / 2, y: WORLD.height / 2 };
+  let cam = cameraFocus(startFocus);
+  // Jump far outside deadzone so chase engages.
+  const targetFocus = { x: startFocus.x + DEADZONE.halfW + 220, y: startFocus.y };
+  const ideal = cameraFocus(targetFocus);
+  assert(Math.abs(ideal.x - cam.x) > 1, "ideal must differ from start cam");
+
+  const dt = 1 / 60;
+  const stepped = smoothCamera(cam, targetFocus, dt);
+  // One frame moves toward ideal but does not snap (rate ~6 ⇒ ~0.1 of gap).
+  const expectedT = Math.min(1, CAMERA_LERP_RATE * dt);
+  assert.ok(Math.abs(stepped.x - (cam.x + (ideal.x - cam.x) * expectedT)) < 1e-9);
+  assert.ok(stepped.x !== cam.x);
+  assert.ok(stepped.x !== ideal.x);
+
+  // Chase until lead re-enters the deadzone (residual ≤ halfW/halfH of ideal).
+  for (let i = 0; i < 300; i++) cam = smoothCamera(cam, targetFocus, dt);
+  assert.ok(Math.abs(cam.x - ideal.x) <= DEADZONE.halfW + 1e-6);
+  assert.ok(Math.abs(cam.y - ideal.y) <= DEADZONE.halfH + 1e-6);
+  assert.ok(Math.abs(cam.x - ideal.x) < Math.abs(cameraFocus(startFocus).x - ideal.x));
+});
+
+test("soft camera clamps to WORLD edges like cameraFocus", () => {
+  const cornerFocus = { x: WORLD.width, y: WORLD.height };
+  const ideal = cameraFocus(cornerFocus);
+  assert.deepEqual(ideal, {
+    x: WORLD.width - VIEWPORT.width,
+    y: WORLD.height - VIEWPORT.height,
+  });
+  // Corner focus sits at viewport edge vs clamped cam → always outside deadzone,
+  // so high-rate lerp reaches the clamped ideal without overshoot.
+  let cam = cameraFocus({ x: WORLD.width / 2, y: WORLD.height / 2 });
+  for (let i = 0; i < 60; i++) cam = smoothCamera(cam, cornerFocus, 1 / 30, { rate: 20 });
+  assert.ok(Math.abs(cam.x - ideal.x) < 1e-6);
+  assert.ok(Math.abs(cam.y - ideal.y) < 1e-6);
+  assert.ok(cam.x <= ideal.x + 1e-9 && cam.y <= ideal.y + 1e-9);
+  // Null prev snaps to ideal (also clamped).
+  assert.deepEqual(smoothCamera(null, { x: 0, y: 0 }, 0), cameraFocus({ x: 0, y: 0 }));
+});
+
+test("smoothCamera uses cameraFocus as the chase target", () => {
+  const focus = { x: 1600, y: 500 };
+  const ideal = cameraFocus(focus);
+  // Far previous cam forces chase; large dt with high rate snaps to ideal.
+  const prev = { x: 0, y: 0 };
+  const snapped = smoothCamera(prev, focus, 10, { rate: 100 });
+  assert.deepEqual(snapped, ideal);
+});

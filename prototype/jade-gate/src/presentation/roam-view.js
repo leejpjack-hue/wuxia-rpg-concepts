@@ -1,6 +1,6 @@
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { VIEWPORT, cameraFocus, worldToScreen } from "../domain/ground.js";
+import { VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
@@ -38,6 +38,11 @@ export class RoamView {
     this.animTime = 0;
     this.sheetByHero = new Map();
     this.followerPrev = new Map();
+    /** Soft camera top-left; reset when explore/hero changes in sync(). */
+    this.cam = null;
+    this.camHeroId = null;
+    this.camRoam = null;
+    this.dt = 0;
     this.manifest = assetManifest;
     const view = document.defaultView;
     this.request = view?.requestAnimationFrame?.bind(view) || null;
@@ -111,6 +116,7 @@ export class RoamView {
     this.frame = this.request(this.tick);
     const dt = Math.min(0.1, (now - this.last) / 1000 || 0);
     this.last = now;
+    this.dt = dt;
     this.animTime += dt;
     if (this.session.mode === "exploring" && !this.document.hidden)
       this.session.step(dt, this.axes());
@@ -136,6 +142,12 @@ export class RoamView {
     this.$("roam").hidden = !active;
     if (!active || !session.g?.roam) return;
     const g = session.g;
+    // New explore (createRoam) or hero swap → snap soft cam next draw.
+    if (this.camRoam !== g.roam || this.camHeroId !== g.p?.id) {
+      this.cam = null;
+      this.camRoam = g.roam;
+      this.camHeroId = g.p?.id ?? null;
+    }
     this.$("roam-chapter").textContent = this.t(`ACT ${session.act.number} · ${session.act.name.toUpperCase()}`);
     this.$("roam-objective").textContent = this.t(session.encounter.title);
     this.$("roam-score").textContent = this.t(g.score);
@@ -238,7 +250,9 @@ export class RoamView {
   draw() {
     const g = this.session.g;
     if (!g?.roam) return;
-    const cam = cameraFocus(g.p);
+    // Soft follow: deadzone hold + lerp toward cameraFocus ideal; followers share cam.
+    const cam = smoothCamera(this.cam, g.p, this.dt);
+    this.cam = cam;
     this.applyCamera(cam);
     const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW${g.roam.sneaking ? " · SNEAKING" : ""}`;
     if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
