@@ -21,7 +21,7 @@ export class GameView {
     this.onGesture = onGesture;
     this.$("heroes").innerHTML = HEROES.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
@@ -29,8 +29,15 @@ export class GameView {
         const id = button.dataset.hero;
         if (this.runMode === "quickplay") {
           const index = this.partyIds.indexOf(id);
-          if (index >= 0) this.partyIds.splice(index, 1);
-          else if (this.partyIds.length < 3) this.partyIds.push(id);
+          if (index > 0) {
+            // Tap a selected follower to set lead before start (WU-PARTY-06).
+            this.partyIds.splice(index, 1);
+            this.partyIds.unshift(id);
+          } else if (index === 0) {
+            this.partyIds.splice(0, 1);
+          } else if (this.partyIds.length < 3) {
+            this.partyIds.push(id);
+          }
           this.heroId = this.partyIds[0] || HEROES[0].id;
         } else {
           this.heroId = id;
@@ -167,16 +174,20 @@ export class GameView {
       biography.hidden = !showBio;
       biography.textContent = showBio ? this.t(cardHero.description) : "";
       button.classList.toggle("selected", selected);
-      button.classList.toggle(
-        "party-lead",
-        this.runMode === "quickplay" && button.dataset.hero === this.partyIds[0],
-      );
+      const partyIndex =
+        this.runMode === "quickplay" ? this.partyIds.indexOf(button.dataset.hero) : -1;
+      button.classList.toggle("party-lead", partyIndex === 0);
+      button.classList.toggle("party-follower", partyIndex > 0);
       const leadChip = button.querySelector(".lead-chip");
       if (leadChip) {
-        leadChip.hidden = !(
-          this.runMode === "quickplay" && button.dataset.hero === this.partyIds[0]
-        );
-        leadChip.textContent = this.t("Lead");
+        leadChip.hidden = partyIndex !== 0;
+        leadChip.textContent = this.t("LEAD");
+      }
+      const followerChip = button.querySelector(".follower-chip");
+      if (followerChip) {
+        followerChip.hidden = partyIndex < 1;
+        followerChip.textContent =
+          partyIndex === 1 ? this.t("Follower 1") : partyIndex === 2 ? this.t("Follower 2") : "";
       }
       button.setAttribute("aria-pressed", String(selected));
       button.disabled = locked;
@@ -195,7 +206,7 @@ export class GameView {
         : this.t("Select 3 heroes");
       this.$("hero-description").textContent = this.partyIds.length
         ? this.t(hero.description)
-        : this.t("Choose exactly three distinct heroes. The first selected leads; the other two follow on the pass.");
+        : this.t("Choose exactly three distinct heroes. Tap a selected follower to set the lead before start; followers are cosmetic on the pass.");
     } else {
       this.$("selected-hero-name").textContent = this.t(hero.name);
       this.$("hero-description").textContent = this.t(hero.description);
@@ -218,7 +229,7 @@ export class GameView {
     this.$("journey-summary").textContent =
       this.runMode === "campaign"
         ? this.t(`Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`)
-        : `${this.t("Party of three · first selected leads · followers are cosmetic")} · ${this.partyIds.length}/3`;
+        : `${this.t("Party of three · tap follower to set lead · followers are cosmetic")} · ${this.partyIds.length}/3`;
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
         `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,
