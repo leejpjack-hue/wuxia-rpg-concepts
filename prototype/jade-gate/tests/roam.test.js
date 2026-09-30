@@ -421,11 +421,21 @@ test("first courtyard spawn and rival lane stay west of the corridor barrier", (
   assert(onGround(g.g.p));
   assert(!inSecondZone(g.g.p));
   assert(g.g.p.x < 1400);
+  // Near-lane rivals stay in the first courtyard (west of CAM-02 barrier).
+  // A far CAM-04 rival may sit past the first screen in the CAM-03 pocket.
+  let near = 0;
   for (const enemy of g.g.roam.field) {
     assert(onGround(enemy));
-    assert(enemy.x < 1400, `rival ${enemy.id} must spawn in first courtyard`);
-    assert(enemy.x < VIEWPORT.width);
+    if (enemy.x < SECOND_ZONE.left) {
+      near++;
+      assert(enemy.x < 1400, `rival ${enemy.id} must spawn in first courtyard`);
+      assert(enemy.x < VIEWPORT.width);
+    } else {
+      assert(inSecondZone(enemy), `far rival ${enemy.id} must sit in second pocket`);
+      assert(enemy.x > VIEWPORT.width);
+    }
   }
+  assert(near >= 1, "at least one rival remains in the first courtyard lane");
   assert(onGround(groundPoint(640, 500)));
   assert(onGround(groundPoint(900, 430)));
 });
@@ -538,4 +548,18 @@ test("campaign roam renders a single lead chip after a three-chip Quick play HUD
   assert.equal(hud.children[0].dataset.partyRole, "lead");
   assert.equal(hud.children[0].children[0].textContent, "Zhao Yun");
   assert.match(hud.children[0].children[1].textContent, new RegExp(`^${session.g.p.hp} / ${session.g.p.maxHp} HEALTH`));
+});
+
+test("at least one rival spawns past the old 1280×720 screen (camera must scroll)", () => {
+  for (const actId of ["jade-gate", "bamboo-crossing", "mount-canglan"]) {
+    const g = game();
+    g.start("zhao-yun", "quickplay", actId, quickParty("zhao-yun"));
+    assert(g.g.roam.field.length >= 1);
+    assert(
+      g.g.roam.field.some((enemy) => enemy.x > VIEWPORT.width || enemy.y > VIEWPORT.height),
+      `${actId} needs a rival beyond the first screen`,
+    );
+    for (const enemy of g.g.roam.field)
+      assert(Math.hypot(enemy.x - g.g.p.x, enemy.y - g.g.p.y) > 200);
+  }
 });
