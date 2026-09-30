@@ -115,3 +115,45 @@ export function smoothCamera(prevCam, focus, dt, opts = {}) {
 export function worldToScreen(wx, wy, cam) {
   return { x: wx - cam.x, y: wy - cam.y };
 }
+
+// A vertical barrier across the pass; the 100px opening keeps the spawn lane
+// walkable while travel at other heights must route through the corridor.
+export const BLOCKERS = [
+  { x: 1400, y: GROUND.top, w: 100, h: 170 },
+  { x: 1400, y: 560, w: 100, h: GROUND.bottom - 560 },
+];
+
+/** Resolve feet against radius-expanded AABBs, sweeping X then Y to slide.
+ * Supplying the previous point prevents even a long step tunnelling through.
+ */
+export function resolveBlockers(x, y, radius = 18, from = { x, y }) {
+  const start = groundPoint(from.x, from.y);
+  const target = groundPoint(x, y);
+  let px = start.x, py = start.y;
+  // Recover an overlapping starting point using the nearest free edge.
+  for (const b of BLOCKERS) {
+    const left = b.x - radius, right = b.x + b.w + radius;
+    const top = b.y - radius, bottom = b.y + b.h + radius;
+    if (px > left && px < right && py > top && py < bottom) {
+      const exits = [
+        { x: left, y: py }, { x: right, y: py },
+        { x: px, y: top }, { x: px, y: bottom },
+      ].filter(onGround);
+      exits.sort((a, b) => Math.hypot(a.x-px, a.y-py) - Math.hypot(b.x-px, b.y-py));
+      ({ x: px, y: py } = exits[0]);
+    }
+  }
+  let nextX = target.x;
+  for (const b of BLOCKERS) {
+    if (py <= b.y-radius || py >= b.y+b.h+radius) continue;
+    if (px <= b.x-radius && nextX > b.x-radius) nextX = b.x-radius;
+    if (px >= b.x+b.w+radius && nextX < b.x+b.w+radius) nextX = b.x+b.w+radius;
+  }
+  let nextY = target.y;
+  for (const b of BLOCKERS) {
+    if (nextX <= b.x-radius || nextX >= b.x+b.w+radius) continue;
+    if (py <= b.y-radius && nextY > b.y-radius) nextY = b.y-radius;
+    if (py >= b.y+b.h+radius && nextY < b.y+b.h+radius) nextY = b.y+b.h+radius;
+  }
+  return groundPoint(nextX, nextY);
+}
