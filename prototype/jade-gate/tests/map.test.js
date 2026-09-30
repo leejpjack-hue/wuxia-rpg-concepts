@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { session, memoryStorage, clearEncounter, walkMap } from "./helpers.js";
+import { session, memoryStorage, clearEncounter, walkMap, quickParty } from './helpers.js';
 import { CURIOS } from "../src/content/curios.js";
 
 test("campaign map: auto rows march, choice rows offer their nodes, boss closes the act", () => {
@@ -43,7 +43,7 @@ test("elite victory drafts three curios; the pick is carried and applied in duel
   // The carried curio changes duel rules: Jade Pendant heals on first guard.
   // Use a plain guard (quick play vanguard) so no status effects disturb the math.
   const pendant = session();
-  pendant.start("zhao-yun", "quickplay");
+  pendant.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   pendant.beginDuel(0);
   pendant.g.curios = ["jade-pendant"];
   pendant.g.p.hp = 60;
@@ -115,7 +115,7 @@ test("event and rest nodes resolve without combat and advance the map", () => {
 
 test("curio effects: twin irons cadence, feather cost, sash protect, tally renown", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   game.beginDuel(0);
   game.g.curios = ["twin-irons"];
   game.g.enemies[0].pattern = ["strike"]; // constant base damage per strike
@@ -131,7 +131,7 @@ test("curio effects: twin irons cadence, feather cost, sash protect, tally renow
   assert.equal(hp3 - hp4, Math.round((hp1 - hp2) * 1.5));
 
   const feather = session();
-  feather.start("zhao-yun", "quickplay");
+  feather.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   feather.beginDuel(0);
   feather.g.curios = ["qiang-feather"];
   feather.g.p.flow = 30; // below the base 40 cost, enough with the feather
@@ -139,7 +139,7 @@ test("curio effects: twin irons cadence, feather cost, sash protect, tally renow
   assert.equal(feather.g.p.flow, 0);
 
   const sash = session();
-  sash.start("guan-yu", "quickplay");
+  sash.start("guan-yu", "quickplay", "jade-gate", quickParty("guan-yu"));
   sash.beginDuel(0);
   sash.g.enemies[0].hp = sash.g.enemies[0].maxHp = 500; // survive to reply
   const intent = sash.combat.intent();
@@ -155,7 +155,7 @@ test("curio effects: twin irons cadence, feather cost, sash protect, tally renow
     assert.equal(sash.g.duel.lastIncoming, intent2.damage);
 
   const tally = session();
-  tally.start("zhao-yun", "quickplay");
+  tally.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   tally.beginDuel(0);
   tally.g.curios = ["ashen-tally"];
   const before = tally.g.score;
@@ -165,7 +165,7 @@ test("curio effects: twin irons cadence, feather cost, sash protect, tally renow
 
   // Night-Eye Charm: intents peek one move ahead (guard opens strike, then heavy).
   const eye = session();
-  eye.start("zhao-yun", "quickplay");
+  eye.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   eye.beginDuel(0);
   eye.g.curios = ["night-eye"];
   assert.equal(eye.combat.intent().kind, "strike");
@@ -206,7 +206,7 @@ test("checkpoint at the map restores row, cleared nodes and carried curios", () 
 
 test("quick play stays linear: no map, no curios, five encounters", () => {
   const game = session();
-  game.start("zhao-yun", "quickplay");
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert.equal(game.g.map, null);
   assert.equal(game.g.curios.length, 0);
   let encounters = 0;

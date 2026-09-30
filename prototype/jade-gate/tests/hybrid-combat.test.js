@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { session, clearEncounter } from './helpers.js';
+import { session, clearEncounter, quickParty } from './helpers.js';
 import { groundPoint, onGround } from '../src/domain/ground.js';
 import { HERO_IDS, HEROES } from '../src/content/heroes.js';
 import { StrikeTimeline, DuelCinematic, CUTS, cutFor } from '../src/presentation/duel-cinematic.js';
 import { translate } from '../src/locales/i18n.js';
 const frames = (g,n,input={}) => { for(let i=0;i<n;i++) g.step(1/60,input); };
 function crossfire() {
-  const g=session();g.start('zhao-yun','quickplay');clearEncounter(g);g.chooseDiscipline('power');return g;
+  const g=session();g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));clearEncounter(g);g.chooseDiscipline('power');return g;
 }
 test('archer contact and explicit challenge never open a card duel; arrows damage in real time',()=>{
   const g=crossfire(), archer=g.g.roam.field.find(e=>e.ranged);
@@ -46,7 +46,7 @@ test('last archer kill advances encounter once, with no orphan arrows or duplica
 });
 test('all actors and patrol targets remain on courtyard, including diagonal corners and dodges',()=>{
   for (const point of [{x:-999,y:-999},{x:9999,y:9999},{x:0,y:350},{x:1280,y:350}]) assert(onGround(groundPoint(point.x,point.y)));
-  const g=session();g.start('zhao-yun','quickplay');
+  const g=session();g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));
   for(const [dx,dy] of [[0,-1],[-1,-1],[1,-1],[1,1],[-1,1]]) {
     for(let i=0;i<180;i++) {
       if(g.mode==='playing') { while(g.mode==='playing')g.combat.act(g.g.p.flow>=g.g.p.cost?'technique':'attack'); }
@@ -58,7 +58,7 @@ test('all actors and patrol targets remain on courtyard, including diagonal corn
 });
 test('cinematic preview matches actual damage and never consumes a turn',()=>{
   for(const hero of HERO_IDS)for(const action of ['attack','technique','guard','tea']) {
-    const g=session();g.start(hero,'quickplay');g.beginDuel(0);g.g.p.hp=50;
+    const g=session();g.start(hero, 'quickplay', 'jade-gate', quickParty(hero));g.beginDuel(0);g.g.p.hp=50;
     const before=JSON.stringify(g.g), result=g.combat.preview(action);
     assert(result);assert.equal(JSON.stringify(g.g),before);
     g.combat.act(action);assert.equal(g.g.duel.lastDamage,result.damage);assert.equal(g.g.duel.lastIncoming,result.incoming);

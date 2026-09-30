@@ -5,7 +5,7 @@ import { createRoam } from "../src/domain/roam.js";
 import { createCardCombat } from "../src/domain/card-combat.js";
 import { GameSession } from "../src/domain/session.js";
 import { SaveStore } from "../src/platform/save-store.js";
-import { memoryStorage, duelPolicy } from "./helpers.js";
+import { memoryStorage, duelPolicy, quickParty } from './helpers.js';
 
 const game = (storage = memoryStorage()) =>
   new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
@@ -32,7 +32,7 @@ function pursue(g, limit = 2400) {
 test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass", () => {
   function run(fps) {
     const g = game();
-    g.start("zhao-yun", "quickplay");
+    g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
     for (let i = 0; i < fps * 2; i++) g.step(1 / fps, { dx: 1, dy: 0 });
     // JSON drops the seeded rng functions, which never compare by reference.
     return JSON.stringify({
@@ -51,7 +51,7 @@ test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass",
 
 test("roam requires a statted encounter and parks the hero away from rivals", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert.equal(g.g.roam.field.length, 2);
   assert.equal(g.g.p.x, 640);
   assert.equal(g.g.p.y, 500);
@@ -65,7 +65,7 @@ test("roam requires a statted encounter and parks the hero away from rivals", ()
 
 test("walking into a rival begins that duel; winning returns to the pass", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert(pursue(g));
   assert.equal(g.mode, "playing");
   const kind = g.g.roam.field[g.g.roam.contact].kind;
@@ -80,7 +80,7 @@ test("walking into a rival begins that duel; winning returns to the pass", () =>
 
 test("tea persists across duels within one encounter", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert(pursue(g));
   g.g.p.hp = 40;
   assert(g.combat.act("tea"));
@@ -88,14 +88,14 @@ test("tea persists across duels within one encounter", () => {
   while (g.mode === "playing") assert(g.combat.act(duelPolicy(g)));
   assert(pursue(g));
   assert.equal(g.g.duel.tea, 0); // carried into the second duel
-  g.menu(); g.start("zhao-yun", "quickplay"); // fresh encounter resets the pot
+  g.menu(); g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun")); // fresh encounter resets the pot
   assert(pursue(g));
   assert.equal(g.g.duel.tea, 1);
 });
 
 test("clearing every rival on the pass completes the encounter", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   let guard = 0;
   while (!["upgrade", "victory", "defeat"].includes(g.mode) && guard++ < 4000) {
     if (g.mode === "exploring") assert(pursue(g), "pursuit stalled");
@@ -108,7 +108,7 @@ test("clearing every rival on the pass completes the encounter", () => {
 
 test("pausing from the pass freezes roaming and returns to the pass", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   g.pause();
   assert.equal(g.mode, "paused");
   const frozen = JSON.stringify(g.g.roam);
@@ -122,7 +122,7 @@ test("pausing from the pass freezes roaming and returns to the pass", () => {
 
 test("removeContacted only removes the contacted rival", () => {
   const g = game();
-  g.start("zhao-yun", "quickplay");
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   const roam = g.roam;
   assert.equal(roam.removeContacted(), null); // no contact yet
   g.g.roam.contact = 1;
@@ -130,4 +130,35 @@ test("removeContacted only removes the contacted rival", () => {
   assert.equal(removed.kind, "bandit"); // vanguard's second rival is the brigand
   assert.equal(g.g.roam.field.length, 1);
   assert.equal(g.g.roam.contact, -1);
+});
+
+
+test("Quick play rejects missing, duplicate, mismatched and unknown party heroes", () => {
+  const g = game();
+  assert.throws(() => g.start("zhao-yun", "quickplay"), /three distinct heroes/);
+  assert.throws(() => g.start("zhao-yun", "quickplay", "jade-gate", { lead: "hu-sanniang", followers: ["lu-zhishen", "guan-yu"] }), /three distinct heroes/);
+  assert.throws(() => g.start("zhao-yun", "quickplay", "jade-gate", { lead: "zhao-yun", followers: ["zhao-yun", "hu-sanniang"] }), /distinct/);
+  assert.throws(() => g.start("zhao-yun", "quickplay", "jade-gate", { lead: "zhao-yun", followers: ["hu-sanniang"] }), /three distinct heroes/);
+  assert.throws(() => g.start("zhao-yun", "quickplay", "jade-gate", { lead: "zhao-yun", followers: ["hu-sanniang", "no-such-hero"] }), /not available/);
+});
+
+test("party sprites trail the lead and never create contact or join a duel", () => {
+  const g = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  g.start("zhao-yun", "quickplay", "jade-gate", party);
+  assert.deepEqual(g.g.party, party);
+  assert.equal(g.g.roam.followers.length, 2);
+  assert.equal(g.g.p.id, "zhao-yun");
+  const before = g.g.roam.followers.map((f) => ({ id: f.id, x: f.x, y: f.y }));
+  for (let i = 0; i < 90; i++) g.step(1 / 60, { dx: 1, dy: 0 });
+  for (let i = 0; i < before.length; i++) {
+    assert.equal(g.g.roam.followers[i].id, before[i].id);
+    assert(Math.hypot(g.g.roam.followers[i].x - before[i].x, g.g.roam.followers[i].y - before[i].y) > 5);
+  }
+  assert(pursue(g));
+  assert.equal(g.mode, "playing");
+  assert.equal(g.g.p.id, "zhao-yun");
+  assert.equal(g.g.enemies.length, 1);
+  assert.equal(g.g.enemies[0].id.startsWith("zhao-yun"), false);
+  assert.ok(!g.g.enemies.some((enemy) => party.followers.includes(enemy.id)));
 });

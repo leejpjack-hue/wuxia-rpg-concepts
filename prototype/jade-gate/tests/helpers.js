@@ -89,3 +89,16 @@ export function playCampaign(game, pick) {
   }
   return game.mode;
 }
+
+/** Quick Play party of 3: lead + two distinct followers (cosmetic only). */
+export function quickParty(lead, followerA, followerB) {
+  const pool = ["zhao-yun", "hu-sanniang", "lu-zhishen", "guan-yu", "wu-song", "nie-yinniang"];
+  const followers = [];
+  for (const id of [followerA, followerB, ...pool]) {
+    if (!id || id === lead || followers.includes(id)) continue;
+    followers.push(id);
+    if (followers.length === 2) break;
+  }
+  if (followers.length !== 2) throw new Error("quickParty needs two distinct followers");
+  return { lead, followers };
+}

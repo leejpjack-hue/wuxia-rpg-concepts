@@ -6,7 +6,7 @@ import { GameSession } from '../src/domain/session.js';
 import { createCardCombat } from '../src/domain/card-combat.js';
 import { SaveStore } from '../src/platform/save-store.js';
 import { HEROES } from '../src/content/heroes.js';
-import { memoryStorage } from './helpers.js';
+import { memoryStorage, quickParty } from './helpers.js';
 
 // Minimal injected document adapter. IDs come from the shipped HTML, so stale
 // selectors fail here too. Layout, focus traversal and real clicks are browser-checked.
@@ -45,12 +45,20 @@ function fixture() {
   view.setReady(true);
   return { session, view, cards, modes, document, $: document.getElementById };
 }
+
+function pickQuickParty(cards, modes, ids = ['zhao-yun', 'hu-sanniang', 'lu-zhishen']) {
+  modes[1].onclick();
+  for (const id of ids) cards.find(card => card.dataset.hero === id).onclick();
+}
+
 test('fresh menu is unobstructed and Quick play opens the pass, not the duel table', () => {
-  const { session, view, $ } = fixture();
+  const { session, cards, modes, $ } = fixture();
   assert.equal($('overlay').hidden, true); assert.equal($('selection').hidden, false);
   assert.equal($('selection').inert, false);
-  view.runMode = 'quickplay'; $('start').onclick();
+  pickQuickParty(cards, modes);
+  $('start').onclick();
   assert.equal(session.mode, 'exploring');
+  assert.deepEqual(session.g.party, { lead: 'zhao-yun', followers: ['hu-sanniang', 'lu-zhishen'] });
   assert.equal($('roam').hidden, false); assert.equal($('roam').inert, false);
   assert.equal($('play').hidden, true); assert.equal($('play').inert, true);
   assert.equal($('selection').hidden, true);
@@ -58,8 +66,8 @@ test('fresh menu is unobstructed and Quick play opens the pass, not the duel tab
 });
 test('Quick play can launch Acts II and III without changing campaign progress', () => {
   for (const actId of ['bamboo-crossing', 'mount-canglan']) {
-    const { session, modes, $ } = fixture();
-    modes[1].onclick();
+    const { session, cards, modes, $ } = fixture();
+    pickQuickParty(cards, modes);
     assert.equal($('quick-act-picker').hidden, false);
     $('quick-act').onchange({ target: { value: actId } });
     $('start').onclick();
@@ -82,7 +90,9 @@ test('campaign dialogue buttons work against actual HTML IDs and reach the pass 
   assert.equal($('roam').hidden, true); assert.equal($('app-status').textContent, '');
 });
 test('pause, resume, and return to roster restore visibility and interaction', () => {
-  const { session, view, $ } = fixture(); view.runMode = 'quickplay'; $('start').onclick();
+  const { session, cards, modes, $ } = fixture();
+  pickQuickParty(cards, modes);
+  $('start').onclick();
   $('roam-pause').onclick(); assert.equal(session.mode, 'paused'); assert.equal($('roam').inert, true);
   $('modal-actions').children[0].onclick(); assert.equal(session.mode, 'exploring');
   assert.equal($('roam').inert, false); assert.equal($('overlay').hidden, true);
@@ -100,10 +110,12 @@ test('bonus heroes only appear in Quick play and switching back selects a campai
   assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 15);
   cards[4].onclick();
   assert.equal(view.heroId, 'guan-yu');
-  assert.equal($('selected-hero-name').textContent, '関羽');
+  assert.deepEqual(view.partyIds, ['guan-yu']);
+  assert.match($('selected-hero-name').textContent, /関羽/);
   assert.match($('hero-description').textContent, /青龍偃月刀/);
   modes[0].onclick();
   assert.equal(view.heroId, 'zhao-yun');
+  assert.deepEqual(view.partyIds, []);
   assert.equal(cards.filter(card => !card.hidden).length, 4);
 });
 test('language selector updates biographies and current story without advancing it', () => {
@@ -118,4 +130,41 @@ test('language selector updates biographies and current story without advancing 
   assert.equal(session.dialogue.index, index);
   assert.match($('modal-copy').textContent, /灰旗軍/);
   assert.equal($('modal-title').textContent, '翠門関');
+});
+
+test('Quick play requires exactly three distinct heroes before start', () => {
+  const { session, cards, modes, view, $ } = fixture();
+  modes[1].onclick();
+  assert.equal($('start').disabled, true);
+  cards[0].onclick();
+  cards[1].onclick();
+  assert.equal(view.partyIds.length, 2);
+  assert.equal($('start').disabled, true);
+  $('start').onclick();
+  assert.equal(session.mode, 'menu');
+  assert.match($('app-status').textContent, /three distinct heroes|3人/);
+  cards[2].onclick();
+  assert.equal(view.partyIds.length, 3);
+  assert.equal($('start').disabled, false);
+  cards[3].onclick(); // fourth ignored
+  assert.equal(view.partyIds.length, 3);
+  $('start').onclick();
+  assert.equal(session.mode, 'exploring');
+  assert.equal(session.g.p.id, view.partyIds[0]);
+  assert.deepEqual(session.g.party.followers, view.partyIds.slice(1));
+});
+
+test('Quick play restart preserves the ordered party', () => {
+  const { session, cards, modes, $ } = fixture();
+  pickQuickParty(cards, modes, ['guan-yu', 'zhao-yun', 'hu-sanniang']);
+  $('start').onclick();
+  assert.deepEqual(session.g.party, { lead: 'guan-yu', followers: ['zhao-yun', 'hu-sanniang'] });
+  session.transition('victory');
+  session.bus.emit('state:changed');
+  // Render victory UI then click Walk the path again
+  const viewSession = session;
+  // Direct domain restart path used by the victory button.
+  viewSession.start(viewSession.g.p.id, viewSession.g.runMode, viewSession.g.actId, viewSession.g.party);
+  assert.equal(session.mode, 'exploring');
+  assert.deepEqual(session.g.party, { lead: 'guan-yu', followers: ['zhao-yun', 'hu-sanniang'] });
 });
