@@ -129,18 +129,15 @@
   /* Keep painted height from #roam-hero (27%) / .roam-follower (22%). */
 }
 
-.roam-blocker {
+.roam-thicket {
   position: absolute;
   box-sizing: border-box;
   background-image: url("assets/bamboo-thicket-blocker.png");
-  background-position: center top;
-  background-size: 100% auto;
-  background-repeat: repeat-y;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%) scaleX(var(--flip, 1)) rotate(var(--tilt, 0deg));
   pointer-events: none;
-}
-.roam-blocker-wide {
-  background-size: auto 100%;
-  background-repeat: repeat-x;
 }
 
 @keyframes original-walk {

@@ -1,6 +1,7 @@
 import { BLOCKERS, MAZE_SEGMENT_WIDTH, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
+import { BLOCKER_ART, BLOCKER_ART_SIZE } from "../src/presentation/blocker-art.js";
 import { ACTS } from "../src/content/campaign.js";
 import { HEROES } from "../src/content/heroes.js";
 import { translate } from "../src/locales/i18n.js";
@@ -427,7 +428,7 @@ test("the Warden encounter is reached only after the full forest route", () => {
   assert(session.g.p.x > MAZE_SEGMENT_WIDTH * 3.5);
 });
 
-test("Zhao Yun walks with his original full-resolution still sprite", () => {
+test("unapproved Zhao Yun and Hu Sanniang sheets never replace their clean sprites", () => {
   const classes = new Set();
   const node = {
     src: "assets/zhao-yun-sprite.png",
@@ -441,13 +442,33 @@ test("Zhao Yun walks with his original full-resolution still sprite", () => {
   };
   const view = Object.create(RoamView.prototype);
   view.sheetByHero = new Map();
-  view.manifest = [{ id: "zhao-yun-sheet", file: "assets/zhao-yun-sheet.png", frameW: 512, frameH: 512, anims: { walk: { frames: [[0, 1]] } } }];
+  view.manifest = ["zhao-yun", "hu-sanniang"].map(id => ({
+    id: `${id}-sheet`, file: `assets/${id}-sheet.png`, runtimeApproved: false,
+    frameW: 512, frameH: 512, anims: { walk: { frames: [[0, 1]] } },
+  }));
   view.applyActorSheet(node, "zhao-yun", true);
   assert.equal(node.src, "assets/zhao-yun-sprite.png");
   assert(classes.has("original-walk"));
   assert(!classes.has("sheet-anim"));
   view.applyActorSheet(node, "zhao-yun", false);
   assert(!classes.has("original-walk"));
+  node.src = "assets/hu-sanniang-sprite.png";
+  view.applyActorSheet(node, "hu-sanniang", true);
+  assert.equal(node.src, "assets/hu-sanniang-sprite.png");
+  assert(classes.has("original-walk"));
+  assert(!classes.has("sheet-anim"));
+});
+
+test("natural thicket cutouts cover each collider without shrinking into a texture strip", () => {
+  assert(BLOCKER_ART.length >= BLOCKERS.filter(b => b.w <= b.h).length);
+  assert.equal(BLOCKER_ART_SIZE, 180);
+  for (const blocker of BLOCKERS.filter(b => b.w <= b.h)) {
+    const props = BLOCKER_ART.filter(prop =>
+      prop.x >= blocker.x && prop.x <= blocker.x + blocker.w &&
+      prop.y >= blocker.y && prop.y <= blocker.y + blocker.h);
+    assert(props.length >= 1, `no art on blocker at ${blocker.x},${blocker.y}`);
+    assert(props.every(prop => prop.size >= blocker.w));
+  }
 });
 
 test("world AABBs block wall bodies but leave a traversable corridor", () => {

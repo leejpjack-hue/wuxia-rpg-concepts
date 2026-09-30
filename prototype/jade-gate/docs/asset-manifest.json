@@ -20,6 +20,7 @@
   {
     "id": "zhao-yun-sheet",
     "file": "assets/zhao-yun-sheet.png",
+    "runtimeApproved": false,
     "frameW": 512,
     "frameH": 512,
     "anims": {
@@ -184,6 +185,7 @@
   {
     "id": "hu-sanniang-sheet",
     "file": "assets/hu-sanniang-sheet.png",
+    "runtimeApproved": false,
     "frameW": 512,
     "frameH": 512,
     "anims": {

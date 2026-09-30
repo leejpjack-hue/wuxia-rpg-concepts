@@ -38,9 +38,8 @@ const art = [
   "bamboo-river", "bamboo-maze-natural", "bamboo-thicket-blocker", "mount-canglan",
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
-  // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.
+  // Only the visually approved action sheet is preloaded for roaming and duels.
   "lu-zhishen-sheet",
-  "hu-sanniang-sheet",
 ];
 view.setReady(true);
 let statusLanguageOff;
