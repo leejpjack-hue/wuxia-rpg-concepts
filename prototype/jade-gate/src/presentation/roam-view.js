@@ -1,7 +1,7 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { BLOCKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { BLOCKERS, SPAWN_MARKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
 import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
@@ -38,6 +38,13 @@ export class RoamView {
     this.blockers = BLOCKERS.map(() => {
       const node = document.createElement("div");
       node.className = "roam-blocker";
+      node.setAttribute("aria-hidden", "true");
+      this.$("roam-arena").appendChild(node);
+      return node;
+    });
+    this.spawnMarkers = SPAWN_MARKERS.map(() => {
+      const node = document.createElement("div");
+      node.className = "roam-spawn-marker";
       node.setAttribute("aria-hidden", "true");
       this.$("roam-arena").appendChild(node);
       return node;
@@ -312,6 +319,9 @@ export class RoamView {
     const cam = smoothCamera(this.cam, g.p, this.dt);
     this.cam = cam;
     this.applyCamera(cam);
+    SPAWN_MARKERS.forEach((marker, index) => {
+      this.place(this.spawnMarkers[index], marker.x, marker.y, cam);
+    });
     BLOCKERS.forEach((b, index) => {
       const node = this.blockers[index];
       this.place(node, b.x, b.y, cam);
@@ -438,6 +448,7 @@ export class RoamView {
     if (this.cancel && this.frame) this.cancel(this.frame);
     this.off.forEach((off) => off());
     this.blockers.forEach((node) => node.remove());
+    this.spawnMarkers.forEach((node) => node.remove());
     this.document.defaultView?.removeEventListener("blur", this.clearKeys);
     this.document.removeEventListener("visibilitychange", this.clearKeys);
     this.document.removeEventListener("keydown", this.keydown);

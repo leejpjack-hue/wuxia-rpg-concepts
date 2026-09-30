@@ -32,6 +32,14 @@ export function groundPoint(x, y) {
   return { x: clamp(x, left, right), y };
 }
 
+/** World-space encounter spawn markers along the courtyard → corridor → pocket path. */
+export const SPAWN_MARKERS = [
+  { id: 'courtyard-near', x: 880, y: 400 },
+  { id: 'courtyard-approach', x: 1200, y: 500 },
+  { id: 'corridor-gap', x: 1450, y: 500 },
+  { id: 'second-pocket', x: 1850, y: 600 },
+].map(marker => ({ id: marker.id, ...groundPoint(marker.x, marker.y) }));
+
 export function onGround({ x, y }) {
   const { left, right } = groundEdges(y);
   return y >= GROUND.top && y <= GROUND.bottom && x >= left && x <= right;

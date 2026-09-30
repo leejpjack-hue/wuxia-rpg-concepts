@@ -1,5 +1,5 @@
 import { distance } from './math.js';
-import { groundPoint, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, SECOND_ZONE } from './ground.js';
+import { groundPoint, SPAWN_MARKERS, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
 export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
@@ -24,28 +24,21 @@ export function createRoam(g, bus, { encounter } = {}) {
   const clock = new FixedClock(), pending = [];
   let serial = 0;
   const hazardRandom = seededRandom(7171 + g.encounterIndex * 37);
-  /** WU-CAM-04: ≥1 rival past the old 1280×720 screen, in the CAM-03 second pocket.
-   *  Near rivals stay in the first courtyard so pursue/contact and CAM-02/03
-   *  corridor geometry keep working (no wall embeds at y=325 into pocket north). */
-  function rivalHome(index, count) {
-    const heroSpawnX = 640;
-    const corridorY = 500; // CAM-02 gap height into the CAM-03 pocket
-    if (count === 1 || index === count - 1) {
-      const x = count === 1
-        ? VIEWPORT.width + 280
-        : (SECOND_ZONE.left + SECOND_ZONE.right) / 2;
-      return groundPoint(Math.min(x, SECOND_ZONE.right - 40), corridorY);
+  /** CAM-09 markers + CAM-04 scroll: last (or sole) rival homes past the
+   *  first 1280×720 screen; earlier rivals stay on near markers. */
+  function spawnMarkerFor(index, count) {
+    const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+    const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
+    if (far.length && (count === 1 || index === count - 1)) {
+      return far[index % far.length];
     }
-    const startX = heroSpawnX + 180;
-    const endX = Math.min(1180, VIEWPORT.width - 80);
-    const span = Math.max(1, count - 1);
-    const x = startX + ((endX - startX) * (index + 0.5)) / span;
-    const y = 430 + (index % 2) * 70;
-    return groundPoint(x, y);
+    if (near.length) return near[index % near.length];
+    return SPAWN_MARKERS[index % SPAWN_MARKERS.length];
   }
   const field = roster.map((kind, index) => {
     const def = DUEL_ENEMIES[kind];
-    const position = rivalHome(index, roster.length);
+    const marker = spawnMarkerFor(index, roster.length);
+    const position = groundPoint(marker.x, marker.y);
     // Elite encounters field hardened rivals.
     const eliteScale = encounter.elite ? 1.35 : 1;
     return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*(encounter.elite?1.15:1)),
