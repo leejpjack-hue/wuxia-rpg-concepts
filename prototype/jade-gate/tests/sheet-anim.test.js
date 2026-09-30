@@ -31,6 +31,21 @@ test("loadSheetManifest returns null when sheet row is missing (legacy still)", 
   assert.equal(loadSheetManifest([FRAME00], ""), null);
 });
 
+test("lu-zhishen and hu-sanniang sheets resolve from the live manifest", () => {
+  for (const heroId of ["lu-zhishen", "hu-sanniang"]) {
+    const sheet = loadSheetManifest(assetManifest, heroId);
+    assert.equal(sheet.id, `${heroId}-sheet`);
+    assert.equal(sheet.file, `assets/${heroId}-sheet.png`);
+    assert.equal(sheet.frameW, 512);
+    assert.equal(sheet.frameH, 512);
+    assert.equal(sheet.anims.idle.frames.length, 2);
+    assert.equal(sheet.anims.walk.frames.length, 4);
+    assert.equal(sheet.anims.attack.loop, false);
+    assert.deepEqual(sheetGrid(sheet), { cols: 4, rows: 3 });
+  }
+  assert.equal(loadSheetManifest(assetManifest, "zhao-yun"), null);
+});
+
 test("loadSheetManifest finds FRAME-00 sibling row by ${heroId}-sheet", () => {
   const sheet = loadSheetManifest([FRAME00, { id: "zhao-yun", file: "x" }], "zhao-yun");
   assert.equal(sheet.id, "zhao-yun-sheet");
