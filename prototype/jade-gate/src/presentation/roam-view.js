@@ -1,3 +1,4 @@
+import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
 import { BLOCKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
@@ -254,6 +255,42 @@ export class RoamView {
     this.draw();
     this.$("roam").focus({ preventScroll: true });
   }
+  /** Lead vitals are live; cosmetic followers always display catalog health. */
+  drawPartyHud(g) {
+    const members = [g.p, ...(g.party?.followers || []).map(id => {
+      const hero = HEROES.find(hero => hero.id === id);
+      return { id: hero.id, name: hero.name, hp: hero.hp, maxHp: hero.hp };
+    })];
+    const hud = this.$("roam-health");
+    const roster = members.map(member => member.id).join(",");
+    if (hud.dataset.roster !== roster) {
+      hud.replaceChildren();
+      this.partyChips = members.map((member, index) => {
+        const chip = this.document.createElement("div");
+        chip.className = `party-hp-chip${index === 0 ? " lead" : ""}`;
+        chip.dataset.partyRole = index === 0 ? "lead" : "follower";
+        chip.dataset.heroId = member.id;
+        const name = this.document.createElement("strong");
+        name.className = "chip-name";
+        const hp = this.document.createElement("span");
+        hp.className = "chip-hp";
+        chip.appendChild(name);
+        chip.appendChild(hp);
+        hud.appendChild(chip);
+        return { name, hp };
+      });
+      hud.dataset.roster = roster;
+    }
+    members.forEach((member, index) => {
+      const chip = this.partyChips[index];
+      const name = this.t(member.name);
+      const vitals = index === 0
+        ? this.t(`${Math.ceil(member.hp)} / ${member.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`) + (g.roam.sneaking ? this.t(" · SNEAKING") : "")
+        : `${member.hp} / ${member.maxHp} ${this.t("HEALTH")}`;
+      if (chip.name.textContent !== name) chip.name.textContent = name;
+      if (chip.hp.textContent !== vitals) chip.hp.textContent = vitals;
+    });
+  }
   draw() {
     const g = this.session.g;
     if (!g?.roam) return;
@@ -267,8 +304,7 @@ export class RoamView {
       node.style.width = `${b.w / VIEWPORT.width * 100}%`;
       node.style.height = `${b.h / VIEWPORT.height * 100}%`;
     });
-    const health = `${Math.ceil(g.p.hp)} / ${g.p.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW${g.roam.sneaking ? " · SNEAKING" : ""}`;
-    if (this.$("roam-health").textContent !== health) this.$("roam-health").textContent = this.t(health);
+    this.drawPartyHud(g);
     const sneak = this.$("roam-sneak");
     if (sneak) sneak.setAttribute("aria-pressed", String(!!g.roam.sneaking));
     for (const button of this.document.querySelectorAll("[data-roam-action]")) {

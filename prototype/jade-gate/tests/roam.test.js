@@ -1,4 +1,8 @@
 import { BLOCKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
+import { readFileSync } from "node:fs";
+import { RoamView } from "../src/presentation/roam-view.js";
+import { HEROES } from "../src/content/heroes.js";
+import { translate } from "../src/locales/i18n.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRoam } from "../src/domain/roam.js";
@@ -214,6 +218,9 @@ test("followers remain on ground while camera would scroll with the lead", () =>
 });
 
 
+
+
+
 test("soft camera deadzone holds when lead fidgets inside", () => {
   const focus0 = { x: WORLD.width / 2, y: WORLD.height / 2 };
   const cam0 = cameraFocus(focus0);
@@ -279,6 +286,7 @@ test("smoothCamera uses cameraFocus as the chase target", () => {
   const snapped = smoothCamera(prev, focus, 10, { rate: 100 });
   assert.deepEqual(snapped, ideal);
 });
+
 
 function assertClear(point) {
   assert(onGround(point));
@@ -349,6 +357,7 @@ test("lead and cosmetic followers route through the gap past the barrier", () =>
 });
 
 
+
 test("first courtyard spawn and rival lane stay west of the corridor barrier", () => {
   const g = game();
   g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
@@ -401,4 +410,77 @@ test("lead paths through corridor into second zone and cannot clip pocket walls"
   // First-courtyard ground math unchanged for spawn lane points.
   assert(onGround(groundPoint(640, 500)));
   assert(onGround(groundPoint(400, 430)));
+});
+
+// Exercise the shipped HUD renderer with a minimal DOM adapter.
+function partyHud(session) {
+  const node = () => ({
+    dataset: {}, children: [], textContent: "",
+    appendChild(child) { this.children.push(child); },
+    replaceChildren() { this.children = []; },
+  });
+  const hud = node();
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.match(html, /<div id="roam-health" class="roam-party-hud" role="status" aria-live="polite"><\/div>/);
+  const view = Object.create(RoamView.prototype);
+  view.document = { createElement: node };
+  view.$ = id => { assert.equal(id, "roam-health"); return hud; };
+  view.t = text => translate(text, session.profile.settings.language);
+  return { hud, draw: () => view.drawPartyHud(session.g) };
+}
+
+test("roam HUD shows three named HP chips and projectile damage only lowers the lead", () => {
+  const session = game();
+  const party = quickParty("zhao-yun", "hu-sanniang", "lu-zhishen");
+  session.start(party.lead, "quickplay", "jade-gate", party);
+  session.profile.settings.language = "en";
+  const { hud, draw } = partyHud(session);
+  draw();
+  assert.equal(hud.children.length, 3);
+  assert.deepEqual(hud.children.map(chip => chip.dataset.heroId), [party.lead, ...party.followers]);
+  assert.deepEqual(hud.children.map(chip => chip.dataset.partyRole), ["lead", "follower", "follower"]);
+  const followerVitals = () => hud.children.slice(1).map(chip => chip.children[1].textContent);
+  const expectedFollowers = party.followers.map(id => {
+    const hero = HEROES.find(hero => hero.id === id);
+    return `${hero.hp} / ${hero.hp} HEALTH`;
+  });
+  for (const chip of hud.children) {
+    assert.equal(chip.children[0].textContent, HEROES.find(hero => hero.id === chip.dataset.heroId).name);
+  }
+  assert.deepEqual(followerVitals(), expectedFollowers);
+  const before = session.g.p.hp;
+  const max = session.g.p.maxHp;
+  session.g.roam.shots.push({ x: session.g.p.x, y: session.g.p.y, vx: 0, vy: 0, damage: 12, life: 1 });
+  session.step(1 / 60, { dx: 0, dy: 0 });
+  draw();
+  assert.equal(session.g.p.hp, before - 12);
+  assert.equal(hud.children[0].children[1].textContent, `${before - 12} / ${max} HEALTH · ${Math.floor(session.g.p.flow)} FLOW`);
+  assert.deepEqual(followerVitals(), expectedFollowers);
+  assert.equal(hud.children.length, 3);
+  session.profile.settings.language = "ja";
+  draw();
+  assert.equal(hud.children[1].children[0].textContent, translate(HEROES.find(hero => hero.id === party.followers[0]).name));
+  assert.match(hud.children[0].children[1].textContent, /体力/);
+  session.beginDuel(0);
+  assert.equal(session.mode, "playing");
+  assert.equal(session.g.p.id, party.lead);
+  assert.equal(session.g.enemies.length, 1);
+});
+
+test("campaign roam renders a single lead chip after a three-chip Quick play HUD", () => {
+  const session = game();
+  session.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  session.profile.settings.language = "en";
+  const { hud, draw } = partyHud(session);
+  draw();
+  assert.equal(hud.children.length, 3);
+  session.menu();
+  session.start("zhao-yun", "campaign");
+  session.advanceDialogue(true);
+  assert.equal(session.mode, "exploring");
+  draw();
+  assert.equal(hud.children.length, 1);
+  assert.equal(hud.children[0].dataset.partyRole, "lead");
+  assert.equal(hud.children[0].children[0].textContent, "Zhao Yun");
+  assert.match(hud.children[0].children[1].textContent, new RegExp(`^${session.g.p.hp} / ${session.g.p.maxHp} HEALTH`));
 });
