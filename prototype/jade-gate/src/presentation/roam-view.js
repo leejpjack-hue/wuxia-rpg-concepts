@@ -2,6 +2,7 @@ import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
 import { BLOCKERS, VIEWPORT, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
@@ -53,6 +54,7 @@ export class RoamView {
     this.dt = 0;
     this.manifest = assetManifest;
     const view = document.defaultView;
+    this.debugCollision = isCollisionDebugOn(view?.location?.search ?? "");
     this.request = view?.requestAnimationFrame?.bind(view) || null;
     this.cancel = view?.cancelAnimationFrame?.bind(view) || null;
     this.keydown = (event) => {
@@ -379,6 +381,7 @@ export class RoamView {
       if (e.text) { c.fillStyle=e.kind==='hurt'?'#ffafa4':'#fff2c5';c.font='bold 30px Georgia';c.textAlign='center';c.fillText(this.t(e.text), p.x, p.y-115-(.55-e.life)*70); }
       c.restore();
     }
+    if (this.debugCollision) paintCollisionDebug(c, cam);
   }
   /** Cached FRAME-00 sheet row for heroId, or null (legacy still). */
   sheetFor(heroId) {
