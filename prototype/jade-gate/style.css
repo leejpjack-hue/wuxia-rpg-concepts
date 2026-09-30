@@ -959,3 +959,34 @@ html[lang=ja] .film-title { letter-spacing:.08em; }
 .hero-card.party-lead {
   box-shadow: inset 0 0 0 2px var(--gold), 0 0 18px #c9a45a55;
 }
+
+
+/* WU-PARTY-06: clearer lead badge + follower 1/2 order chips. */
+.lead-chip {
+  left: 18px;
+  top: 42px;
+  padding: 3px 10px;
+  font: 800 12px/1.35 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 0 1px #10191b, 0 2px 8px #c9a45a66;
+}
+.follower-chip {
+  position: absolute;
+  left: 18px;
+  top: 42px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #2a3a36;
+  color: #f3eee0;
+  border: 1px solid #8aa090;
+  font: 700 11px/1.35 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hero-card.party-follower {
+  box-shadow: inset 0 0 0 1px #8aa09088;
+}
+.hero-card.party-lead .lead-chip {
+  display: inline-block;
+}

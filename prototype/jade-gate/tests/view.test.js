@@ -202,3 +202,34 @@ test('last Quick Play party of three persists and preselects on the next Quick P
   assert.deepEqual(next.session.profile.completedActs, acts);
   assert(!next.session.profile.unlockedHeroes.includes('guan-yu'));
 });
+
+test("Quick play shows lead badge and follower 1/2 order chips", () => {
+  const { cards, modes, view } = fixture();
+  modes[1].onclick();
+  pickQuickParty(cards, modes, ["zhao-yun", "hu-sanniang", "lu-zhishen"]);
+  const lead = cards.find((card) => card.dataset.hero === "zhao-yun");
+  const f1 = cards.find((card) => card.dataset.hero === "hu-sanniang");
+  const f2 = cards.find((card) => card.dataset.hero === "lu-zhishen");
+  assert.equal(lead.querySelector(".lead-chip").hidden, false);
+  assert.match(lead.querySelector(".lead-chip").textContent, /LEAD|先頭|先導|リーダー/i);
+  assert.equal(f1.querySelector(".follower-chip").hidden, false);
+  assert.match(f1.querySelector(".follower-chip").textContent, /1/);
+  assert.equal(f2.querySelector(".follower-chip").hidden, false);
+  assert.match(f2.querySelector(".follower-chip").textContent, /2/);
+  assert.deepEqual(view.partyIds, ["zhao-yun", "hu-sanniang", "lu-zhishen"]);
+});
+
+test("Quick play tap-to-set-lead promotes a follower before start", () => {
+  const { session, cards, modes, view, $ } = fixture();
+  pickQuickParty(cards, modes, ["zhao-yun", "hu-sanniang", "lu-zhishen"]);
+  assert.deepEqual(view.partyIds, ["zhao-yun", "hu-sanniang", "lu-zhishen"]);
+  // Tap follower 2 → becomes lead; previous lead shifts to follower order.
+  cards.find((card) => card.dataset.hero === "lu-zhishen").onclick();
+  assert.deepEqual(view.partyIds, ["lu-zhishen", "zhao-yun", "hu-sanniang"]);
+  assert.equal(cards.find((c) => c.dataset.hero === "lu-zhishen").querySelector(".lead-chip").hidden, false);
+  assert.equal(cards.find((c) => c.dataset.hero === "zhao-yun").querySelector(".follower-chip").hidden, false);
+  $("start").onclick();
+  assert.equal(session.mode, "exploring");
+  assert.deepEqual(session.g.party, { lead: "lu-zhishen", followers: ["zhao-yun", "hu-sanniang"] });
+  assert.equal(session.g.p.id, "lu-zhishen");
+});
