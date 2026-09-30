@@ -27,7 +27,11 @@ export function createRoam(g, bus, { encounter } = {}) {
   /** CAM-09 markers + CAM-04 scroll: last (or sole) rival homes past the
    *  first 1280×720 screen; earlier rivals stay on near markers. */
   function spawnMarkerFor(index, count) {
-    const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+    // The Act I boss waits at the end of the longer maze. Ordinary encounters
+    // keep their established near posts so each skirmish remains paced tightly.
+    if (encounter.id === 'warden' && count === 1)
+      return SPAWN_MARKERS.find(m => m.id === 'far-clearing');
+    const far = SPAWN_MARKERS.filter(m => m.id !== 'far-clearing' && (m.x > VIEWPORT.width || m.y > VIEWPORT.height));
     const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
     if (far.length && (count === 1 || index === count - 1)) {
       return far[index % far.length];

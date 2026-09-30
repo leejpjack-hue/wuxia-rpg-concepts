@@ -22,8 +22,8 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  /* WORLD plate (2560×1440) on the 1280×720 frame. applyCamera pans it. */
-  background: 0 0 / 200% 200% no-repeat url("assets/bamboo-maze.png"), #16232a;
+  /* A 2560×1440 forest tile repeats across the four-section world. */
+  background: 0 26% / 200% 238.9% repeat-x url("assets/bamboo-maze-natural.png"), #16232a;
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -132,9 +132,28 @@
 .roam-blocker {
   position: absolute;
   box-sizing: border-box;
-  background: #1a2a28;
-  border: 3px solid #667b69;
+  background-image: url("assets/bamboo-thicket-blocker.png");
+  background-position: center top;
+  background-size: 100% auto;
+  background-repeat: repeat-y;
   pointer-events: none;
+}
+.roam-blocker-wide {
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+}
+
+@keyframes original-walk {
+  from { transform: translate(-50%, -100%) scaleX(var(--face, 1)); }
+  to { transform: translate(-50%, -102%) scaleX(var(--face, 1)); }
+}
+#roam-hero.original-walk,
+.roam-stage img.roam-follower.original-walk {
+  animation: original-walk 0.27s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  #roam-hero.original-walk,
+  .roam-stage img.roam-follower.original-walk { animation: none; }
 }
 
 .roam-spawn-marker {

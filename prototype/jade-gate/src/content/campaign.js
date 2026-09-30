@@ -56,7 +56,7 @@ export const ACTS = [
       },
       {
         id: "warden",
-        title: "Defeat the Ashen Warden",
+        title: "Reach the far clearing and defeat the Ashen Warden",
         tip: "Below half health, the Warden chains thrusts. Interrupt with a technique.",
         enemies: ["boss", "archer", "guard", "guard", "archer"],
         bossId: "warden",

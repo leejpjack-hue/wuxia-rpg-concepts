@@ -1,7 +1,7 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { BLOCKERS, SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { BLOCKERS, MAZE_SEGMENT_WIDTH, SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
 import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
@@ -22,8 +22,12 @@ const KEYS = {
   ArrowRight: "right",
 };
 
-/** WORLD-sized roam plate. One image; the camera pans it. Act arenas stay on the duel table. */
-const ROAM_BACKDROP = "assets/bamboo-maze.png";
+/** One detailed forest tile repeats across the four-section roam world. */
+const ROAM_BACKDROP = "assets/bamboo-maze-natural.png";
+// Crop the terrain vertically so the player-sized foot lane sits on the
+// painted earthen trail; the upper/lower forest remains a natural boundary.
+const MAZE_ART_HEIGHT = 1720;
+const MAZE_ART_TOP_CROP = 260;
 
 /** Arena roaming scene: d-pad/keyboard movement drives the domain roam step. */
 export class RoamView {
@@ -149,23 +153,21 @@ export class RoamView {
     node.style.top = `${(screen.y / VIEWPORT.height) * 100}%`;
   }
   /**
-   * Pan the WORLD-sized bamboo plate. One image covers the roam world;
-   * CSS % position maps cam onto that plate (0% origin, 100% far edge).
+   * Pan the repeating forest plate at a constant world scale. Stretching a
+   * single image to WORLD.width would make the final three sections blurry.
    * Followers share this camera.
    */
   applyCamera(cam) {
     const arena = this.$("roam-arena");
     if (!arena) return;
-    const spanX = WORLD.width - VIEWPORT.width;
-    const spanY = WORLD.height - VIEWPORT.height;
-    const px = spanX > 0 ? (cam.x / spanX) * 100 : 0;
-    const py = spanY > 0 ? (cam.y / spanY) * 100 : 0;
+    const px = (cam.x / VIEWPORT.width) * 100;
+    const py = ((cam.y + MAZE_ART_TOP_CROP) / (MAZE_ART_HEIGHT - VIEWPORT.height)) * 100;
     if (arena.dataset.stage !== ROAM_BACKDROP) {
       arena.dataset.stage = ROAM_BACKDROP;
       arena.style.backgroundImage = `url("${ROAM_BACKDROP}")`;
     }
-    arena.style.backgroundRepeat = "no-repeat";
-    arena.style.backgroundSize = `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`;
+    arena.style.backgroundRepeat = "repeat-x";
+    arena.style.backgroundSize = `${(MAZE_SEGMENT_WIDTH / VIEWPORT.width) * 100}% ${(MAZE_ART_HEIGHT / VIEWPORT.height) * 100}%`;
     arena.style.backgroundPosition = `${px}% ${py}%`;
   }
   sync() {
@@ -335,6 +337,7 @@ export class RoamView {
     BLOCKERS.forEach((b, index) => {
       const node = this.blockers[index];
       this.place(node, b.x, b.y, cam);
+      node.classList.toggle("roam-blocker-wide", b.w > b.h);
       node.style.width = `${b.w / VIEWPORT.width * 100}%`;
       node.style.height = `${b.h / VIEWPORT.height * 100}%`;
     });
@@ -417,6 +420,9 @@ export class RoamView {
   }
   /** Cached FRAME-00 sheet row for heroId, or null (legacy still). */
   sheetFor(heroId) {
+    // The original full-resolution Zhao Yun cutout reads better at play size
+    // than the small, visibly inconsistent frames in his later sheet.
+    if (heroId === "zhao-yun") return null;
     if (this.sheetByHero.has(heroId)) return this.sheetByHero.get(heroId);
     const sheet = loadSheetManifest(this.manifest, heroId);
     this.sheetByHero.set(heroId, sheet);
@@ -435,6 +441,7 @@ export class RoamView {
    */
   applyActorSheet(node, heroId, moving) {
     if (!node) return;
+    node.classList?.toggle?.("original-walk", heroId === "zhao-yun" && moving);
     const sheet = this.sheetFor(heroId);
     if (!sheet?.anims) {
       clearSheetFrame(node);

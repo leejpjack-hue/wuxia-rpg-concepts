@@ -380,6 +380,18 @@
     "prompt": "(see prompts/bamboo-maze.txt)"
   },
   {
+    "id": "bamboo-maze-natural",
+    "file": "assets/bamboo-maze-natural.png",
+    "method": "built-in image_gen · 2026-09-30",
+    "prompt": "(see prompts/bamboo-maze-natural.txt)"
+  },
+  {
+    "id": "bamboo-thicket-blocker",
+    "file": "assets/bamboo-thicket-blocker.png",
+    "method": "built-in image_gen · 2026-09-30",
+    "prompt": "(see prompts/bamboo-thicket-blocker.txt)"
+  },
+  {
     "id": "night-heron-sprite",
     "file": "assets/night-heron-sprite.png",
     "method": "built-in image_gen · 2026-09-27",

@@ -3,19 +3,20 @@ import { clamp } from './math.js';
 /** Fixed on-screen frame. World may be larger; roam-view scrolls via camera. */
 export const VIEWPORT = { width: 1280, height: 720 };
 
-/** Logical roam extent — ≥2× the old single-screen arena. */
-export const WORLD = { width: 2560, height: 1440 };
+/** Four 2560px forest stretches; keep the original north/south camera span. */
+export const MAZE_SEGMENT_WIDTH = 2560;
+export const WORLD = { width: MAZE_SEGMENT_WIDTH * 4, height: 1440 };
 
 // Feet-space across the enlarged world. Same courtyard trapezoid flare as the
 // original 1280×720 pass, stretched so the first screen stays walkable and the
 // hero (and PARTY followers) can roam past the old right/bottom edges.
 export const GROUND = {
-  top: 290,
-  bottom: 1350,
+  top: 330,
+  bottom: 900,
   rearLeft: 280,
-  rearRight: 2280,
+  rearRight: WORLD.width - 280,
   frontLeft: 135,
-  frontRight: 2425,
+  frontRight: WORLD.width - 135,
 };
 
 export function groundEdges(y) {
@@ -38,6 +39,7 @@ export const SPAWN_MARKERS = [
   { id: 'courtyard-approach', x: 1200, y: 500 },
   { id: 'corridor-gap', x: 1450, y: 500 },
   { id: 'second-pocket', x: 1850, y: 600 },
+  { id: 'far-clearing', x: 9650, y: 540 },
 ].map(marker => ({ id: marker.id, ...groundPoint(marker.x, marker.y) }));
 
 export function onGround({ x, y }) {
@@ -128,8 +130,8 @@ export function worldToScreen(wx, wy, cam) {
 export const SECOND_ZONE = {
   left: 1500,
   right: 2200,
-  top: 370,
-  bottom: 880,
+  top: 420,
+  bottom: 830,
 };
 
 export function inSecondZone({ x, y }) {
@@ -137,18 +139,27 @@ export function inSecondZone({ x, y }) {
     && y >= SECOND_ZONE.top && y <= SECOND_ZONE.bottom;
 }
 
-// CAM-02 vertical barrier + CAM-03 walls that carve the east pocket.
+// Natural thickets carve the old east pocket and four linked forest stretches.
 // Corridor gap ~y 460–560 at x=1400 remains the only west↔east passage;
 // first-courtyard spawn/contact lane (left of barrier) stays clear.
 export const BLOCKERS = [
-  { x: 1400, y: GROUND.top, w: 100, h: 170 },
+  { x: 1400, y: GROUND.top, w: 100, h: 460 - GROUND.top },
   { x: 1400, y: 560, w: 100, h: GROUND.bottom - 560 },
   // East pocket north wall (above SECOND_ZONE.top)
   { x: SECOND_ZONE.left, y: GROUND.top, w: SECOND_ZONE.right - SECOND_ZONE.left, h: SECOND_ZONE.top - GROUND.top },
   // East pocket south wall (below SECOND_ZONE.bottom)
   { x: SECOND_ZONE.left, y: SECOND_ZONE.bottom, w: SECOND_ZONE.right - SECOND_ZONE.left, h: GROUND.bottom - SECOND_ZONE.bottom },
-  // East pocket end wall — encloses the room; leave no east bypass
-  { x: SECOND_ZONE.right, y: GROUND.top, w: 80, h: GROUND.bottom - GROUND.top },
+  // Each later choke has a clear walkable gap. Alternating heights make the
+  // longer route feel like a winding forest trail, never a sealed room.
+  ...[
+    { x: 3500, gapTop: 570, gapBottom: 770 },
+    { x: 5350, gapTop: 420, gapBottom: 620 },
+    { x: 7200, gapTop: 580, gapBottom: 780 },
+    { x: 9050, gapTop: 440, gapBottom: 640 },
+  ].flatMap(({ x, gapTop, gapBottom }) => [
+    { x, y: GROUND.top, w: 100, h: gapTop - GROUND.top },
+    { x, y: gapBottom, w: 100, h: GROUND.bottom - gapBottom },
+  ]),
 ];
 
 /** Resolve feet against radius-expanded AABBs, sweeping X then Y to slide.

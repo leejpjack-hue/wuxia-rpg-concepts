@@ -1,4 +1,4 @@
-import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
+import { BLOCKERS, MAZE_SEGMENT_WIDTH, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
 import { ACTS } from "../src/content/campaign.js";
@@ -15,9 +15,26 @@ import { memoryStorage, duelPolicy, quickParty } from './helpers.js';
 const game = (storage = memoryStorage()) =>
   new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
 
+const FAR_CLEARING_ROUTE = [
+  [3300, 500], [3380, 660], [3700, 660],
+  [5200, 520], [5550, 520],
+  [7050, 680], [7400, 680],
+  [8900, 540], [9300, 540],
+];
+
 /** Chase the nearest rival until contact starts the duel. */
 function pursue(g, limit = 2400) {
   let steps = 0;
+  // The Warden's far clearing is reached through each alternating thicket
+  // opening; a straight-line pursuer would run into the maze walls.
+  if (g.g.roam.field.length === 1 && g.g.roam.field[0].homeX > 9000) {
+    for (const [x, y] of FAR_CLEARING_ROUTE) {
+      while (g.mode === "exploring" && Math.hypot(x - g.g.p.x, y - g.g.p.y) > 8 && steps++ < limit) {
+        const dx = x - g.g.p.x, dy = y - g.g.p.y, len = Math.hypot(dx, dy);
+        g.step(1 / 60, { dx: dx / len, dy: dy / len });
+      }
+    }
+  }
   while (g.mode === "exploring" && steps++ < limit) {
     const p = g.g.p;
     let target = null;
@@ -53,7 +70,8 @@ test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass",
     b = JSON.parse(run(120));
   assert.deepEqual(a, b);
   assert.equal(a.mode, "exploring");
-  assert.equal(a.p.x, SECOND_ZONE.right - 18); // east pocket end wall (radius 18)
+  assert(a.p.x > SECOND_ZONE.right); // the old east end wall no longer seals the route
+  assert(a.p.x < WORLD.width);
 });
 
 test("roam requires a statted encounter and parks the hero away from rivals", () => {
@@ -365,6 +383,73 @@ function walk(g, seconds, input) {
   }
 }
 
+test("the four-section maze has a continuous player-sized route to its far end", () => {
+  const g = emptyPass();
+  const waypoints = [...FAR_CLEARING_ROUTE, [9800, 540]];
+  for (const [x, y] of waypoints) {
+    let steps = 0;
+    while (Math.hypot(x - g.g.p.x, y - g.g.p.y) > 8 && steps++ < 1600) {
+      const dx = x - g.g.p.x, dy = y - g.g.p.y;
+      const distance = Math.hypot(dx, dy);
+      g.step(1 / 60, { dx: dx / distance, dy: dy / distance });
+      assertClear(g.g.p);
+    }
+    assert(steps < 1600, `blocked before waypoint ${x},${y} at ${g.g.p.x},${g.g.p.y}`);
+  }
+  assert(g.g.p.x > MAZE_SEGMENT_WIDTH * 3.8);
+});
+
+test("the Warden encounter is reached only after the full forest route", () => {
+  const session = game();
+  session.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  const contacts = [];
+  const bus = { emit: (type, payload) => {
+    if (type === "roam:contact") contacts.push(payload);
+  } };
+  const roam = createRoam(session.g, bus, { encounter: { id: "warden" } });
+  assert(roam.field[0].x > MAZE_SEGMENT_WIDTH * 3.5);
+  let steps = 0;
+  for (const [x, y] of FAR_CLEARING_ROUTE) {
+    while (!contacts.length && Math.hypot(x - session.g.p.x, y - session.g.p.y) > 8 && steps++ < 3500) {
+      const dx = x - session.g.p.x, dy = y - session.g.p.y;
+      const distance = Math.hypot(dx, dy);
+      roam.step(1 / 60, { dx: dx / distance, dy: dy / distance });
+      assertClear(session.g.p);
+    }
+  }
+  while (!contacts.length && steps++ < 3500) {
+    const enemy = roam.field[0];
+    const dx = enemy.x - session.g.p.x, dy = enemy.y - session.g.p.y;
+    const distance = Math.hypot(dx, dy);
+    roam.step(1 / 60, { dx: dx / distance, dy: dy / distance });
+  }
+  assert.deepEqual(contacts.map(contact => contact.kind), ["warden"]);
+  assert(session.g.p.x > MAZE_SEGMENT_WIDTH * 3.5);
+});
+
+test("Zhao Yun walks with his original full-resolution still sprite", () => {
+  const classes = new Set();
+  const node = {
+    src: "assets/zhao-yun-sprite.png",
+    dataset: {},
+    style: {},
+    classList: {
+      add: name => classes.add(name),
+      remove: name => classes.delete(name),
+      toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name),
+    },
+  };
+  const view = Object.create(RoamView.prototype);
+  view.sheetByHero = new Map();
+  view.manifest = [{ id: "zhao-yun-sheet", file: "assets/zhao-yun-sheet.png", frameW: 512, frameH: 512, anims: { walk: { frames: [[0, 1]] } } }];
+  view.applyActorSheet(node, "zhao-yun", true);
+  assert.equal(node.src, "assets/zhao-yun-sprite.png");
+  assert(classes.has("original-walk"));
+  assert(!classes.has("sheet-anim"));
+  view.applyActorSheet(node, "zhao-yun", false);
+  assert(!classes.has("original-walk"));
+});
+
 test("world AABBs block wall bodies but leave a traversable corridor", () => {
   assert(BLOCKERS.length >= 2);
   for (const b of BLOCKERS) {
@@ -437,14 +522,16 @@ test("hero stays in the first courtyard while spawn markers cover the maze path"
 test("field homes use spawn markers in roster order, including past the barrier", () => {
   const g = game();
   g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
-  const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+  const far = SPAWN_MARKERS.filter(m => m.id !== "far-clearing" && (m.x > VIEWPORT.width || m.y > VIEWPORT.height));
   const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
   for (const id of ["vanguard", "gate-vanguard", "warden"]) {
     const roam = createRoam(g.g, g.bus, { encounter: { id } });
     const count = roam.field.length;
     assert.equal(count, id === "vanguard" ? 2 : id === "warden" ? 1 : 3);
     roam.field.forEach((enemy, index) => {
-      const marker = (far.length && (count === 1 || index === count - 1))
+      const marker = id === "warden"
+        ? SPAWN_MARKERS.find(m => m.id === "far-clearing")
+        : (far.length && (count === 1 || index === count - 1))
         ? far[index % far.length]
         : near[index % near.length];
       assert.deepEqual({ x: enemy.x, y: enemy.y }, { x: marker.x, y: marker.y });
@@ -456,6 +543,7 @@ test("field homes use spawn markers in roster order, including past the barrier"
       `${id} needs a rival beyond the first screen`,
     );
     if (id === "gate-vanguard") assert(roam.field.some(e => e.homeX >= 1400));
+    if (id === "warden") assert(roam.field[0].homeX > MAZE_SEGMENT_WIDTH * 3.5);
   }
 });
 
@@ -467,15 +555,15 @@ test("corridor opens into a roamable second pocket past the barrier", () => {
   const mid = { x: (SECOND_ZONE.left + SECOND_ZONE.right) / 2, y: (SECOND_ZONE.top + SECOND_ZONE.bottom) / 2 };
   assertClear(resolveBlockers(mid.x, mid.y));
   assert(inSecondZone(mid));
-  // North / south / east pocket walls reject clipping.
+  // North / south pocket walls reject clipping; the east side opens onward.
   assert.notDeepEqual(resolveBlockers(1800, 320), { x: 1800, y: 320 });
   assert.notDeepEqual(resolveBlockers(1800, 1000), { x: 1800, y: 1000 });
-  assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, SECOND_ZONE.right - 18);
+  assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, 2400);
   // Long step still cannot tunnel the CAM-02 corridor walls.
   assert.equal(resolveBlockers(1800, 700, 18, { x: 1300, y: 700 }).x, 1382);
 });
 
-test("lead paths through corridor into second zone and cannot clip pocket walls", () => {
+test("lead paths through corridor and second zone into the longer forest", () => {
   const g = emptyPass();
   walk(g, 4, { dx: 1 }); // corridor height y=500 → through gap
   assert(g.g.p.x > SECOND_ZONE.left, `expected into second zone, got x=${g.g.p.x}`);
@@ -487,9 +575,9 @@ test("lead paths through corridor into second zone and cannot clip pocket walls"
   assert(inSecondZone(g.g.p) || g.g.p.y >= SECOND_ZONE.bottom - 18);
   walk(g, 1, { dy: -1 });
   assert(inSecondZone(g.g.p));
-  // East end wall stops further travel.
+  // The former east end wall is now an open trail to the next section.
   walk(g, 4, { dx: 1 });
-  assert.equal(g.g.p.x, SECOND_ZONE.right - 18);
+  assert(g.g.p.x > SECOND_ZONE.right);
   assertClear(g.g.p);
   // First-courtyard ground math unchanged for spawn lane points.
   assert(onGround(groundPoint(640, 500)));
@@ -655,11 +743,14 @@ test("swap lead after a duel returns to the pass before next contact", () => {
   assert.equal(session.g.enemies.length, 1);
 });
 
-test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", () => {
-  const png = readFileSync(new URL("../assets/bamboo-maze.png", import.meta.url));
+test("natural bamboo terrain repeats at one scale across the four-section maze", () => {
+  const png = readFileSync(new URL("../assets/bamboo-maze-natural.png", import.meta.url));
   assert.equal(png.subarray(1, 4).toString(), "PNG");
-  assert.equal(png.readUInt32BE(16), WORLD.width);
-  assert.equal(png.readUInt32BE(20), WORLD.height);
+  assert(png.readUInt32BE(16) >= 1600);
+  assert(png.readUInt32BE(20) >= 900);
+  assert.equal(WORLD.width, MAZE_SEGMENT_WIDTH * 4);
+  const blocker = readFileSync(new URL("../assets/bamboo-thicket-blocker.png", import.meta.url));
+  assert.equal(blocker[25], 6); // RGBA cutout, not a painted rectangle
 
   const arena = { style: {}, dataset: {} };
   const view = Object.create(RoamView.prototype);
@@ -673,21 +764,21 @@ test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", ()
   };
 
   const origin = paint({ x: 0, y: 0 });
-  assert.equal(arena.dataset.stage, "assets/bamboo-maze.png");
-  assert.equal(origin.backgroundImage, 'url("assets/bamboo-maze.png")');
-  assert.equal(origin.backgroundRepeat, "no-repeat");
-  assert.equal(origin.backgroundSize, `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`);
-  assert.equal(origin.backgroundPosition, "0% 0%");
+  assert.equal(arena.dataset.stage, "assets/bamboo-maze-natural.png");
+  assert.equal(origin.backgroundImage, 'url("assets/bamboo-maze-natural.png")');
+  assert.equal(origin.backgroundRepeat, "repeat-x");
+  assert.equal(origin.backgroundSize, `${(MAZE_SEGMENT_WIDTH / VIEWPORT.width) * 100}% ${(1720 / VIEWPORT.height) * 100}%`);
+  assert.equal(origin.backgroundPosition, "0% 26%");
 
   const far = paint({ x: WORLD.width - VIEWPORT.width, y: WORLD.height - VIEWPORT.height });
-  assert.equal(far.backgroundPosition, "100% 100%");
-  assert.equal(far.backgroundImage, 'url("assets/bamboo-maze.png")');
+  assert.equal(far.backgroundPosition, `${(WORLD.width / VIEWPORT.width - 1) * 100}% 98%`);
+  assert.equal(far.backgroundImage, 'url("assets/bamboo-maze-natural.png")');
 
   const mid = paint({
     x: (WORLD.width - VIEWPORT.width) / 2,
     y: (WORLD.height - VIEWPORT.height) / 2,
   });
-  assert.equal(mid.backgroundPosition, "50% 50%");
+  assert.equal(mid.backgroundPosition, `${(WORLD.width / VIEWPORT.width - 1) * 50}% 62%`);
 
   // Backdrop only: act gates and duel arena ids stay as shipped.
   assert.deepEqual(
