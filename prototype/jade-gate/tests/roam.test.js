@@ -249,6 +249,29 @@ test("followers remain on ground while camera would scroll with the lead", () =>
   }
 });
 
+test("follower facing mirrors lead dx, not chase delta", () => {
+  const g = game();
+  g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun", "hu-sanniang", "lu-zhishen"));
+  assert.equal(g.g.roam.followers.length, 2);
+  g.g.roam.field.length = 0;
+  // Walk right so followers trail behind (west of lead).
+  for (let i = 0; i < 90; i++) g.step(1 / 60, { dx: 1, dy: 0 });
+  assert.equal(g.g.p.dx, 1);
+  for (const follower of g.g.roam.followers) {
+    assert.equal(follower.dx, 1);
+    assert(follower.x < g.g.p.x, "followers stay behind while lead walks right");
+  }
+  // Reverse facing left while followers still chase east toward lagged trail —
+  // chase delta would keep dx=+1; mirrored lead facing must be -1.
+  for (let i = 0; i < 30; i++) g.step(1 / 60, { dx: -1, dy: 0 });
+  assert.equal(g.g.p.dx, -1);
+  for (const follower of g.g.roam.followers) assert.equal(follower.dx, -1);
+  // Face right again.
+  for (let i = 0; i < 30; i++) g.step(1 / 60, { dx: 1, dy: 0 });
+  assert.equal(g.g.p.dx, 1);
+  for (const follower of g.g.roam.followers) assert.equal(follower.dx, 1);
+});
+
 
 
 
