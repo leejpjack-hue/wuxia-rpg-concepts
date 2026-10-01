@@ -306,3 +306,57 @@ test('assist flash reduced motion skips straight to complete',()=>{
   assert.equal(commits,1);
   assert.equal(node.hidden,true);
 });
+
+const duelAtlas=id=>({id:`${id}-duel-poses`, file:`assets/${id}-duel-poses.png`, runtimeApproved:true,
+  duelPoses:{windup:[0,0],strike:[1,0],focus:[0,1],special:[1,1]}});
+const poseRival={...rival,heroId:'guan-yu',art:'guan-yu-sprite',kind:'hero-guan-yu'};
+test('normal and special films use different body poses and hold the contact pose through impact',()=>{
+  for(const [action,windup,contact] of [['attack','windup','strike'],['technique','focus','special'],['signature','focus','special']]){
+    const {film,node,callbacks}=filmFixture([duelAtlas(hero.id)]);
+    let commits=0;film.play(action,hero,rival,{damage:20},false,()=>commits++);
+    const img=node.querySelector('.film-hero');
+    assert.equal(img.dataset.duelPose,windup);
+    for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
+      fn();
+      if(['strike','impact'].includes(node.dataset.phase))assert.equal(img.dataset.duelPose,contact);
+      if(node.dataset.phase==='reply')assertStill(img);
+    }
+    assert.equal(commits,1);assertStill(img);
+  }
+});
+test('named rival normal and special replies switch their own poses and cancellation restores both sprites',()=>{
+  for(const intent of ['heavy','special']){
+    const {film,node,callbacks}=filmFixture([duelAtlas(hero.id),duelAtlas('guan-yu')]);
+    let commits=0;film.play('attack',hero,poseRival,{damage:10,incoming:12,intent},false,()=>commits++);
+    const img=node.querySelector('.film-enemy');
+    const tasks=callbacks.splice(0).sort((a,b)=>a.ms-b.ms);
+    for(const task of tasks){
+      task.fn();
+      if(node.dataset.phase==='reply')assert.equal(img.dataset.duelPose,intent==='special'?'focus':'windup');
+      if(node.dataset.phase==='counter'){
+        assert.equal(img.dataset.duelPose,intent==='special'?'special':'strike');
+        film.cancel();break;
+      }
+    }
+    tasks.forEach(({fn})=>fn());
+    assert.equal(commits,0);assertStill(node.querySelector('.film-hero'));
+    assert.equal(img.src,'assets/guan-yu-sprite.png');
+    assert.equal(img.style.backgroundImage,'');
+    assert.equal(img.dataset.duelPose,undefined);
+  }
+});
+test('pose atlases do not animate guard, tea, reduced motion or defeated rivals',()=>{
+  for(const [action,reduced] of [['guard',false],['tea',false],['attack',true],['technique',true]]){
+    const {film,node,callbacks}=filmFixture([duelAtlas(hero.id),duelAtlas('guan-yu')]);
+    film.play(action,hero,poseRival,{incoming:0,lethal:true},reduced,()=>{});
+    for(const {fn} of callbacks){fn();assertStill(node.querySelector('.film-hero'));assert.equal(node.querySelector('.film-enemy').dataset.duelPose,undefined);}
+  }
+});
+test('assist poses belong to the follower and clear back to the follower sprite on completion',()=>{
+  const {film,node,callbacks}=filmFixture([duelAtlas('guan-yu')]);
+  let commits=0;film.assistFlash({follower:{id:'guan-yu',name:'Guan Yu'},damage:16},hero,rival,false,()=>commits++);
+  const img=node.querySelector('.film-hero');assert.equal(img.dataset.duelPose,'windup');
+  for(const {fn} of callbacks){fn();if(!node.hidden)assert.equal(img.dataset.duelPose,'strike');}
+  assert.equal(commits,1);assert.equal(img.src,'assets/guan-yu-sprite.png');
+  assert.equal(img.style.backgroundImage,'');
+});

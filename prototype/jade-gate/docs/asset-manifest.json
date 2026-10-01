@@ -163,7 +163,8 @@
       }
     },
     "method": "Antigravity Ops \u00b7 WU-FRAME-06P \u00b7 remake v2 for spade-on-walk",
-    "prompt": "(see prompts/lu-zhishen-sheet.txt)"
+    "prompt": "(see prompts/lu-zhishen-sheet.txt)",
+    "duelPoses": {"windup": [0, 2], "strike": [1, 2], "focus": [0, 2], "special": [2, 2]}
   },
   {
     "id": "hu-sanniang",

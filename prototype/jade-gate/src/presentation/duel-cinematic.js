@@ -2,6 +2,7 @@ import assetManifest from "../../docs/asset-manifest.json" with { type: "json" }
 import { loadSheetManifest, sampleAnim, applySheetFrame, clearSheetFrame } from "../platform/sheet-anim.js";
 import { signatureById } from "../content/expansion.js";
 import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../content/expansion-art.js";
+import { loadDuelPoses, applyDuelPose, clearDuelPose } from "../platform/duel-poses.js";
 
 /** Film cuts: ordered [beat, atMs] pairs. Only the closing `end` beat completes the film. */
 export const CUTS = {
@@ -66,7 +67,8 @@ export class DuelCinematic {
   }
   cancel() {
     this.timeline.cancel();
-    clearSheetFrame(this.node.querySelector('.film-hero'));
+    clearDuelPose(this.node.querySelector('.film-hero'));
+    clearDuelPose(this.node.querySelector('.film-enemy'));
     clearActionArt(this.node);
     this.node.hidden = true;
   }
@@ -76,11 +78,16 @@ export class DuelCinematic {
     node.className = className;
     node.style.setProperty('--strike-color', hero.color);
     const filmHero = node.querySelector('.film-hero');
-    clearSheetFrame(filmHero);
+    clearDuelPose(filmHero);
+    const filmEnemy = node.querySelector('.film-enemy');
+    clearDuelPose(filmEnemy);
     clearActionArt(node);
     filmHero.src = filmHero.dataset.stillSrc = `assets/${hero.id}-sprite.png`;
     this.sheet = loadSheetManifest(this.manifest, hero.id);
-    node.querySelector('.film-enemy').src = `assets/${enemy.art}.png`;
+    this.heroPoses = loadDuelPoses(this.manifest, hero.id);
+    // Use art identity, so a boss costume is never replaced by a different hero costume.
+    this.enemyPoses = loadDuelPoses(this.manifest, enemy.art?.replace(/-sprite$/, ''));
+    filmEnemy.src = filmEnemy.dataset.stillSrc = `assets/${enemy.art}.png`;
     node.querySelector('.film-seal').textContent = hero.cn || '';
     node.querySelector('.film-number').textContent = '';
     return node;
@@ -105,7 +112,8 @@ export class DuelCinematic {
     }, () => { this.cancel(); });
   }
   play(action, hero, enemy, result, reduced, complete) {
-    const node = this.cast(`strike-film style-${hero.id} action-${action}${reduced ? ' film-reduced' : ''}`, hero, enemy);
+    // Signatures share the hero's weapon choreography while keeping their own title and emblem.
+    const node = this.cast(`strike-film style-${hero.id} action-${action}${action === 'signature' ? ' action-technique' : ''}${reduced ? ' film-reduced' : ''}`, hero, enemy);
     const signature = action === 'signature' ? signatureById(hero.id) : null;
     const title = action === 'technique' ? hero.skill
       : action === 'signature' ? (signature?.name || hero.skill)
@@ -114,7 +122,11 @@ export class DuelCinematic {
     const caption = node.querySelector('.film-caption'), number = node.querySelector('.film-number');
     caption.textContent = this.t(hero.name);
     const filmHero = node.querySelector('.film-hero'), sheet = this.sheet;
-    const attack = !reduced && ['attack', 'technique', 'signature'].includes(action) ? sheet?.anims.attack : null;
+    const offensive = ['attack', 'technique', 'signature'].includes(action);
+    const special = action === 'technique' || action === 'signature';
+    const poses = !reduced && offensive ? this.heroPoses : null;
+    const attack = !reduced && offensive && !poses ? sheet?.anims.attack : null;
+    const filmEnemy = node.querySelector('.film-enemy');
     const cut = [...cutFor(action, reduced)];
     const strikeAt = cut.find(([phase]) => phase === 'strike')[1];
     const sigArt = action === 'signature' && !reduced ? signatureArtFor(hero.id) : null;
@@ -142,11 +154,21 @@ export class DuelCinematic {
       cut.sort((a, b) => a[1] - b[1]);
     }
     this.timeline.play(cut, (phase, atMs) => {
+      if (poses) {
+        if (phase === 'prepare' || phase === 'focus') applyDuelPose(filmHero, poses, special ? 'focus' : 'windup');
+        if (phase === 'strike' || phase === 'impact') applyDuelPose(filmHero, poses, special ? 'special' : 'strike');
+        if (phase === 'reply') clearDuelPose(filmHero);
+      }
+      if (counter && this.enemyPoses) {
+        if (phase === 'reply') applyDuelPose(filmEnemy, this.enemyPoses, result.intent === 'special' ? 'focus' : 'windup');
+        if (phase === 'counter' || phase === 'counter-impact')
+          applyDuelPose(filmEnemy, this.enemyPoses, result.intent === 'special' ? 'special' : 'strike');
+      }
       if (attack && (phase === 'strike' || phase === 'attack-frame')) {
         // Nudge exact frame boundaries past floating-point subtraction error.
         applySheetFrame(filmHero, sheet, sampleAnim(attack, (atMs - strikeAt) / 1000 + 1e-9));
       }
-      if (['attack-end', 'impact', 'reply'].includes(phase)) clearSheetFrame(filmHero);
+      if (!poses && ['attack-end', 'impact', 'reply'].includes(phase)) clearSheetFrame(filmHero);
       if (phase === 'attack-frame' || phase === 'attack-end') return;
       node.dataset.phase = phase;
       if (phase === 'focus') {
@@ -190,7 +212,9 @@ export class DuelCinematic {
   assistFlash({ follower, oath, damage }, hero, enemy, reduced, complete) {
     if (reduced) { this.cancel(); complete(); return; }
     const node = this.cast(`strike-film film-assist style-${hero.id} action-assist`, hero, enemy);
-    if (follower?.id) node.querySelector('.film-hero').src = `assets/${follower.id}-sprite.png`;
+    const filmHero = node.querySelector('.film-hero');
+    if (follower?.id) filmHero.src = filmHero.dataset.stillSrc = `assets/${follower.id}-sprite.png`;
+    const poses = loadDuelPoses(this.manifest, follower?.id || hero.id);
     const oathArt = oath?.id ? `oath-${oath.id}` : null;
     if (oathArt) setActionArt(node, oathArt);
     node.querySelector('.film-title').textContent = this.t(oath?.name || 'Assist');
@@ -200,6 +224,8 @@ export class DuelCinematic {
     const cut = [...CUTS.assist];
     this.timeline.play(cut, phase => {
       node.dataset.phase = phase;
+      if (phase === 'prepare') applyDuelPose(filmHero, poses, 'windup');
+      if (phase === 'flash' || phase === 'impact') applyDuelPose(filmHero, poses, 'strike');
       if (phase === 'flash') {
         this.cue({type:'strike'});
         if (oathArt) setActionArt(node, oathArt);

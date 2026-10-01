@@ -113,3 +113,7 @@ defeat screen (“The jianghu stretches beyond the maps…”).
 - After replacing, run `npm run check` inside `prototype/jade-gate` — it
   validates the manifest, sizes, and sprite-grid rules.
 - Add new files to `docs/asset-manifest.json` (id, file, method, prompt).
+
+## Card-duel action images — follow-up
+
+See [DUEL-ACTION-ASSETS.md](DUEL-ACTION-ASSETS.md) for the character pose list, including the failed Zhao Yun / Hu Sanniang requests, the cancelled Guan Yu retry, and the remaining deferred images. No new action PNGs were generated in this pass. The earlier 36-file expansion batch is a separate delivered batch.
