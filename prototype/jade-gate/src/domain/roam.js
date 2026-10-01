@@ -2,7 +2,7 @@ import { distance } from './math.js';
 import { groundPoint, SPAWN_MARKERS, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
 export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
-import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
+import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES, isEscortKind, isNamedRivalKind } from '../content/duels.js';
 import { techniqueCost } from '../content/curios.js';
 export const ARENA = { width: WORLD.width, height: WORLD.height, margin: 64, top: GROUND.top };
 export const PLAYER_SPEED = 300;
@@ -36,10 +36,15 @@ export function createRoam(g, bus, { encounter } = {}) {
     if (near.length) return near[index % near.length];
     return SPAWN_MARKERS[index % SPAWN_MARKERS.length];
   }
+  // Escorts skip the marker ladder: they deploy around their ward after the
+  // field is built, so the named legend keeps its usual post.
+  const base = roster.filter(kind => !isEscortKind(kind));
+  let baseIndex = 0;
   const field = roster.map((kind, index) => {
     const def = DUEL_ENEMIES[kind];
-    const marker = spawnMarkerFor(index, roster.length);
-    const position = groundPoint(marker.x, marker.y);
+    const escort = isEscortKind(kind);
+    const marker = escort ? null : spawnMarkerFor(baseIndex++, base.length);
+    const position = marker ? groundPoint(marker.x, marker.y) : groundPoint(640, 500);
     // Elite encounters (and wander stages) field hardened rivals.
     const eliteScale = encounter.scale ?? (encounter.elite ? 1.35 : 1);
     const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
@@ -51,6 +56,18 @@ export function createRoam(g, bus, { encounter } = {}) {
       timer: 0, cooldown: 1.4+index*.4, windup: 0, aim: null,
       rng: seededRandom(1337+g.encounterIndex*7+index*131) };
   });
+  // The escort squad rings the pass's last named legend, facing the hero's entry.
+  const ward = field.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
+  if (ward) {
+    const escorts = field.filter(enemy => isEscortKind(enemy.kind));
+    const entryBearing = Math.atan2(500 - ward.y, 640 - ward.x);
+    escorts.forEach((escort, slot) => {
+      const bearing = entryBearing + (slot - (escorts.length - 1) / 2) * 0.42;
+      const ring = 130 + slot * 24;
+      const point = groundPoint(ward.x + Math.cos(bearing) * ring, ward.y + Math.sin(bearing) * ring);
+      Object.assign(escort, point, { homeX: point.x, homeY: point.y, tx: point.x, ty: point.y, slot, guardOf: ward.id });
+    });
+  }
   Object.assign(g.p, { x: 640, y: 500 });
   const partyFollowers = (g.party?.followers || []).map((id, index) => {
     const point = groundPoint(g.p.x - 48 * (index + 1), g.p.y + 12 * (index + 1));
@@ -128,6 +145,35 @@ export function createRoam(g, bus, { encounter } = {}) {
     if (d <= 8 || enemy.timer <= 0) {
       const point = groundPoint(enemy.homeX+(enemy.rng()*2-1)*180*(g.weather?.wanderScale || 1), enemy.homeY+(enemy.rng()*2-1)*100*(g.weather?.wanderScale || 1));
       enemy.tx = point.x; enemy.ty = point.y; enemy.timer = 1.2+enemy.rng()*1.6;
+    }
+  }
+  /** Escorts screen their ward: hold the line between the hero and the legend. */
+  function screen(enemy, dt, ward) {
+    enemy.timer -= dt;
+    if (enemy.windup > 0) return;
+    const dx = g.p.x-ward.x, dy = g.p.y-ward.y;
+    const d = Math.hypot(dx,dy) || 1;
+    const engaged = d < 560;
+    let tx = enemy.tx, ty = enemy.ty;
+    if (engaged) {
+      // Cut the approach line, spread by slot so the wall has no single gap.
+      const bearing = Math.atan2(dy,dx) + ((enemy.slot ?? 1)-1)*0.4;
+      const ring = Math.min(130+((enemy.slot ?? 1)-1)*24, Math.max(120, d-70));
+      tx = ward.x+Math.cos(bearing)*ring; ty = ward.y+Math.sin(bearing)*ring;
+    } else if (enemy.timer <= 0) {
+      // At rest the guard keeps a loose patrol ring beside its legend.
+      const bearing = enemy.rng()*Math.PI*2, ring = 90+enemy.rng()*80;
+      tx = ward.x+Math.cos(bearing)*ring; ty = ward.y+Math.sin(bearing)*ring;
+      enemy.timer = 1.2+enemy.rng()*1.6;
+    }
+    const goal = groundPoint(tx,ty);
+    const mx = goal.x-enemy.x, my = goal.y-enemy.y, md = Math.hypot(mx,my);
+    // Never press into the hero: the duel opens on the hero's step, not the guard's shove.
+    if (md > 6 && Math.hypot(goal.x-g.p.x, goal.y-g.p.y) > 84) {
+      // Intercepting guards outpace the hero so the line stays closed.
+      const pace = engaged ? 335 : enemy.speed;
+      const step = Math.min(md, pace*dt);
+      Object.assign(enemy, groundPoint(enemy.x+mx/md*step, enemy.y+my/md*step));
     }
   }
   function archer(enemy, dt) {
@@ -231,7 +277,21 @@ export function createRoam(g, bus, { encounter } = {}) {
     for (const action of pending.splice(0)) {
       act(action); if (g.mode !== 'exploring') return;
     }
-    for (const enemy of field) { wander(enemy,dt); if(enemy.ranged) archer(enemy,dt); }
+    for (const enemy of field) {
+      if (isEscortKind(enemy.kind)) {
+        const ward = field.find(rival => rival.id === enemy.guardOf);
+        if (ward) screen(enemy, dt, ward);
+        else {
+          // Ward fallen: the guard holds the ground it stands on.
+          if (!enemy.orphaned) {
+            enemy.orphaned = true;
+            Object.assign(enemy, { homeX: enemy.x, homeY: enemy.y, tx: enemy.x, ty: enemy.y, timer: 0 });
+          }
+          wander(enemy, dt);
+        }
+      } else wander(enemy, dt);
+      if (enemy.ranged) archer(enemy, dt);
+    }
     for (const shot of roam.shots) {
       shot.vx += roam.windX * dt * .7;
       const before={x:shot.x,y:shot.y}; shot.x+=shot.vx*dt; shot.y+=shot.vy*dt; shot.life-=dt;

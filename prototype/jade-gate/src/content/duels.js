@@ -25,8 +25,40 @@ export const DUEL_ROSTERS = {
   sovereign: ["sovereign"],
 };
 
+/**
+ * Escort bodyguards travel with named legend rivals (`hero-*` kinds) on Story
+ * passes. Their roam movement screens the ward: they hold the line between the
+ * hero and the legend, so closing on the special character means cutting
+ * through the escort first.
+ */
+export const ESCORT_KINDS = [
+  "gate-shield",
+  "halberdier",
+  "banner-guard",
+  "qi-warden",
+  "bell-guard",
+];
+export const isEscortKind = (kind) => ESCORT_KINDS.includes(kind);
+export const isNamedRivalKind = (kind) => typeof kind === "string" && kind.startsWith("hero-");
+
+/** Three escorts per guarded encounter, rotating deterministically per pass. */
+export function escortSquadFor(encounterId, size = 3) {
+  let hash = 7;
+  for (const ch of String(encounterId)) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  return Array.from({ length: size }, (_, i) => ESCORT_KINDS[(hash + i) % ESCORT_KINDS.length]);
+}
+
+const rosterWithEscorts = (roster, runMode, encounterId) =>
+  runMode === "campaign" && roster?.some(isNamedRivalKind)
+    ? [...roster, ...escortSquadFor(encounterId)]
+    : roster;
+
 export const rosterForEncounter = (encounterId, runMode) =>
-  (runMode === "campaign" ? STORY_ROSTERS[encounterId] : null) || DUEL_ROSTERS[encounterId];
+  rosterWithEscorts(
+    (runMode === "campaign" ? STORY_ROSTERS[encounterId] : null) || DUEL_ROSTERS[encounterId],
+    runMode,
+    encounterId,
+  );
 
 export const DUEL_ENEMIES = {
   ...STORY_RIVALS,
@@ -109,6 +141,38 @@ export const DUEL_ENEMIES = {
     name: "The Ashen Sovereign", title: "THRONE OF THE BLOOD MOON", art: "sovereign-sprite",
     hp: 280, damage: 18, reward: 1500,
     pattern: ["heavy", "poison", "double", "strike", "heavy"],
+  },
+  // Escort bodyguards: light duel stats (they are many; their roam movement,
+  // not their duels, is what shields the named legend rivals).
+  "gate-shield": {
+    escort: true,
+    name: "Gate Shieldbearer", title: "SWORN WALL OF THE LEGENDS", art: "guard-sprite",
+    hp: 60, damage: 7, reward: 90,
+    pattern: ["guard", "strike", "guard"],
+  },
+  halberdier: {
+    escort: true,
+    name: "Ashen Halberdier", title: "VANGUARD HALBERD", art: "warden-sprite",
+    hp: 46, damage: 9, reward: 110,
+    pattern: ["heavy", "strike", "guard"],
+  },
+  "banner-guard": {
+    escort: true,
+    name: "Banner Swornshield", title: "OATH OF THE GREY BANNER", art: "jade-sentinel-sprite",
+    hp: 52, damage: 7, reward: 100,
+    pattern: ["guard", "strike", "guard"],
+  },
+  "qi-warden": {
+    escort: true,
+    name: "Meridian Qi-Warden", title: "CHANNEL SCREEN", art: "meridian-acolyte-sprite",
+    hp: 44, damage: 8, reward: 100,
+    pattern: ["drain", "guard", "strike"],
+  },
+  "bell-guard": {
+    escort: true,
+    name: "Bell Custodian", title: "CLOISTER SCREEN", art: "canglan-monk-sprite",
+    hp: 54, damage: 8, reward: 100,
+    pattern: ["concuss", "guard", "strike"],
   },
 };
 

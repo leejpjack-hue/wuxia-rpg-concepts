@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { HEROES } from "../src/content/heroes.js";
 import { ACTS } from "../src/content/campaign.js";
-import { DUEL_ENEMIES, DUEL_ROSTERS, rosterForEncounter } from "../src/content/duels.js";
-import { STORY_HERO_IDS, isStoryHero } from "../src/content/story-rivals.js";
+import { DUEL_ENEMIES, DUEL_ROSTERS, rosterForEncounter, escortSquadFor } from "../src/content/duels.js";
+import { STORY_HERO_IDS, isStoryHero, STORY_ROSTERS } from "../src/content/story-rivals.js";
 import { campaignHeroUnlocked } from "../src/domain/unlocks.js";
 import { specialFor } from "../src/content/expansion.js";
 import { session, memoryStorage, playCampaign, quickParty, clearEncounter, walkMap } from "./helpers.js";
@@ -25,7 +25,9 @@ test("every non-protagonist hero appears as an illustrated named Story rival", (
 
 test("exploration and duel share the Story roster while Quick Play keeps its encounters", () => {
   const game = session(); game.start("zhao-yun", "campaign"); game.advanceDialogue(true);
-  assert.deepEqual(game.g.roam.field.map(rival => rival.kind), ["hero-guan-yu", "hero-gu-dasao"]);
+  // Story passes field an escort squad around the last named legend.
+  assert.deepEqual(game.g.roam.field.map(rival => rival.kind),
+    [...STORY_ROSTERS.vanguard, ...escortSquadFor("vanguard")]);
   assert(game.beginDuel(0));
   assert.equal(game.g.enemies[0].name, "Guan Yu");
   assert.equal(game.g.enemies[0].art, "guan-yu-sprite");
