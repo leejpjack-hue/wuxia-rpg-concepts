@@ -70,6 +70,40 @@ test("Act II plays end to end: travel, map rows, shallows, Night Heron, tea hous
   const next = ACTS.find((a) => a.id === "mount-canglan");
   assert.equal(next.available, true);
 });
+test("Act IV finale: the whole campaign clears into the Sovereign's throne and the fulfilled-oath waystation", () => {
+  const storage = memoryStorage(),
+    game = session(storage);
+  // Clear Acts I–III first.
+  completeCampaign(game);
+  game.start("zhao-yun", "campaign", "bamboo-crossing");
+  playCampaign(game);
+  game.start("zhao-yun", "campaign", "mount-canglan");
+  playCampaign(game);
+  assert(game.profile.completedActs.includes("mount-canglan"));
+  // The finale opens on its own arrival key.
+  game.start("zhao-yun", "campaign", "meridian-citadel");
+  assert.equal(game.dialogue.key, "citadel-arrival");
+  game.advanceDialogue(true);
+  assert.equal(game.act.number, 4);
+  // Gate without Act III? A fresh save cannot enter.
+  assert.throws(() => session(memoryStorage()).start("zhao-yun", "campaign", "meridian-citadel"), /preceding act/);
+  // Full walk: judgement, elite curio, Sovereign intro and fall.
+  const picks = [];
+  let guard = 0;
+  while (!["waystation", "victory", "defeat"].includes(game.mode) && guard++ < 800) {
+    if (game.mode === "dialogue") {
+      if (game.dialogue.key === "sovereign-intro") picks.push("boss-intro");
+      if (game.dialogue.key === "sovereign-fall") picks.push("boss-fall");
+      game.advanceDialogue(true);
+    } else if (game.mode === "exploring" || game.mode === "playing") clearEncounter(game);
+    else if (game.mode === "upgrade") game.chooseDiscipline("vitality");
+    else if (game.mode === "map") walkMap(game, (nodes) => nodes.find((n) => n.startsWith("elite:")) || nodes[0]);
+  }
+  assert.equal(game.mode, "waystation", `finale walk ended on ${game.mode}`);
+  assert.ok(picks.includes("boss-intro") && picks.includes("boss-fall"));
+  assert(game.profile.completedActs.includes("meridian-citadel"));
+  assert.equal(game.act.next, null); // no further act: the oath stands fulfilled
+});
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
   assert.throws(() => game.start("lu-bu", "campaign"), /Act III/);
@@ -267,13 +301,13 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
   );
 
   // Content validation still guards premature availability of unbuilt acts.
-  const unbuiltActs = structuredClone(ACTS);
-  unbuiltActs[3].available = true; // the citadel has no encounters
+  const strippedActs = structuredClone(ACTS);
+  strippedActs[3].encounters = [];
   assert.throws(
     () =>
       validateContent({
         heroes: HEROES,
-        acts: unbuiltActs,
+        acts: strippedActs,
         bosses: BOSSES,
         cultivations: CULTIVATIONS,
         disciplines: UPGRADES,
@@ -281,7 +315,7 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
     /Incomplete playable act/,
   );
 
-  // Domain gate: cannot launch Act III directly.
+  // Domain gate: cannot launch Act III without Act II reclaimed.
   const game = session();
   assert.throws(
     () => game.start("zhao-yun", "campaign", "mount-canglan"),

@@ -186,7 +186,10 @@ export class GameSession {
       this.save();
     }
     if (runMode === "campaign") {
-      const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival" : act.id === "mount-canglan" ? "canglan-arrival" : "arrival";
+      const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival"
+        : act.id === "mount-canglan" ? "canglan-arrival"
+        : act.id === "meridian-citadel" ? "citadel-arrival"
+        : "arrival";
       this.beginDialogue(arrivalKey);
     } else {
       this.transition("exploring");
@@ -809,6 +812,9 @@ export class GameSession {
       "canglan-arrival",
       "lu-bu-rival-intro",
       "lu-bu-rival-fall",
+      "citadel-arrival",
+      "sovereign-intro",
+      "sovereign-fall",
     ];
     if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);

@@ -16,6 +16,12 @@ export const DUEL_ROSTERS = {
   "monk-trial": ["canglan-monk", "canglan-monk", "canglan-monk"],
   "windward-cloister": ["shadow-assassin", "archer", "canglan-monk"],
   "lu-bu-rival": ["lu-bu-rival"],
+  // Act IV: the Imperial Meridian Citadel finale.
+  "citadel-gate": ["jade-sentinel", "jade-sentinel"],
+  "meridian-wall": ["archer", "meridian-acolyte", "archer"],
+  "inner-guard": ["jade-sentinel", "meridian-acolyte", "jade-sentinel"],
+  "citadel-watch": ["meridian-acolyte", "jade-sentinel"],
+  sovereign: ["sovereign"],
 };
 
 export const DUEL_ENEMIES = {
@@ -81,6 +87,23 @@ export const DUEL_ENEMIES = {
     name: "Lü Bu", title: "THE FLYING GENERAL", art: "lu-bu-rival-sprite",
     hp: 300, damage: 23, reward: 1000,
     pattern: ["heavy", "double", "guard", "heavy", "strike"],
+  },
+  // Act IV rivals (sprite art pending — see docs/ASSET-REQUIREMENTS.md).
+  "jade-sentinel": {
+    name: "Jade Sentinel", title: "MOON GATE WATCH", art: "canglan-monk-sprite",
+    hp: 80, damage: 14, reward: 190,
+    pattern: ["guard", "bleed", "heavy", "strike"],
+  },
+  "meridian-acolyte": {
+    name: "Meridian Acolyte", title: "QI VORTEX CHOIR", art: "guard-sprite",
+    hp: 68, damage: 15, reward: 200,
+    pattern: ["drain", "poison", "strike", "guard"],
+  },
+  sovereign: {
+    boss: true,
+    name: "The Ashen Sovereign", title: "THRONE OF THE BLOOD MOON", art: "warden-sprite",
+    hp: 280, damage: 18, reward: 1500,
+    pattern: ["heavy", "poison", "double", "strike", "heavy"],
   },
 };
 

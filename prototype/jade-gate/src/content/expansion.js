@@ -117,6 +117,11 @@ export const ENEMY_SPECIALS = {
   "skiff-archer":{ name: "River Volley", scale: 1.0, hits: 2, focus: 3 },
   warden:        { name: "Gatebreaker", scale: 2.4, focus: 4 },
   "night-heron": { name: "Silken Requiem", scale: 2.3, heroPoison: { turns: 3, amount: 3 }, drain: 15, focus: 4 },
+  "canglan-monk": { name: "Cloud Bell", scale: 1.8, focus: 4 },
+  "lu-bu-rival": { name: "Skyfall Halberd", scale: 2.4, focus: 4 },
+  "jade-sentinel": { name: "Moon Gate Slam", scale: 2.2, heroBleed: { turns: 2, amount: 3 }, focus: 3 },
+  "meridian-acolyte": { name: "Vortex Palm", scale: 2.0, drain: 15, focus: 3 },
+  sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4 },
 };
 export const specialFor = (kind) => ENEMY_SPECIALS[kind] || null;
 

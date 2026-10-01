@@ -567,13 +567,22 @@ export class GameView {
         b.className = "upgrade";
       }
       const next = actById(session.act.next);
-      this.button(
-        next?.available
-          ? `Travel to ${next.name}`
-          : `${next?.name || "The journey"} · in development`,
-        () => session.start(g.p.id, "campaign", next.id),
-        { primary: true, disabled: !next?.available },
-      );
+      if (!session.act.next) {
+        // The finale: no further act, the oath stands fulfilled.
+        this.button(
+          "THE OATH IS FULFILLED — the jianghu is yours",
+          () => session.menu(),
+          { primary: true, disabled: true },
+        );
+      } else {
+        this.button(
+          next?.available
+            ? `Travel to ${next.name}`
+            : `${next?.name || "The journey"} · in development`,
+          () => session.start(g.p.id, "campaign", next.id),
+          { primary: true, disabled: !next?.available },
+        );
+      }
       this.button("Return to roster", () => session.menu());
     } else if (mode === "victory" || mode === "defeat") {
       const won = mode === "victory";

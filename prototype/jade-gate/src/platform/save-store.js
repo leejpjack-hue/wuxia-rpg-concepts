@@ -76,6 +76,9 @@ export function sanitizeCheckpoint(raw) {
     "canglan-arrival",
     "lu-bu-rival-intro",
     "lu-bu-rival-fall",
+    "citadel-arrival",
+    "sovereign-intro",
+    "sovereign-fall",
   ];
   if (
     !act?.available ||

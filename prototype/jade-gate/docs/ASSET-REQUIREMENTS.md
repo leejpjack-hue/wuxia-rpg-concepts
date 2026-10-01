@@ -78,6 +78,24 @@ frontal mist band.
 Uses existing roster/rival art. Optional: `assets/codex-paper.png` — a paper
 texture background (1024×1024, tileable) behind the codex modal.
 
+## 7b. Act IV — the Imperial Meridian Citadel (finale)
+
+Shipped reusing existing art; all of the below are wanted replacements:
+
+- `assets/meridian-citadel.png` — the Act IV roam plate (currently the Jade
+  Gate courtyard `arena.png`). Imperial blood-moon forecourt: red-lacquered
+  pillars, white marble stairs, qi vortex spirals on the walls. Landscape
+  plate sized like `mount-canglan.png`.
+- `assets/jade-sentinel-sprite.png` — Jade Sentinel sprite (currently
+  `canglan-monk-sprite.png`). Imperial guard in jade-lacquered lamellar with
+  a moon-gate halberd. Transparent square ≥1024.
+- `assets/meridian-acolyte-sprite.png` — Meridian Acolyte sprite (currently
+  `guard-sprite.png`). Robed qi-channeler with swirling vortex sleeves.
+  Transparent square ≥1024.
+- `assets/sovereign-sprite.png` — The Ashen Sovereign boss sprite (currently
+  `warden-sprite.png`). Blood-moon regalia, multiple weapon forms hinted on
+  the back. Transparent square ≥1024, readable at boss scale.
+
 ## 8. Endless wander
 
 Optional: `assets/wander-banner.png` (16:9) for the mode's menu card and the

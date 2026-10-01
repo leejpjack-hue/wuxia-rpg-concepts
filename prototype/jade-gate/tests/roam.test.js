@@ -807,7 +807,7 @@ test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles whil
       ["jade-gate", true, "arena"],
       ["bamboo-crossing", true, "bamboo-roam"],
       ["mount-canglan", true, "mount-canglan"],
-      ["meridian-citadel", false, null],
+      ["meridian-citadel", true, "arena"], // imperial plate art pending (ASSET-REQUIREMENTS)
     ],
   );
 });

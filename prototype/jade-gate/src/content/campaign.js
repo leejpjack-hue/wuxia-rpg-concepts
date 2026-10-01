@@ -168,13 +168,39 @@ export const ACTS = [
     number: 4,
     name: "The Imperial Meridian Citadel",
     cn: "紫禁血月",
-    available: false,
-    arena: null,
+    available: true,
+    // Imperial plate art pending (see docs/ASSET-REQUIREMENTS.md); the Jade Gate
+    // courtyard reads as an imperial forecourt until the designer delivers.
+    arena: "arena",
     bossId: "sovereign",
     next: null,
     unlocks: [],
     hazards: ["qi-vortex"],
-    encounters: [],
+    map: {
+      rows: [
+        ["duel:citadel-gate"],
+        ["ambush:meridian-wall", "elite:inner-guard"],
+        ["event:travelers-gift", "rest:roadside", "duel:citadel-watch", "shop:merchant"],
+        ["boss:sovereign"],
+      ],
+    },
+    encounters: [
+      { id: "citadel-gate", title: "Enter through the bleeding gate",
+        tip: "Sentinels bar the first moon gate. The blood moon watches.",
+        enemies: ["guard", "guard", "archer"] },
+      { id: "meridian-wall", title: "Run the wall watchers",
+        tip: "Acolytes channel the qi vortex from the parapets. Keep moving.",
+        enemies: ["archer", "guard", "archer"] },
+      { id: "inner-guard", title: "Break the inner guard", elite: true,
+        tip: "The Sovereign's own sentinels. They hit harder and drop a curio.",
+        enemies: ["guard", "guard", "guard"] },
+      { id: "citadel-watch", title: "Cut the citadel watch",
+        tip: "The last patrol before the throne. Rest or shop before the moon rises.",
+        enemies: ["guard", "archer", "guard"] },
+      { id: "sovereign", title: "Face the Ashen Sovereign",
+        tip: "Below half health the Blood Moon Edict falls twice as often. Break the gathering with techniques.",
+        enemies: ["boss"], bossId: "sovereign" },
+    ],
   },
 ];
 export const actById = (id) => ACTS.find((act) => act.id === id);
@@ -251,8 +277,18 @@ export const BOSSES = {
   },
   sovereign: {
     name: "The Ashen Sovereign",
-    planned: true,
+    cn: "灰帝",
+    title: "Throne of the Blood Moon",
     mechanics: ["weapon-forms", "meridian-tempest", "perfect-evade-duel"],
+    design: {
+      perch: "The meridian throne beneath a blood moon",
+      telegraphs: "Weapon-form flourishes and spiraling qi vortexes",
+      lore: "The author of the Ashen Oath. Each weapon form is a different duel; the Blood Moon Edict gathers twice as fast below half health.",
+    },
+    phases: [
+      { at: 1, name: "First weapon form", wind: 1, cooldown: 1.2, radius: 130, damage: 26, bursts: 1 },
+      { at: 0.5, name: "Blood Moon Edict", wind: 0.6, cooldown: 0.8, radius: 90, damage: 30, bursts: 3 },
+    ],
   },
 };
 export const CULTIVATIONS = [

@@ -200,5 +200,24 @@ export function dialogueFor(key, hero) {
       line("Lü Bu", "The curse is gone. My blade is mine again. I will ride beside you to the citadel."),
       line("The road ahead", "The clouds part over Mount Canglan. Five new allies now answer the call, and the capital waits beyond the pass."),
     ];
+  if (key === "citadel-arrival")
+    return [
+      line("The Meridian Citadel", "Beneath a blood moon, the imperial gates stand open. The Ashen Sovereign knows you have come, and the qi vortex sings along the walls."),
+      line(hero.name, "Then let him watch us walk in. Every oath he broke is waiting on this side of the moon."),
+    ];
+  if (key === "sovereign-intro")
+    return [
+      line("The Ashen Sovereign", hero.id === "lu-bu"
+        ? "The Flying General, unleashed at last. Did you truly think breaking my oath would break me?"
+        : hero.id === "venom-adept"
+          ? "My own adder, curled at the feet of peasants. The vortex taught you better than this."
+          : "Four blades and a borrowed moon. I authored every oath you cut — kneel, and I will write you a kinder one."),
+      line(hero.name, "You wrote the oaths with other people's blood. Tonight the ink runs out. Take your form — we end this before the moon does."),
+    ];
+  if (key === "sovereign-fall")
+    return [
+      line("The Ashen Sovereign", "So the moon sets… Keep your jianghu, then. It was never the throne I feared losing — only the silence after."),
+      line("The road ahead", "The blood moon fades over the Meridian Citadel. The gates open onto a ordinary dawn, and the jianghu belongs to whoever walks it kindly. The oath is fulfilled."),
+    ];
   throw new Error(`Unknown dialogue: ${key}`);
 }
