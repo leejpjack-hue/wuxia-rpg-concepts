@@ -30,6 +30,10 @@ Music is synthesized in the browser. Acts II and III each have their own 32-bar 
 
 ## Engagement on the pass
 
+The restored maze spans four 2,560-unit stretches. The newer south clearing remains connected, while the east opening leads through alternating gaps to the distant Act I Warden. Open **Route map / 経路図** below the party health chips to see walls, your camera, companions and remaining rivals; markers disappear as rivals are defeated. Collapse it to keep the controls compact. Japanese remains the default.
+
+Each act now has its own exploration ground: natural forest in Act I, a lantern-lit bamboo crossing derived from the latest `bamboo-roam.png` in Act II, and a new Mount Canglan stone terrace in Act III. Act II card duels use that latest original landscape. Natural blocker cutouts follow the collision walls, and the terrace uses their rock detail. Zhao Yun and Hu Sanniang retain their original clean transparent sprites with subtle walking motion; unapproved replacement sheets remain archived in the manifest. Lu Zhishen retains his approved sheet animation.
+
 The pass and the duel are one fight. **First blood**: land a real-time strike on a swordsman before contact and they open the duel reeling — their first reply is lost. **Sneak (C)**: crouch to halve your speed and shrink the archers' watchful range (Nie Yinniang, the Hidden Blade, sneaks closest of all); sneaking into a rival ambushes the duel the same way. First-blood rivals glow on the pass.
 
 ## Meridian cultivation

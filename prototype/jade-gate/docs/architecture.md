@@ -106,3 +106,7 @@ Validation: 73 tests pass; JavaScript syntax and 16 image checks pass. Browser v
 ## Act II/III content and unlocks
 
 Playable act data lives in `src/content/campaign.js`, with its rival rosters and art IDs in `src/content/duels.js`. `src/domain/unlocks.js` validates campaign hero availability against act completions and saved rescues. `earnedHeroes` is persisted and sanitized separately from Quick Play records. Stage-specific arena and enemy assets are listed in `docs/asset-manifest.json`; `src/content/music-score.js` supplies dedicated 32-bar combat and boss themes.
+
+## Restored exploration scenes and route map (1 October 2026)
+
+The current scene and terrain contract is documented in the root `docs/GAME-ARCHITECTURE.md`. `roam-scenes.js` selects an act-specific ground plate independently of its card arena. `ground.js` restores the four-stretch route while retaining the newer south spur. `blocker-art.js` stamps natural cutouts along collision walls. `route-map.js` renders a read-only overview of walls, camera, party and remaining rivals. The character manifest's `runtimeApproved` flag prevents unapproved Zhao Yun and Hu Sanniang sheets from replacing the original clean sprites. The new regression suite is `tests/scene-merge.test.js`.

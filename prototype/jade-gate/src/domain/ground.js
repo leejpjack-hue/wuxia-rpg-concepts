@@ -3,8 +3,9 @@ import { clamp } from './math.js';
 /** Fixed on-screen frame. World may be larger; roam-view scrolls via camera. */
 export const VIEWPORT = { width: 1280, height: 720 };
 
-/** Logical roam extent — ≥2× the old single-screen arena. */
-export const WORLD = { width: 2560, height: 1440 };
+/** Four forest stretches, retaining the newer south pocket. */
+export const MAZE_SEGMENT_WIDTH = 2560;
+export const WORLD = { width: MAZE_SEGMENT_WIDTH * 4, height: 1440 };
 
 // Feet-space across the enlarged world. Same courtyard trapezoid flare as the
 // original 1280×720 pass, stretched so the first screen stays walkable and the
@@ -13,9 +14,9 @@ export const GROUND = {
   top: 290,
   bottom: 1350,
   rearLeft: 280,
-  rearRight: 2280,
+  rearRight: WORLD.width - 280,
   frontLeft: 135,
-  frontRight: 2425,
+  frontRight: WORLD.width - 135,
 };
 
 export function groundEdges(y) {
@@ -39,6 +40,7 @@ export const SPAWN_MARKERS = [
   { id: 'corridor-gap', x: 1450, y: 500 },
   { id: 'second-pocket', x: 1850, y: 600 },
   { id: 'third-pocket', x: 1900, y: 1050 },
+  { id: 'far-clearing', x: 9650, y: 650 },
 ].map(marker => ({ id: marker.id, ...groundPoint(marker.x, marker.y) }));
 
 export function onGround({ x, y }) {
@@ -167,8 +169,16 @@ export const BLOCKERS = [
   { x: THIRD_ZONE.right, y: SECOND_ZONE.bottom, w: SECOND_ZONE.right - THIRD_ZONE.right, h: GROUND.bottom - SECOND_ZONE.bottom },
   // Third pocket south end wall — encloses the spur
   { x: THIRD_ZONE.left, y: THIRD_ZONE.bottom, w: THIRD_ZONE.right - THIRD_ZONE.left, h: GROUND.bottom - THIRD_ZONE.bottom },
-  // East pocket end wall — encloses the room; leave no east bypass
-  { x: SECOND_ZONE.right, y: GROUND.top, w: 80, h: GROUND.bottom - GROUND.top },
+  // Continue east through alternating openings across the restored long route.
+  ...[
+    { x: 3500, gapTop: 570, gapBottom: 820 },
+    { x: 5350, gapTop: 420, gapBottom: 670 },
+    { x: 7200, gapTop: 580, gapBottom: 830 },
+    { x: 9050, gapTop: 440, gapBottom: 740 },
+  ].flatMap(({ x, gapTop, gapBottom }) => [
+    { x, y: GROUND.top, w: 100, h: gapTop - GROUND.top },
+    { x, y: gapBottom, w: 100, h: GROUND.bottom - gapBottom },
+  ]),
 ];
 
 /** Resolve feet against radius-expanded AABBs, sweeping X then Y to slide.

@@ -56,7 +56,7 @@ export const ACTS = [
       },
       {
         id: "warden",
-        title: "Defeat the Ashen Warden",
+        title: "Reach the far clearing and defeat the Ashen Warden",
         tip: "Below half health, the Warden chains thrusts. Interrupt with a technique.",
         enemies: ["boss", "archer", "guard", "guard", "archer"],
         bossId: "warden",
@@ -69,7 +69,7 @@ export const ACTS = [
     name: "Whispering Bamboo & the River Crossing",
     cn: "幽篁夜渡",
     available: true,
-    arena: "bamboo-river",
+    arena: "bamboo-roam",
     bossId: "night-heron",
     next: "mount-canglan",
     unlocks: ["wu-song"],

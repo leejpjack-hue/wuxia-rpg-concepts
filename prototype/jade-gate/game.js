@@ -37,12 +37,12 @@ const art = [
   "archer-sprite",
   "warden-sprite",
   "bamboo-river", "bamboo-maze", "bamboo-roam", "mount-canglan",
+  "bamboo-maze-natural", "bamboo-thicket-blocker",
+  "bamboo-crossing-ground", "canglan-terrace-ground",
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
   // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.
-  "zhao-yun-sheet",
   "lu-zhishen-sheet",
-  "hu-sanniang-sheet",
 ];
 view.setReady(true);
 let statusLanguageOff;

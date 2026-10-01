@@ -68,7 +68,7 @@ test('older saves earn completed-act allies without accepting old quick-play unl
 });
 
 test('Acts II and III use their own illustrated enemies, translated story and long procedural themes', () => {
-  assert.equal(ACTS[1].arena,'bamboo-river');
+  assert.equal(ACTS[1].arena,'bamboo-roam');
   assert.equal(ACTS[2].arena,'mount-canglan');
   for (const kind of ['shadow-assassin','skiff-archer','night-heron','canglan-monk','lu-bu-rival'])
     assert.notEqual(DUEL_ENEMIES[kind].art, 'guard-sprite');

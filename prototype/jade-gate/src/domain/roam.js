@@ -27,7 +27,8 @@ export function createRoam(g, bus, { encounter } = {}) {
   /** CAM-09 markers + CAM-04 scroll: last (or sole) rival homes past the
    *  first 1280×720 screen; earlier rivals stay on near markers. */
   function spawnMarkerFor(index, count) {
-    const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+    if (encounter?.id === 'warden') return SPAWN_MARKERS.find(m => m.id === 'far-clearing');
+    const far = SPAWN_MARKERS.filter(m => m.id !== 'far-clearing' && (m.x > VIEWPORT.width || m.y > VIEWPORT.height));
     const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
     if (far.length && (count === 1 || index === count - 1)) {
       return far[index % far.length];

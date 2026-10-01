@@ -1,0 +1,6 @@
+Use case: stylized-concept
+Asset type: repeatable overhead terrain plate for a 2D wuxia RPG exploration maze, rendered beneath moving character sprites
+Primary request: create a natural bamboo forest floor map image, a broad continuous walkable earthen trail and compacted stone/gravel clearing winding gently left-to-right through moss, ferns, leaf litter and bamboo shadows. Terrain must read clearly as ground from a high three-quarter overhead camera, not a scenic horizon or receding front-view perspective. Keep the entire center band walkable and visible; thicker forest detail near top and bottom. Visually compatible with refined painterly Chinese wuxia game art.
+Composition/framing: wide 16:9 landscape map tile. Designed for horizontal repetition: left and right edges have matching neutral forest-floor tones and trail height, with no prominent objects cut by side edges. No forced central vanishing point. Even detail across width.
+Lighting/mood: soft daylight filtered through bamboo leaves, grounded realistic texture, muted jade green and warm earth, subtle atmosphere.
+Constraints: environment only; no people, enemies, buildings, words, UI, visible grids, geometric stone slabs, painted walls, signs, or watermarks. High resolution and game-ready.

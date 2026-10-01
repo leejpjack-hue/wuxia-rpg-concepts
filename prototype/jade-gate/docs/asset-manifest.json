@@ -79,7 +79,9 @@
       }
     },
     "method": "Sprite Forge · Grok GenerateImage · identity from reverted key+sprite · chroma matte · height-locked 512² pack",
-    "prompt": "(see Sprite Forge pack 2026-10-01 · PASS-WITH-NOTES)"
+    "prompt": "(see Sprite Forge pack 2026-10-01 · PASS-WITH-NOTES)",
+    "runtimeApproved": false,
+    "reviewNote": "Use the original clean sprite with CSS movement and strike cinematics; retain this sheet for a future visual review."
   },
   {
     "id": "lu-zhishen",
@@ -243,7 +245,9 @@
       }
     },
     "method": "Antigravity Ops · WU-FRAME-07P",
-    "prompt": "(see prompts/hu-sanniang-sheet.txt)"
+    "prompt": "(see prompts/hu-sanniang-sheet.txt)",
+    "runtimeApproved": false,
+    "reviewNote": "Use the original clean sprite with CSS movement and strike cinematics; retain this sheet for a future visual review."
   },
   {
     "id": "lu-bu",
@@ -520,5 +524,30 @@
     "method": "Antigravity remake · transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
     "prompt": "Locked Antigravity remake 2026-09-30. Same adult Yang Zhi: blue birthmark, steel-blue kit, Chinese sabre. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
     "reference": "assets/yang-zhi.png"
+  },
+  {
+    "id": "bamboo-maze-natural",
+    "file": "assets/bamboo-maze-natural.png",
+    "method": "built-in image_gen · 2026-09-30",
+    "prompt": "(see prompts/bamboo-maze-natural.txt)"
+  },
+  {
+    "id": "bamboo-thicket-blocker",
+    "file": "assets/bamboo-thicket-blocker.png",
+    "method": "built-in image_gen · 2026-09-30",
+    "prompt": "(see prompts/bamboo-thicket-blocker.txt)"
+  },
+  {
+    "id": "bamboo-crossing-ground",
+    "file": "assets/bamboo-crossing-ground.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: production 2D wuxia RPG exploration background tile. Reference image 1 is the latest approved Stage II moonlit bamboo river painting; preserve its painterly realism, blue-green nighttime palette, warm lanterns, wet stone and dense bamboo identity. Recompose as an elevated near-orthographic overhead game ground plate, not a horizon landscape. Wide 16:9, ideally 2560x1440. Broad continuous walkable mossy stone and earth floor fills the central 75 percent of image height, spanning edge-to-edge horizontally, with a secondary clearing extending toward bottom center. Dense bamboo and boulders along the top and bottom edges. A shallow narrow stream belongs at the far bottom boundary, with stepping stones; never put river water across the central walkable lane. Small warm lanterns along the boundary. Match left/right edges for horizontal repetition, evenly lit legible ground, strong rich detailed textures. No sky, no horizon, no people, no text, no UI, no grids, no square hedge walls, no giant perspective vanishing point. The lane must stay open so gameplay sprites can walk across it. Keep upper ground at roughly image y=290 and lower ground at y=1350.",
+    "reference": "assets/bamboo-roam.png"
+  },
+  {
+    "id": "canglan-terrace-ground",
+    "file": "assets/canglan-terrace-ground.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: production 2D wuxia RPG Stage III exploration background tile, Mount Canglan. Create a highly detailed hand-painted realistic game scene from an elevated near-orthographic overhead camera, wide 16:9 ideally 2560x1440, continuous horizontal stone mountain terrace with ancient pale slate paving, weathered cracks, moss, pine needles. The playable central seventy-five percent of image height must be entirely flat solid stone and span left to right, with a broad paved south spur near center. At the top and bottom edges only: natural granite crags, wind-bent pines, restrained old temple stone balustrades, small bronze lanterns and a distant bell pavilion near the upper boundary. Clouds and mist visible only beyond the outer stone boundary, never across the walkable floor. Cool dawn light with subtle warm lantern accents, painterly texture compatible with high-quality Chinese wuxia character sprites. Left and right edges compatible for horizontal repetition; keep most floor open for roaming and duel approach. No people, no creatures, no text, no interface, no horizon, no sky panel, no floating islands within the play lane, no stair steps across the floor, no huge perspective vanishing point, no grid overlay."
   }
 ]

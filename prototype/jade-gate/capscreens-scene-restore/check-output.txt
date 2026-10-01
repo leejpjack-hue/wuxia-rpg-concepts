@@ -1,0 +1,5 @@
+
+> check
+> node scripts/check.mjs
+
+Checked all JavaScript modules, 55 images and both assets for 15 heroes; validated 3 action sheet(s) (3×4 RGBA grid + anim keys).

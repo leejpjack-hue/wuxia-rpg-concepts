@@ -1,6 +1,15 @@
 // English source phrases are stable message keys. Templates also cover domain
 // journals, allowing an existing battle log to change language without mutation.
 export const messages = {
+  "Route map": "経路図",
+  "You": "自分",
+  "Companions": "仲間",
+  "Rivals": "敵",
+  "Reach the far clearing and defeat the Ashen Warden": "奥の広場へ進み、灰旗の守将を倒せ",
+  "Moonlit bamboo ground": "月夜の竹林の地面",
+  "Canglan stone terrace": "滄嵐山の石の広場",
+  "Natural forest trail": "自然の林道",
+
   'Blades of the Four — Card RPG': '四人の刃 — 武侠カードRPG',
   'BLADES OF THE FOUR': '四人の刃',
   'A WUXIA CARD RPG': '武侠カードRPG',

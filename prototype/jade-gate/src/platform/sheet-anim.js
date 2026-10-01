@@ -27,6 +27,7 @@ export function loadSheetManifest(manifestRows, heroId) {
   if (!heroId || !Array.isArray(manifestRows)) return null;
   const id = `${heroId}-sheet`;
   const row = manifestRows.find((entry) => entry?.id === id);
+  if (row?.runtimeApproved === false) return null;
   if (!row?.file || !(row.frameW > 0) || !(row.frameH > 0) || !row.anims) return null;
   return row;
 }

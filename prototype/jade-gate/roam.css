@@ -22,8 +22,8 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  /* WORLD plate (2560×1440) on the 1280×720 frame. applyCamera pans it. */
-  background: 0 0 / 200% 200% no-repeat url("assets/bamboo-roam.png"), #16232a;
+  /* Per-act ground plate on the 1280×720 frame. applyCamera pans it. */
+  background: 0 26% / 200% 238.9% repeat-x url("assets/bamboo-maze-natural.png"), #16232a;
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -141,13 +141,27 @@
   /* Keep painted height from #roam-hero (27%) / .roam-follower (22%). */
 }
 
-.roam-blocker {
+.roam-thicket {
   position: absolute;
-  box-sizing: border-box;
-  background: #1a2a28;
-  border: 3px solid #667b69;
+  background: center / contain no-repeat var(--blocker-art, url("assets/bamboo-thicket-blocker.png"));
+  transform: translate(-50%, -50%) scaleX(var(--flip, 1)) rotate(var(--tilt, 0deg));
   pointer-events: none;
 }
+@keyframes original-walk {
+  from { transform: translate(-50%, -100%) scaleX(var(--face, 1)); }
+  to { transform: translate(-50%, -102%) scaleX(var(--face, 1)); }
+}
+#roam-hero.original-walk,
+.roam-stage img.roam-follower.original-walk { animation: original-walk .27s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  #roam-hero.original-walk, .roam-stage img.roam-follower.original-walk { animation: none; }
+}
+.reduced-motion .original-walk { animation: none !important; }
+.route-overview { align-self: center; width: min(100%, 520px); padding: 8px 12px; border: 1px solid #bfe9df33; border-radius: 6px; background: #071410; }
+.route-overview summary { cursor: pointer; font-size: 12px; color: var(--gold); }
+.route-overview canvas { display: block; width: 100%; height: auto; aspect-ratio: 5 / 1; margin-top: 6px; }
+.route-legend { display: flex; gap: 16px; justify-content: center; margin: 3px 0; font-size: 11px; }
+.route-you { color: #fff3cf; } .route-party { color: #79c5dc; } .route-rivals { color: #ed8f75; }
 
 .roam-spawn-marker {
   position: absolute;
@@ -160,4 +174,13 @@
   background: #e8c54755;
   box-shadow: 0 0 14px #c9a22799, inset 0 0 8px #c9a22766;
   pointer-events: none;
+}
+
+/* The existing cutout contains mossy rocks below the bamboo; use its rock
+   detail for terrace barriers while keeping the source asset unchanged. */
+.roam-stage[data-scene="mount-canglan"] .roam-thicket {
+  background-size: 100% 200%;
+  background-position: center bottom;
+  border-radius: 45%;
+  filter: saturate(.5) brightness(1.15);
 }

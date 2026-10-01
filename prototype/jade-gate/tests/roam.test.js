@@ -1,4 +1,4 @@
-import { BLOCKERS, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone, THIRD_ZONE, inThirdZone } from "../src/domain/ground.js";
+import { BLOCKERS, MAZE_SEGMENT_WIDTH, SPAWN_MARKERS, resolveBlockers, groundEdges, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE, CAMERA_LERP_RATE, onGround, groundPoint, SECOND_ZONE, inSecondZone, THIRD_ZONE, inThirdZone } from "../src/domain/ground.js";
 import { readFileSync } from "node:fs";
 import { RoamView } from "../src/presentation/roam-view.js";
 import { ACTS } from "../src/content/campaign.js";
@@ -53,7 +53,7 @@ test("roaming simulation is identical at 30 and 120 FPS and clamps to the pass",
     b = JSON.parse(run(120));
   assert.deepEqual(a, b);
   assert.equal(a.mode, "exploring");
-  assert.equal(a.p.x, SECOND_ZONE.right - 18); // east pocket end wall (radius 18)
+  assert(a.p.x > SECOND_ZONE.right); // the former east wall now opens onto the long route
 });
 
 test("roam requires a statted encounter and parks the hero away from rivals", () => {
@@ -438,14 +438,14 @@ test("hero stays in the first courtyard while spawn markers cover the maze path"
 test("field homes use spawn markers in roster order, including past the barrier", () => {
   const g = game();
   g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
-  const far = SPAWN_MARKERS.filter(m => m.x > VIEWPORT.width || m.y > VIEWPORT.height);
+  const far = SPAWN_MARKERS.filter(m => m.id !== "far-clearing" && (m.x > VIEWPORT.width || m.y > VIEWPORT.height));
   const near = SPAWN_MARKERS.filter(m => m.x <= VIEWPORT.width && m.y <= VIEWPORT.height);
   for (const id of ["vanguard", "gate-vanguard", "warden"]) {
     const roam = createRoam(g.g, g.bus, { encounter: { id } });
     const count = roam.field.length;
     assert.equal(count, id === "vanguard" ? 2 : id === "warden" ? 1 : 3);
     roam.field.forEach((enemy, index) => {
-      const marker = (far.length && (count === 1 || index === count - 1))
+      const marker = id === "warden" ? SPAWN_MARKERS.find(m => m.id === "far-clearing") : (far.length && (count === 1 || index === count - 1))
         ? far[index % far.length]
         : near[index % near.length];
       assert.deepEqual({ x: enemy.x, y: enemy.y }, { x: marker.x, y: marker.y });
@@ -472,7 +472,7 @@ test("corridor opens into a roamable second pocket past the barrier", () => {
   assert.notDeepEqual(resolveBlockers(1800, 320), { x: 1800, y: 320 });
   // South remnant west of third-pocket mouth (x < THIRD_ZONE.left)
   assert.notDeepEqual(resolveBlockers(1550, 1000), { x: 1550, y: 1000 });
-  assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, SECOND_ZONE.right - 18);
+  assert.equal(resolveBlockers(2400, 500, 18, { x: 1800, y: 500 }).x, 2400);
   // Long step still cannot tunnel the CAM-02 corridor walls.
   assert.equal(resolveBlockers(1800, 700, 18, { x: 1300, y: 700 }).x, 1382);
 });
@@ -495,9 +495,9 @@ test("lead paths through corridor into second zone and cannot clip pocket walls"
   assert(g.g.p.x < THIRD_ZONE.left);
   walk(g, 1, { dy: -1 });
   assert(inSecondZone(g.g.p));
-  // East end wall stops further travel.
+  // The east opening connects the pocket to the restored route.
   walk(g, 4, { dx: 1 });
-  assert.equal(g.g.p.x, SECOND_ZONE.right - 18);
+  assert(g.g.p.x > SECOND_ZONE.right);
   assertClear(g.g.p);
   // First-courtyard ground math unchanged for spawn lane points.
   assert(onGround(groundPoint(640, 500)));
@@ -746,52 +746,6 @@ test("swap cue dismissed by timeout and blocked mid-duel still holds", () => {
   assert.equal(session.swapLead("lu-zhishen"), false);
 });
 
-test("roam backdrop is the WORLD-sized natural bamboo plate and pans with the camera", () => {
-  const png = readFileSync(new URL("../assets/bamboo-roam.png", import.meta.url));
-  assert.equal(png.subarray(1, 4).toString(), "PNG");
-  assert.equal(png.readUInt32BE(16), WORLD.width);
-  assert.equal(png.readUInt32BE(20), WORLD.height);
-
-  const arena = { style: {}, dataset: {} };
-  const view = Object.create(RoamView.prototype);
-  view.$ = (id) => {
-    assert.equal(id, "roam-arena");
-    return arena;
-  };
-  const paint = (cam) => {
-    view.applyCamera(cam);
-    return arena.style;
-  };
-
-  const origin = paint({ x: 0, y: 0 });
-  assert.equal(arena.dataset.stage, "assets/bamboo-roam.png");
-  assert.equal(origin.backgroundImage, 'url("assets/bamboo-roam.png")');
-  assert.equal(origin.backgroundRepeat, "no-repeat");
-  assert.equal(origin.backgroundSize, `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`);
-  assert.equal(origin.backgroundPosition, "0% 0%");
-
-  const far = paint({ x: WORLD.width - VIEWPORT.width, y: WORLD.height - VIEWPORT.height });
-  assert.equal(far.backgroundPosition, "100% 100%");
-  assert.equal(far.backgroundImage, 'url("assets/bamboo-roam.png")');
-
-  const mid = paint({
-    x: (WORLD.width - VIEWPORT.width) / 2,
-    y: (WORLD.height - VIEWPORT.height) / 2,
-  });
-  assert.equal(mid.backgroundPosition, "50% 50%");
-
-  // Backdrop only: act gates and duel arena ids stay as shipped.
-  assert.deepEqual(
-    ACTS.map((act) => [act.id, act.available, act.arena]),
-    [
-      ["jade-gate", true, "arena"],
-      ["bamboo-crossing", true, "bamboo-river"],
-      ["mount-canglan", true, "mount-canglan"],
-      ["meridian-citadel", false, null],
-    ],
-  );
-});
-
 test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles while moving", () => {
   // Standing must not advance looping idle over time (Jack playtest).
   const makeNode = (heroId) => {
@@ -808,7 +762,7 @@ test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles whil
       src: `assets/${heroId}-sprite.png`,
     };
   };
-  for (const heroId of ["zhao-yun", "lu-zhishen", "hu-sanniang"]) {
+  for (const heroId of ["lu-zhishen"]) {
     const node = makeNode(heroId);
     const view = Object.create(RoamView.prototype);
     view.sheetByHero = new Map();
@@ -849,7 +803,7 @@ test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles whil
     ACTS.map((act) => [act.id, act.available, act.arena]),
     [
       ["jade-gate", true, "arena"],
-      ["bamboo-crossing", true, "bamboo-river"],
+      ["bamboo-crossing", true, "bamboo-roam"],
       ["mount-canglan", true, "mount-canglan"],
       ["meridian-citadel", false, null],
     ],

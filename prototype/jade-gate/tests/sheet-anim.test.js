@@ -32,7 +32,7 @@ test("loadSheetManifest returns null when sheet row is missing (legacy still)", 
 });
 
 test("wired FRAME-00 sheets resolve from the live manifest", () => {
-  for (const heroId of ["zhao-yun", "lu-zhishen", "hu-sanniang"]) {
+  for (const heroId of ["lu-zhishen"]) {
     const sheet = loadSheetManifest(assetManifest, heroId);
     assert.equal(sheet.id, `${heroId}-sheet`);
     assert.equal(sheet.file, `assets/${heroId}-sheet.png`);

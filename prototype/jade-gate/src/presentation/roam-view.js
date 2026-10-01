@@ -1,7 +1,10 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { BLOCKERS, SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
+import { roamScene } from "../content/roam-scenes.js";
+import { BLOCKER_ART } from "./blocker-art.js";
+import { routeMapModel, paintRouteMap } from "./route-map.js";
 import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
@@ -22,8 +25,6 @@ const KEYS = {
   ArrowRight: "right",
 };
 
-/** WORLD-sized natural bamboo roam plate (WU-CAM-11). Camera pans it. Act arenas stay on the duel table. */
-const ROAM_BACKDROP = "assets/bamboo-roam.png";
 
 /** Arena roaming scene: d-pad/keyboard movement drives the domain roam step. */
 export class RoamView {
@@ -38,9 +39,11 @@ export class RoamView {
     this.context = this.$("roam-effects")?.getContext("2d");
     this.sprites = new Map();
     this.followers = new Map();
-    this.blockers = BLOCKERS.map(() => {
+    this.blockerArt = BLOCKER_ART.map(prop => {
       const node = document.createElement("div");
-      node.className = "roam-blocker";
+      node.className = "roam-thicket";
+      node.style.setProperty("--flip", prop.flip);
+      node.style.setProperty("--tilt", `${prop.tilt}deg`);
       node.setAttribute("aria-hidden", "true");
       this.$("roam-arena").appendChild(node);
       return node;
@@ -148,24 +151,22 @@ export class RoamView {
     node.style.left = `${(screen.x / VIEWPORT.width) * 100}%`;
     node.style.top = `${(screen.y / VIEWPORT.height) * 100}%`;
   }
-  /**
-   * Pan the WORLD-sized bamboo plate. One image covers the roam world;
-   * CSS % position maps cam onto that plate (0% origin, 100% far edge).
-   * Followers share this camera.
-   */
+  /** The scene owns crop/scale; camera movement never stretches art to WORLD. */
   applyCamera(cam) {
     const arena = this.$("roam-arena");
     if (!arena) return;
-    const spanX = WORLD.width - VIEWPORT.width;
-    const spanY = WORLD.height - VIEWPORT.height;
-    const px = spanX > 0 ? (cam.x / spanX) * 100 : 0;
-    const py = spanY > 0 ? (cam.y / spanY) * 100 : 0;
-    if (arena.dataset.stage !== ROAM_BACKDROP) {
-      arena.dataset.stage = ROAM_BACKDROP;
-      arena.style.backgroundImage = `url("${ROAM_BACKDROP}")`;
+    const scene = roamScene(this.session?.act?.id);
+    const file = `assets/${scene.art}.png`;
+    if (arena.dataset.stage !== file) {
+      arena.dataset.stage = file;
+      arena.dataset.scene = this.session?.act?.id || "jade-gate";
+      arena.style.backgroundImage = `url("${file}")`;
+      arena.style.setProperty?.("--blocker-art", `url("assets/${scene.blocker}.png")`);
     }
-    arena.style.backgroundRepeat = "no-repeat";
-    arena.style.backgroundSize = `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`;
+    const px = cam.x / (scene.tileWidth - VIEWPORT.width) * 100;
+    const py = (cam.y + scene.topCrop) / (scene.artHeight - VIEWPORT.height) * 100;
+    arena.style.backgroundRepeat = "repeat-x";
+    arena.style.backgroundSize = `${scene.tileWidth / VIEWPORT.width * 100}% ${scene.artHeight / VIEWPORT.height * 100}%`;
     arena.style.backgroundPosition = `${px}% ${py}%`;
   }
   sync() {
@@ -359,12 +360,17 @@ export class RoamView {
     SPAWN_MARKERS.forEach((marker, index) => {
       this.place(this.spawnMarkers[index], marker.x, marker.y, cam);
     });
-    BLOCKERS.forEach((b, index) => {
-      const node = this.blockers[index];
-      this.place(node, b.x, b.y, cam);
-      node.style.width = `${b.w / VIEWPORT.width * 100}%`;
-      node.style.height = `${b.h / VIEWPORT.height * 100}%`;
+    BLOCKER_ART.forEach((prop, index) => {
+      const node = this.blockerArt[index];
+      this.place(node, prop.x, prop.y, cam);
+      node.style.width = `${prop.size / VIEWPORT.width * 100}%`;
+      node.style.height = `${prop.size / VIEWPORT.height * 100}%`;
     });
+    const routeCanvas = this.$("roam-route-map");
+    if (routeCanvas) {
+      paintRouteMap(routeCanvas.getContext("2d"), routeMapModel(g, cam), routeCanvas.width, routeCanvas.height);
+      routeCanvas.setAttribute("aria-label", this.t("Route map") + ": " + this.t(`${g.roam.field.length} ${g.roam.field.length === 1 ? "RIVAL" : "RIVALS"} ON THE PASS`));
+    }
     this.drawPartyHud(g);
     const sneak = this.$("roam-sneak");
     if (sneak) sneak.setAttribute("aria-pressed", String(!!g.roam.sneaking));
@@ -463,6 +469,7 @@ export class RoamView {
    */
   applyActorSheet(node, heroId, moving) {
     if (!node) return;
+    node.classList?.toggle?.("original-walk", ["zhao-yun", "hu-sanniang"].includes(heroId) && moving);
     const sheet = this.sheetFor(heroId);
     if (!sheet?.anims) {
       clearSheetFrame(node);
@@ -482,7 +489,7 @@ export class RoamView {
   dispose() {
     if (this.cancel && this.frame) this.cancel(this.frame);
     this.off.forEach((off) => off());
-    this.blockers.forEach((node) => node.remove());
+    this.blockerArt.forEach((node) => node.remove());
     this.spawnMarkers.forEach((node) => node.remove());
     this.document.defaultView?.removeEventListener("blur", this.clearKeys);
     this.document.removeEventListener("visibilitychange", this.clearKeys);
