@@ -248,14 +248,36 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
   }
   function preview(action) {
     if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone ||
-      !["attack", "guard", "technique", "tea"].includes(action)) return null;
+      !["attack", "guard", "technique", "tea", "signature"].includes(action)) return null;
     const p = g.p, enemy = g.enemies[0], next = intent(enemy), technique = HERO_TECHNIQUES[p.id];
+    const signature = signatureById(p.id);
     if (action === "technique" && p.flow < techniqueCost(p, g.curios) || action === "tea" && (!g.duel.tea || p.hp >= p.maxHp)) return null;
-    const damage = Math.min(enemy.hp, Math.round(p.damage * p.power * (action === "attack" ? (next.kind === "guard" ? .5 : 1) : action === "technique" ? technique.multiplier : 0)));
+    if (action === "signature" && (!signature || p.flow < signature.flow)) return null;
+    const base = p.damage * p.power;
+    let multiplier = 0, protect = 0, healAmt = 0, vanish = false;
+    if (action === "attack") multiplier = next.kind === "guard" ? .5 : 1;
+    else if (action === "technique") { multiplier = technique.multiplier; protect = technique.protect || 0; healAmt = technique.heal || 0; }
+    else if (action === "tea") healAmt = 30;
+    else if (action === "guard") protect = .8;
+    else if (action === "signature") {
+      const a = signature.archetype;
+      if (a === "counter") { multiplier = signature.damage || 0; protect = signature.power || 0; healAmt = signature.heal || 0; }
+      else if (a === "focusGuard") { protect = signature.power || 0; healAmt = signature.heal || 0; }
+      else if (a === "bleedCut" || a === "drainStrike") multiplier = signature.damage || 0;
+      else if (a === "execute") {
+        const statused = !!(g.duel.status?.enemy?.bleed || g.duel.status?.enemy?.poison);
+        multiplier = (signature.damage || 0) * (statused ? 1 + (signature.bonus || 0) : 1);
+        protect = signature.power || 0;
+      } else if (a === "charged") protect = signature.power || 0;
+      else if (a === "cleanse") healAmt = signature.heal || 0;
+      else if (a === "doubleSig") multiplier = (signature.damage || 0) * (signature.hits || 2);
+      else if (a === "vanish") { vanish = true; }
+    }
+    const damage = Math.min(enemy.hp, Math.round(base * multiplier));
     const lethal = damage >= enemy.hp;
-    const heal = Math.min(p.maxHp - p.hp, action === "tea" ? 30 : action === "technique" ? technique.heal : 0);
+    const heal = Math.min(p.maxHp - p.hp, healAmt + (action === "tea" && g.curios?.includes("river-charm") ? 15 : 0));
     const stunned = action === "technique" && technique.stun;
-    const incoming = lethal || stunned ? 0 : Math.min(p.hp + heal, Math.round(next.damage * (1 - (action === "guard" ? .8 : action === "technique" ? technique.protect : 0))));
+    const incoming = lethal || stunned || vanish ? 0 : Math.min(p.hp + heal, Math.round(next.damage * (1 - protect)));
     return { damage, incoming, lethal, heal, stunned, intent: next.kind };
   }
   function act(action, { silent = false } = {}) {

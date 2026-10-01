@@ -101,7 +101,9 @@ function filmFixture(manifest=[]){
       toggle(name,force){const on=force===undefined?!this.contains(name):!!force;on?this.add(name):this.remove(name);},
     },
     setAttribute(){},
-    querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:'',dataset:{},style:{},classList:{
+    querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:'',hidden:true,className:'',dataset:{},style:{},
+      removeAttribute(name){if(name==='src')this.src='';},
+      classList:{
       values:new Set(),add(name){this.values.add(name);},remove(name){this.values.delete(name);},contains(name){return this.values.has(name);}
     }});return parts.get(selector);}};
   const table={appendChild(){}};
@@ -236,4 +238,71 @@ test('no incoming or reduced motion keeps the legacy reply beat without rival st
     assert.deepEqual(cues,expectedCues);
     assert.equal(node.querySelector('.film-number').textContent,expectedNumber);
   }
+});
+
+test('signature uses the special cut and shows sig art on focus, then clears by impact',()=>{
+  const {film,node,callbacks,cues}=filmFixture();
+  let commits=0;
+  film.play('signature',hero,rival,{damage:12,incoming:0},false,()=>commits++);
+  assert.match(node.className,/action-signature/);
+  const art=node.querySelector('.film-action-art');
+  assert.equal(art.hidden,false);
+  assert.match(art.src,/sig-counter\.png$/);
+  const phases=['prepare'];
+  for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
+    fn();
+    if(phases.at(-1)!==node.dataset.phase)phases.push(node.dataset.phase);
+    if(node.dataset.phase==='focus'){
+      assert.equal(art.hidden,false);
+      assert.match(art.src,/sig-counter\.png$/);
+    }
+    if(node.dataset.phase==='impact')assert.equal(art.hidden,true);
+  }
+  assert.ok(phases.includes('focus'));
+  assert.ok(cues.includes('charge'));
+  assert.ok(cues.includes('special'));
+  assert.equal(commits,1);
+  assert.equal(node.hidden,true);
+});
+test('counter-special shows special telegraph art on reply/counter then clears',()=>{
+  const specialRival={...rival,kind:'guard',art:'guard-sprite'};
+  const {film,node,callbacks}=filmFixture();
+  film.play('attack',hero,specialRival,{damage:10,incoming:9,intent:'special'},false,()=>{});
+  assert.match(node.className,/counter-special/);
+  const art=node.querySelector('.film-action-art');
+  assert.equal(art.hidden,true); // not yet — appears on reply
+  for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
+    fn();
+    if(node.dataset.phase==='reply'||node.dataset.phase==='counter'){
+      assert.equal(art.hidden,false);
+      assert.match(art.src,/special-guard\.png$/);
+    }
+    if(node.dataset.phase==='counter-impact')assert.equal(art.hidden,true);
+  }
+});
+test('assist flash shows oath emblem and follower sprite, then completes',()=>{
+  const {film,node,callbacks,cues}=filmFixture();
+  let commits=0;
+  const follower={id:'guan-yu',name:'Guan Yu'};
+  const oath={id:'changshan-vow',name:'Changshan Vow'};
+  film.assistFlash({follower,oath,damage:16},hero,rival,false,()=>commits++);
+  assert.match(node.className,/film-assist|action-assist/);
+  assert.match(node.querySelector('.film-hero').src,/guan-yu-sprite\.png$/);
+  const art=node.querySelector('.film-action-art');
+  assert.equal(art.hidden,false);
+  assert.match(art.src,/oath-changshan-vow\.png$/);
+  for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms))fn();
+  assert.ok(cues.includes('strike'));
+  assert.ok(cues.includes('hit'));
+  assert.equal(commits,1);
+  assert.equal(node.hidden,true);
+});
+test('assist flash reduced motion skips straight to complete',()=>{
+  const {film,node,callbacks,cues}=filmFixture();
+  let commits=0;
+  film.assistFlash({follower:{id:'guan-yu',name:'Guan Yu'},damage:8},hero,rival,true,()=>commits++);
+  assert.equal(callbacks.length,0);
+  assert.deepEqual(cues,[]);
+  assert.equal(commits,1);
+  assert.equal(node.hidden,true);
 });

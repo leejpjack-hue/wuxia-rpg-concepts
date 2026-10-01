@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="/" />
+  <meta charset="utf-8" />
+  <title>Card cinematic harness</title>
+  <link rel="stylesheet" href="/cinematic.css" />
+  <link rel="stylesheet" href="/duel.css" />
+  <style>
+    body { margin: 0; background: #050908; color: #eee; font: 14px system-ui; }
+    #stage { width: 1100px; height: 620px; margin: 24px auto; position: relative; }
+    .duel-table { width: 100%; height: 100%; border-radius: 20px; overflow: hidden;
+      --arena-image: url("/assets/arena.png"); background: #0a1210; }
+    #label { text-align: center; letter-spacing: .12em; color: #d6bb7b; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div id="stage"><div id="duel-table" class="duel-table"></div></div>
+  <p id="label">loading…</p>
+  <script type="module">
+    import { DuelCinematic, StrikeTimeline } from "/src/presentation/duel-cinematic.js";
+    import { HEROES } from "/src/content/heroes.js";
+
+    const params = new URLSearchParams(location.search);
+    const beat = params.get("beat") || "signature-focus";
+    const table = document.getElementById("duel-table");
+    const label = document.getElementById("label");
+    // Freeze timeline: record beat callbacks, never auto-advance; we set phase manually.
+    const timers = [];
+    const timeline = new StrikeTimeline((fn, ms) => { timers.push({ fn, ms }); return timers.length; }, () => {});
+    const film = new DuelCinematic(document, table, () => {}, t => t, timeline);
+
+    const hero = HEROES.find(h => h.id === "zhao-yun");
+    const rival = { name: "Ashen Guard", title: "Gate sentry", art: "guard-sprite", type: "grunt", kind: "guard" };
+    const guan = HEROES.find(h => h.id === "guan-yu");
+
+    function freeze(phase) {
+      // Flush scheduled beats up to the desired phase without completing end.
+      film.node.dataset.phase = phase;
+    }
+
+    if (beat === "signature-focus") {
+      film.play("signature", hero, rival, { damage: 14, incoming: 0 }, false, () => {});
+      // Drive to focus: prepare fires sync; schedule focus at 280
+      for (const t of timers.splice(0)) if (t.ms <= 280) t.fn();
+      film.node.dataset.phase = "focus";
+      label.textContent = "01 · signature focus · sig-counter";
+    } else if (beat === "attack-strike") {
+      film.play("attack", hero, rival, { damage: 18, incoming: 0 }, false, () => {});
+      for (const t of timers.splice(0)) if (t.ms <= 180) t.fn();
+      film.node.dataset.phase = "strike";
+      label.textContent = "02 · attack strike · sheet frames when available";
+    } else if (beat === "special-counter") {
+      film.play("attack", hero, rival, { damage: 10, incoming: 9, intent: "special" }, false, () => {});
+      for (const t of timers.splice(0)) if (t.ms <= 1110) t.fn(); // reply at 930 + a bit
+      // Manually ensure reply/counter art
+      film.node.dataset.phase = "counter";
+      film.node.classList.add("counter");
+      const art = film.node.querySelector(".film-action-art");
+      art.hidden = false;
+      art.src = "assets/special-guard.png";
+      label.textContent = "03 · counter-special · special-guard telegraph";
+    } else if (beat === "assist-flash") {
+      film.assistFlash(
+        { follower: guan, oath: { id: "changshan-vow", name: "Changshan Vow" }, damage: 16 },
+        hero, rival, false, () => {}
+      );
+      for (const t of timers.splice(0)) if (t.ms <= 380) t.fn();
+      film.node.dataset.phase = "impact";
+      label.textContent = "04 · assist flash · oath-changshan-vow";
+    }
+    // Expose for capture scripts
+    window.__film = film;
+    window.__beat = beat;
+  </script>
+</body>
+</html>
