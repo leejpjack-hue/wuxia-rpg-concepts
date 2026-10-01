@@ -22,8 +22,8 @@ const KEYS = {
   ArrowRight: "right",
 };
 
-/** WORLD-sized roam plate. One image; the camera pans it. Act arenas stay on the duel table. */
-const ROAM_BACKDROP = "assets/bamboo-maze.png";
+/** WORLD-sized natural bamboo roam plate (WU-CAM-11). Camera pans it. Act arenas stay on the duel table. */
+const ROAM_BACKDROP = "assets/bamboo-roam.png";
 
 /** Arena roaming scene: d-pad/keyboard movement drives the domain roam step. */
 export class RoamView {

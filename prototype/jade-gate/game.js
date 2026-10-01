@@ -36,7 +36,7 @@ const art = [
   "guard-sprite",
   "archer-sprite",
   "warden-sprite",
-  "bamboo-river", "bamboo-maze", "mount-canglan",
+  "bamboo-river", "bamboo-maze", "bamboo-roam", "mount-canglan",
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
   // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.

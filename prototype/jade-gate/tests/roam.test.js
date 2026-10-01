@@ -746,8 +746,8 @@ test("swap cue dismissed by timeout and blocked mid-duel still holds", () => {
   assert.equal(session.swapLead("lu-zhishen"), false);
 });
 
-test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", () => {
-  const png = readFileSync(new URL("../assets/bamboo-maze.png", import.meta.url));
+test("roam backdrop is the WORLD-sized natural bamboo plate and pans with the camera", () => {
+  const png = readFileSync(new URL("../assets/bamboo-roam.png", import.meta.url));
   assert.equal(png.subarray(1, 4).toString(), "PNG");
   assert.equal(png.readUInt32BE(16), WORLD.width);
   assert.equal(png.readUInt32BE(20), WORLD.height);
@@ -764,15 +764,15 @@ test("roam backdrop is the WORLD-sized bamboo maze and pans with the camera", ()
   };
 
   const origin = paint({ x: 0, y: 0 });
-  assert.equal(arena.dataset.stage, "assets/bamboo-maze.png");
-  assert.equal(origin.backgroundImage, 'url("assets/bamboo-maze.png")');
+  assert.equal(arena.dataset.stage, "assets/bamboo-roam.png");
+  assert.equal(origin.backgroundImage, 'url("assets/bamboo-roam.png")');
   assert.equal(origin.backgroundRepeat, "no-repeat");
   assert.equal(origin.backgroundSize, `${(WORLD.width / VIEWPORT.width) * 100}% ${(WORLD.height / VIEWPORT.height) * 100}%`);
   assert.equal(origin.backgroundPosition, "0% 0%");
 
   const far = paint({ x: WORLD.width - VIEWPORT.width, y: WORLD.height - VIEWPORT.height });
   assert.equal(far.backgroundPosition, "100% 100%");
-  assert.equal(far.backgroundImage, 'url("assets/bamboo-maze.png")');
+  assert.equal(far.backgroundImage, 'url("assets/bamboo-roam.png")');
 
   const mid = paint({
     x: (WORLD.width - VIEWPORT.width) / 2,
