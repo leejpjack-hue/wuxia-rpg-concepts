@@ -115,4 +115,6 @@ export const HERO_TECHNIQUES = {
     description: "Deal 2.5× damage and stun the enemy." },
   "yang-zhi": { multiplier: 2.1, protect: 0.3, heal: 3, stun: false,
     description: "Deal 2.1× damage, blunt the reply by 30%, and recover 3 health." },
+  "venom-adept": { multiplier: 2, protect: 0.2, heal: 5, stun: false,
+    description: "Deal 2× damage, blunt the reply by 20%, and recover 5 health." },
 };

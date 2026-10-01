@@ -236,7 +236,7 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
   assert.deepEqual(act2.map.rows, [
     ["duel:bamboo-ambush"],
     ["ambush:river-skiff", "elite:bamboo-elite"],
-    ["event:travelers-gift", "rest:roadside", "duel:river-skiff"],
+    ["event:travelers-gift", "rest:roadside", "duel:river-skiff", "shop:merchant"],
     ["boss:night-heron"],
   ]);
 

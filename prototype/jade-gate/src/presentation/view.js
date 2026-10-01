@@ -5,7 +5,9 @@ import { UPGRADES } from "../content/disciplines.js";
 import { ACTS, CULTIVATIONS, actById } from "../content/campaign.js";
 import { meridianState } from "../domain/progression.js";
 import { VESSELS, MERIDIAN_NODES, nodeById } from "../content/meridians.js";
-import { curioById, EVENTS } from "../content/curios.js";
+import { curioById, EVENTS, CURIOS as CURIOS_LIST } from "../content/curios.js";
+import { JUDGEMENT, SHOP_STOCK, shopItemById, signatureById } from "../content/expansion.js";
+import { DUEL_ENEMIES } from "../content/duels.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
@@ -19,7 +21,8 @@ export class GameView {
     this.ready = false;
     this.noticeTime = 0;
     this.onGesture = onGesture;
-    this.$("heroes").innerHTML = HEROES.map(
+    const roster = HEROES.filter((hero) => !hero.recruitedOnly || session.profile.recruits?.includes(hero.id));
+    this.$("heroes").innerHTML = roster.map(
       (hero, index) =>
         `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
@@ -75,6 +78,18 @@ export class GameView {
       );
     this.$("continue").onclick = () =>
       this.perform(() => session.continueCheckpoint());
+    this.$("open-codex").onclick = () => {
+      this.onGesture();
+      this.codexOpen = true;
+      this.render();
+    };
+    this.$("start-wander").onclick = () =>
+      this.perform(() => {
+        const party = this.partyIds.length === 3
+          ? { lead: this.partyIds[0], followers: this.partyIds.slice(1) }
+          : null;
+        session.startWander(party);
+      });
     for (const id of ["pause", "roam-pause"])
       this.$(id).onclick = () => session.pause();
     for (const [id, key] of [
@@ -230,6 +245,20 @@ export class GameView {
       this.runMode === "campaign"
         ? this.t(`Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`)
         : `${this.t("Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival")} · ${this.partyIds.length}/3`;
+    if (this.$("open-codex")) {
+      const codex = profile.codex || { heroes: {}, rivals: {}, curios: {} };
+      const total = HEROES.length + Object.keys(DUEL_ENEMIES).length + 12;
+      const seen = Object.keys(codex.heroes || {}).length +
+        Object.keys(codex.rivals || {}).length + Object.keys(codex.curios || {}).length;
+      this.$("open-codex").textContent = `${this.t("Codex")} ${seen}/${total}`;
+    }
+    if (this.$("start-wander")) {
+      const unlocked = (profile.completedActs || []).includes("mount-canglan");
+      this.$("start-wander").disabled = !unlocked || !this.ready;
+      this.$("start-wander").textContent = unlocked
+        ? `${this.t("Jianghu Wander")} · ${this.t("Best: stage {n}").replace("{n}", profile.wander?.bestStage || 0)}`
+        : this.t("Reclaim Act III to unlock the endless wander.");
+    }
     this.$("campaign-route").innerHTML = ACTS.map(
       (act) =>
         `<span class="route-act ${profile.completedActs.includes(act.id) ? "complete" : ""}"><b>0${act.number}</b> ${this.t(act.name)}<small>${this.t(profile.completedActs.includes(act.id) ? "Reclaimed" : act.available ? "Playable" : "In development")}</small></span>`,
@@ -280,7 +309,42 @@ export class GameView {
       .filter(Boolean)
       .map((curio) => `${curio.icon} ${curio.name}`)
       .join(" · ");
-    if (map.pendingCurios.length) {
+    if (map.judgement) {
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        "Spare or finish",
+        `${map.judgement.name} kneels among the fallen. Your call is remembered.`,
+      );
+      const spare = this.button(
+        "Spare — the people will remember",
+        () => session.resolveJudgement(true),
+        { parent: "choices", primary: true },
+      );
+      spare.className = "upgrade";
+      const finish = this.button(
+        `Finish — the Banner nods (+${JUDGEMENT.executeScoreBonus} Renown)`,
+        () => session.resolveJudgement(false),
+        { parent: "choices" },
+      );
+      finish.className = "upgrade";
+    } else if (map.shop) {
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        "The pass merchant",
+        `${g.score} Renown to spend. ${carried ? `Carried curios: ${this.t(carried)}. ` : ""}The road is long.`,
+      );
+      for (const entry of map.shop.stock) {
+        const item = shopItemById(entry.id);
+        const bought = map.shop.bought.includes(entry.id);
+        const b = this.button(
+          `${this.t(item.name)} — ${this.t(item.description)} · ${bought ? this.t("Mastered") : entry.price + " " + this.t("Renown")}`,
+          () => session.buyShopItem(entry.id),
+          { disabled: bought || g.score < entry.price, parent: "choices" },
+        );
+        b.className = "upgrade";
+      }
+      this.button("Leave the merchant", () => session.leaveShop(), { primary: true });
+    } else if (map.pendingCurios.length) {
       this.modal(
         `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
         "A curio recovered",
@@ -336,6 +400,8 @@ export class GameView {
           label = `${this.t(info.encounter.title)}${this.t(" · ELITE · recovers a curio")}`;
         else if (node.startsWith("ambush:"))
           label = `${this.t(info.encounter.title)}${this.t(" · archer ambush")}`;
+        else if (node.startsWith("shop:"))
+          label = `${this.t("The pass merchant")}${this.t(" · spend run Renown")}`;
         else label = this.t(info.encounter.title);
         const b = this.button(label, () => session.chooseNode(node), {
           parent: "choices",
@@ -344,6 +410,49 @@ export class GameView {
         b.className = "upgrade";
       }
     }
+  }
+  /** The codex: legends, rivals and curios recorded so far. */
+  renderCodex() {
+    const session = this.session;
+    const codex = session.profile.codex || { heroes: {}, rivals: {}, curios: {} };
+    this.modal("CODEX · 図鑑", "Records of the jianghu", "Entries are recorded as you meet them on the pass.");
+    const groups = [
+      ["Legends", HEROES.map((hero) => ({
+        known: !!codex.heroes[hero.id],
+        name: hero.name, cn: hero.cn, art: `${hero.id}`,
+        line: hero.title,
+      }))],
+      ["Rivals", Object.entries(DUEL_ENEMIES).map(([kind, def]) => ({
+        known: !!codex.rivals[kind],
+        name: def.name, cn: "", art: def.art,
+        line: def.title,
+      }))],
+      ["Curios", [],],
+    ];
+    for (const curio of CURIOS_LIST) {
+      groups[2][1].push({
+        known: !!codex.curios[curio.id],
+        name: curio.name, cn: curio.cn, art: null,
+        line: curio.description,
+      });
+    }
+    for (const [title, entries] of groups) {
+      const heading = this.document.createElement("p");
+      heading.className = "vessel-heading";
+      const known = entries.filter((entry) => entry.known).length;
+      heading.textContent = `${this.t(title)} · ${known}/${entries.length} ${this.t("recorded")}`;
+      this.$("choices").appendChild(heading);
+      for (const entry of entries) {
+        if (!entry.known) continue;
+        const b = this.button(
+          `${entry.cn ? entry.cn + " " : ""}${entry.name} — ${entry.line}`,
+          () => {},
+          { disabled: true, parent: "choices" },
+        );
+        b.className = "upgrade codex-entry";
+      }
+    }
+    this.button("Close", () => { this.codexOpen = false; this.render(); }, { primary: true });
   }
   render() {
     const session = this.session,
@@ -361,7 +470,9 @@ export class GameView {
     this.$("selection").inert = mode !== "menu";
     if (mode === "menu") {
       this.refreshMenu();
-      if (!wasMenu && this.ready) this.$("start").focus();
+      if (this.codexOpen) this.renderCodex();
+      else this.$("overlay").hidden = true;
+      if (!wasMenu && this.ready && !this.codexOpen) this.$("start").focus();
       return;
     }
     if (mode === "playing") {

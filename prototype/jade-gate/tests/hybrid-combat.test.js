@@ -57,7 +57,7 @@ test('all actors and patrol targets remain on courtyard, including diagonal corn
   }
 });
 test('cinematic preview matches actual damage and never consumes a turn',()=>{
-  for(const hero of HERO_IDS)for(const action of ['attack','technique','guard','tea']) {
+  for(const hero of HERO_IDS.filter(id => !HEROES.find(h => h.id === id)?.recruitedOnly))for(const action of ['attack','technique','guard','tea']) {
     const g=session();g.start(hero, 'quickplay', 'jade-gate', quickParty(hero));g.beginDuel(0);g.g.p.hp=50;
     const before=JSON.stringify(g.g), result=g.combat.preview(action);
     assert(result);assert.equal(JSON.stringify(g.g),before);

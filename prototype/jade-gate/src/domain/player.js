@@ -22,6 +22,9 @@ export function makePlayer(hero) {
     kills: 0,
     // Meridian perk: 2 pots per encounter once Dragon's Cavity is struck.
     teaPots: 1,
+    // Composure (0-100): real-time wounds wear it down; at 100 the hero is rattled.
+    composure: 0,
+    rattled: false,
     damageTaken: 0,
     moving: false,
     perfectWindow: 0,

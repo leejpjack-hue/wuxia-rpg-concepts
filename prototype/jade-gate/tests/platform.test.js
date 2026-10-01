@@ -8,6 +8,8 @@ import {
   sanitizeQuickParty,
 } from "../src/platform/save-store.js";
 import { memoryStorage, session, clearEncounter, walkMap, quickParty } from './helpers.js';
+import { GameSession } from "../src/domain/session.js";
+import { createCardCombat } from "../src/domain/card-combat.js";
 import { FixedClock } from "../src/engine/clock.js";
 import { StateMachine } from "../src/engine/state-machine.js";
 import { EventBus } from "../src/engine/events.js";
@@ -78,7 +80,7 @@ test("version 1 structured profiles migrate to current schema", () => {
 });
 test("fixed simulation is identical at 30 and 120 render FPS", () => {
   function run(fps) {
-    const game = session();
+    const game = new GameSession(new SaveStore(memoryStorage()), { combatFactory: createCardCombat, runId: () => "fps-parity" });
     game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
     const clock = new FixedClock();
     for (let n = 0; n < fps * 2; n++)

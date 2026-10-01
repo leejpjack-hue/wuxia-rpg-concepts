@@ -32,7 +32,8 @@ function fixture(storage = memoryStorage()) {
   }
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   for (const match of html.matchAll(/\bid="([^"]+)"/g)) elements.set(match[1], element());
-  const cards = HEROES.map(hero => {
+  // Roster mirror: recruited-only heroes stay hidden until spared on the pass.
+  const cards = HEROES.filter(hero => !hero.recruitedOnly).map(hero => {
     const card = element(), parts = new Map();
     card.dataset = {hero: hero.id};
     card.querySelector = selector => { if (!parts.has(selector)) parts.set(selector, element()); return parts.get(selector); };
@@ -107,7 +108,7 @@ test('bonus heroes only appear in Quick play and switching back selects a campai
   assert.equal(cards.filter(card => !card.hidden).length, 4);
   assert.equal(cards[3].disabled, true);
   modes[1].onclick();
-  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 15);
+  assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 15); // venom-adept waits behind her recruit
   cards[4].onclick();
   assert.equal(view.heroId, 'guan-yu');
   assert.deepEqual(view.partyIds, ['guan-yu']);

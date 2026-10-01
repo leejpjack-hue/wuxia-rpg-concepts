@@ -552,7 +552,7 @@ function partyHud(session) {
   assert.match(html, /<div id="roam-health" class="roam-party-hud" role="status" aria-live="polite"><\/div>/);
   const view = Object.create(RoamView.prototype);
   view.document = { createElement: node };
-  view.$ = id => { assert.equal(id, "roam-health"); return hud; };
+  view.$ = id => { if (id === "roam-weather") return node(); return hud; };
   view.t = text => translate(text, session.profile.settings.language);
   return { hud, draw: () => view.drawPartyHud(session.g) };
 }
@@ -582,7 +582,9 @@ test("roam HUD shows three named HP chips and projectile damage only lowers the 
   session.step(1 / 60, { dx: 0, dy: 0 });
   draw();
   assert.equal(session.g.p.hp, before - 12);
-  assert.equal(hud.children[0].children[1].textContent, `${before - 12} / ${max} HEALTH · ${Math.floor(session.g.p.flow)} FLOW`);
+  // Real-time wounds now wear composure: the lead chip carries the gauge too.
+  assert.match(hud.children[0].children[1].textContent,
+    new RegExp(`^${before - 12} / ${max} HEALTH · ${Math.floor(session.g.p.flow)} FLOW( · Composure \\d+/100)?$`));
   assert.deepEqual(followerVitals(), expectedFollowers);
   assert.equal(hud.children.length, 3);
   session.profile.settings.language = "ja";

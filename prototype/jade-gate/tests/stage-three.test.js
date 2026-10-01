@@ -25,6 +25,7 @@ test('five allies join one at a time through the three-act story, survive reload
   assert.equal(game.dialogue.key, 'canglan-arrival');
   game.advanceDialogue(true);
   clearEncounter(game);
+  if (game.mode === 'map') walkMap(game); // judgement + curio offers settle into the upgrade
   assert.equal(game.mode, 'upgrade');
   assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying']);
   assert(!game.profile.unlockedHeroes.includes('liang-hongyu'));
@@ -35,10 +36,13 @@ test('five allies join one at a time through the three-act story, survive reload
   game.chooseDiscipline('power');
   walkMap(game, nodes => nodes.find(n => n.startsWith('elite:')) || nodes[0]);
   clearEncounter(game);
+  if (game.mode === 'map') walkMap(game);
+  assert.equal(game.mode, 'upgrade');
   assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying', 'liang-hongyu']);
   game.chooseDiscipline('power');
   if (game.mode === 'map') walkMap(game);
   clearEncounter(game);
+  if (game.mode === 'map') walkMap(game);
   assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying', 'liang-hongyu', 'nie-yinniang']);
   assert(!game.profile.unlockedHeroes.includes('lu-bu'));
   game.chooseDiscipline('power');

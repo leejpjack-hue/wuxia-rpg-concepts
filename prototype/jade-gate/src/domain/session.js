@@ -7,10 +7,14 @@ import { ACTS, BOSSES, CULTIVATIONS, actById } from "../content/campaign.js";
 import { dialogueFor } from "../content/dialogue.js";
 import { validateContent } from "../content/validate.js";
 import { CURIOS, CURIO_IDS, curioById, EVENTS, techniqueCost } from "../content/curios.js";
+import {
+  JUDGEMENT, SHOP_STOCK, shopItemById, weatherForRun,
+} from "../content/expansion.js";
 import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
 import { createRoam, isRanged } from "./roam.js";
+import { DUEL_ENEMIES } from "../content/duels.js";
 import {
   applyCultivation,
   awardResult,
@@ -64,6 +68,7 @@ export class GameSession {
     return actById(this.g?.actId || "jade-gate");
   }
   get encounter() {
+    if (this.g?.runMode === "wander") return this.g.wanderEncounter;
     return this.act.encounters[this.g?.encounterIndex || 0];
   }
   get hero() {
@@ -105,19 +110,23 @@ export class GameSession {
     if (new Set(ids).size !== 3)
       throw new Error("Quick play party heroes must be distinct.");
     for (const id of ids) {
-      if (!HEROES.some((hero) => hero.id === id))
-        throw new Error("This hero or act is not available in this build.");
+      const hero = HEROES.find((hero) => hero.id === id);
+      if (!hero) throw new Error("This hero or act is not available in this build.");
+      if (hero.recruitedOnly && !this.profile.recruits?.includes(id))
+        throw new Error("Spare this rival on the pass to recruit them.");
     }
     return { lead: party.lead, followers: [...followers] };
   }
   createRun(hero, act, runMode, party = null) {
     const p = makePlayer(hero);
     if (runMode === "campaign") applyCultivation(p, this.profile);
+    const runId = this.makeRunId();
     this.g = {
       mode: this.mode,
-      runId: this.makeRunId(),
+      runId,
       runMode,
       actId: act.id,
+      weather: weatherForRun(runId),
       hazards: [...(act.hazards || [])],
       shallows: act.hazards?.includes("shallows") || false,
       encounterIndex: 0,
@@ -150,6 +159,8 @@ export class GameSession {
       act = actById(actId);
     if (!hero || !act?.available)
       throw new Error("This hero or act is not available in this build.");
+    if (hero.recruitedOnly && !this.profile.recruits?.includes(heroId))
+      throw new Error("Spare this rival on the pass to recruit them.");
     if (act.bossId && BOSSES[act.bossId]?.planned && act.available)
       throw new Error("Cannot launch unbuilt boss.");
     if (runMode === "campaign" && hero.quickPlayOnly && !campaignHeroUnlocked(this.profile, heroId))
@@ -167,6 +178,8 @@ export class GameSession {
       throw new Error("Complete the preceding act first.");
     const resolvedParty =
       runMode === "quickplay" ? this.normalizeParty(heroId, party) : { lead: heroId, followers: [] };
+    this.unlockCodex("heroes", heroId);
+    for (const followerId of resolvedParty.followers) this.unlockCodex("heroes", followerId);
     this.createRun(hero, act, runMode, resolvedParty);
     if (runMode === "quickplay") {
       this.profile.lastQuickParty = resolvedParty;
@@ -187,6 +200,7 @@ export class GameSession {
   }
   prepareEncounter() {
     const g = this.g;
+    if (g.runMode === "wander") this.rollWanderStage();
     g.wave = g.encounterIndex + 1;
     g.hazards = [
       ...new Set([
@@ -353,6 +367,11 @@ export class GameSession {
       this.arriveAtRow();
       return true;
     }
+    if (node.startsWith("shop:")) {
+      this.openShop(node);
+      this.arriveAtRow();
+      return true;
+    }
     return this.selectNode(node);
   }
   resolveEvent(choiceIndex) {
@@ -382,10 +401,109 @@ export class GameSession {
     // Pick one of the draft; the unchosen curios are lost with the fallen.
     map.pendingCurios = [];
     this.g.curios.push(id);
-    this.checkpoint("map");
+    this.unlockCodex("curios", id);
     this.bus.emit("audio:sfx", { type: "upgrade" });
-    // The row was already advanced; auto-march only when the way is now clear.
-    this.arriveAtRow();
+    // Either a pending upgrade waits, or the row was already advanced.
+    this.settleMapOffers();
+    return true;
+  }
+  /** Codex: remember the first sight of each rival, hero and curio. */
+  unlockCodex(group, id) {
+    const codex = (this.profile.codex ||= {});
+    codex[group] ||= {};
+    if (codex[group][id]) return false;
+    codex[group][id] = true;
+    this.save();
+    return true;
+  }
+  /** Pass merchant: run renown (score) for run-scoped goods. */
+  openShop(node) {
+    const map = this.g.map;
+    if (!map) return false;
+    map.shop = { stock: this.draftShopStock(), bought: [] };
+    return true;
+  }
+  draftShopStock() {
+    // Deterministic per run + row: the curio box plus the three staples.
+    let seed = 0;
+    for (const char of this.g.runId) seed = (seed * 31 + char.charCodeAt(0)) >>> 0;
+    seed = (seed + this.g.map.row * 613) >>> 0;
+    seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+    const discount = (this.profile.reputation?.people || 0) >= 20 ? JUDGEMENT.peopleShopDiscount : 0;
+    return SHOP_STOCK.map((item) => ({
+      id: item.id,
+      price: Math.round(item.price * (1 - discount / 100)),
+    }));
+  }
+  /** Leave the merchant and continue down the pass. */
+  leaveShop() {
+    if (this.mode !== "map" || !this.g.map?.shop) return false;
+    this.g.map.shop = null;
+    this.advanceRow();
+    return true;
+  }
+  buyShopItem(itemId) {
+    const map = this.g.map;
+    if (this.mode !== "map" || !map?.shop) return false;
+    const entry = map.shop.stock.find((item) => item.id === itemId);
+    if (!entry || map.shop.bought.includes(itemId) || this.g.score < entry.price) return false;
+    this.g.score -= entry.price;
+    map.shop.bought.push(itemId);
+    const p = this.g.p;
+    if (itemId === "curio") {
+      map.pendingCurios = this.draftCurios(1);
+    } else if (itemId === "tea") {
+      p.teaPots = Math.min(3, (p.teaPots || 1) + 1);
+    } else if (itemId === "vitality") {
+      p.maxHp += 20;
+      p.hp += 20;
+    } else if (itemId === "incense") {
+      this.g.party = { ...this.g.party };
+      this.g.assistLimitBonus = 1;
+    }
+    this.bus.emit("audio:sfx", { type: "upgrade" });
+    this.bus.emit("state:changed", {
+      previous: "map", current: "map", boss: false, dialogueKey: null, stage: "map",
+      runMode: this.g.runMode, actId: this.g.actId, encounterIndex: this.g.encounterIndex,
+    });
+    return true;
+  }
+  /** Spare or finish a defeated elite rival: reputation, renown, recruits. */
+  resolveJudgement(spare) {
+    const map = this.g.map;
+    if (this.mode !== "map" || !map?.judgement) return false;
+    const judgement = map.judgement;
+    map.judgement = null;
+    const reputation = (this.profile.reputation ||= { people: 0, ashen: 0 });
+    if (spare) {
+      reputation.people += JUDGEMENT.spareGain;
+      if (judgement.kind === JUDGEMENT.recruitable && !this.profile.recruits?.includes(judgement.kind)) {
+        (this.profile.recruits ||= []).push(judgement.kind);
+        this.bus.emit("notice", { text: `${judgement.name} slips into the mists — and into your roster.` });
+      } else {
+        this.bus.emit("notice", { text: `${judgement.name} limps away. The people will remember.` });
+      }
+    } else {
+      reputation.ashen += JUDGEMENT.executeGain;
+      this.g.score += JUDGEMENT.executeScoreBonus;
+      this.bus.emit("notice", { text: `${judgement.name} is finished. +${JUDGEMENT.executeScoreBonus} Renown. The Banner nods.` });
+    }
+    this.save();
+    this.settleMapOffers();
+    return true;
+  }
+  /** Endless Jianghu Wander: escalating stages until the party falls. */
+  startWander(party) {
+    if (this.mode !== "menu") throw new Error("Return to the menu before starting a new run.");
+    const resolvedParty = this.normalizeParty(party?.lead || HEROES[0].id, party);
+    for (const id of [resolvedParty.lead, ...resolvedParty.followers]) this.unlockCodex("heroes", id);
+    const hero = HEROES.find((h) => h.id === resolvedParty.lead);
+    this.createRun(hero, ACTS[0], "wander", resolvedParty);
+    this.g.wander = { stage: 1 };
+    this.g.map = null;
+    this.transition("exploring");
+    this.bus.emit("notice", { text: "The jianghu stretches beyond the maps. How far will the party walk?" });
+    this.bus.emit("audio:sfx", { type: "ui_click" });
     return true;
   }
   /** Promote a follower to lead only between encounters (not mid-duel / mid-contact). */
@@ -460,6 +578,7 @@ export class GameSession {
     for (const rival of field) { rival.windup = 0; rival.aim = null; rival.cooldown = Math.max(1, rival.cooldown); }
     this.g.roam.contact = index;
     const enemy = field[index];
+    this.unlockCodex("rivals", enemy.kind);
     // First blood on the pass or a sneak contact: the duel opens with a reel.
     const ambush = !!(enemy.firstBlood || this.g.roam.sneaking);
     this.g.roam.sneaking = false;
@@ -471,7 +590,9 @@ export class GameSession {
   }
   endDuel() {
     if (this.mode !== "playing" || !this.g?.roam) return;
-    if (!this.roam.removeContacted()) return;
+    const removed = this.roam.removeContacted();
+    if (!removed) return;
+    this.g.lastDefeatedKind = removed.kind;
     if (!this.g.roam.field.length) {
       this.clearEncounter();
       return;
@@ -493,11 +614,29 @@ export class GameSession {
   }
   clearEncounter() {
     if (!["playing", "exploring"].includes(this.mode)) return;
+    if (this.g.runMode === "wander") {
+      // Endless wander: each cleared stage rolls a harder one.
+      this.g.wander.stage++;
+      this.g.p.hp = Math.min(this.g.p.maxHp, this.g.p.hp + 15);
+      this.g.p.composure = Math.max(0, (this.g.p.composure || 0) - 20);
+      this.prepareEncounter();
+      if (this.mode !== "exploring") this.transition("exploring");
+      this.bus.emit("notice", { text: `Stage ${this.g.wander.stage} of the wander` });
+      return;
+    }
     if (this.g.map?.current) {
       if (!this.g.map.cleared.includes(this.g.map.current))
         this.g.map.cleared.push(this.g.map.current);
-      if (this.g.map.current.startsWith("elite:"))
+      const eliteNode = this.g.map.current.startsWith("elite:");
+      if (eliteNode) {
         this.g.map.pendingCurios = this.draftCurios();
+        // Elites face the judgement: spare or finish (bosses never do).
+        if (this.g.lastDefeatedKind)
+          this.g.map.judgement = {
+            kind: this.g.lastDefeatedKind,
+            name: DUEL_ENEMIES[this.g.lastDefeatedKind]?.name || "The fallen",
+          };
+      }
     }
     if (this.g.runMode === "campaign") {
       for (const heroId of this.encounter.unlocks || []) {
@@ -507,6 +646,13 @@ export class GameSession {
         this.bus.emit("notice", { text: `${HEROES.find(h => h.id === heroId).name} joins your campaign roster!` });
       }
     }
+    if (this.g.map?.judgement || this.g.map?.pendingCurios?.length) {
+      // The map scene resolves the judgement and curio draft before the discipline.
+      this.g.map.pendingUpgrade = true;
+      this.checkpoint("map");
+      this.transition("map");
+      return;
+    }
     if (this.g.encounterIndex === this.act.encounters.length - 1) {
       this.finish(true);
       return;
@@ -514,6 +660,35 @@ export class GameSession {
     this.checkpoint("upgrade");
     this.transition("upgrade");
     this.bus.emit("audio:sfx", { type: "upgrade" });
+  }
+  /** After map offers (judgement, curios, shop) settle, resume the pending upgrade. */
+  settleMapOffers() {
+    const map = this.g.map;
+    if (!map) return;
+    if (map.pendingUpgrade && !map.judgement && !map.pendingCurios.length && !map.event && !map.shop) {
+      map.pendingUpgrade = false;
+      this.checkpoint("upgrade");
+      this.transition("upgrade");
+      this.bus.emit("audio:sfx", { type: "upgrade" });
+      return;
+    }
+    this.arriveAtRow();
+  }
+  /** Wander: deterministic escalating stage from every act's encounter pool. */
+  rollWanderStage() {
+    const stage = this.g.wander?.stage || 1;
+    const pool = ACTS.filter((act) => act.available)
+      .flatMap((act) => act.encounters.filter((encounter) => !encounter.bossId));
+    const base = pool[(stage * 7 + 3) % pool.length];
+    this.g.wanderEncounter = {
+      ...base,
+      id: base.id,
+      title: `Wander · stage ${stage}`,
+      elite: stage % 3 === 0,
+      // Stage mutators: rivals harden as the wander deepens.
+      scale: 1 + 0.12 * (stage - 1) + (stage % 3 === 0 ? 0.25 : 0),
+      damageScale: 1 + 0.06 * (stage - 1),
+    };
   }
   /** Seeded draft of three unowned curios, deterministic within a run. */
   draftCurios(count = hasPerk(this.profile, "phoenix-eye") ? 4 : 3) {
@@ -560,6 +735,14 @@ export class GameSession {
   finish(won) {
     if (!["playing", "exploring"].includes(this.mode)) return;
     if (won) this.g.score += Math.max(0, Math.round(this.g.p.hp * 3));
+    if (this.g.runMode === "wander") {
+      const wander = (this.profile.wander ||= { bestStage: 0, runs: 0 });
+      wander.runs++;
+      wander.bestStage = Math.max(wander.bestStage, this.g.wander?.stage || 1);
+      this.save();
+      this.transition("defeat");
+      return;
+    }
     awardResult(this.profile, this.g, won, this.act);
     this.save();
     if (won && this.g.runMode === "campaign") {

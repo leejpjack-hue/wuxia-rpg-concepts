@@ -64,7 +64,10 @@ test("event and rest nodes resolve without combat and advance the map", () => {
   game.chooseNode("elite:gate-vanguard");
   clearEncounter(game);
   game.chooseDiscipline("power");
+  if (game.g.map.judgement) game.resolveJudgement(true);
   if (game.g.map.pendingCurios.length) game.chooseCurio(game.g.map.pendingCurios[0]);
+  assert.equal(game.mode, "upgrade"); // judgement + draft settle into the discipline
+  game.chooseDiscipline("power");
   assert.equal(game.mode, "map");
   game.g.p.hp = 50;
   game.chooseNode("rest:roadside");
@@ -182,11 +185,14 @@ test("checkpoint at the map restores row, cleared nodes and carried curios", () 
   game.chooseNode("elite:gate-vanguard");
   clearEncounter(game);
   game.chooseDiscipline("power");
+  if (game.g.map.judgement) game.resolveJudgement(true);
   game.chooseCurio(game.g.map.pendingCurios[0]);
+  assert.equal(game.mode, "upgrade");
   const carried = [...game.g.curios];
   const restored = session(storage);
   assert(restored.continueCheckpoint());
-  assert.equal(restored.mode, "map");
+  assert.equal(restored.mode, "upgrade"); // checkpoint saved as the pending discipline
+  restored.chooseDiscipline("power");
   assert.equal(restored.g.map.row, 2);
   assert.deepEqual(restored.g.curios, carried);
   assert(restored.g.map.cleared.includes("elite:gate-vanguard"));

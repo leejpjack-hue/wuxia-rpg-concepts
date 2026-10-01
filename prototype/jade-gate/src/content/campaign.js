@@ -16,7 +16,7 @@ export const ACTS = [
       rows: [
         ["duel:vanguard"],
         ["ambush:archer-run", "elite:gate-vanguard"],
-        ["event:travelers-gift", "rest:roadside", "duel:crossfire"],
+        ["event:travelers-gift", "rest:roadside", "duel:crossfire", "shop:merchant"],
         ["boss:warden"],
       ],
     },
@@ -79,7 +79,7 @@ export const ACTS = [
       rows: [
         ["duel:bamboo-ambush"],
         ["ambush:river-skiff", "elite:bamboo-elite"],
-        ["event:travelers-gift", "rest:roadside", "duel:river-skiff"],
+        ["event:travelers-gift", "rest:roadside", "duel:river-skiff", "shop:merchant"],
         ["boss:night-heron"],
       ],
     },

@@ -28,6 +28,8 @@ export function duelPolicy(game) {
   const afflicted = d.status && (d.status.hero.bleed || d.status.hero.poison);
   if (d.tea && (afflicted || p.hp < p.maxHp - 35))
     return "tea";
+  if (intent.special)
+    return p.flow >= techniqueCost(p, game.g.curios) ? "technique" : "guard";
   return p.flow >= techniqueCost(p, game.g.curios)
       ? "technique"
       : ["heavy", "guard"].includes(intent.kind)
@@ -63,8 +65,16 @@ export function walkMap(game, pick = (nodes) => nodes[0]) {
   let guard = 0;
   while (game.mode === "map" && guard++ < 40) {
     const map = game.g.map;
+    if (map.judgement) {
+      game.resolveJudgement(true);
+      continue;
+    }
     if (map.pendingCurios.length) {
       game.chooseCurio(map.pendingCurios[0]);
+      continue;
+    }
+    if (map.shop) {
+      game.leaveShop();
       continue;
     }
     if (map.event) {

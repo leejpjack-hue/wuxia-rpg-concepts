@@ -154,6 +154,53 @@ export const messages = {
   'Qinggang Jian': '青釭剣', 'Iron monk spade': '鉄の禅杖', 'Paired sabers': '双刀', 'Crescent halberd': '方天画戟', 'Crescent blade': '青龍偃月刀', 'Tiger-hunting staff': '虎狩りの棍', 'Pear-blossom spear': '梨花槍', 'Paired dao': '双刀', 'Concealed short sword': '隠し短剣', 'Twin jian': '双剣', 'Twin cleaver-knives': '双包丁', 'White-shaft spear': '白桿槍', 'Long spear': '長槍', 'Dual Chinese halberds': '双戟', 'Chinese sabre': '刀',
   'Precision · Protection': '精密 · 守護', 'Resilience · Stun': '耐久 · 気絶', 'Technique · Recovery': '技巧 · 回復', 'Power · Guardbreaker': '剛力 · 防御崩し', 'Might · Honor': '武勇 · 義', 'Ferocity · Stun': '猛攻 · 気絶', 'Command · Versatility': '統率 · 万能', 'Rhythm · Rally': '連撃 · 鼓舞', 'Stealth · Evasion': '隠密 · 回避', 'Agility · Crosscut': '敏捷 · 交差斬', 'Brawl · Pressure': '乱戦 · 圧', 'Reach · Hold': '間合い · 持久', 'Agility · Thrust': '敏捷 · 突き', 'Power · Guard': '剛力 · 守り', 'Precision · Cut': '精密 · 斬撃',
   'Dragon Rush': '龍の突撃', 'Mountain Bell': '山岳の鐘', 'Crimson Waltz': '紅蓮の舞', 'Skybreaker': '破天撃', 'Spring-Autumn Cleave': '春秋一閃', 'Tiger-Crushing Blow': '猛虎砕き', 'Pear Blossom Storm': '梨花乱舞', 'War Drum Barrage': '戦鼓連斬', 'Shadow Step': '影渡り', 'Bowstring Cross': '弓弦交差', 'Yard Cleave': '店先の斬り', 'White-Shaft Guard': '白桿の守り', 'Jade Sweep': '翡翠の一閃', 'Iron Pair': '鉄双', 'Blue Mark Cut': '青痣の一閃',
+  // The spared adder (recruit).
+  'The Venom Adept': '毒使い', 'The Spared Adder': '見逃された蛇', 'Venom rings': '毒環', 'Venom · Patience': '毒 · 忍耐', 'Silent Adder': '音無しの蛇',
+  'Spared on the pass and bound by a strange loyalty, the Venom Adept now hunts beside your party. Her rings drip quiet venom, and her patience outlasts any guard the Ashen Banner holds.': '峠で見逃され、不思議な忠義に縛られた毒使いは、いま一行と共に狩る。その環は静かに毒を滴らせ、その忍耐は灰旗軍のどんな守りよりも長く続く。',
+  'The spared adder returns to the gate… did mercy teach you nothing?': '見逃された蛇が関に戻ってきた……慈悲は何も教えなかったか？',
+  'Mercy taught me which side of the wall deserves my rings.': '慈悲が教えてくれた。どちら側の城壁が私の環に値するかを。',
+  'The adder curls beside tigers now… whose venom bought your loyalty?': '蛇はいま虎のそばに丸まっている……誰の毒がお前の忠義を買った？',
+  'The mercy of one swordsman. Play your requiem and learn it.': '一人の剣士の慈悲だ。鎮魂歌を弾いて、学ぶがいい。',
+  // Enemy specials (focus) logs and telegraphs.
+  '{name} gathers power — the next blow will be special.': '{name}が気を集めている——次の一撃は奥の手だ。',
+  'Your technique breaks the rival\'s gathering!': '奥義が敵の気勢を断ち切った！',
+  '{name} unleashes {special}!': '{name}が{special}を放つ！',
+  'SPECIAL — {n} damage{effects}. A technique or ambush breaks the gathering.': '奥の手——{n}ダメージ（{effects}）。奥義か伏撃で気勢を断てる。',
+  'Banner Cleave': '旗の一閃', 'Volley Storm': '矢の嵐', 'Red Ruin': '紅の破滅', "Adder's Kiss": '蛇の口づけ', 'Iron Bell': '鉄鐘', 'Choir of Ash': '灰の唱和', 'Mist Execution': '霧の処刑', 'River Volley': '川の斉射', 'Gatebreaker': '門砕き', 'Silken Requiem': '絹の鎮魂歌',
+  // Hero signature actions.
+  'Scale Guard': '龍鱗の構え', 'Zen Roar': '禪喝', 'Crimson Chain': '紅連斬', 'Halberd Sweep': '戟掃', 'Spring Reading': '春秋の読み', 'Tiger Pin': '虎押さえ', 'Rally Signal': '令旗', 'Drumroll': '連鼓', 'Vanish': '霧消', 'Bowstring Trap': '弦の罠', 'Cleaver Rush': '乱斬り', 'Shaft Wall': '白桿の壁', 'Jade Lunge': '翠突き', 'Twin Iron': '双鉄撃', 'Marked Cut': '青斬', "Adder's Coil": '蛇纏',
+  // Oath bonds.
+  'Changshan Vow': '常山の誓い', 'Ridge Brothers': '岡上の兄弟', 'Twin Moons': '双月', 'War Sisters': '陣の姉妹', 'Silent Strings': '無音の弦', 'Garrison Wall': '守りの壁',
+  '{follower} answers the {oath} {cn}: {n} damage, +{flow} Flow.': '{follower}が{oath}（{cn}）に応じる：{n}ダメージ、気＋{flow}。',
+  // Weather.
+  'Clear': '晴', 'Rain': '雨', 'Night': '夜', 'Fog': '霧',
+  'Archers see shorter (−30% watch range); shallows drag harder.': '弓兵の眼が届かず（警戒距離−30%）、浅瀬の抵抗が増す。',
+  'Sneaking hides you closer than ever; rivals patrol tighter.': '潜行がより近くまで身を隠し、敵の巡回も狭まる。',
+  'Rivals drift wide off their posts in the fog.': '霧の中、敵は持ち場から大きく流れる。',
+  // Composure.
+  'Your nerve frays — strikes shorter, techniques cost more until you rest.': '神経がすり減る——休むまで攻撃の間合いが縮み、奥義の消費が増える。',
+  'Rattled': '動揺', 'Composure': '胆力',
+  ' · Rattled': ' · 動揺', ' · Composure {n}/100': ' · 胆力{n}/100',
+  ' · SNEAKING': ' · 潜行中',
+  // Merchant.
+  'The pass merchant': '峠の行商人', 'Sealed curio box': '封をした箱', 'Extra pot of tea': '茶壶の追加', 'Iron body salve': '鉄身の薬', 'Oath incense': '誓いの香',
+  "Take one curio of the merchant's three.": '行商人の三つの中から奇妙な品を一つ。',
+  'Carry a second healing tea pot for the rest of the run.': 'この旅の間、回復の茶をもう一壶携える。',
+  '+20 max health for the rest of the run.': 'この旅の間、最大体力＋20。',
+  'The party assist can strike twice per duel for the rest of the run.': 'この旅の間、仲間の援護が各決闘二回になる。',
+  'Leave the merchant': '行商人のもとを去る',
+  // Judgement.
+  'Spare or finish': '助けるか、止めを刺すか', 'Spare — the people will remember': '見逃す——民は忘れない', 'Finish — the Banner nods': '止め——灰旗軍が頷く',
+  '{name} kneels among the fallen. Your call is remembered.': '{name}が倒れた者たちの中で膝をついている。お前の裁定は記憶される。',
+  '{name} slips into the mists — and into your roster.': '{name}は霧の中へ消え——そして仲間に加わる。',
+  '{name} limps away. The people will remember.': '{name}は足を引きずり去る。民は忘れない。',
+  '{name} is finished. +{n} Renown. The Banner nods.': '{name}に止めを刺した。名声＋{n}。灰旗軍が頷く。',
+  // Codex.
+  'Codex': '図鑑', 'Legends': '英雄', 'Rivals': '敵', 'Curios': '奇妙な品', 'recorded': '記録済み', 'Close': '閉じる',
+  // Wander.
+  'Jianghu Wander': '江湖漫遊', 'Best: stage {n}': '最高：第{n}節', 'Reclaim Act III to unlock the endless wander.': '第三章を奪還すると無限の漫遊が解禁される。',
+  'The jianghu stretches beyond the maps. How far will the party walk?': '江湖は地図の先まで続く。一行はどこまで歩めるか。',
+  'Wander · stage {n}': '漫遊 · 第{n}節', 'Stage {n} of the wander': '漫遊第{n}節',
   'The Jade Gate': '翠門関', 'Whispering Bamboo & the River Crossing': '竹林の囁きと渡河', 'The Clouds of Mount Canglan': '滄嵐山の雲', 'The Imperial Meridian Citadel': '帝都・天脈城',
   'Break the vanguard': '先鋒を突破せよ', 'Silence the archers': '弓兵を倒せ', 'Defeat the Ashen Warden': '灰旗の守将を倒せ', 'Ambush in the bamboo grove': '竹林の伏兵', 'Silence the river skiffs': '川舟の弓兵を倒せ', 'Duel with the Night Heron': '夜鷺との決闘',
   "Run the archers' gauntlet": '弓兵の待ち伏せを突破せよ', 'Break the gate guard': '関門の精鋭を突破せよ',

@@ -40,6 +40,20 @@ The pass and the duel are one fight. **First blood**: land a real-time strike on
 
 The tea house trades Renown for acupoints on a meridian map: the Conception Vessel (health), Governing Vessel (Flow) and Girding Vessel (power) run three points each in order, and three crossing cavities unlock gated perks — Dantian Core (cheaper techniques), Phoenix Eye (a fourth curio choice) and Dragon's Cavity (a second pot of tea every encounter). Legacy flat-track saves migrate onto their vessel points automatically.
 
+## Signature actions, specials and the wider jianghu
+
+Every hero carries a **signature action** (key 5, Flow-gated): counters, execute
+wounds, wound-up strikes, cleanses, vanishes and more — see `expansion.js`.
+Rivals now **gather focus** each exchange and telegraph a **special attack**
+when full; techniques (and ambushes) break the gathering. **Oath bonds** power
+party assists when paired heroes field together, **weather** (run-seeded)
+bends the pass, **composure** wears under real-time wounds until the hero is
+rattled, a **pass merchant** trades run renown, defeated elites face a
+**spare-or-finish judgement** that builds sect reputation (sparing the Venom
+Adept recruits her), a **codex** records everyone you meet, and the endless
+**Jianghu Wander** (unlocked after Act III) escalates stages forever. New art
+needs are listed in [ASSET-REQUIREMENTS](docs/ASSET-REQUIREMENTS.md).
+
 ## Rival status effects
 
 Rivals do more than strike and guard. **Rending Slash** (Scarred Bandit) opens a bleed that ignores guard for two turns; the **Venom Adept** poisons over three turns and siphons your Flow; the **Iron Pugilist's** pommel smash stuns you and steals a whole turn; the **Ashen Priest** mends its wounds and washes away your poisons; twin strikes land two blows you can blunt separately. Status chips show under each health bar, healing tea is the cleanse, and two curios weaponize it back at the rival: the Venom Vial poisons through techniques, the Rending Fang opens bleeds on every fourth strike.

@@ -24,6 +24,10 @@ export const defaultProfile = () => ({
   ranks: {},
   meridian: [],
   earnedHeroes: [],
+  codex: { heroes: {}, rivals: {}, curios: {} },
+  reputation: { people: 0, ashen: 0 },
+  recruits: [],
+  wander: { bestStage: 0, runs: 0 },
   unlockedHeroes: HEROES.filter((hero) => !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
   completedActs: [],
   completedRuns: [],
@@ -183,6 +187,24 @@ export function sanitizeProfile(raw) {
   )
     result.checkpoint = null;
   result.lastQuickParty = sanitizeQuickParty(raw.lastQuickParty);
+  // Expansion profile state: codex sightings, sect reputation, recruits, wander records.
+  for (const group of ["heroes", "rivals", "curios"])
+    result.codex[group] = Object.fromEntries(
+      Object.entries(raw.codex?.[group] || {})
+        .filter(([id, seen]) => typeof id === "string" && id.length <= 40 && seen)
+        .slice(0, 60),
+    );
+  result.reputation = {
+    people: integer(raw.reputation?.people, 0, 10000),
+    ashen: integer(raw.reputation?.ashen, 0, 10000),
+  };
+  result.recruits = Array.isArray(raw.recruits)
+    ? [...new Set(raw.recruits)].filter((id) => id === "venom-adept").slice(0, 8)
+    : [];
+  result.wander = {
+    bestStage: integer(raw.wander?.bestStage, 0, 100000),
+    runs: integer(raw.wander?.runs, 0, 100000),
+  };
   return result;
 }
 export class SaveStore {

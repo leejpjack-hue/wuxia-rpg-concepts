@@ -4,6 +4,7 @@ import { HERO_TECHNIQUES } from "../content/duels.js";
 import { ASSIST_DAMAGE } from "../domain/card-combat.js";
 import { HEROES } from "../content/heroes.js";
 import { curioById, techniqueCost } from "../content/curios.js";
+import { signatureById } from "../content/expansion.js";
 
 export class DuelView {
   constructor(session, document, onGesture = () => {}) {
@@ -28,7 +29,7 @@ export class DuelView {
         event.preventDefault();
         session.pause();
       } else if (session.mode === "playing") {
-        const action = { "1": "attack", "2": "guard", "3": "technique", "4": "tea" }[event.key];
+        const action = { "1": "attack", "2": "guard", "3": "technique", "4": "tea", "5": "signature" }[event.key];
         if (action) { event.preventDefault(); this.act(action); }
       }
     };
@@ -173,11 +174,31 @@ export class DuelView {
     this.$("technique-detail").textContent = this.t(`${Math.round(p.damage * p.power * technique.multiplier)} damage · ${cost} Flow`);
     this.$("technique-help").textContent = `${this.t(p.skill)}: ${this.t(technique.description)} ${this.t("All techniques pierce guard.")}`;
     this.$("tea-detail").textContent = this.t(`Recover ${30 + (g.curios?.includes("river-charm") ? 15 : 0)} health, clear bleed and poison · ${d.tea} left this encounter`);
+    // Hero signature: the fifth action, shown only when the hero carries one.
+    const signature = signatureById(p.id);
+    const signatureButton = this.$("card-signature");
+    if (signatureButton) {
+      signatureButton.hidden = !signature;
+      if (signature) {
+        this.$("signature-name").textContent = this.t(signature.name);
+        this.$("signature-detail").textContent = this.t(signature.description);
+      }
+    }
+    // Rival focus: the gathering gauge under the intent badge.
+    const focus = this.$("enemy-focus");
+    if (focus && enemy) {
+      const specialAt = enemy.specialAt || 3;
+      focus.hidden = false;
+      focus.textContent = enemy.focus >= specialAt
+        ? this.t("SPECIAL ready")
+        : this.t(`Focus ${enemy.focus || 0}/${specialAt}`);
+    }
     this.renderStatus("hero-status", d.status?.hero);
     this.renderCurios("curio-icons", g.curios);
     for (const button of this.document.querySelectorAll("[data-action]")) {
       button.disabled = this.busy || mode !== "playing" ||
         (button.dataset.action === "technique" && p.flow < cost) ||
+        (button.dataset.action === "signature" && (!signature || p.flow < signature.flow)) ||
         (button.dataset.action === "tea" && (d.tea < 1 || p.hp >= p.maxHp));
     }
     this.renderAssist(mode, d, enemy);

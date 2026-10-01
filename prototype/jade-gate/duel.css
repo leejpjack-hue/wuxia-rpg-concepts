@@ -133,3 +133,12 @@
 .assist-btn:hover:enabled { background: #3a3228; border-color: #c4a574; }
 .assist-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .assist-btn[hidden] { display: none; }
+
+/* Rival focus gauge, signature fifth action, weather chip, codex entries. */
+#enemy-focus { display: block; font-size: 9px; color: #d9a05f; margin-top: 2px; }
+#card-signature { border-color: #7a68a0; background: #262034; }
+.weather-chip {
+  font-size: 10px; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+}
+.codex-entry { opacity: 0.85; }

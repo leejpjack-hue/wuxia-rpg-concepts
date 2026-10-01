@@ -61,6 +61,10 @@ const replies = {
     "The blue-faced beast of the marches… that sabre looks stolen from better men.",
     "It was earned. The mark is mine. Step aside or learn both.",
   ],
+  "venom-adept": [
+    "The spared adder returns to the gate… did mercy teach you nothing?",
+    "Mercy taught me which side of the wall deserves my rings.",
+  ],
 };
 
 const heronReplies = {
@@ -123,6 +127,10 @@ const heronReplies = {
   "yang-zhi": [
     "Blue-faced beast on the water… that birthmark shines even in fog.",
     "Good. Then you will see the sabre coming.",
+  ],
+  "venom-adept": [
+    "The adder curls beside tigers now… whose venom bought your loyalty?",
+    "The mercy of one swordsman. Play your requiem and learn it.",
   ],
 };
 

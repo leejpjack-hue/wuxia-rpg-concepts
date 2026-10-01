@@ -1,6 +1,7 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
+import { WEATHERS } from "../content/expansion.js";
 import { SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
 import { roamScene } from "../content/roam-scenes.js";
 import { BLOCKER_ART } from "./blocker-art.js";
@@ -333,8 +334,14 @@ export class RoamView {
     members.forEach((member, index) => {
       const chip = this.partyChips[index];
       const name = this.t(member.name);
+      // Composure rides the lead chip; weather rides the heading chip.
+      const composure = index === 0 && member.rattled
+        ? this.t(" · Rattled")
+        : index === 0 && member.composure
+          ? this.t(` · Composure ${Math.floor(member.composure)}/100`)
+          : "";
       const vitals = index === 0
-        ? this.t(`${Math.ceil(member.hp)} / ${member.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`) + (g.roam.sneaking ? this.t(" · SNEAKING") : "")
+        ? this.t(`${Math.ceil(member.hp)} / ${member.maxHp} HEALTH · ${Math.floor(g.p.flow)} FLOW`) + (g.roam.sneaking ? this.t(" · SNEAKING") : "") + composure
         : `${member.hp} / ${member.maxHp} ${this.t("HEALTH")}`;
       if (chip.name.textContent !== name) chip.name.textContent = name;
       if (chip.hp.textContent !== vitals) chip.hp.textContent = vitals;
@@ -345,6 +352,14 @@ export class RoamView {
           : `party-hp-chip swap-ready${cue ? " swap-cue" : ""}`;
       }
     });
+    // Weather chip: run-seeded, static per run.
+    const weatherChip = this.$("roam-weather");
+    const weather = g.weather || WEATHERS[0];
+    if (weatherChip && weatherChip.dataset.weather !== weather.id) {
+      weatherChip.dataset.weather = weather.id;
+      weatherChip.textContent = `${weather.cn} ${this.t(weather.name)}`.replace(/^(.) \1.+$/, "$1");
+      if (weather.note) weatherChip.title = this.t(weather.note);
+    }
     if (typeof hud.classList?.toggle === "function")
       hud.classList.toggle("swap-cue-active", cue);
     else

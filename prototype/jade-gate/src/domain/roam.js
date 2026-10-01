@@ -40,9 +40,10 @@ export function createRoam(g, bus, { encounter } = {}) {
     const def = DUEL_ENEMIES[kind];
     const marker = spawnMarkerFor(index, roster.length);
     const position = groundPoint(marker.x, marker.y);
-    // Elite encounters field hardened rivals.
-    const eliteScale = encounter.elite ? 1.35 : 1;
-    return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*(encounter.elite?1.15:1)),
+    // Elite encounters (and wander stages) field hardened rivals.
+    const eliteScale = encounter.scale ?? (encounter.elite ? 1.35 : 1);
+    const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
+    return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*damageScale),
       reward: Math.round(def.reward*(encounter.elite?1.5:1)), ...position, id: `${encounter.id}-field-${index}`, kind,
       maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
       speed: def.boss ? 70 : 55+index*10,
@@ -83,7 +84,8 @@ export function createRoam(g, bus, { encounter } = {}) {
     }
     if (!['strike', 'technique'].includes(action) || roam.strikeCD > 0) return false;
     if (action === 'technique' && g.p.flow < techniqueCost(g.p, g.curios)) return false;
-    const range = action === 'technique' ? 280 : 175;
+    // Rattled heroes reach shorter on the pass until they rest.
+    const range = (action === 'technique' ? 280 : 175) * (g.p.rattled ? 0.8 : 1);
     const targets = field.filter(e => distance(e, g.p) < range);
     roam.strikeCD = action === 'technique' ? .8 : .38;
     if (action === 'technique') g.p.flow -= techniqueCost(g.p, g.curios);
@@ -124,7 +126,7 @@ export function createRoam(g, bus, { encounter } = {}) {
       Object.assign(enemy, groundPoint(enemy.x+dx/d*step, enemy.y+dy/d*step));
     }
     if (d <= 8 || enemy.timer <= 0) {
-      const point = groundPoint(enemy.homeX+(enemy.rng()*2-1)*180, enemy.homeY+(enemy.rng()*2-1)*100);
+      const point = groundPoint(enemy.homeX+(enemy.rng()*2-1)*180*(g.weather?.wanderScale || 1), enemy.homeY+(enemy.rng()*2-1)*100*(g.weather?.wanderScale || 1));
       enemy.tx = point.x; enemy.ty = point.y; enemy.timer = 1.2+enemy.rng()*1.6;
     }
   }
@@ -141,7 +143,10 @@ export function createRoam(g, bus, { encounter } = {}) {
     } else {
       enemy.cooldown -= dt;
       // Sneaking closes the watchful range; the Hidden Blade near-erases it.
-      const aggro = roam.sneaking ? (roam.sneakMaster ? 300 : 420) : 850;
+      const sneakBase = g.weather?.sneakAggro
+        ? (roam.sneakMaster ? g.weather.sneakMasterAggo || 260 : g.weather.sneakAggro)
+        : (roam.sneakMaster ? 300 : 420);
+      const aggro = roam.sneaking ? sneakBase : Math.round(850 * (g.weather?.aggroMultiplier ?? 1));
       if (enemy.cooldown <= 0 && distance(enemy,g.p)<aggro) {
         enemy.windup = .85; enemy.aim = {x:g.p.x,y:g.p.y};
         bus.emit('audio:sfx',{type:'enemy_windup'});
@@ -182,7 +187,9 @@ export function createRoam(g, bus, { encounter } = {}) {
     if (len) { roam.facingX=dx/len; roam.facingY=dy/len; }
     if (len || roam.dash>0) {
       const sneakFactor = roam.sneaking ? 0.45 : 1;
-      const speed = roam.dash>0 ? 720 : PLAYER_SPEED*sneakFactor*(isRoamInShallows(encounter,g) ? SHALLOWS_ROAM_SPEED_FACTOR : 1);
+      const shallowsFactor = isRoamInShallows(encounter,g)
+        ? (g.weather?.shallowsFactor ?? SHALLOWS_ROAM_SPEED_FACTOR) : 1;
+      const speed = roam.dash>0 ? 720 : PLAYER_SPEED*sneakFactor*shallowsFactor;
       Object.assign(g.p, resolveBlockers(g.p.x+(roam.facingX*speed+roam.windX)*dt,g.p.y+roam.facingY*speed*dt, 18, g.p));
       if (roam.facingX) g.p.dx=roam.facingX>0?1:-1;
     }
@@ -233,6 +240,12 @@ export function createRoam(g, bus, { encounter } = {}) {
         if (!roam.invulnerable) {
           const damage=Math.min(g.p.hp,shot.damage);
           g.p.hp-=damage; g.p.damageTaken+=damage; roam.invulnerable=.35;
+          // Composure: each real-time wound wears at the hero's nerve.
+          g.p.composure = Math.min(100, (g.p.composure || 0) + 18);
+          if (g.p.composure >= 100 && !g.p.rattled) {
+            g.p.rattled = true;
+            bus.emit('notice', { text: 'Your nerve frays — strikes shorter, techniques cost more until you rest.' });
+          }
           effect('hurt',g.p.x,g.p.y,`−${damage}`);
           bus.emit('audio:sfx',{type:'hurt'});
           if (!g.p.hp) { bus.emit('combat:defeat'); return; }

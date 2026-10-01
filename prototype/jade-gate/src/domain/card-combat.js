@@ -1,6 +1,7 @@
 import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
 import { techniqueCost } from "../content/curios.js";
 import { HEROES } from "../content/heroes.js";
+import { oathFor, signatureById, specialFor } from "../content/expansion.js";
 
 /** Fixed small assist bump (WU-PARTY-09I). Modest vs hero strikes (~19–40). */
 export const ASSIST_DAMAGE = 8;
@@ -39,7 +40,8 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   function begin(kind, id = `${encounter.id}-card`, opening = false) {
     const rival = DUEL_ENEMIES[kind];
     if (!rival) throw new Error(`Unknown rival: ${kind}`);
-    const eliteScale = encounter.elite ? 1.35 : 1;
+    const eliteScale = encounter.scale ?? (encounter.elite ? 1.35 : 1);
+    const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
     const hp = Math.round(rival.hp * eliteScale);
     g.enemies = [
       {
@@ -49,10 +51,12 @@ export function createCardCombat(g, bus, { encounter } = {}) {
         type: rival.boss ? "boss" : kind,
         hp,
         maxHp: hp,
-        damage: Math.round(rival.damage * (encounter.elite ? 1.15 : 1)),
+        damage: Math.round(rival.damage * damageScale),
         reward: Math.round(rival.reward * (encounter.elite ? 1.5 : 1)),
         phase: 0,
         move: 0,
+        focus: 0,
+        specialAt: specialFor(kind)?.focus || 3,
       },
     ];
     g.encounterDone = false;
@@ -69,9 +73,11 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       fangStrikes: 0,
       pendantUsed: false,
       sashUsed: false,
+      charged: 0,
       // WU-PARTY-09I: one free assist strike per duel (no Flow; no follower HP).
       assistUsed: false,
       assistReady: false,
+      assistLimit: 1 + (g.assistLimitBonus || 0),
       openingStun: opening,
       status: {
         hero: { bleed: null, poison: null, stunned: false },
@@ -82,6 +88,29 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   }
   function intent(enemy = g.enemies[0], ahead = 0) {
     if (!enemy) return null;
+    // Focus full: the rival's telegraphed special replaces its next intent.
+    const special = specialFor(enemy.kind);
+    if (special && ahead === 0 && (enemy.focus || 0) >= (enemy.specialAt || special.focus || 3)) {
+      const each = Math.round(enemy.damage * special.scale * (enemy.phase ? 1.2 : 1));
+      const damage = special.hits ? each * special.hits : each;
+      const effects = [
+        special.heroBleed ? "bleed" : "",
+        special.heroPoison ? "poison" : "",
+        special.drain ? `siphons ${special.drain} Flow` : "",
+        special.stun ? "stuns" : "",
+        special.mend ? `mends ${special.mend}` : "",
+        special.hits ? `${special.hits} hits` : "",
+      ].filter(Boolean).join(", ");
+      return {
+        kind: "special",
+        damage,
+        hits: special.hits || 1,
+        each,
+        name: special.name,
+        description: `SPECIAL — ${damage} damage${effects ? `, ${effects}` : ""}. A technique or ambush breaks the gathering.`,
+        special: true,
+      };
+    }
     const kind = enemy.pattern[(enemy.move + ahead) % enemy.pattern.length];
     const spec = INTENTS[kind] || INTENTS.strike;
     const each = Math.round(
@@ -117,16 +146,31 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   }
   /** The rival's telegraphed reply, resolved from its intent spec. */
   function enemyReply(enemy, next, protect, rivalStunned) {
-    const p = g.p, d = g.duel, spec = INTENTS[next.kind] || INTENTS.strike;
+    const p = g.p, d = g.duel;
+    const special = specialFor(enemy.kind);
+    const spec = next.special
+      ? { hits: next.hits, heroBleed: special?.heroBleed, heroPoison: special?.heroPoison,
+          drain: special?.drain, stun: special?.stun, mend: special?.mend }
+      : INTENTS[next.kind] || INTENTS.strike;
     if (rivalStunned) {
       log(`${enemy.name} is stunned and cannot reply.`);
       return;
     }
-    // First blood or a sneak ambush on the pass: the rival opens reeling.
+    // First blood or a sneak ambush on the pass: the duel opens reeling.
     if (d.openingStun) {
       d.openingStun = false;
       log(`${enemy.name} reels from your ambush and cannot reply.`);
       return;
+    }
+    if (next.special) {
+      enemy.focus = 0;
+      enemy.specialAt = special?.focus || 3;
+      log(`${enemy.name} unleashes ${next.name}!`);
+    } else {
+      enemy.focus = (enemy.focus || 0) + 1;
+      enemy.specialAt = special?.focus || 3;
+      if (special && enemy.focus === enemy.specialAt - 1)
+        log(`${enemy.name} gathers power — the next blow will be ${next.special ? "" : ""}special.`);
     }
     if (spec.mend) {
       const healed = Math.min(spec.mend, enemy.maxHp - enemy.hp);
@@ -212,11 +256,14 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   }
   function act(action, { silent = false } = {}) {
     if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
-    if (!["attack", "guard", "technique", "tea"].includes(action)) return false;
+    const signature = signatureById(g.p.id);
+    if (!["attack", "guard", "technique", "tea", "signature"].includes(action)) return false;
+    if (action === "signature" && !signature) return false;
     const p = g.p, d = g.duel, enemy = g.enemies[0], next = intent(enemy);
     const cost = techniqueCost(p, g.curios);
     if (action === "technique" && p.flow < cost) return false;
     if (action === "tea" && (d.tea < 1 || p.hp >= p.maxHp)) return false;
+    if (action === "signature" && p.flow < (signature?.flow ?? 25)) return false;
     let damage = 0, protect = 0, stunned = false;
     d.lastAction = action;
     d.lastIncoming = 0;
@@ -237,6 +284,11 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       d.strikes++;
       d.fangStrikes++;
       damage = Math.round(p.damage * p.power * (next.kind === "guard" ? 0.5 : 1));
+      if (d.charged) {
+        damage = Math.round(damage * d.charged);
+        d.charged = 0;
+        log("The wound-up strike lands with full force!");
+      }
       if (has("twin-irons") && d.strikes % 3 === 0) {
         damage = Math.round(damage * 1.5);
         log("The twin irons ring — a heavy follow-through!");
@@ -267,6 +319,52 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       if (d.status.hero.poison) { d.status.hero.poison = null; cleansed.push("poison"); }
       log(`Healing tea restores ${healed} health${cleansed.length ? ` and clears ${cleansed.join(" and ")}` : ""}. The enemy still takes its turn.`);
       if (!silent) bus.emit("audio:sfx", { type: "heal" });
+    } else if (action === "signature") {
+      // Hero signature: a fifth, Flow-gated action shaped by its archetype.
+      p.flow -= signature.flow;
+      const base = p.damage * p.power;
+      const statused = !!(d.status.enemy.bleed || d.status.enemy.poison);
+      if (signature.archetype === "counter") {
+        protect = signature.power;
+        damage = Math.round(base * signature.damage);
+        if (signature.heal) p.hp = Math.min(p.maxHp, p.hp + signature.heal);
+        log(`${p.skill !== signature.name ? signature.name : "Your counter"}: ${signature.cn} — strike and brace.`);
+      } else if (signature.archetype === "focusGuard") {
+        protect = signature.power;
+        enemy.focus = 0;
+        if (signature.heal) p.hp = Math.min(p.maxHp, p.hp + signature.heal);
+        log("The roar scatters the rival's gathering power.");
+      } else if (signature.archetype === "bleedCut") {
+        damage = Math.round(base * signature.damage);
+        d.status.enemy.bleed = { ...signature.bleed, fresh: true };
+        log("The cut leaves a bleeding wound.");
+      } else if (signature.archetype === "execute") {
+        damage = Math.round(base * signature.damage * (statused ? 1 + signature.bonus : 1));
+        protect = signature.power || 0;
+        if (statused) log("The wound opens wide — the marked cut bites deep!");
+      } else if (signature.archetype === "charged") {
+        d.charged = signature.charged;
+        protect = signature.power;
+        log(`You wind the blow — your next Strike deals ${Math.round(signature.charged * 100)}%.`);
+      } else if (signature.archetype === "cleanse") {
+        d.status.hero.bleed = null;
+        d.status.hero.poison = null;
+        p.hp = Math.min(p.maxHp, p.hp + signature.heal);
+        if (signature.refreshAssist) d.assistUsed = false;
+        log("The signal rallies the line — wounds steadied, allies ready.");
+      } else if (signature.archetype === "drainStrike") {
+        damage = Math.round(base * signature.damage);
+        p.flow = Math.min(100, p.flow + signature.drain);
+        log(`The grapple returns ${signature.drain} Flow to you.`);
+      } else if (signature.archetype === "doubleSig") {
+        damage = Math.round(base * signature.damage) * (signature.hits || 2);
+        log(`Both beats land — ${signature.hits || 2} strikes in one turn.`);
+      } else if (signature.archetype === "vanish") {
+        protect = 1;
+        d.status.enemy.bleed = { ...signature.bleed, fresh: true };
+        log("You melt into the mist — the reply finds only air, and a cut.");
+      }
+      if (!silent) bus.emit("audio:sfx", { type: "special", param: p.id });
     } else {
       const technique = HERO_TECHNIQUES[p.id];
       p.flow -= cost;
@@ -274,6 +372,11 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       p.hp = Math.min(p.maxHp, p.hp + technique.heal);
       protect = technique.protect;
       stunned = technique.stun;
+      // Landing a technique breaks a gathering special.
+      if (enemy.focus) {
+        enemy.focus = 0;
+        log("Your technique breaks the rival's gathering!");
+      }
       if (has("shadow-sash") && !d.sashUsed) {
         d.sashUsed = true;
         protect = Math.max(protect, 0.5);
@@ -321,23 +424,29 @@ export function createCardCombat(g, bus, { encounter } = {}) {
   function assistStrike() {
     if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
     const d = g.duel;
-    if (d.assistUsed || !d.assistReady) return false;
+    if ((d.assistUsed ? 1 : 0) >= (d.assistLimit || 1) || !d.assistReady) return false;
     const followers = g.party?.followers;
     if (!Array.isArray(followers) || !followers.length) return false;
     const followerId = followers[0];
     const follower = HEROES.find((h) => h.id === followerId);
     if (!follower) return false;
     const enemy = g.enemies[0];
-    const dealt = Math.min(enemy.hp, ASSIST_DAMAGE);
+    // Oath bonds: fielding an oath pair empowers the assist.
+    const oath = oathFor([g.p.id, ...(g.party?.followers || [])]);
+    const multiplier = oath ? oath.assistMultiplier : 1;
+    let dealt = Math.min(enemy.hp, Math.round(ASSIST_DAMAGE * multiplier));
     enemy.hp = Math.max(0, enemy.hp - dealt);
     d.assistUsed = true;
     d.lastDamage = dealt;
-    log(`${follower.name} assists: ${dealt} damage.`);
+    if (oath) {
+      g.p.flow = Math.min(100, g.p.flow + oath.assistFlow);
+      log(`${follower.name} answers the ${oath.name} ${oath.cn}: ${dealt} damage, +${oath.assistFlow} Flow.`);
+    } else log(`${follower.name} assists: ${dealt} damage.`);
     bus.emit("audio:sfx", { type: "strike" });
     if (enemy.hp <= 0) defeatRival(enemy);
     bus.emit("card:changed");
     bus.emit("notice", { text: `${follower.name} assists (+${dealt} damage)` });
-    return { followerId, followerName: follower.name, damage: dealt };
+    return { followerId, followerName: follower.name, damage: dealt, oath: oath?.name || null };
   }
   return { act, preview, intent, begin, assistStrike, clearInput() {}, step() {} };
 }

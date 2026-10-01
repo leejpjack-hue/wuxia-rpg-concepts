@@ -549,5 +549,17 @@
     "file": "assets/canglan-terrace-ground.png",
     "method": "built-in image_gen",
     "prompt": "Use case: stylized-concept. Asset type: production 2D wuxia RPG Stage III exploration background tile, Mount Canglan. Create a highly detailed hand-painted realistic game scene from an elevated near-orthographic overhead camera, wide 16:9 ideally 2560x1440, continuous horizontal stone mountain terrace with ancient pale slate paving, weathered cracks, moss, pine needles. The playable central seventy-five percent of image height must be entirely flat solid stone and span left to right, with a broad paved south spur near center. At the top and bottom edges only: natural granite crags, wind-bent pines, restrained old temple stone balustrades, small bronze lanterns and a distant bell pavilion near the upper boundary. Clouds and mist visible only beyond the outer stone boundary, never across the walkable floor. Cool dawn light with subtle warm lantern accents, painterly texture compatible with high-quality Chinese wuxia character sprites. Left and right edges compatible for horizontal repetition; keep most floor open for roaming and duel approach. No people, no creatures, no text, no interface, no horizon, no sky panel, no floating islands within the play lane, no stair steps across the floor, no huge perspective vanishing point, no grid overlay."
+  },
+  {
+    "id": "venom-adept",
+    "file": "assets/venom-adept.png",
+    "method": "PLACEHOLDER — copied from archer-sprite; recruit hero card art pending art designer (see ASSET-REQUIREMENTS.md)",
+    "prompt": "Hero card portrait for the spared Venom Adept recruit: adult female assassin in muted green-grey travel wraps, venom rings on her fingers, calm watchful pose, dark charcoal background, portrait 2:3, painterly wuxia concept style consistent with the roster."
+  },
+  {
+    "id": "venom-adept-sprite",
+    "file": "assets/venom-adept-sprite.png",
+    "method": "PLACEHOLDER — alpha sprite pending art designer (see ASSET-REQUIREMENTS.md)",
+    "prompt": "Transparent gameplay sprite for the Venom Adept recruit, facing right, compact ready stance, venom rings visible on fingers, consistent with existing hero sprites. Square, transparent alpha."
   }
 ]

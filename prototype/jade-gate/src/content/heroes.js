@@ -265,6 +265,28 @@ export const HEROES = [
     description:
       "A Water Margin garrison officer turned outlaw with a cool blue birthmark, Yang Zhi fights with one Chinese sabre. Blue Mark Cut draws a decisive slash, blunts the reply, and recovers enough to press on.",
   },
+
+
+  {
+    // Recruit only: spare the Venom Adept on an elite pass node to unlock her.
+    id: "venom-adept",
+    recruitedOnly: true,
+    quickPlayOnly: true,
+    name: "The Venom Adept",
+    cn: "毒使い",
+    title: "The Spared Adder",
+    weapon: "Venom rings",
+    style: "Venom · Patience",
+    hp: 110,
+    speed: 265,
+    damage: 24,
+    reach: 116,
+    rate: 0.3,
+    color: "#9dc48a",
+    skill: "Silent Adder",
+    description:
+      "Spared on the pass and bound by a strange loyalty, the Venom Adept now hunts beside your party. Her rings drip quiet venom, and her patience outlasts any guard the Ashen Banner holds.",
+  },
 ];
 
 export const HERO_IDS = HEROES.map((hero) => hero.id);

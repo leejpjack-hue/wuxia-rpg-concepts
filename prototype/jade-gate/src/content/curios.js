@@ -77,7 +77,8 @@ export const curioById = (id) => CURIOS.find((curio) => curio.id === id);
 
 /** Techniques may be discounted by the General's Feather (never below 20). */
 export function techniqueCost(p, curios = []) {
-  return Math.max(20, p.cost - (curios.includes("qiang-feather") ? 10 : 0));
+  // A rattled hero (maxed composure) pays 5 more until they rest.
+  return Math.max(20, p.cost - (curios.includes("qiang-feather") ? 10 : 0) + (p.rattled ? 5 : 0));
 }
 
 /** Events are map nodes resolved by choice instead of combat. */

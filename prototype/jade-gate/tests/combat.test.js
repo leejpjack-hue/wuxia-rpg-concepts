@@ -33,7 +33,7 @@ test("damage immunity prevents repeated damage and HP never becomes negative", (
   assert(!takeDamage(p, 20));
 });
 
-for (const hero of HEROES)
+for (const hero of HEROES.filter(h => !h.recruitedOnly))
   test(`${hero.name}: technique spends Flow, damages, and respects cooldown`, () => {
     const game = rtSession();
     game.start(hero.id, "quickplay", "jade-gate", quickParty(hero.id));

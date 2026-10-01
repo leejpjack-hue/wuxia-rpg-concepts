@@ -54,7 +54,9 @@
           </select>
         </label>
         <span id="journey-summary"></span
-        ><button id="continue" hidden data-i18n="Continue journey">旅を続ける</button>
+        ><button id="continue" hidden data-i18n="Continue journey">旅を続ける</button
+        ><button id="start-wander" disabled data-i18n="Jianghu Wander">江湖漫遊</button
+        ><button id="open-codex" data-i18n="Codex">図鑑</button>
       </section>
       <section
         id="heroes"
@@ -113,7 +115,7 @@
     <main id="roam" tabindex="-1" hidden>
       <div class="duel-heading">
         <div><p class="eyebrow" id="roam-chapter"></p><h1 id="roam-objective"></h1></div>
-        <div class="duel-meta"><span id="roam-remaining"></span><span class="curio-icons" id="roam-curios"></span><span><b id="roam-score">0</b><span data-i18n="RENOWN">名声</span></span><button id="roam-pause" data-i18n="Pause / menu">一時停止／メニュー</button></div>
+        <div class="duel-meta"><span id="roam-remaining"></span><span class="weather-chip" id="roam-weather"></span><span class="curio-icons" id="roam-curios"></span><span><b id="roam-score">0</b><span data-i18n="RENOWN">名声</span></span><button id="roam-pause" data-i18n="Pause / menu">一時停止／メニュー</button></div>
       </div>
       <div class="roam-stage" id="roam-arena" aria-label="山の峠。英雄を動かして敵を探そう。" data-i18n-aria="Mountain pass. Move your hero to find a rival.">
         <canvas id="roam-effects" width="1280" height="720" aria-hidden="true"></canvas>
@@ -160,7 +162,7 @@
           <div class="fighter-info"><p class="fighter-title" id="enemy-title"></p><h2 id="enemy-name"></h2>
             <div class="health-label"><span data-i18n="HEALTH">体力</span><strong id="enemy-health"></strong></div>
             <div class="duel-meter rival-meter" id="enemy-health-meter" role="progressbar" aria-label="敵の体力" data-i18n-aria="Rival health"><i id="enemy-health-bar"></i></div>
-            <div class="intent-badge"><span data-i18n="NEXT MOVE">敵の次の行動</span><strong id="enemy-intent"></strong><small id="intent-next"></small></div>
+            <div class="intent-badge"><span data-i18n="NEXT MOVE">敵の次の行動</span><strong id="enemy-intent"></strong><small id="intent-next"></small><small id="enemy-focus" hidden></small></div>
             <button type="button" id="card-assist" class="assist-btn" hidden disabled aria-label="Assist">
               <span data-i18n="Assist">援護</span>
               <small id="assist-detail"></small>
@@ -176,6 +178,7 @@
           <button id="card-guard" data-action="guard"><span><kbd>2</kbd><span data-i18n="Guard">防御</span></span><small data-i18n="Block 80% damage · +20 Flow">被ダメージ80%軽減 · 気＋20</small></button>
           <button id="card-technique" data-action="technique"><span><kbd>3</kbd> <b id="technique-name"></b></span><small id="technique-detail"></small></button>
           <button id="card-tea" data-action="tea"><span><kbd>4</kbd><span data-i18n="Healing tea">回復の茶</span></span><small id="tea-detail"></small></button>
+          <button id="card-signature" data-action="signature" hidden><span><kbd>5</kbd> <b id="signature-name"></b></span><small id="signature-detail"></small></button>
         </div>
         <p class="technique-help" id="technique-help"></p>
       </section>

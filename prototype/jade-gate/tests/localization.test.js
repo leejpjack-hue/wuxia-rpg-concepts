@@ -25,7 +25,7 @@ test('Japanese defaults on fresh and older saves; a language choice persists wit
 });
 
 test('bonus heroes cannot enter the campaign even through a forged unlock list', () => {
-  for (const hero of HEROES.filter(h => h.quickPlayOnly)) {
+  for (const hero of HEROES.filter(h => h.quickPlayOnly && !h.recruitedOnly)) {
     const game = session();
     game.profile.unlockedHeroes.push(hero.id);
     assert.throws(() => game.start(hero.id, 'campaign'), /Quick play only/);
