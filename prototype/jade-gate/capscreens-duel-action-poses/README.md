@@ -1,11 +1,19 @@
-# Duel action pose verification — 2026-10-01
+# Duel action pose verification — 2026-10-01 (HKT)
 
-- `npm test`: PASS, 250 tests, zero failures. Full output: `tests.txt`.
-- `npm run check`: PASS, 91 images and 16 hero asset pairs. Full output: `check.txt`.
-- `git diff --check`: PASS.
-- Browser review at `http://localhost:8766/capscreens-duel-action-poses/preview.html`: distinct Lu Zhishen normal and special impact cells rendered; rival special cell rendered with its counterstrike effect. Narrow browser viewport inspected. Browser error log empty.
-- Inline browser captures recorded in the task. Use the review page controls to reproduce frozen impact and counterstrike frames.
+## Generated this batch (15, Lu Zhishen skipped)
+All non-Lu character duel-pose atlases from `docs/DUEL-ACTION-ASSETS.md` / `prompts/duel-action-poses.json`:
 
-No new image was generated. Zhao Yun and Hu Sanniang generation failed with network errors; Guan Yu retry was cancelled following the user request; remaining artwork deferred. Only Lu Zhishen currently has approved pose artwork. See `../docs/DUEL-ACTION-ASSETS.md` for the complete status list and retry contract.
+zhao-yun, hu-sanniang, lu-bu, guan-yu, wu-song, mu-guiying, liang-hongyu, nie-yinniang, sun-shangxiang, gu-dasao, qin-liangyu, bao-sanniang, dian-wei, yang-zhi, venom-adept
 
-Changes remain local on `codex/duel-action-poses`; no PR or deployment was made.
+- Model: Codex CLI `gpt-6.1-sol` @ high, built-in `image_gen` (workspace-write + network)
+- Contract: 1254×1254 RGBA 2×2 atlases, `runtimeApproved: true`, duelPoses windup/strike/focus/special
+- Soft QA note: some atlases still cross cell midlines (weapons/fabric); identity + alpha + four poses OK
+
+## Evidence
+- Contact sheet: `contact-sheet-all-15.png`
+- Crosshair QA samples: `qa-zhao-yun.png`, `qa-hu-sanniang.png`, `qa-lu-bu.png`, `qa-guan-yu.png`, `qa-venom-adept.png`
+- Browser review page: `preview.html`
+- `npm test`: PASS, 251 tests (`tests.txt`)
+- `npm run check`: PASS, 106 images / 16 heroes (`check.txt`)
+
+Lu Zhishen remains on existing approved sheet frames (no new PNG).

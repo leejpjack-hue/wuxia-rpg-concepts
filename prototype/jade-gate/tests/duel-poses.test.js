@@ -9,7 +9,16 @@ test('the approved monk sheet supplies distinct normal and special contact poses
  assert(sheet);assert.deepEqual(sheetGrid(sheet),{cols:4,rows:3});
  assert.notDeepEqual(sheet.duelPoses.strike,sheet.duelPoses.special);
  assert.deepEqual(sheet.anims.walk,loadSheetManifest(manifest,'lu-zhishen').anims.walk);
- for(const id of ['zhao-yun','hu-sanniang'])assert.equal(loadDuelPoses(manifest,id),null);
+});
+test('generated duel-pose atlases are approved 2x2 cards and do not replace the monk sheet path',()=>{
+ for(const id of ['zhao-yun','hu-sanniang','lu-bu','guan-yu','wu-song','mu-guiying','liang-hongyu','nie-yinniang','sun-shangxiang','gu-dasao','qin-liangyu','bao-sanniang','dian-wei','yang-zhi','venom-adept']){
+  const atlas=loadDuelPoses(manifest,id);
+  assert(atlas);assert.equal(atlas.id,`${id}-duel-poses`);
+  assert.equal(atlas.runtimeApproved,true);
+  assert.deepEqual(atlas.duelPoses,DUEL_POSE_CELLS);
+  assert.deepEqual(sheetGrid(atlas),{cols:2,rows:2});
+ }
+ assert.equal(loadDuelPoses(manifest,'lu-zhishen').id,'lu-zhishen-sheet');
 });
 test('unreviewed, malformed or missing atlases safely retain the existing sprite',()=>{
  const row={id:'test-duel-poses',file:'assets/test-duel-poses.png',runtimeApproved:true,duelPoses:DUEL_POSE_CELLS};

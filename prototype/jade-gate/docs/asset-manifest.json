@@ -84,6 +84,37 @@
     "reviewNote": "Use the original clean sprite with CSS movement and strike cinematics; retain this sheet for a future visual review."
   },
   {
+    "id": "zhao-yun-duel-poses",
+    "file": "assets/zhao-yun-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Zhao Yun sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = coil the spear across the chest; top-right = drive a long straight spear thrust to the right; bottom-left = crouch with spear drawn behind the shoulder, robe coiling; bottom-right = explosive full-body dragon spear lunge to the right, ivory robe sweeping back. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "lu-zhishen",
     "file": "assets/lu-zhishen.png",
     "method": "built-in image_gen",
@@ -164,7 +195,24 @@
     },
     "method": "Antigravity Ops \u00b7 WU-FRAME-06P \u00b7 remake v2 for spade-on-walk",
     "prompt": "(see prompts/lu-zhishen-sheet.txt)",
-    "duelPoses": {"windup": [0, 2], "strike": [1, 2], "focus": [0, 2], "special": [2, 2]}
+    "duelPoses": {
+      "windup": [
+        0,
+        2
+      ],
+      "strike": [
+        1,
+        2
+      ],
+      "focus": [
+        0,
+        2
+      ],
+      "special": [
+        2,
+        2
+      ]
+    }
   },
   {
     "id": "hu-sanniang",
@@ -251,6 +299,37 @@
     "reviewNote": "Use the original clean sprite with CSS movement and strike cinematics; retain this sheet for a future visual review."
   },
   {
+    "id": "hu-sanniang-duel-poses",
+    "file": "assets/hu-sanniang-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Hu Sanniang sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = cross both sabers defensively near the torso; top-right = uncross both sabers in a diagonal rightward cut; bottom-left = coil low with both sabers fanned behind; bottom-right = turn through a wide twin-saber spinning slash to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "lu-bu",
     "file": "assets/lu-bu.png",
     "method": "built-in image_gen",
@@ -261,6 +340,37 @@
     "file": "assets/lu-bu-sprite.png",
     "method": "built-in image_gen",
     "prompt": "Use case: identity-preserve. Asset type: transparent game character sprite. Use the supplied character art as the identity and costume reference. Make a single full body readable game sprite of this same character: L\u00fc Bu, a imposing athletic adult Chinese male general, black and dark bronze lamellar armor, deep burgundy cloak, distinctive two tall pheasant plumes, a single long Chinese crescent halberd. Stern confident heroic face, dramatic but practical silhouette. Elevated three-quarter game view, facing right, compact ready stance with knees slightly bent, entire weapon and feet visible with 8% margins. Strong readable shapes, simplified high-quality hand-painted game rendering for display at 140 pixels tall. Preserve face, outfit colors, equipment and silhouette. Genuinely transparent alpha background with no ground, no shadows, no glow, no text, no border. Only one character. Square image."
+  },
+  {
+    "id": "lu-bu-duel-poses",
+    "file": "assets/lu-bu-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved L\u00fc Bu sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw the crescent halberd behind the body; top-right = sweep the crescent halberd to the right; bottom-left = raise the halberd overhead with an arched torso; bottom-right = deep mighty overhead halberd chop to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "lu-bu-turnaround",
@@ -307,6 +417,37 @@
     "reference": "assets/guan-yu.png"
   },
   {
+    "id": "guan-yu-duel-poses",
+    "file": "assets/guan-yu-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Guan Yu sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw the long crescent blade back; top-right = sweeping crescent-blade cut to the right; bottom-left = lift the crescent blade over one shoulder with torso wound back; bottom-right = explosive broad diagonal cleave to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "wu-song",
     "file": "assets/wu-song.png",
     "method": "built-in image_gen \u00b7 approved single-character key art 2026-09-25",
@@ -319,6 +460,37 @@
     "method": "built-in image_gen \u00b7 identity-preserved transparent sprite 2026-09-25",
     "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Wu Song, rugged athletic adult Chinese male tiger slayer, loose dark blue worn hanfu, ochre trousers, leather belt, rough wrist wraps and messy topknot. Exactly one long plain wooden tiger-hunting staff. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
     "reference": "assets/wu-song.png"
+  },
+  {
+    "id": "wu-song-duel-poses",
+    "file": "assets/wu-song-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Wu Song sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = coil the hunting staff across the torso; top-right = drive a two-handed staff blow to the right; bottom-left = sink low with staff raised behind the shoulder; bottom-right = forceful tiger-pouncing staff smash to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "mu-guiying",
@@ -335,6 +507,37 @@
     "reference": "assets/mu-guiying.png"
   },
   {
+    "id": "mu-guiying-duel-poses",
+    "file": "assets/mu-guiying-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Mu Guiying sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw the spear back into a guarded stance; top-right = straight spear thrust to the right; bottom-left = turn the torso and coil the spear behind the body; bottom-right = deep extended spear lunge to the right with flowing pink silk. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "liang-hongyu",
     "file": "assets/liang-hongyu.png",
     "method": "built-in image_gen \u00b7 approved single-character key art 2026-09-25",
@@ -349,6 +552,37 @@
     "reference": "assets/liang-hongyu.png"
   },
   {
+    "id": "liang-hongyu-duel-poses",
+    "file": "assets/liang-hongyu-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Liang Hongyu sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw both dao back near the hips; top-right = alternating twin-dao slash toward the right; bottom-left = cross the dao high with a twisted torso; bottom-right = wide twin-dao barrage pose to the right with streaming blue silk. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "nie-yinniang",
     "file": "assets/nie-yinniang.png",
     "method": "built-in image_gen \u00b7 approved single-character key art 2026-09-25",
@@ -361,6 +595,37 @@
     "method": "built-in image_gen \u00b7 identity-preserved transparent sprite 2026-09-25",
     "prompt": "Create a production-ready transparent gameplay sprite of the same approved adult hero as the reference key art: Nie Yinniang, adult female Tang assassin, compact agile build, muted indigo and charcoal Chinese cross-collar martial top, short asymmetric wrap skirt over fitted leggings, secure leather wrist wraps, dark traveling cloak. Exactly one short Chinese straight sword and an empty scabbard. Preserve the exact face, hair, costume, colors, weapon count and proportions. Full body, complete weapon and boots, elevated three-quarter view facing right, compact grounded combat stance, 8% margin, readable at 140 pixels tall. Square 1:1 PNG with actual transparent alpha outside the character. No ground, cast shadow, glow, dark fill, scenery, labels, sheet, border or extra people.",
     "reference": "assets/nie-yinniang.png"
+  },
+  {
+    "id": "nie-yinniang-duel-poses",
+    "file": "assets/nie-yinniang-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Nie Yinniang sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = low guarded crouch with short blade drawn back; top-right = compact short-blade stab to the right; bottom-left = coil into a deep crouch with cloak wrapped close; bottom-right = long low assassin lunge to the right, cloak trailing left. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "bamboo-ambush",
@@ -462,6 +727,37 @@
     "reference": "assets/sun-shangxiang.png"
   },
   {
+    "id": "sun-shangxiang-duel-poses",
+    "file": "assets/sun-shangxiang-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Sun Shangxiang sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = cross her two straight jian near her chest; top-right = uncross the two straight jian in a rightward cut; bottom-left = twist back with both jian extended behind; bottom-right = explosive crosscut toward the right, two straight swords in a clear X. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "gu-dasao",
     "file": "assets/gu-dasao.png",
     "method": "Antigravity remake \u00b7 Jev ~0.75 2026-09-29; key LANCZOS-upscaled only to clear npm check \u2265900\u00d71400",
@@ -473,6 +769,37 @@
     "method": "Antigravity remake \u00b7 Jev ~0.75 transparent sprite 2026-09-29",
     "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Gu Dasao: red headband, charcoal kit, blood-red sash, exactly two broad cleaver-knives. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
     "reference": "assets/gu-dasao.png"
+  },
+  {
+    "id": "gu-dasao-duel-poses",
+    "file": "assets/gu-dasao-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Gu Dasao sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw both cleavers beside the torso; top-right = short powerful cleaver chop to the right; bottom-left = raise both cleavers overhead in a broad rooted stance; bottom-right = double descending cleaver slam toward the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "qin-liangyu",
@@ -488,6 +815,37 @@
     "reference": "assets/qin-liangyu.png"
   },
   {
+    "id": "qin-liangyu-duel-poses",
+    "file": "assets/qin-liangyu-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Qin Liangyu sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw her white-shaft spear back across her chest; top-right = controlled spear thrust toward the right; bottom-left = plant her feet and wind the spear behind her shoulder; bottom-right = deep advancing white-shaft spear thrust to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "bao-sanniang",
     "file": "assets/bao-sanniang.png",
     "method": "Antigravity remake \u00b7 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848\u00d71264\u2192939\u00d71400",
@@ -499,6 +857,37 @@
     "method": "Antigravity remake \u00b7 transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
     "prompt": "Locked Antigravity remake 2026-09-30. Same adult Bao Sanniang: jade-green charcoal kit, crimson sash, long spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
     "reference": "assets/bao-sanniang.png"
+  },
+  {
+    "id": "bao-sanniang-duel-poses",
+    "file": "assets/bao-sanniang-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Bao Sanniang sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw the long spear back at waist height; top-right = quick straight spear thrust to the right; bottom-left = low coiled stance with the spear pulled far behind; bottom-right = long sweeping spear lunge to the right, jade sash streaming. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "dian-wei",
@@ -514,6 +903,37 @@
     "reference": "assets/dian-wei.png"
   },
   {
+    "id": "dian-wei-duel-poses",
+    "file": "assets/dian-wei-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Dian Wei sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw his two short halberds back; top-right = one short halberd chops forward to the right; bottom-left = raise both short halberds overhead, broad bent-knee stance; bottom-right = both short halberds crash down to the right with body weight behind. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
     "id": "yang-zhi",
     "file": "assets/yang-zhi.png",
     "method": "Antigravity remake \u00b7 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848\u00d71264\u2192939\u00d71400",
@@ -525,6 +945,37 @@
     "method": "Antigravity remake \u00b7 transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
     "prompt": "Locked Antigravity remake 2026-09-30. Same adult Yang Zhi: blue birthmark, steel-blue kit, Chinese sabre. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
     "reference": "assets/yang-zhi.png"
+  },
+  {
+    "id": "yang-zhi-duel-poses",
+    "file": "assets/yang-zhi-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Yang Zhi sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw the single saber back close to his body; top-right = precise rightward saber cut; bottom-left = turn the torso deeply with saber raised over his shoulder; bottom-right = extended diagonal single-saber slash to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "bamboo-maze-natural",
@@ -575,6 +1026,37 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
+    }
+  },
+  {
+    "id": "venom-adept-duel-poses",
+    "file": "assets/venom-adept-duel-poses.png",
+    "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
+    "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved The Venom Adept sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = draw both short daggers beside her waist; top-right = short precise dagger slash toward the right; bottom-left = low coil with ringed hands and both daggers drawn back; bottom-right = long low twin-dagger venom strike to the right. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
     }
   },
   {

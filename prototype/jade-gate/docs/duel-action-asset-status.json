@@ -2,97 +2,97 @@
   {
     "heroId": "zhao-yun",
     "file": "assets/zhao-yun-duel-poses.png",
-    "status": "failed",
-    "note": "Built-in image generation returned a network error."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "lu-zhishen",
     "file": "assets/lu-zhishen-duel-poses.png",
     "status": "existing-frames",
-    "note": "Approved Lu Zhishen attack cells are reused for card-only poses; no new PNG generated."
+    "note": "Approved Lu Zhishen attack cells are reused for card-only poses; no new PNG generated (skipped per batch scope)."
   },
   {
     "heroId": "hu-sanniang",
     "file": "assets/hu-sanniang-duel-poses.png",
-    "status": "failed",
-    "note": "Built-in image generation returned a network error."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "lu-bu",
     "file": "assets/lu-bu-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "guan-yu",
     "file": "assets/guan-yu-duel-poses.png",
-    "status": "cancelled",
-    "note": "Retry stopped after the user requested that failed images only be listed."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "wu-song",
     "file": "assets/wu-song-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "mu-guiying",
     "file": "assets/mu-guiying-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "liang-hongyu",
     "file": "assets/liang-hongyu-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "nie-yinniang",
     "file": "assets/nie-yinniang-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "sun-shangxiang",
     "file": "assets/sun-shangxiang-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "gu-dasao",
     "file": "assets/gu-dasao-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "qin-liangyu",
     "file": "assets/qin-liangyu-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "bao-sanniang",
     "file": "assets/bao-sanniang-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "dian-wei",
     "file": "assets/dian-wei-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "yang-zhi",
     "file": "assets/yang-zhi-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   },
   {
     "heroId": "venom-adept",
     "file": "assets/venom-adept-duel-poses.png",
-    "status": "not-attempted",
-    "note": "Generation deferred at the user request."
+    "status": "generated",
+    "note": "Built-in image_gen via Codex gpt-6.1-sol@high. 1254\u00d71254 RGBA 2\u00d72 atlas landed; soft cell-padding issues noted in QA contact sheet."
   }
 ]
