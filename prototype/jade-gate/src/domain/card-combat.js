@@ -1,4 +1,4 @@
-import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
+import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES, isNamedRivalKind } from "../content/duels.js";
 import { techniqueCost } from "../content/curios.js";
 import { HEROES } from "../content/heroes.js";
 import { oathFor, signatureById, specialFor } from "../content/expansion.js";
@@ -57,7 +57,9 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
         reward: Math.round(rival.reward * (encounter.elite ? 1.5 : 1)),
         phase: 0,
         move: 0,
-        focus: 0,
+        // A named legend has watched the hero cut through the pass: their art
+        // opens half-gathered, so the special lands the moment it is due.
+        focus: isNamedRivalKind(kind) ? 1 : 0,
         specialAt: specialFor(kind)?.focus || 3,
       },
     ];
