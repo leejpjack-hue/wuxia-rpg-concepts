@@ -92,7 +92,15 @@ test('film cuts run in time order; a technique charges up before it strikes, a p
 
 function filmFixture(manifest=[]){
   const parts=new Map(), cues=[], callbacks=[];
-  const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(){}},classList:{toggle(){}},setAttribute(){},
+  const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(){}},
+    // Real-DOM classList semantics backed by className, so counter/finisher toggles are observable.
+    classList:{
+      add(...names){node.className=[...new Set([...node.className.split(/\s+/).filter(Boolean),...names])].join(' ');},
+      remove(...names){const drop=new Set(names);node.className=node.className.split(/\s+/).filter(name=>name&&!drop.has(name)).join(' ');},
+      contains(name){return node.className.split(/\s+/).includes(name);},
+      toggle(name,force){const on=force===undefined?!this.contains(name):!!force;on?this.add(name):this.remove(name);},
+    },
+    setAttribute(){},
     querySelector:selector=>{if(!parts.has(selector))parts.set(selector,{textContent:'',src:'',dataset:{},style:{},classList:{
       values:new Set(),add(name){this.values.add(name);},remove(name){this.values.delete(name);},contains(name){return this.values.has(name);}
     }});return parts.get(selector);}};
@@ -129,7 +137,7 @@ test('acting during the intro cuts to the technique film; intro beats never fire
   stale.forEach(c=>c.fn());
   assert.deepEqual(cues,['dodge']);
   flush();
-  assert.deepEqual(cues,['dodge','charge','special','hit','hurt']);
+  assert.deepEqual(cues,['dodge','charge','special','hit','enemy_windup','strike','hurt']);
   assert.equal(commits,1);assert.equal(node.hidden,true);
   assert.equal(node.querySelector('.film-seal').textContent,'趙雲');
 });
@@ -198,4 +206,34 @@ test('guard, tea, reduced motion and intro keep still sprites with a sheet avail
   film.intro(hero,rival,false,false);flush();assertStill(img);
   film.play('attack',hero,rival,{},false,()=>{});callbacks.shift().fn();
   film.intro(hero,rival,false,true);assertStill(img);flush();assertStill(img);
+});
+test('an incoming counter plays the rival strike beats in order and the end beat waits for the hit',()=>{
+  const {film,node,callbacks,cues}=filmFixture();
+  let commits=0;
+  film.play('attack',hero,rival,{damage:10,incoming:8,intent:'heavy'},false,()=>commits++);
+  assert.match(node.className,/counter-heavy/);
+  // timeline.play fires the first beat synchronously; the rest arrive as callbacks.
+  // The final 'end' callback is intercepted by the timeline (cancel + commit), so the phase only changes on real beats.
+  const phases=['prepare'];
+  for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){fn();if(phases.at(-1)!==node.dataset.phase)phases.push(node.dataset.phase);}
+  assert.deepEqual(phases,['prepare','strike','impact','reply','counter','counter-impact']);
+  assert.deepEqual(cues,['strike','hit','enemy_windup','strike','hurt']);
+  assert.equal(node.querySelector('.film-number').textContent,'−8');
+  assert.equal(commits,1);
+  assert.ok(callbacks.at(-1).ms>2000);
+});
+test('no incoming or reduced motion keeps the legacy reply beat without rival strike beats',()=>{
+  for(const [result,reduced,expectedCues,expectedNumber] of [
+    [{damage:10},false,['strike','hit'],''],
+    [{damage:0,incoming:6},true,['strike','hurt'],'−6'],
+  ]){
+    const {film,node,callbacks,cues}=filmFixture();
+    const phases=['prepare'];
+    film.play('attack',hero,rival,result,reduced,()=>{});
+    for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){fn();if(phases.at(-1)!==node.dataset.phase)phases.push(node.dataset.phase);}
+    assert.deepEqual(phases,['prepare','strike','impact','reply']);
+    assert.doesNotMatch(node.className,/counter-/);
+    assert.deepEqual(cues,expectedCues);
+    assert.equal(node.querySelector('.film-number').textContent,expectedNumber);
+  }
 });
