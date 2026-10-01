@@ -457,7 +457,8 @@ export class RoamView {
     return Math.hypot(follower.x - prev.x, follower.y - prev.y) > 0.5;
   }
   /**
-   * Sample walk while moving, idle when stopped (if present); else clear to still.
+   * Sample walk while moving; when stopped pin a single still cell (no looping idle).
+   * WU-FRAME-09: standing = frozen frame; animate walk / attack film only.
    * Missing sheet record → clearSheetFrame (no crash).
    */
   applyActorSheet(node, heroId, moving) {
@@ -467,19 +468,16 @@ export class RoamView {
       clearSheetFrame(node);
       return;
     }
-    const anim =
-      moving && sheet.anims.walk
-        ? sheet.anims.walk
-        : !moving && sheet.anims.idle
-          ? sheet.anims.idle
-          : null;
-    if (!anim) {
-      clearSheetFrame(node);
+    if (moving && sheet.anims.walk) {
+      const cell = sampleAnim(sheet.anims.walk, this.animTime);
+      if (cell) applySheetFrame(node, sheet, cell);
+      else clearSheetFrame(node);
       return;
     }
-    const cell = sampleAnim(anim, this.animTime);
-    if (cell) applySheetFrame(node, sheet, cell);
-    else clearSheetFrame(node);
+    // Standing: frozen still — first idle cell or [0,0]; never advance idle loop.
+    const first = sheet.anims.idle?.frames?.[0];
+    const still = first?.length >= 2 ? { col: first[0], row: first[1] } : { col: 0, row: 0 };
+    applySheetFrame(node, sheet, still);
   }
   dispose() {
     if (this.cancel && this.frame) this.cancel(this.frame);

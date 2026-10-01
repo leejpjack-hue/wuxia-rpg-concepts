@@ -791,3 +791,67 @@ test("roam backdrop is the WORLD-sized natural bamboo plate and pans with the ca
     ],
   );
 });
+
+test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles while moving", () => {
+  // Standing must not advance looping idle over time (Jack playtest).
+  const makeNode = (heroId) => {
+    const classes = new Set();
+    return {
+      style: {},
+      dataset: {},
+      classList: {
+        add: (c) => classes.add(c),
+        contains: (c) => classes.has(c),
+      },
+      getAttribute: () => `assets/${heroId}-sprite.png`,
+      setAttribute(name, value) { if (name === "src") this.src = value; },
+      src: `assets/${heroId}-sprite.png`,
+    };
+  };
+  for (const heroId of ["zhao-yun", "lu-zhishen", "hu-sanniang"]) {
+    const node = makeNode(heroId);
+    const view = Object.create(RoamView.prototype);
+    view.sheetByHero = new Map();
+    view.manifest = JSON.parse(readFileSync(new URL("../docs/asset-manifest.json", import.meta.url), "utf8"));
+    view.animTime = 0;
+
+    view.applyActorSheet(node, heroId, false);
+    const stillPos = node.style.backgroundPosition;
+    assert.equal(node.classList.contains("sheet-anim"), true);
+    assert.match(node.style.backgroundImage, new RegExp(`${heroId}-sheet`));
+    // Idle cell [0,0] → backgroundPosition 0% 0% on a 4×3 sheet.
+    assert.equal(stillPos, "0% 0%");
+
+    // Advance clock as if a looping 6fps idle would flip to [1,0] — still must not move.
+    view.animTime = 1 / 6;
+    view.applyActorSheet(node, heroId, false);
+    assert.equal(node.style.backgroundPosition, stillPos);
+
+    view.animTime = 5;
+    view.applyActorSheet(node, heroId, false);
+    assert.equal(node.style.backgroundPosition, stillPos);
+
+    // Walk still cycles while moving.
+    view.animTime = 0;
+    view.applyActorSheet(node, heroId, true);
+    const walk0 = node.style.backgroundPosition;
+    view.animTime = 0.1; // 10fps walk → next cell
+    view.applyActorSheet(node, heroId, true);
+    const walk1 = node.style.backgroundPosition;
+    assert.notEqual(walk1, walk0);
+    // Stop → back to still.
+    view.applyActorSheet(node, heroId, false);
+    assert.equal(node.style.backgroundPosition, "0% 0%");
+  }
+
+  // Act gates untouched by this sheet idle fix.
+  assert.deepEqual(
+    ACTS.map((act) => [act.id, act.available, act.arena]),
+    [
+      ["jade-gate", true, "arena"],
+      ["bamboo-crossing", true, "bamboo-river"],
+      ["mount-canglan", true, "mount-canglan"],
+      ["meridian-citadel", false, null],
+    ],
+  );
+});
