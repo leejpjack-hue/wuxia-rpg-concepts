@@ -110,39 +110,37 @@ test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   game.start("lu-bu", "quickplay", "jade-gate", quickParty("lu-bu"));
   assert.equal(game.mode, "exploring");
 });
-test("campaign walks the branching map to the boss, tea house and unlocks", () => {
+test("campaign walks the open pass to the boss, tea house and unlocks", () => {
   const game = session();
   game.start("zhao-yun", "campaign");
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
   assert.equal(game.mode, "dialogue");
   game.advanceDialogue();
-  assert.equal(game.mode, "exploring"); // row 0 (vanguard) auto-marches
+  assert.equal(game.mode, "exploring"); // the whole act waits on one open pass
+  // First area: duel its named legend, and the area scatters.
   clearEncounter(game);
   assert.equal(game.mode, "upgrade");
+  assert(game.g.openField.cleared.includes("vanguard"));
+  assert(!game.g.roam.field.some((rival) => rival.area === "vanguard"));
   game.chooseDiscipline("power");
   assert.equal(game.g.p.power, 1.25);
-  assert.equal(game.mode, "map"); // row 1 offers a real choice
-  walkMap(game, (nodes) => nodes.find((n) => n.startsWith("ambush:")) || nodes[0]);
-  clearEncounter(game);
-  game.chooseDiscipline("vitality");
-  assert.equal(game.mode, "map"); // row 2
-  walkMap(game, (nodes) => nodes.find((n) => n.startsWith("duel:")) || nodes[0]);
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  assert.equal(game.mode, "dialogue"); // row 3 boss auto-marches into the intro
-  assert.equal(game.dialogue.key, "warden-intro");
-  assert.equal(game.g.p.maxHp, 150);
-  game.advanceDialogue(true);
-  clearEncounter(game);
-  assert.equal(game.dialogue.key, "warden-fall");
-  game.advanceDialogue(true);
+  assert.equal(game.mode, "exploring"); // the map never resets between areas
+  // Walk the rest of the pass to the boss.
+  let guard = 0;
+  while (!["waystation", "victory", "defeat"].includes(game.mode) && guard++ < 300) {
+    if (game.mode === "dialogue") game.advanceDialogue(true);
+    else if (game.mode === "exploring" || game.mode === "playing") clearEncounter(game);
+    else if (game.mode === "upgrade") game.chooseDiscipline("vitality");
+    else if (game.mode === "map") walkMap(game);
+  }
   assert.equal(game.mode, "waystation");
+  assert.ok(game.g.p.maxHp >= 150); // roadside disciplines grow the hero on the way
   assert(game.profile.wallet > 0);
   assert(game.profile.completedActs.includes("jade-gate"));
   assert(!game.profile.unlockedHeroes.includes("lu-bu"));
 });
-test("checkpoint resumes encounter boundary and preserves run upgrades", () => {
+test("checkpoint resumes the open pass boundary and preserves run upgrades", () => {
   const storage = memoryStorage(),
     game = session(storage);
   game.start("zhao-yun", "campaign");
@@ -153,8 +151,11 @@ test("checkpoint resumes encounter boundary and preserves run upgrades", () => {
   game.g.score = 99999;
   const restored = session(storage);
   assert(restored.continueCheckpoint());
-  assert.equal(restored.mode, "map"); // saved mid-map after the first node
-  assert.equal(restored.g.map.row, 1);
+  while (restored.mode === "dialogue") restored.advanceDialogue(true);
+  assert.equal(restored.mode, "exploring"); // back on the same open pass
+  assert(restored.g.openField.cleared.includes("vanguard"));
+  assert(!restored.g.roam.field.some((rival) => rival.area === "vanguard"));
+  assert(restored.g.roam.field.some((rival) => rival.area === "warden"));
   assert.equal(restored.g.p.power, 1.25);
   assert.equal(restored.g.p.hp, 120);
   assert.notEqual(restored.g.score, 99999);

@@ -145,13 +145,15 @@ test("the merchant trades run renown for run goods", () => {
   const g = game();
   g.start("zhao-yun", "campaign");
   g.advanceDialogue(true);
+  // Reach the Act I elite offers; the merchant still sets up his stall there.
   clearEncounter(g);
   g.chooseDiscipline("power");
-  g.chooseNode("ambush:archer-run");
   clearEncounter(g);
   g.chooseDiscipline("power");
-  g.chooseNode("shop:merchant");
+  clearEncounter(g);
   assert.equal(g.mode, "map");
+  if (g.g.map.judgement) g.resolveJudgement(true);
+  assert(g.openShop("shop:merchant"));
   assert(g.g.map.shop, "the shop is open");
   g.g.score = 500;
   assert(g.buyShopItem("vitality"));
@@ -170,10 +172,11 @@ test("judgement: sparing an elite gains the people's favor and can recruit the a
   const g = game(storage);
   g.start("zhao-yun", "campaign");
   g.advanceDialogue(true);
+  // Cut to the Act I elite: its leader's fall opens the judgement.
   clearEncounter(g);
   g.chooseDiscipline("power");
-  // Route to the Act I elite and force the adder to fall there.
-  g.chooseNode("elite:gate-vanguard");
+  clearEncounter(g);
+  g.chooseDiscipline("power");
   clearEncounter(g);
   g.g.map.judgement = { kind: "venom-adept", name: "The Venom Adept" };
   g.resolveJudgement(true);
@@ -191,7 +194,8 @@ test("judgement: sparing an elite gains the people's favor and can recruit the a
   other.advanceDialogue(true);
   clearEncounter(other);
   other.chooseDiscipline("power");
-  other.chooseNode("elite:gate-vanguard");
+  clearEncounter(other);
+  other.chooseDiscipline("power");
   clearEncounter(other);
   other.g.map.judgement = { kind: "pugilist", name: "Iron Pugilist" };
   const scoreBefore = other.g.score;

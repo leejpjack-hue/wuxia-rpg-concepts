@@ -17,10 +17,20 @@ function segmentDistance(p, a, b) {
   return Math.hypot(p.x-a.x-t*dx, p.y-a.y-t*dy);
 }
 
-/** Grounded exploration. Melee contact opens duels; archers fight in real time. */
-export function createRoam(g, bus, { encounter } = {}) {
-  const roster = rosterForEncounter(encounter?.id, g.runMode);
+/** Deterministic golden-angle spread so an open-field area reads as a camp. */
+function openFieldPoint(anchor, index) {
+  const angle = index * 2.39996;
+  const radius = index === 0 ? 0 : 90 + (index % 3) * 70;
+  return groundPoint(anchor.x + Math.cos(angle) * radius, anchor.y + Math.sin(angle) * radius);
+}
+
+/** Grounded exploration. Melee contact opens duels; archers fight in real time.
+ *  Open-field mode (roster + areas + anchors) deploys every pass rival of an
+ *  act at once on one persistent map, tagged by the area they hold. */
+export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, anchors } = {}) {
+  const roster = explicitRoster || rosterForEncounter(encounter?.id, g.runMode);
   if (!roster) throw new Error('This encounter has no arena rivals yet.');
+  const openField = Array.isArray(areas) && areas.length === roster.length;
   const clock = new FixedClock(), pending = [];
   let serial = 0;
   const hazardRandom = seededRandom(7171 + g.encounterIndex * 37);
@@ -43,23 +53,26 @@ export function createRoam(g, bus, { encounter } = {}) {
   const field = roster.map((kind, index) => {
     const def = DUEL_ENEMIES[kind];
     const escort = isEscortKind(kind);
-    const marker = escort ? null : spawnMarkerFor(baseIndex++, base.length);
-    const position = marker ? groundPoint(marker.x, marker.y) : groundPoint(640, 500);
+    const area = openField ? areas[index] : null;
+    // Open-field groups spawn around their area anchor; classic passes use markers.
+    const marker = !openField && !escort ? spawnMarkerFor(baseIndex++, base.length) : null;
+    const anchor = openField ? anchors?.[area] : null;
+    const position = marker ? groundPoint(marker.x, marker.y)
+      : anchor ? openFieldPoint(anchor, index)
+      : groundPoint(640, 500);
     // Elite encounters (and wander stages) field hardened rivals.
     const eliteScale = encounter.scale ?? (encounter.elite ? 1.35 : 1);
     const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
     return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*damageScale),
       reward: Math.round(def.reward*(encounter.elite?1.5:1)), ...position, id: `${encounter.id}-field-${index}`, kind,
-      maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
+      area, maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
       speed: def.boss ? 70 : 55+index*10,
       homeX: position.x, homeY: position.y, tx: position.x, ty: position.y,
       timer: 0, cooldown: 1.4+index*.4, windup: 0, aim: null,
       rng: seededRandom(1337+g.encounterIndex*7+index*131) };
   });
-  // The escort squad rings the pass's last named legend, facing the hero's entry.
-  const ward = field.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
-  if (ward) {
-    const escorts = field.filter(enemy => isEscortKind(enemy.kind));
+  // The escort squad rings its area's last named legend, facing the hero's entry.
+  const ringEscorts = (ward, escorts) => {
     const entryBearing = Math.atan2(500 - ward.y, 640 - ward.x);
     escorts.forEach((escort, slot) => {
       const bearing = entryBearing + (slot - (escorts.length - 1) / 2) * 0.42;
@@ -67,6 +80,20 @@ export function createRoam(g, bus, { encounter } = {}) {
       const point = groundPoint(ward.x + Math.cos(bearing) * ring, ward.y + Math.sin(bearing) * ring);
       Object.assign(escort, point, { homeX: point.x, homeY: point.y, tx: point.x, ty: point.y, slot, guardOf: ward.id });
     });
+  };
+  if (openField) {
+    const byArea = new Map();
+    for (const enemy of field) {
+      if (!byArea.has(enemy.area)) byArea.set(enemy.area, []);
+      byArea.get(enemy.area).push(enemy);
+    }
+    for (const group of byArea.values()) {
+      const ward = group.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
+      if (ward) ringEscorts(ward, group.filter(enemy => isEscortKind(enemy.kind)));
+    }
+  } else {
+    const ward = field.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
+    if (ward) ringEscorts(ward, field.filter(enemy => isEscortKind(enemy.kind)));
   }
   Object.assign(g.p, { x: 640, y: 500 });
   const partyFollowers = (g.party?.followers || []).map((id, index) => {
@@ -332,6 +359,18 @@ export function createRoam(g, bus, { encounter } = {}) {
       if(roam.contact<0) return null;
       const [removed]=field.splice(roam.contact,1); roam.contact=-1; roam.defeated++;
       return removed;
+    },
+    /** Open field: a fallen leader's area scatters — the survivors flee without duels. */
+    scatterArea(area) {
+      const removed=[];
+      for(let i=field.length-1;i>=0;i--)
+        if(field[i].area===area) removed.push(field.splice(i,1)[0]);
+      if(removed.length){
+        roam.defeated+=removed.length;
+        const gone=new Set(removed.map(enemy=>enemy.id));
+        roam.shots=roam.shots.filter(shot=>!gone.has(shot.owner));
+      }
+      return removed.reverse();
     },
   };
 }

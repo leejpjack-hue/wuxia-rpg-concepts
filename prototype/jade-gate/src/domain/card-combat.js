@@ -6,9 +6,10 @@ import { oathFor, signatureById, specialFor } from "../content/expansion.js";
 /** Fixed small assist bump (WU-PARTY-09I). Modest vs hero strikes (~19–40). */
 export const ASSIST_DAMAGE = 8;
 
-/** Pure, synchronous turns. No timers, DOM, random hit chance, or background damage. */
-export function createCardCombat(g, bus, { encounter } = {}) {
-  const roster = rosterForEncounter(encounter?.id, g.runMode);
+/** Pure, synchronous turns. No timers, DOM, random hit chance, or background damage.
+ *  `roster` overrides encounter resolution for the open-field campaign map. */
+export function createCardCombat(g, bus, { encounter, roster: explicitRoster } = {}) {
+  const roster = explicitRoster || rosterForEncounter(encounter?.id, g.runMode);
   if (!roster) throw new Error("This encounter has no card duel yet.");
   g.turns ||= 0;
   // Run curios bend duel rules; effects below read this set.
@@ -36,12 +37,13 @@ export function createCardCombat(g, bus, { encounter } = {}) {
       describe: () => "The rival chants and mends 12 health, washing away bleed and poison." },
   };
 
-  /** One duel per contacted rival; tea and progress persist within the encounter. */
-  function begin(kind, id = `${encounter.id}-card`, opening = false) {
+  /** One duel per contacted rival; tea and progress persist within the encounter.
+   *  `elite` hardens open-field duels whose area encounter was an elite node. */
+  function begin(kind, id = `${encounter.id}-card`, opening = false, elite = false) {
     const rival = DUEL_ENEMIES[kind];
     if (!rival) throw new Error(`Unknown rival: ${kind}`);
-    const eliteScale = encounter.scale ?? (encounter.elite ? 1.35 : 1);
-    const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
+    const eliteScale = encounter.scale ?? (encounter.elite || elite ? 1.35 : 1);
+    const damageScale = encounter.damageScale ?? (encounter.elite || elite ? 1.15 : 1);
     const hp = Math.round(rival.hp * eliteScale);
     g.enemies = [
       {
