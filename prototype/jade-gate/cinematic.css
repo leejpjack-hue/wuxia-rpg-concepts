@@ -12,7 +12,9 @@
 .film-caption { position:absolute; z-index:9; bottom:12px; width:100%; text-align:center; font-size:12px; letter-spacing:.12em; color:#fff3ce; }
 .film-floor { position:absolute; left:10%; right:10%; bottom:16%; height:9%; background:#02060499; filter:blur(15px); border-radius:50%; }
 .film-actor { position:absolute; bottom:19%; height:66%; width:42%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 8px #0008); transition:transform .32s cubic-bezier(.12,.8,.25,1),filter .2s,opacity .3s; }
-.film-hero.sheet-anim { object-fit:fill; }
+.film-actor.sheet-anim { object-fit:fill; }
+/* Square atlas cells must stay square at wide and narrow duel sizes. */
+.film-actor.duel-pose { width:min(42cqw, 66cqh); height:auto; aspect-ratio:1; }
 .film-hero { left:4%; transform:translateX(-8%); }
 .film-enemy { right:4%; transform:scaleX(-1); }
 [data-phase=strike] .film-hero { transform:translateX(65%) rotate(-9deg); }
@@ -284,3 +286,8 @@
   55% { opacity: 1; transform: translate(-50%, -32%) scale(1.1); filter: drop-shadow(0 0 26px var(--strike-color)); }
   100% { opacity: 1; transform: translate(-50%, -30%) scale(1.05); filter: drop-shadow(0 0 18px var(--strike-color)); }
 }
+
+/* Venom Adept uses the same full film phases as the rest of the roster. */
+.style-venom-adept.action-attack[data-phase=strike] .film-hero { transform:translateX(82%) skewX(-6deg); }
+.style-venom-adept.action-technique[data-phase=strike] .film-hero { animation:twin-dash .45s ease-out both; }
+.style-venom-adept.action-technique .film-trail { border-top:10px solid #9dc48a; border-bottom:5px solid #daf1bb; transform:rotate(-20deg); }

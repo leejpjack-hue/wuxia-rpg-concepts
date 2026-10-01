@@ -45,7 +45,7 @@ test("wired FRAME-00 sheets resolve from the live manifest", () => {
     assert.deepEqual(sheetGrid(sheet), { cols: 4, rows: 3 });
     assert.deepEqual(
       Object.keys(sheet).sort(),
-      ["anims", "file", "frameH", "frameW", "id", "method", "prompt"],
+      ["anims", "duelPoses", "file", "frameH", "frameW", "id", "method", "prompt"],
     );
   }
 });

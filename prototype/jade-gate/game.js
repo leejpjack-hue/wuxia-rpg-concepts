@@ -51,6 +51,7 @@ const art = [
   "weather-rain", "weather-night", "weather-fog",
   // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.
   "lu-zhishen-sheet",
+  ...assetManifest.filter(row => row.duelPoses && row.runtimeApproved).map(row => row.id),
 ];
 view.setReady(true);
 let statusLanguageOff;

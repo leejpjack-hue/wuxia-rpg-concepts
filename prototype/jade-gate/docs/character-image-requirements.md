@@ -104,3 +104,7 @@ If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** rea
 - No extra anims (run, hit, death, face-left) until a later WU-FRAME story.
 - No batch art production under WU-FRAME-00 — pilot is **WU-FRAME-01 Zhao Yun** only.
 
+
+## Card-only cinematic poses
+
+Card duels additionally support `<hero-id>-duel-poses.png`, an approved 2×2 RGBA atlas with wind-up, strike, focus and special cells. This is separate from the 4×3 walking sheet. The exact contract, failed generation list and saved prompts are in [DUEL-ACTION-ASSETS.md](DUEL-ACTION-ASSETS.md). Keep the original walking art and costume-specific boss identity intact. Only reviewed images receive `runtimeApproved: true`.

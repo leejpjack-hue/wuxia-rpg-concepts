@@ -3,6 +3,7 @@ import { join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { HERO_IDS } from "../src/content/heroes.js";
+import { loadDuelPoses } from "../src/platform/duel-poses.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -29,6 +30,13 @@ for (const asset of manifest) {
   const data = readFileSync(join(root, asset.file));
   if (data.subarray(1, 4).toString() !== "PNG")
     throw new Error(`Invalid PNG: ${asset.file}`);
+  if (asset.duelPoses) {
+    const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, '');
+    if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
+    if (asset.id.endsWith('-duel-poses') &&
+      (data.readUInt32BE(16) !== data.readUInt32BE(20) || data.readUInt32BE(16) < 1024 || data[25] !== 6))
+      throw new Error(`${asset.id} must be a square RGBA atlas at least 1024px wide`);
+  }
   const contract = asset.contract;
   if (contract) {
     const width = data.readUInt32BE(16), height = data.readUInt32BE(20);

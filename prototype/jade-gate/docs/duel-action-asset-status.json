@@ -1,0 +1,98 @@
+[
+  {
+    "heroId": "zhao-yun",
+    "file": "assets/zhao-yun-duel-poses.png",
+    "status": "failed",
+    "note": "Built-in image generation returned a network error."
+  },
+  {
+    "heroId": "lu-zhishen",
+    "file": "assets/lu-zhishen-duel-poses.png",
+    "status": "existing-frames",
+    "note": "Approved Lu Zhishen attack cells are reused for card-only poses; no new PNG generated."
+  },
+  {
+    "heroId": "hu-sanniang",
+    "file": "assets/hu-sanniang-duel-poses.png",
+    "status": "failed",
+    "note": "Built-in image generation returned a network error."
+  },
+  {
+    "heroId": "lu-bu",
+    "file": "assets/lu-bu-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "guan-yu",
+    "file": "assets/guan-yu-duel-poses.png",
+    "status": "cancelled",
+    "note": "Retry stopped after the user requested that failed images only be listed."
+  },
+  {
+    "heroId": "wu-song",
+    "file": "assets/wu-song-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "mu-guiying",
+    "file": "assets/mu-guiying-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "liang-hongyu",
+    "file": "assets/liang-hongyu-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "nie-yinniang",
+    "file": "assets/nie-yinniang-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "sun-shangxiang",
+    "file": "assets/sun-shangxiang-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "gu-dasao",
+    "file": "assets/gu-dasao-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "qin-liangyu",
+    "file": "assets/qin-liangyu-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "bao-sanniang",
+    "file": "assets/bao-sanniang-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "dian-wei",
+    "file": "assets/dian-wei-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "yang-zhi",
+    "file": "assets/yang-zhi-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  },
+  {
+    "heroId": "venom-adept",
+    "file": "assets/venom-adept-duel-poses.png",
+    "status": "not-attempted",
+    "note": "Generation deferred at the user request."
+  }
+]
