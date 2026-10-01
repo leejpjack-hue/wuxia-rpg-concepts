@@ -81,6 +81,17 @@ export class DuelCinematic {
     const attack = !reduced && ['attack', 'technique'].includes(action) ? sheet?.anims.attack : null;
     const cut = [...cutFor(action, reduced)];
     const strikeAt = cut.find(([phase]) => phase === 'strike')[1];
+    // The rival's counter mirrors the hero's beats: reply coils, counter dashes, counter-impact lands.
+    const counter = !reduced && result.incoming > 0;
+    if (counter) {
+      node.classList.add(`counter-${result.intent || 'strike'}`);
+      const replyAt = cut.find(([phase]) => phase === 'reply')[1];
+      const counterAt = replyAt + 180;
+      const hitAt = counterAt + 300;
+      cut.push(['counter', counterAt], ['counter-impact', hitAt]);
+      cut[cut.findIndex(([phase]) => phase === 'end')] = ['end', hitAt + 620];
+      cut.sort((a, b) => a[1] - b[1]);
+    }
     if (attack?.frames?.length) {
       const frameMs = 1000 / (attack.fps > 0 ? attack.fps : 1);
       const impactAt = cut.find(([phase]) => phase === 'impact')[1];
@@ -109,9 +120,15 @@ export class DuelCinematic {
       }
       if (phase === 'reply') {
         node.classList.toggle('counter', result.incoming > 0);
-        number.textContent = result.incoming ? `−${result.incoming}` : '';
+        number.textContent = counter ? '' : result.incoming ? `−${result.incoming}` : '';
         caption.textContent = this.t(result.lethal ? 'RIVAL DEFEATED' : result.stunned ? 'ENEMY STUNNED · NO REPLY' : result.incoming ? `${enemy.name} · COUNTERSTRIKE` : 'THE ENEMY HOLDS GUARD');
-        if (result.incoming) this.cue({type:'hurt'});
+        if (result.incoming && !counter) this.cue({type:'hurt'});
+        if (counter) this.cue({type:'enemy_windup'});
+      }
+      if (phase === 'counter') this.cue({type:'strike'});
+      if (phase === 'counter-impact') {
+        number.textContent = `−${result.incoming}`;
+        this.cue({type:'hurt'});
       }
     }, () => { this.cancel(); complete(); });
   }

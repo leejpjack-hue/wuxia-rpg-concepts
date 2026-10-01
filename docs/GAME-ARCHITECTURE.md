@@ -102,7 +102,7 @@ Delivered: browser card RPG with Acts I–III, twelve heroes, persistent progres
 
 `profile.settings.language` is `ja` by default or `en` by explicit selection. `src/locales/i18n.js` applies source-key translations to dynamic text and `data-i18n` attributes to static markup. `ja-content.js` contains every biography and story exchange. Language changes rerender current scenes without advancing dialogue or committing a pending combat turn.
 
-Card cinematics use each hero’s transparent sprite and individual CSS strike styles. Damage remains committed once at timeline completion. The persisted reduced-motion preference controls animation; OS preference initializes it only before the player has saved settings.
+Card cinematics use each hero’s transparent sprite and individual CSS strike styles. Damage remains committed once at timeline completion. A rival’s counterattack mirrors the hero strike structure — reply coils, `counter` dashes, `counter-impact` lands — flavored by the rival’s intent (heavy swings deeper, twin strikes dash twice, specials flare), so the enemy side keeps the player side’s motion beats; guard holds the block pose instead of reeling. Reduced motion and no-incoming replies keep the legacy single reply beat. The persisted reduced-motion preference controls animation; OS preference initializes it only before the player has saved settings.
 
 ### Act II and III materials and music (27 September 2026)
 
