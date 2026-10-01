@@ -1,29 +1,29 @@
 # Card-duel action artwork status
 
-1 October 2026. **No new images were generated in this pass.** Built-in image generation failed for Zhao Yun and Hu Sanniang. A smaller Guan Yu retry was cancelled when the user asked to mark failed images in the list. API/CLI fallback was not used.
+1 October 2026 (HKT). **Fifteen character duel-pose atlases generated** with Codex CLI `gpt-6.1-sol` @ high using the built-in `image_gen` tool. Lu Zhishen was skipped — he keeps existing approved sheet frames.
 
-Lu Zhishen uses his existing approved sheet: wind-up `[0,2]`, normal strike `[1,2]`, special focus `[0,2]`, special impact `[2,2]`. The contact pose stays visible through impact. His walking animation is unchanged. Zhao Yun and Hu Sanniang's old sheets remain disabled: the former crops limbs/weapons; the latter has baked checkerboard artifacts.
+Each new PNG is a square RGBA 2×2 atlas (≥1024px, landed at 1254×1254) with wind-up / normal strike / special focus / special strike cells. Soft cell-padding / weapon-margin issues remain on several atlases (see capscreens contact sheet); identity, alpha and pose variety passed review for runtime use.
 
-The other fifteen heroes still use their existing sprites until reviewed action artwork is supplied. Their camera, weapon trails and movement continue. Signatures now inherit each hero's technique choreography; Venom Adept has her own lunge. The runtime supports separate hero and rival poses, assist poses, reduced motion, and cancellation cleanup.
+Lu Zhishen uses his existing approved sheet: wind-up `[0,2]`, normal strike `[1,2]`, special focus `[0,2]`, special impact `[2,2]`. The contact pose stays visible through impact. His walking animation is unchanged.
 
 | Character ID | Planned PNG | Status | Explanation |
 |---|---|---|---|
-| `zhao-yun` | `assets/zhao-yun-duel-poses.png` | **failed** | Built-in image generation returned a network error. |
-| `lu-zhishen` | `assets/lu-zhishen-duel-poses.png` | **existing-frames** | Approved Lu Zhishen attack cells are reused for card-only poses; no new PNG generated. |
-| `hu-sanniang` | `assets/hu-sanniang-duel-poses.png` | **failed** | Built-in image generation returned a network error. |
-| `lu-bu` | `assets/lu-bu-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `guan-yu` | `assets/guan-yu-duel-poses.png` | **cancelled** | Retry stopped after the user requested that failed images only be listed. |
-| `wu-song` | `assets/wu-song-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `mu-guiying` | `assets/mu-guiying-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `liang-hongyu` | `assets/liang-hongyu-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `nie-yinniang` | `assets/nie-yinniang-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `sun-shangxiang` | `assets/sun-shangxiang-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `gu-dasao` | `assets/gu-dasao-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `qin-liangyu` | `assets/qin-liangyu-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `bao-sanniang` | `assets/bao-sanniang-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `dian-wei` | `assets/dian-wei-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `yang-zhi` | `assets/yang-zhi-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
-| `venom-adept` | `assets/venom-adept-duel-poses.png` | **not-attempted** | Generation deferred at the user request. |
+| `zhao-yun` | `assets/zhao-yun-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `lu-zhishen` | `assets/lu-zhishen-duel-poses.png` | **existing-frames** | Approved Lu Zhishen attack cells reused; no new PNG (skipped this batch). |
+| `hu-sanniang` | `assets/hu-sanniang-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `lu-bu` | `assets/lu-bu-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `guan-yu` | `assets/guan-yu-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `wu-song` | `assets/wu-song-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `mu-guiying` | `assets/mu-guiying-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `liang-hongyu` | `assets/liang-hongyu-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `nie-yinniang` | `assets/nie-yinniang-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `sun-shangxiang` | `assets/sun-shangxiang-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `gu-dasao` | `assets/gu-dasao-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `qin-liangyu` | `assets/qin-liangyu-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `bao-sanniang` | `assets/bao-sanniang-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `dian-wei` | `assets/dian-wei-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `yang-zhi` | `assets/yang-zhi-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
+| `venom-adept` | `assets/venom-adept-duel-poses.png` | **generated** | Built-in image_gen · Codex gpt-6.1-sol high · 1254×1254 RGBA atlas landed. |
 
 ## Image contract and retry instructions
 
