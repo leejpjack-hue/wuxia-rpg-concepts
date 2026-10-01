@@ -8,7 +8,7 @@ export const DUEL_ROSTERS = {
   warden: ["warden"],
   // Act II: the whispering bamboo and the river crossing.
   "bamboo-ambush": ["shadow-assassin", "shadow-assassin"],
-  "bamboo-elite": ["shadow-assassin", "shadow-assassin", "shadow-assassin"],
+  "bamboo-elite": ["shadow-assassin", "venom-adept", "shadow-assassin"],
   "river-skiff": ["skiff-archer", "shadow-assassin"],
   "night-heron": ["night-heron"],
   "canglan-approach": ["canglan-monk", "canglan-monk", "archer"],

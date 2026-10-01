@@ -189,6 +189,8 @@ export const messages = {
   '+20 max health for the rest of the run.': 'この旅の間、最大体力＋20。',
   'The party assist can strike twice per duel for the rest of the run.': 'この旅の間、仲間の援護が各決闘二回になる。',
   'Leave the merchant': '行商人のもとを去る',
+  'The pass merchant · wares for run renown': '峠の行商人 · 旅の名声で購入',
+  '{follower} answers the {oath} ({cn}): {n} damage, +{flow} Flow.': '{follower}が{oath}（{cn}）に応じる：{n}ダメージ、気＋{flow}。',
   // Judgement.
   'Spare or finish': '助けるか、止めを刺すか', 'Spare — the people will remember': '見逃す——民は忘れない', 'Finish — the Banner nods': '止め——灰旗軍が頷く',
   '{name} kneels among the fallen. Your call is remembered.': '{name}が倒れた者たちの中で膝をついている。お前の裁定は記憶される。',

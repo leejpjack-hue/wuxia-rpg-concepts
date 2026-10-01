@@ -440,7 +440,7 @@ export function createCardCombat(g, bus, { encounter } = {}) {
     d.lastDamage = dealt;
     if (oath) {
       g.p.flow = Math.min(100, g.p.flow + oath.assistFlow);
-      log(`${follower.name} answers the ${oath.name} ${oath.cn}: ${dealt} damage, +${oath.assistFlow} Flow.`);
+      log(`${follower.name} answers the ${oath.name} (${oath.cn}): ${dealt} damage, +${oath.assistFlow} Flow.`);
     } else log(`${follower.name} assists: ${dealt} damage.`);
     bus.emit("audio:sfx", { type: "strike" });
     if (enemy.hp <= 0) defeatRival(enemy);

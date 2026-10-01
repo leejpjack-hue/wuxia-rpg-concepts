@@ -401,7 +401,7 @@ export class GameView {
         else if (node.startsWith("ambush:"))
           label = `${this.t(info.encounter.title)}${this.t(" · archer ambush")}`;
         else if (node.startsWith("shop:"))
-          label = `${this.t("The pass merchant")}${this.t(" · spend run Renown")}`;
+          label = this.t("The pass merchant · wares for run renown");
         else label = this.t(info.encounter.title);
         const b = this.button(label, () => session.chooseNode(node), {
           parent: "choices",
