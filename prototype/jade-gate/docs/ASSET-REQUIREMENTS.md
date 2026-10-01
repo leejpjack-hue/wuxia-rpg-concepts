@@ -4,7 +4,7 @@ Date: 2026-10-01 · Game: Blades of the Four (`prototype/jade-gate`)
 Context: the features below shipped with temporary/derived art or CSS-glyph stand-ins.
 
 Implementation notes for this generation pass:
-- **Current delivery: 8 of 36 generated.** The user deferred failed image generation after repeated network/service failures. See `ASSET-GENERATION-STATUS.md` for all 28 pending filenames; the runtime retains existing boss art and hides unavailable decorative art.
+- **Current delivery: 36 of 36 generated.** See `ASSET-GENERATION-STATUS.md` for inventory. Optional turnaround/judgement/codex-paper/wander remain outside this required batch.
 - Story protagonists are Zhao Yun, Lu Zhishen and Hu Sanniang only. All other roster identities are Story rivals; a spared Venom Adept becomes available for Quick Play, never a fourth Story protagonist.
 - The required batch has 36 files: Venom Adept portrait/sprite, nine signature icons, eleven special motifs, six oath emblems, three weather overlays, merchant portrait and four Act IV materials. Optional turnarounds, judgement icons, paper and wander banners are outside this batch.
 - Icons keep the built-in generator's larger native resolution and are displayed at 32–38px; 256/512 sizes below are minimum contracts. No upscaled placeholders or alpha flattening.
@@ -97,8 +97,7 @@ Shipped reusing existing art; all of the below are wanted replacements:
   a moon-gate halberd. Transparent square ≥1024.
 - `assets/meridian-acolyte-sprite.png` — Meridian Acolyte sprite (generated and wired). Robed qi-channeler with swirling vortex sleeves.
   Transparent square ≥1024.
-- `assets/sovereign-sprite.png` — The Ashen Sovereign boss sprite (currently
-  `warden-sprite.png`). Blood-moon regalia, multiple weapon forms hinted on
+- `assets/sovereign-sprite.png` — The Ashen Sovereign boss sprite (**GENERATED** — original transparent square). Blood-moon regalia, multiple weapon forms hinted on
   the back. Transparent square ≥1024, readable at boss scale.
 
 ## 8. Endless wander

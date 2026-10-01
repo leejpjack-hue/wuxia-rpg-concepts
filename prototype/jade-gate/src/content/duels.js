@@ -106,7 +106,7 @@ export const DUEL_ENEMIES = {
   },
   sovereign: {
     boss: true,
-    name: "The Ashen Sovereign", title: "THRONE OF THE BLOOD MOON", art: "warden-sprite",
+    name: "The Ashen Sovereign", title: "THRONE OF THE BLOOD MOON", art: "sovereign-sprite",
     hp: 280, damage: 18, reward: 1500,
     pattern: ["heavy", "poison", "double", "strike", "heavy"],
   },
