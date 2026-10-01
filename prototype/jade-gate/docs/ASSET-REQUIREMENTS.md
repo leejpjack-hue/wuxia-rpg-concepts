@@ -2,6 +2,14 @@
 
 Date: 2026-10-01 · Game: Blades of the Four (`prototype/jade-gate`)
 Context: the features below shipped with temporary/derived art or CSS-glyph stand-ins.
+
+Implementation notes for this generation pass:
+- **Current delivery: 8 of 36 generated.** The user deferred failed image generation after repeated network/service failures. See `ASSET-GENERATION-STATUS.md` for all 28 pending filenames; the runtime retains existing boss art and hides unavailable decorative art.
+- Story protagonists are Zhao Yun, Lu Zhishen and Hu Sanniang only. All other roster identities are Story rivals; a spared Venom Adept becomes available for Quick Play, never a fourth Story protagonist.
+- The required batch has 36 files: Venom Adept portrait/sprite, nine signature icons, eleven special motifs, six oath emblems, three weather overlays, merchant portrait and four Act IV materials. Optional turnarounds, judgement icons, paper and wander banners are outside this batch.
+- Icons keep the built-in generator's larger native resolution and are displayed at 32–38px; 256/512 sizes below are minimum contracts. No upscaled placeholders or alpha flattening.
+- The manifest records the complete prompts and `{minWidth, minHeight, square, alpha}` contract for generated overlays and sprites. Run both `npm test` and `npm run check` before a handoff.
+- Full prompt set: `prompts/expansion-assets.json` plus the two `prompts/venom-adept*.txt` files. Generated files are copied into `assets/`, never referenced only from a generator cache.
 Everything the designer replaces should keep the same **file name, format and
 minimum dimensions** so `npm run check` (asset contract in `scripts/check.mjs`)
 keeps passing. Style: painterly wuxia concept art consistent with the existing
@@ -11,8 +19,8 @@ roster portraits (dark charcoal `#10191b` background, portrait 2:3, no text).
 
 | File | Status today | Required |
 |---|---|---|
-| `assets/venom-adept.png` | **PLACEHOLDER** — archer-sprite upscaled onto a 900×1400 charcoal card | Portrait 2:3 PNG, ≥900×1400, RGBA. Adult female assassin, muted green-grey travel wraps, venom rings on her fingers, calm watchful stance. |
-| `assets/venom-adept-sprite.png` | **PLACEHOLDER** — resized archer sprite | Square RGBA PNG ≥1024×1024, transparent alpha, facing right, compact ready stance, readable at ~140px tall. |
+| `assets/venom-adept.png` | **GENERATED** — original 1024×1536 portrait | Portrait 2:3 PNG, ≥900×1400; opaque charcoal background. Adult female assassin, muted green-grey travel wraps, venom rings on her fingers, calm watchful stance. |
+| `assets/venom-adept-sprite.png` | **GENERATED** — original 1254×1254 transparent sprite | Square RGBA PNG ≥1024×1024, transparent alpha, facing right, compact ready stance, readable at ~140px tall. |
 | `assets/venom-adept-turnaround.png` | missing (optional) | 16:9 front/side/back sheet like the other heroes, if she stays in the roster long-term. |
 
 Prompt sketch for the portrait: *“Hero card portrait for the spared Venom Adept
@@ -82,15 +90,12 @@ texture background (1024×1024, tileable) behind the codex modal.
 
 Shipped reusing existing art; all of the below are wanted replacements:
 
-- `assets/meridian-citadel.png` — the Act IV roam plate (currently the Jade
-  Gate courtyard `arena.png`). Imperial blood-moon forecourt: red-lacquered
+- `assets/meridian-citadel.png` — the Act IV roam plate (generated and wired). Imperial blood-moon forecourt: red-lacquered
   pillars, white marble stairs, qi vortex spirals on the walls. Landscape
   plate sized like `mount-canglan.png`.
-- `assets/jade-sentinel-sprite.png` — Jade Sentinel sprite (currently
-  `canglan-monk-sprite.png`). Imperial guard in jade-lacquered lamellar with
+- `assets/jade-sentinel-sprite.png` — Jade Sentinel sprite (generated and wired). Imperial guard in jade-lacquered lamellar with
   a moon-gate halberd. Transparent square ≥1024.
-- `assets/meridian-acolyte-sprite.png` — Meridian Acolyte sprite (currently
-  `guard-sprite.png`). Robed qi-channeler with swirling vortex sleeves.
+- `assets/meridian-acolyte-sprite.png` — Meridian Acolyte sprite (generated and wired). Robed qi-channeler with swirling vortex sleeves.
   Transparent square ≥1024.
 - `assets/sovereign-sprite.png` — The Ashen Sovereign boss sprite (currently
   `warden-sprite.png`). Blood-moon regalia, multiple weapon forms hinted on

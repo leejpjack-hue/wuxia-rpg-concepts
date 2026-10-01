@@ -39,6 +39,8 @@
 .roam-stage img[hidden] {
   display: none;
 }
+.roam-weather-overlay { position: absolute; inset: 0; background: center / cover no-repeat; pointer-events: none; z-index: 600; }
+.roam-weather-overlay[hidden] { display: none; }
 #roam-hero {
   height: 27%;
   transform: translate(-50%, -100%) scaleX(var(--face, 1));
@@ -178,9 +180,15 @@
 
 /* The existing cutout contains mossy rocks below the bamboo; use its rock
    detail for terrace barriers while keeping the source asset unchanged. */
-.roam-stage[data-scene="mount-canglan"] .roam-thicket {
+.roam-stage[data-scene="mount-canglan"] .roam-thicket,
+.roam-stage[data-scene="meridian-citadel"] .roam-thicket {
   background-size: 100% 200%;
   background-position: center bottom;
   border-radius: 45%;
   filter: saturate(.5) brightness(1.15);
 }
+
+/* Generated overlays support weather without obscuring feet or telegraphs. */
+.roam-weather-overlay[data-weather="rain"] { opacity: .35; }
+.roam-weather-overlay[data-weather="night"] { opacity: .5; }
+.roam-weather-overlay[data-weather="fog"] { opacity: .3; }

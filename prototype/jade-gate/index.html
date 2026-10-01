@@ -32,13 +32,13 @@
       <div class="intro">
         <div>
           <p class="eyebrow" data-i18n="CHAPTER I · THE JADE GATE">第一章 · 翠門関</p>
-          <h1><span data-i18n="Twelve legends.">十二人の伝説。</span><br /><em data-i18n="One unbroken oath.">揺るがぬ誓い。</em></h1>
+          <h1><span data-i18n="Sixteen legends.">十六人の伝説。</span><br /><em data-i18n="One unbroken oath.">揺るがぬ誓い。</em></h1>
           <p class="lede"><span data-i18n="The mountain pass has fallen to the Ashen Banner.">山の関所は灰旗軍の手に落ちた。</span><br /><span data-i18n="Choose your legend. Read your rival. Reclaim the gate.">英雄を選び、敵の動きを読み、関所を奪還せよ。</span></p>
         </div>
         <div class="chapter-note">
           <span>江湖</span>
           <p data-i18n="A tale told one duel at a time">一戦ごとに紡がれる物語</p>
-          <small data-i18n="3 encounters · 12 legends · your next move">三つの戦場 · 十二人の英雄 · 次の一手はあなたに</small>
+          <small data-i18n="4 acts · 16 legends · your next move">四つの章 · 十六人の英雄 · 次の一手はあなたに</small>
         </div>
       </div>
       <section class="journey-controls" aria-label="遊び方" data-i18n-aria="Game mode">
@@ -118,6 +118,7 @@
         <div class="duel-meta"><span id="roam-remaining"></span><span class="weather-chip" id="roam-weather"></span><span class="curio-icons" id="roam-curios"></span><span><b id="roam-score">0</b><span data-i18n="RENOWN">名声</span></span><button id="roam-pause" data-i18n="Pause / menu">一時停止／メニュー</button></div>
       </div>
       <div class="roam-stage" id="roam-arena" aria-label="山の峠。英雄を動かして敵を探そう。" data-i18n-aria="Mountain pass. Move your hero to find a rival.">
+        <div id="roam-weather-overlay" class="roam-weather-overlay" aria-hidden="true" hidden></div>
         <canvas id="roam-effects" width="1280" height="720" aria-hidden="true"></canvas>
         <img id="roam-hero" alt="" draggable="false" />
       </div>
@@ -129,6 +130,7 @@
           <button data-move="right" class="dpad-right" aria-label="右へ移動" data-i18n-aria="Move right">▶</button>
         </div>
         <div class="roam-actions"><div id="roam-health" class="roam-party-hud" role="status" aria-live="polite"></div>
+      <p id="roam-oath" class="oath-chip" hidden></p>
       <details class="route-overview" open>
         <summary data-i18n="Route map">経路図</summary>
         <canvas id="roam-route-map" width="520" height="104" role="img" aria-label="経路図"></canvas>
@@ -158,13 +160,13 @@
         <div class="duel-versus"><span id="duel-number"></span><b>對</b><span id="round-number"></span><small data-i18n="YOUR TURN">あなたの番</small></div>
         <article class="fighter-card rival" id="enemy-card" aria-labelledby="enemy-name">
           <div class="card-cap"><span data-i18n="YOUR RIVAL">対戦相手</span><span id="enemy-phase"></span></div>
-          <div class="fighter-art"><img id="enemy-image" alt="" /><span class="art-sigil" aria-hidden="true">武</span></div>
+          <div class="fighter-art"><img id="enemy-image" alt="" /><img id="enemy-special-art" class="special-art" alt="" aria-hidden="true" hidden /><span class="art-sigil" aria-hidden="true">武</span></div>
           <div class="fighter-info"><p class="fighter-title" id="enemy-title"></p><h2 id="enemy-name"></h2>
             <div class="health-label"><span data-i18n="HEALTH">体力</span><strong id="enemy-health"></strong></div>
             <div class="duel-meter rival-meter" id="enemy-health-meter" role="progressbar" aria-label="敵の体力" data-i18n-aria="Rival health"><i id="enemy-health-bar"></i></div>
             <div class="intent-badge"><span data-i18n="NEXT MOVE">敵の次の行動</span><strong id="enemy-intent"></strong><small id="intent-next"></small><small id="enemy-focus" hidden></small></div>
             <button type="button" id="card-assist" class="assist-btn" hidden disabled aria-label="Assist">
-              <span data-i18n="Assist">援護</span>
+              <img id="assist-oath-icon" class="action-icon" alt="" aria-hidden="true" hidden /><span data-i18n="Assist">援護</span>
               <small id="assist-detail"></small>
             </button>
             <p class="status-line" id="enemy-status"></p>
@@ -178,7 +180,7 @@
           <button id="card-guard" data-action="guard"><span><kbd>2</kbd><span data-i18n="Guard">防御</span></span><small data-i18n="Block 80% damage · +20 Flow">被ダメージ80%軽減 · 気＋20</small></button>
           <button id="card-technique" data-action="technique"><span><kbd>3</kbd> <b id="technique-name"></b></span><small id="technique-detail"></small></button>
           <button id="card-tea" data-action="tea"><span><kbd>4</kbd><span data-i18n="Healing tea">回復の茶</span></span><small id="tea-detail"></small></button>
-          <button id="card-signature" data-action="signature" hidden><span><kbd>5</kbd> <b id="signature-name"></b></span><small id="signature-detail"></small></button>
+          <button id="card-signature" data-action="signature" hidden><span><kbd>5</kbd> <img id="signature-icon" class="action-icon" alt="" aria-hidden="true" /> <b id="signature-name"></b></span><small id="signature-detail"></small></button>
         </div>
         <p class="technique-help" id="technique-help"></p>
       </section>

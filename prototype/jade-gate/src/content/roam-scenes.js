@@ -13,5 +13,9 @@ export const ROAM_SCENES = {
     art: "canglan-terrace-ground", blocker: "bamboo-thicket-blocker",
     tileWidth: 4096, artHeight: 2880, topCrop: 300,
   },
+  "meridian-citadel": {
+    art: "meridian-citadel", blocker: "bamboo-thicket-blocker",
+    tileWidth: 4096, artHeight: 2880, topCrop: 550,
+  },
 };
 export const roamScene = actId => ROAM_SCENES[actId] || ROAM_SCENES["jade-gate"];

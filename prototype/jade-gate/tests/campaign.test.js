@@ -106,7 +106,7 @@ test("Act IV finale: the whole campaign clears into the Sovereign's throne and t
 });
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();
-  assert.throws(() => game.start("lu-bu", "campaign"), /Act III/);
+  assert.throws(() => game.start("lu-bu", "campaign"), /Story rival/);
   game.start("lu-bu", "quickplay", "jade-gate", quickParty("lu-bu"));
   assert.equal(game.mode, "exploring");
 });
@@ -234,13 +234,13 @@ test("quick-play victory records scores without changing campaign wallet/checkpo
   assert.equal(game.profile.checkpoint, null);
   assert(!game.profile.unlockedHeroes.includes("lu-bu"));
 });
-test("Act III completion is the declarative campaign unlock boundary", () => {
+test("Act III completion opens Act IV without changing the Story hero roles", () => {
   const game = session();
   game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   game.g.runMode = "campaign";
   awardResult(game.profile, game.g, true, ACTS[2]);
   game.save();
-  assert(game.profile.unlockedHeroes.includes("lu-bu"));
+  assert(!game.profile.unlockedHeroes.includes("lu-bu"));
 });
 test("invalid content references fail before launching", () => {
   const acts = structuredClone(ACTS);

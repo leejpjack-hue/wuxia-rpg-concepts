@@ -11,64 +11,32 @@ import { resolveMusicMode } from '../src/platform/audio-director.js';
 import { musicStepCount, scoreStep } from '../src/content/music-score.js';
 import { onGround } from '../src/domain/ground.js';
 
-test('five allies join one at a time through the three-act story, survive reload, and cannot be forged', () => {
+test('four-act Story keeps its three heroes across milestones, checkpoints and reloads', () => {
   const storage = memoryStorage();
   let game = session(storage);
-  assert.throws(() => game.start('mu-guiying', 'campaign'), /Quick play only/);
   completeCampaign(game);
-  assert(game.profile.unlockedHeroes.includes('guan-yu'));
-  assert(!game.profile.unlockedHeroes.includes('wu-song'));
-  game.start('zhao-yun', 'campaign', 'bamboo-crossing');
-  assert.equal(playCampaign(game), 'waystation');
-  assert(game.profile.unlockedHeroes.includes('wu-song'));
-  game.start('zhao-yun', 'campaign', 'mount-canglan');
-  assert.equal(game.dialogue.key, 'canglan-arrival');
-  game.advanceDialogue(true);
-  clearEncounter(game);
-  if (game.mode === 'map') walkMap(game); // judgement + curio offers settle into the upgrade
-  assert.equal(game.mode, 'upgrade');
-  assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying']);
-  assert(!game.profile.unlockedHeroes.includes('liang-hongyu'));
+  for (const act of ACTS.slice(1)) {
+    game.start('zhao-yun', 'campaign', act.id);
+    assert.equal(playCampaign(game), 'waystation');
+  }
+  const profile = new SaveStore(storage).load();
+  assert.deepEqual(profile.completedActs, ACTS.map(act => act.id));
+  assert.deepEqual(profile.unlockedHeroes, ['zhao-yun', 'lu-zhishen', 'hu-sanniang']);
+  assert.deepEqual(profile.earnedHeroes, []);
   game = session(storage);
-  assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying']);
-  assert(game.continueCheckpoint());
-  assert.equal(game.mode, 'upgrade');
-  game.chooseDiscipline('power');
-  walkMap(game, nodes => nodes.find(n => n.startsWith('elite:')) || nodes[0]);
-  clearEncounter(game);
-  if (game.mode === 'map') walkMap(game);
-  assert.equal(game.mode, 'upgrade');
-  assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying', 'liang-hongyu']);
-  game.chooseDiscipline('power');
-  if (game.mode === 'map') walkMap(game);
-  clearEncounter(game);
-  if (game.mode === 'map') walkMap(game);
-  assert.deepEqual(game.profile.earnedHeroes, ['mu-guiying', 'liang-hongyu', 'nie-yinniang']);
-  assert(!game.profile.unlockedHeroes.includes('lu-bu'));
-  game.chooseDiscipline('power');
-  assert.equal(game.dialogue.key, 'lu-bu-rival-intro');
-  game.advanceDialogue(true);
-  assert.equal(game.g.enemies[0].type, 'boss');
-  clearEncounter(game);
-  assert.equal(game.dialogue.key, 'lu-bu-rival-fall');
-  game.advanceDialogue(true);
-  assert.equal(game.mode, 'waystation');
-  assert(game.profile.unlockedHeroes.includes('lu-bu'));
-  const reloaded = new SaveStore(storage).load();
-  assert.deepEqual(reloaded.earnedHeroes, ['mu-guiying', 'liang-hongyu', 'nie-yinniang']);
-  assert.equal(new Set(reloaded.unlockedHeroes).size, 9);
-  game.menu(); game.start('nie-yinniang', 'campaign');
-  assert.equal(game.hero.id, 'nie-yinniang');
-  const forged = session(); forged.profile.unlockedHeroes.push('mu-guiying');
-  assert.throws(() => forged.start('mu-guiying', 'campaign'), /Quick play only/);
+  assert.throws(() => game.start('lu-bu', 'campaign'), /Story rival/);
 });
 
-test('older saves earn completed-act allies without accepting old quick-play unlocks', () => {
-  const raw = {version:2,completedActs:['jade-gate','bamboo-crossing'],unlockedHeroes:HEROES.map(h=>h.id),settings:{language:'ja'}};
-  const storage=memoryStorage({[SAVE_KEY]:JSON.stringify(raw)});
-  const game=session(storage);
-  assert.deepEqual(game.profile.unlockedHeroes.sort(), ['zhao-yun','lu-zhishen','hu-sanniang','guan-yu','wu-song'].sort());
-  assert.deepEqual(game.profile.earnedHeroes, []);
+test('legacy unlocked heroes never become Story protagonists and records remain intact', () => {
+  const raw = {version:2, completedActs:['jade-gate','bamboo-crossing'],
+    unlockedHeroes:HEROES.map(h=>h.id), earnedHeroes:['mu-guiying'],
+    records:{'guan-yu':{best:950,wins:3}}, wallet:1234, settings:{language:'ja'}};
+  const game=session(memoryStorage({[SAVE_KEY]:JSON.stringify(raw)}));
+  assert.equal(game.profile.wallet,1234);
+  assert.equal(game.profile.records['guan-yu'].wins,3);
+  assert.deepEqual(game.profile.completedActs,['jade-gate','bamboo-crossing']);
+  for (const hero of HEROES.slice(3).filter(h=>!h.recruitedOnly))
+    assert.throws(() => game.start(hero.id,'campaign'), /Quick play only|Story rival/);
 });
 
 test('Acts II and III use their own illustrated enemies, translated story and long procedural themes', () => {

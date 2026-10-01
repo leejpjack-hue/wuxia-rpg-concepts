@@ -14,9 +14,9 @@ The player has confirmed a **hybrid loop: roam, then duel**. Between fights the 
 
 ## Implementation status and architecture
 
-The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now plays through Acts I–III, including arrival dialogue, encounter disciplines, multi-phase bosses, resolution dialogue, tea-house cultivation and checkpoint continuation. Quick play offers all nine heroes; campaign unlocks them through story milestones, ending with Lü Bu after the Act III rival duel.
+The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now plays through Acts I–IV with arrival dialogue, encounter disciplines, multi-phase bosses, resolution dialogue, tea-house cultivation and checkpoint continuation. Story heroes are Zhao Yun, Lu Zhishen and Hu Sanniang. All other roster identities oppose them as named rivals on the pass; defeating or sparing them does not add a Story protagonist. Quick Play retains the full wider roster, with the Venom Adept earned through an elite judgement.
 
-Acts I–III are now playable in the browser; Act IV, deeper parrying, and 3D assets below remain production targets. The timeline is a planning estimate, not a delivery guarantee. Existing character art also requires a canon-alignment pass, especially Zhao Yun's sword and the revised ages.
+Acts I–IV are now playable in the browser; deeper parrying and 3D assets below remain production targets. The timeline is a planning estimate, not a delivery guarantee. Existing character art also requires a canon-alignment pass, especially Zhao Yun's sword and the revised ages.
 
 ## 1. Executive Summary & Creative Vision
 
@@ -144,7 +144,7 @@ classDiagram
 #### 4. Lü Bu (呂布 · 奉先) — The Rival / The Sky-Splitter
 - **Historical Grounding:** The supreme warrior of the Three Kingdoms era, feared for his halberd and volatile loyalties.
 - **In-Game Concept:** A ferocious young warlord whose twin pheasant feathers (*Lingzi*) dominate the battlefield horizon. He has initially allied with the Ashen Banner not out of loyalty, but because they promised him the only worthy duel in the realm.
-- **Narrative Arc:** Serves as the primary rival and Act III boss. Through a climactic duel atop Mount Canglan, the player shatters his illusion of solitary dominion. Upon defeat, he becomes playable as an unlockable powerhouse hero who fights alongside the others to challenge the Ashen Sovereign.
+- **Narrative Arc:** Serves as the primary rival and Act III boss. Through a climactic duel atop Mount Canglan, the player shatters his illusion of solitary dominion. Upon defeat, his Ashen Oath breaks. He remains a Story rival and is playable in Quick Play.
 - **Signature Combat Dynamic:** Massive reach, devastating individual hit damage, wide cleaving hitboxes that dominate the arena.
 
 ---
@@ -218,7 +218,7 @@ sequenceDiagram
     1. *The Five Elemental Forms:* Seamlessly shifts between Spear, Dual Blades, Spade, and Halberd stances.
     2. *The Meridian Tempest:* Floods the arena with corrupted Qi vortexes.
     3. *Desperate Duel:* Blindingly fast duel where only perfect parries/evades grant opening for Flow techniques.
-- **Epilogue:** The four heroes stand on the palace parapet as dawn breaks over the mountain pass. The empire has fallen, but the wandering spirit of the jianghu endures.
+- **Epilogue:** The three protagonists stand on the palace parapet as dawn breaks over the mountain pass. The empire has fallen, but the wandering spirit of the jianghu endures.
 
 ---
 

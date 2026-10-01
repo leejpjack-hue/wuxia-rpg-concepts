@@ -70,10 +70,16 @@ See [character image requirements](docs/character-image-requirements.md) before 
 
 Run `npm test` and `npm run check`. Tests cover card rules, roaming determinism and contact hand-off, all twelve heroes, campaign completion, save recovery, rewards, purchases, scene/modal regressions, and the retained legacy combat/audio contracts. Browser checks cover actual dialogue, roaming, duels, upgrades, pause/resume and saved tea-house progression.
 
-Acts I–III are playable in the browser. The mountain act has a cloud terrace, wind that pushes movement and arrows, telegraphed falling stone, a monk trial, and Lü Bu's two-stance card duel. Act IV, 3D characters, equipment inventory and a Godot project remain future work. Existing artwork still needs a canon-alignment pass, notably Zhao Yun's sword.
+Acts I–IV are playable in the browser. The mountain act has a cloud terrace, wind that pushes movement and arrows, telegraphed falling stone, a monk trial, and Lü Bu's two-stance card duel. 3D characters, equipment inventory and a Godot project remain future work. Existing artwork still needs a canon-alignment pass, notably Zhao Yun's sword.
 
 ## Language and hero selection
 
 Japanese is the default for new and existing profiles without a language preference. The header language selector switches immediately between Japanese and English and saves the choice. Menus, biographies, story dialogue, combat controls, journals and gallery labels share `src/locales/`; new user-facing content should include a Japanese entry and a localization test. Hero biographies contain roughly 30 English words and an equivalent Japanese description, shown on the selected card and beside the start button.
 
 The motion preference initially follows the operating system, then respects the saved in-game toggle. Enable Motion to see full strike sequences; reduced motion keeps the same turn and damage rules with a short static presentation.
+
+## Story role update and expansion materials
+
+Story starts with **Zhao Yun, Lu Zhishen or Hu Sanniang** and keeps that protagonist through four acts. Every other roster hero appears as a named enemy: Guan Yu and Gu Dasao at the gate; Wu Song, Sun Shangxiang and Qin Liangyu in the bamboo; Mu Guiying, Liang Hongyu, Bao Sanniang, Nie Yinniang and Yang Zhi on the mountain; Lü Bu as the mountain boss; Dian Wei and the Venom Adept at the citadel. Alternative encounters add more rival combinations. Quick Play retains its heroes and original encounters; the spared Venom Adept recruit is available there. Old unlock records never grant a fourth Story protagonist, and existing personal records, completed acts and currency are preserved.
+
+The expansion artwork is specified in `docs/ASSET-REQUIREMENTS.md`. Generated assets retain the exact required filenames; the manifest holds prompts and minimum dimensions/alpha rules. Eight required images were generated; the user deferred the 28 failed/pending requests. Counter and bleed icons, the Venom Adept portrait/sprite, merchant portrait, citadel ground and Sentinel/Acolyte sprites are installed. Presentation hooks support the remaining signatures, special motifs, oath emblems and weather overlays, and hide them until registered. The Sovereign retains the existing Warden sprite. See `docs/ASSET-GENERATION-STATUS.md` for the complete inventory. See `prompts/expansion-assets.json` and `prompts/venom-adept*.txt` for the built-in image generation prompt set.

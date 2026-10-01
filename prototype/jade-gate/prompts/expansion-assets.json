@@ -1,0 +1,206 @@
+[
+  {
+    "id": "sig-counter",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: crossed straight sword and curved defensive blade with a small counter-cut arc",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-focusGuard",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: bronze Buddhist temple bell emitting a circular golden shockwave",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-bleedCut",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: single curved Chinese saber with one small red droplet",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-execute",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: heavy crescent halberd striking a broken shield, forceful finishing blow",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-charged",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: coiled long spear with wind-up motion arcs",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-cleanse",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: Chinese commander signal banner and clean jade-white wind",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-drainStrike",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: taut bowstring enclosing a jade qi mote, a pinning energy trap",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-doubleSig",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two paired Chinese blades crossing in rhythmic motion",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "sig-vanish",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: abstract dissolving cloaked silhouette into violet mist",
+    "transparent": true,
+    "category": "signature"
+  },
+  {
+    "id": "special-guard",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: crossing sword cuts beneath a torn war banner, Banner Cleave",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-archer",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: fan of descending luminous arrows, Volley Storm",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-bandit",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: ragged crimson saber arc and falling blood-red sparks, Red Ruin",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-venom-adept",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: coiling green jade viper made of venom vapor, Adder's Kiss",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-pugilist",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: iron fist inside bronze bell rings, Iron Bell",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-ashen-priest",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: six ash-gray spectral chanting flame arcs, Choir of Ash",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-shadow-assassin",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: violet mist pierced by a dagger-shaped streak, Mist Execution",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-skiff-archer",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: two crossing arrow fans with turquoise river ripples, River Volley",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-warden",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: a shattered imperial gate arch lit by orange impact cracks, Gatebreaker",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-night-heron",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: resonating zither strings inside pale purple concentric rings, Silken Requiem",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "special-canglan-monk",
+    "prompt": "Use case: stylized-concept. Asset type: enemy special intent VFX overlay, square RGBA PNG, true transparent background, at least 512x512. A single glowing wuxia telegraph motif isolated on alpha, light concentrated into sharp translucent strokes, gold/crimson/qi highlights, broad clear center and 12 percent safe margin. Intended to hover above a rival in a game, readable at 100px. No character, no scene, no text, no black/white rectangle, no logo, no watermark. Motif: bronze temple bell outlined by white cloud shockwaves, Cloud Bell",
+    "transparent": true,
+    "category": "special"
+  },
+  {
+    "id": "oath-changshan-vow",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: straight Chinese sword interlocked with a green dragon crest",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "oath-ridge-brothers",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: monk spade interlocked with tiger-headed staff crest",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "oath-twin-moons",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: two interlocking crescent moons containing paired sabers and a jade spear",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "oath-war-sisters",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: commander spear banner interlocked with a bronze war drum and paired dao",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "oath-silent-strings",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: violet hidden dagger interlocked with a vermilion bowstring",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "oath-garrison-wall",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: two interlocking emblems symbolizing an oath bond: paired iron halberds interlocked with a blue-marked Chinese sword crest",
+    "transparent": true,
+    "category": "oath"
+  },
+  {
+    "id": "weather-rain",
+    "prompt": "Use case: stylized-concept. Asset type: square 1024x1024 RGBA PNG weather overlay for an overhead wuxia game. True transparent background and subtle partial alpha effect, no backdrop or terrain; legible gameplay must remain visible beneath. sparse fine diagonal rain streaks with tiny silver droplets, seamless on all edges, low-opacity lines over clear alpha, no puddles. No text, no watermark, no characters.",
+    "transparent": true,
+    "category": "weather"
+  },
+  {
+    "id": "weather-night",
+    "prompt": "Use case: stylized-concept. Asset type: square 1024x1024 RGBA PNG weather overlay for an overhead wuxia game. True transparent background and subtle partial alpha effect, no backdrop or terrain; legible gameplay must remain visible beneath. very subtle cool navy vignette strongest at outer edges and nearly fully transparent across the center, no objects or stars, preserve visibility of the underlying terrain. No text, no watermark, no characters.",
+    "transparent": true,
+    "category": "weather"
+  },
+  {
+    "id": "weather-fog",
+    "prompt": "Use case: stylized-concept. Asset type: square 1024x1024 RGBA PNG weather overlay for an overhead wuxia game. True transparent background and subtle partial alpha effect, no backdrop or terrain; legible gameplay must remain visible beneath. soft translucent frontal mist bands in pale cool gray at the lower quarter fading to full transparency elsewhere, low opacity, seamless left and right edges, no solid white areas. No text, no watermark, no characters.",
+    "transparent": true,
+    "category": "weather"
+  },
+  {
+    "id": "merchant",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG merchant portrait, 2:3 PNG at least 1024x1536. An elderly friendly Chinese wandering peddler in weathered indigo travel robes, bamboo shoulder pole balancing two wooden crates of wrapped tea, herb packets and small lacquer boxes. One full-body character including shoes and crates, 8 percent margins, charcoal #10191b backdrop, painterly realistic concept art matching the game roster, warm controlled side lighting, fine wood and cloth texture. No text, no labels, no lettering, no borders, no watermark.",
+    "transparent": false,
+    "category": "merchant"
+  },
+  {
+    "id": "meridian-citadel",
+    "prompt": "Use case: stylized-concept. Asset type: wide 16:9 wuxia RPG imperial exploration and duel environment PNG. The Imperial Meridian Citadel under a blood moon: red-lacquered pillars along the distant upper boundary, white marble stairs and carved wall reliefs etched with glowing qi vortex spirals. High oblique overhead camera, large continuous open worn white-marble forecourt fills the entire central 70 percent and lower playable area; blood moon and crimson haze only beyond the very top walls, no horizon or sky crossing the walkable floor. Subtle floor cracks, a jade meridian seal, lantern light, cinematic painterly realism consistent with Mount Canglan art. Left and right floor edges align to support repeating exploration; no characters, no UI, no text, no watermarks, no huge obstacles across the open floor.",
+    "transparent": false,
+    "category": "citadel"
+  },
+  {
+    "id": "jade-sentinel-sprite",
+    "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. Imperial adult guard in jade-lacquered lamellar armor with a moon-gate crescent halberd, stern stance, jade helmet and dark green cloak. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
+    "transparent": true,
+    "category": "citadel"
+  },
+  {
+    "id": "meridian-acolyte-sprite",
+    "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. Adult Chinese robed qi-channeler in charcoal and crimson robes with swirling vortex-embroidered wide sleeves, hands guiding one small jade qi spiral, no loose effect hiding feet. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
+    "transparent": true,
+    "category": "citadel"
+  },
+  {
+    "id": "sovereign-sprite",
+    "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. The adult male Ashen Sovereign boss in blood-moon imperial regalia, black jade and crimson armor, restrained golden crown, sword and halberd weapon forms hinted in a compact back-mounted harness, imposing calm stance, one main long straight sword. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
+    "transparent": true,
+    "category": "citadel"
+  }
+]

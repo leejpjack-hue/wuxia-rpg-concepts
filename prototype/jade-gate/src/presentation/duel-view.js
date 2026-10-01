@@ -4,7 +4,8 @@ import { HERO_TECHNIQUES } from "../content/duels.js";
 import { ASSIST_DAMAGE } from "../domain/card-combat.js";
 import { HEROES } from "../content/heroes.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { signatureById } from "../content/expansion.js";
+import { signatureById, oathFor } from "../content/expansion.js";
+import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../content/expansion-art.js";
 
 export class DuelView {
   constructor(session, document, onGesture = () => {}) {
@@ -158,6 +159,12 @@ export class DuelView {
       this.$("enemy-health").textContent = this.t(`${enemy.hp} / ${enemy.maxHp}`);
       this.meter("enemy-health", enemy.hp, enemy.maxHp);
       const intent = this.session.combat.intent();
+      const specialArt = this.$("enemy-special-art");
+      if (specialArt) {
+        const art = specialArtFor(enemy);
+        specialArt.hidden = !intent.special || !art || !expansionArtAvailable(art);
+        if (art && expansionArtAvailable(art)) specialArt.src = `assets/${art}.png`;
+      }
       this.$("enemy-intent").textContent = this.t(intent.name + (intent.damage ? ` · ${intent.damage} damage` : ""));
       this.$("intent-detail").textContent = this.t(intent.description);
       // The Night-Eye Charm reveals the rival's following move as well.
@@ -180,6 +187,12 @@ export class DuelView {
     if (signatureButton) {
       signatureButton.hidden = !signature;
       if (signature) {
+        const icon = this.$("signature-icon");
+        if (icon) {
+          const art = signatureArtFor(p.id);
+          icon.hidden = !expansionArtAvailable(art);
+          if (!icon.hidden) icon.src = `assets/${art}.png`;
+        }
         this.$("signature-name").textContent = this.t(signature.name);
         this.$("signature-detail").textContent = this.t(signature.description);
       }
@@ -224,6 +237,12 @@ export class DuelView {
     btn.hidden = false;
     const ready = !!d.assistReady && !d.assistUsed;
     btn.disabled = this.busy || mode !== "playing" || !ready;
+    const oathIcon = this.$("assist-oath-icon");
+    if (oathIcon) {
+      const oath = oathFor([this.session.g.p.id, ...followers]);
+      oathIcon.hidden = !oath || !expansionArtAvailable(`oath-${oath.id}`);
+      if (!oathIcon.hidden) oathIcon.src = `assets/oath-${oath.id}.png`;
+    }
     const detail = this.$("assist-detail");
     if (detail) {
       if (d.assistUsed) detail.textContent = this.t("Assist used");

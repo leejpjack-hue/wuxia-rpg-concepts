@@ -553,13 +553,102 @@
   {
     "id": "venom-adept",
     "file": "assets/venom-adept.png",
-    "method": "PLACEHOLDER — copied from archer-sprite; recruit hero card art pending art designer (see ASSET-REQUIREMENTS.md)",
-    "prompt": "Hero card portrait for the spared Venom Adept recruit: adult female assassin in muted green-grey travel wraps, venom rings on her fingers, calm watchful pose, dark charcoal background, portrait 2:3, painterly wuxia concept style consistent with the roster."
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: finished wuxia RPG hero/enemy card portrait, portrait 2:3 PNG at least 1024x1536. Primary request: adult female Venom Adept assassin, age 26, muted green-grey Chinese travel wraps, a short layered Chinese martial skirt over fitted leggings, sleeveless high-collar embroidered top, venom rings on her fingers, jade poison vial belt and paired short curved daggers. Calm watchful poised stance, full body and both shoes visible, handsome confident face. Painterly detailed wuxia concept art consistent with realistic game roster, polished cloth, subtle jade embroidery, charcoal #10191b plain background, controlled soft rim lighting. One character only, no text, no labels, no logo, no watermark, no borders. Entire silhouette inside frame with 8 percent safe margins; attractive adult warrior, practical clothing.",
+    "expansion": true,
+    "contract": {
+      "minWidth": 900,
+      "minHeight": 1400,
+      "aspect": "portrait"
+    }
   },
   {
     "id": "venom-adept-sprite",
     "file": "assets/venom-adept-sprite.png",
-    "method": "PLACEHOLDER — alpha sprite pending art designer (see ASSET-REQUIREMENTS.md)",
-    "prompt": "Transparent gameplay sprite for the Venom Adept recruit, facing right, compact ready stance, venom rings visible on fingers, consistent with existing hero sprites. Square, transparent alpha."
+    "method": "built-in image_gen",
+    "prompt": "Use case: identity-preserve. Asset type: single transparent gameplay sprite, square RGBA PNG at least 1024x1024. Input image is identity and clothing reference for the adult female Venom Adept: preserve face, high black ponytail, jade earrings, muted green-grey Chinese embroidered sleeveless high-collar top, layered short martial skirt over leggings, jade venom vial and rings, paired short curved daggers. One full-body figure in a compact ready stance facing RIGHT, both shoes on the same baseline at 90 percent canvas height. Entire figure including daggers fits within 8 percent margins. Painterly detailed wuxia cutout matching game sprites; clean readable silhouette at 140px tall, gentle three-quarter top-down viewpoint, soft consistent side lighting. No floor, no painted shadow, no atmosphere, no scenery, no text, no extra people. True fully transparent background.",
+    "expansion": true,
+    "reference": "assets/venom-adept.png",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "sig-counter",
+    "file": "assets/sig-counter.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: crossed straight sword and curved defensive blade with a small counter-cut arc",
+    "expansion": true,
+    "contract": {
+      "minWidth": 256,
+      "minHeight": 256,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "sig-bleedCut",
+    "file": "assets/sig-bleedCut.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG action icon, square PNG with true transparent background, native resolution at least 256x256. One bold centered painterly emblem, antique gold edges and subtle jade/crimson accents, crisp readable at 32px, safe 12 percent margins. No letters, numbers, writing, borders, scenery, faces or watermark. Subject: single curved Chinese saber with one small red droplet",
+    "expansion": true,
+    "contract": {
+      "minWidth": 256,
+      "minHeight": 256,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "merchant",
+    "file": "assets/merchant.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: wuxia RPG merchant portrait, 2:3 PNG at least 1024x1536. An elderly friendly Chinese wandering peddler in weathered indigo travel robes, bamboo shoulder pole balancing two wooden crates of wrapped tea, herb packets and small lacquer boxes. One full-body character including shoes and crates, 8 percent margins, charcoal #10191b backdrop, painterly realistic concept art matching the game roster, warm controlled side lighting, fine wood and cloth texture. No text, no labels, no lettering, no borders, no watermark.",
+    "expansion": true,
+    "contract": {
+      "minWidth": 900,
+      "minHeight": 1400,
+      "aspect": "portrait"
+    }
+  },
+  {
+    "id": "meridian-citadel",
+    "file": "assets/meridian-citadel.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: wide 16:9 wuxia RPG imperial exploration and duel environment PNG. The Imperial Meridian Citadel under a blood moon: red-lacquered pillars along the distant upper boundary, white marble stairs and carved wall reliefs etched with glowing qi vortex spirals. High oblique overhead camera, large continuous open worn white-marble forecourt fills the entire central 70 percent and lower playable area; blood moon and crimson haze only beyond the very top walls, no horizon or sky crossing the walkable floor. Subtle floor cracks, a jade meridian seal, lantern light, cinematic painterly realism consistent with Mount Canglan art. Left and right floor edges align to support repeating exploration; no characters, no UI, no text, no watermarks, no huge obstacles across the open floor.",
+    "expansion": true,
+    "contract": {
+      "minWidth": 1600,
+      "minHeight": 900
+    }
+  },
+  {
+    "id": "jade-sentinel-sprite",
+    "file": "assets/jade-sentinel-sprite.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. Imperial adult guard in jade-lacquered lamellar armor with a moon-gate crescent halberd, stern stance, jade helmet and dark green cloak. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
+    "expansion": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "meridian-acolyte-sprite",
+    "file": "assets/meridian-acolyte-sprite.png",
+    "method": "built-in image_gen",
+    "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. Adult Chinese robed qi-channeler in charcoal and crimson robes with swirling vortex-embroidered wide sleeves, hands guiding one small jade qi spiral, no loose effect hiding feet. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
+    "expansion": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   }
 ]

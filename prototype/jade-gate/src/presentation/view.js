@@ -8,6 +8,7 @@ import { VESSELS, MERIDIAN_NODES, nodeById } from "../content/meridians.js";
 import { curioById, EVENTS, CURIOS as CURIOS_LIST } from "../content/curios.js";
 import { JUDGEMENT, SHOP_STOCK, shopItemById, signatureById } from "../content/expansion.js";
 import { DUEL_ENEMIES } from "../content/duels.js";
+import { signatureArtFor, expansionArtAvailable } from "../content/expansion-art.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
@@ -176,7 +177,7 @@ export class GameView {
           this.runMode === "campaign" &&
           !campaignHeroUnlocked(profile, button.dataset.hero);
       const cardHero = HEROES.find(h => h.id === button.dataset.hero);
-      button.hidden = this.runMode === "campaign" && !!cardHero.quickPlayOnly && locked;
+      button.hidden = this.runMode === "campaign" && locked;
       button.setAttribute("aria-label", this.t(`Choose ${cardHero.name}`));
       button.querySelector("img").alt = this.t(`${cardHero.name} character art`);
       for (const [selector, value] of [[".card-copy small", cardHero.title], ["h2", cardHero.name], [".card-copy p", cardHero.weapon], [".stats", cardHero.style]])
@@ -206,7 +207,7 @@ export class GameView {
       }
       button.setAttribute("aria-pressed", String(selected));
       button.disabled = locked;
-      button.querySelector(".lock-note").textContent = this.t(locked ? "Unlock in Act III · try in Quick play" : "");
+      button.querySelector(".lock-note").textContent = this.t(locked ? "Story rival · playable in Quick Play" : "");
     }
     for (const button of this.document.querySelectorAll("[data-mode]"))
       button.setAttribute(
@@ -239,7 +240,7 @@ export class GameView {
           ? "Enter quick play →"
           : `Select ${3 - this.partyIds.length} more`
       : "Preparing your journey…");
-    this.$("continue").hidden = this.runMode !== "campaign" || !profile.checkpoint;
+    this.$("continue").hidden = this.runMode !== "campaign" || !profile.checkpoint || !campaignHeroUnlocked(profile, profile.checkpoint.heroId);
     this.$("continue").disabled = !this.ready;
     this.$("journey-summary").textContent =
       this.runMode === "campaign"
@@ -333,6 +334,10 @@ export class GameView {
         "The pass merchant",
         `${g.score} Renown to spend. ${carried ? `Carried curios: ${this.t(carried)}. ` : ""}The road is long.`,
       );
+      const portrait = this.document.createElement("img");
+      portrait.src = "assets/merchant.png"; portrait.alt = this.t("The pass merchant");
+      portrait.className = "merchant-portrait";
+      this.$("choices").appendChild(portrait);
       for (const entry of map.shop.stock) {
         const item = shopItemById(entry.id);
         const bought = map.shop.bought.includes(entry.id);
@@ -420,7 +425,7 @@ export class GameView {
       ["Legends", HEROES.map((hero) => ({
         known: !!codex.heroes[hero.id],
         name: hero.name, cn: hero.cn, art: `${hero.id}`,
-        line: hero.title,
+        line: hero.title, signatureArt: signatureArtFor(hero.id),
       }))],
       ["Rivals", Object.entries(DUEL_ENEMIES).map(([kind, def]) => ({
         known: !!codex.rivals[kind],
@@ -450,6 +455,11 @@ export class GameView {
           { disabled: true, parent: "choices" },
         );
         b.className = "upgrade codex-entry";
+        if (entry.signatureArt && expansionArtAvailable(entry.signatureArt)) {
+          const icon = this.document.createElement("img");
+          icon.src = `assets/${entry.signatureArt}.png`; icon.alt = ""; icon.className = "action-icon";
+          b.appendChild(icon);
+        }
       }
     }
     this.button("Close", () => { this.codexOpen = false; this.render(); }, { primary: true });

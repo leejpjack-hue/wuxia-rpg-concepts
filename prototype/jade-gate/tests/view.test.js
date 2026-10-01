@@ -105,7 +105,7 @@ test('pause, resume, and return to roster restore visibility and interaction', (
 
 test('bonus heroes only appear in Quick play and switching back selects a campaign hero', () => {
   const {view, cards, modes, $} = fixture();
-  assert.equal(cards.filter(card => !card.hidden).length, 4);
+  assert.equal(cards.filter(card => !card.hidden).length, 3);
   assert.equal(cards[3].disabled, true);
   modes[1].onclick();
   assert.equal(cards.filter(card => !card.hidden && !card.disabled).length, 15); // venom-adept waits behind her recruit
@@ -117,7 +117,7 @@ test('bonus heroes only appear in Quick play and switching back selects a campai
   modes[0].onclick();
   assert.equal(view.heroId, 'zhao-yun');
   assert.deepEqual(view.partyIds, []);
-  assert.equal(cards.filter(card => !card.hidden).length, 4);
+  assert.equal(cards.filter(card => !card.hidden).length, 3);
 });
 test('language selector updates biographies and current story without advancing it', () => {
   const {session, document, $} = fixture();

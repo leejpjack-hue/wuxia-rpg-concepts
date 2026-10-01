@@ -1,3 +1,5 @@
+import { HEROES } from "./heroes.js";
+
 /**
  * Expansion content: hero signature actions, oath bonds, weather,
  * pass merchants, enemy special attacks, and the spare/judgement config.
@@ -43,17 +45,17 @@ export const signatureById = (heroId) => SIGNATURES[heroId] || null;
 
 /** Oath bonds: pairs of heroes whose assists hit harder when fielded together. */
 export const OATHS = [
-  { heroes: ["zhao-yun", "guan-yu"], name: "Changshan Vow", cn: "常山之誓",
+  { heroes: ["zhao-yun", "guan-yu"], id: "changshan-vow", name: "Changshan Vow", cn: "常山之誓",
     assistMultiplier: 2, assistFlow: 10, note: "Assists deal double damage and grant 10 Flow." },
-  { heroes: ["lu-zhishen", "wu-song"], name: "Ridge Brothers", cn: "岡上兄弟",
+  { heroes: ["lu-zhishen", "wu-song"], id: "ridge-brothers", name: "Ridge Brothers", cn: "岡上兄弟",
     assistMultiplier: 2, assistFlow: 8, note: "Assists deal double damage and grant 8 Flow." },
-  { heroes: ["hu-sanniang", "bao-sanniang"], name: "Twin Moons", cn: "双月",
+  { heroes: ["hu-sanniang", "bao-sanniang"], id: "twin-moons", name: "Twin Moons", cn: "双月",
     assistMultiplier: 2, assistFlow: 8, note: "Assists deal double damage and grant 8 Flow." },
-  { heroes: ["mu-guiying", "liang-hongyu"], name: "War Sisters", cn: "陣姉妹",
+  { heroes: ["mu-guiying", "liang-hongyu"], id: "war-sisters", name: "War Sisters", cn: "陣姉妹",
     assistMultiplier: 2, assistFlow: 12, note: "Assists deal double damage and grant 12 Flow." },
-  { heroes: ["nie-yinniang", "sun-shangxiang"], name: "Silent Strings", cn: "無音の弦",
+  { heroes: ["nie-yinniang", "sun-shangxiang"], id: "silent-strings", name: "Silent Strings", cn: "無音の弦",
     assistMultiplier: 2, assistFlow: 10, note: "Assists deal double damage and grant 10 Flow." },
-  { heroes: ["dian-wei", "yang-zhi"], name: "Garrison Wall", cn: "守壁",
+  { heroes: ["dian-wei", "yang-zhi"], id: "garrison-wall", name: "Garrison Wall", cn: "守壁",
     assistMultiplier: 2, assistFlow: 8, note: "Assists deal double damage and grant 8 Flow." },
 ];
 export function oathFor(partyIds = []) {
@@ -123,7 +125,17 @@ export const ENEMY_SPECIALS = {
   "meridian-acolyte": { name: "Vortex Palm", scale: 2.0, drain: 15, focus: 3 },
   sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4 },
 };
-export const specialFor = (kind) => ENEMY_SPECIALS[kind] || null;
+const heroSpecials = Object.fromEntries(HEROES.map(hero => {
+  const sig = SIGNATURES[hero.id];
+  return [`hero-${hero.id}`, {
+    name: hero.skill, focus: 3, scale: sig.archetype === "execute" ? 2.4 : 1.8,
+    ...(sig.bleed ? { heroBleed: sig.bleed } : {}),
+    ...(sig.drain ? { drain: sig.drain } : {}),
+    ...(sig.heal ? { mend: sig.heal } : {}),
+    ...(sig.hits ? { hits: sig.hits, scale: .9 } : {}),
+  }];
+}));
+export const specialFor = (kind) => ENEMY_SPECIALS[kind] || heroSpecials[kind] || null;
 
 /** Judgement: elites (never bosses) can be spared or finished. */
 export const JUDGEMENT = {

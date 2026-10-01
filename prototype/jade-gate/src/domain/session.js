@@ -167,7 +167,7 @@ export class GameSession {
       throw new Error("This hero is available in Quick play only.");
     if (runMode === "campaign" && !campaignHeroUnlocked(this.profile, heroId))
       throw new Error(
-        "Defeat Lü Bu in Act III to unlock him in the campaign. Use Quick play to try him now.",
+        "This hero is a Story rival. Use Quick Play to play them.",
       );
     const previous = ACTS.find((item) => item.next === actId);
     if (
@@ -639,14 +639,6 @@ export class GameSession {
             kind: this.g.lastDefeatedKind,
             name: DUEL_ENEMIES[this.g.lastDefeatedKind]?.name || "The fallen",
           };
-      }
-    }
-    if (this.g.runMode === "campaign") {
-      for (const heroId of this.encounter.unlocks || []) {
-        if (this.profile.unlockedHeroes.includes(heroId)) continue;
-        this.profile.earnedHeroes.push(heroId);
-        this.profile.unlockedHeroes.push(heroId);
-        this.bus.emit("notice", { text: `${HEROES.find(h => h.id === heroId).name} joins your campaign roster!` });
       }
     }
     if (this.g.map?.judgement || this.g.map?.pendingCurios?.length) {

@@ -1,6 +1,10 @@
 // English source phrases are stable message keys. Templates also cover domain
 // journals, allowing an existing battle log to change language without mutation.
 export const messages = {
+  "Story rival · playable in Quick Play": "物語の対戦相手・クイックプレイで使用可能",
+  "This hero is a Story rival. Use Quick Play to play them.": "この英雄は物語の対戦相手です。クイックプレイで使用できます。",
+  "Smoke rises from the river crossing. Guan Yu withdraws from the gate after your duel; tonight, the company shelters at the tea house.": "渡河の向こうに煙が上がる。決闘を終えた関羽は関所から退き、今夜、一行は茶屋に身を寄せる。",
+  "The pagoda falls silent. Wu Song yields the river road after your duel. Beyond the crossing rise the clouds of Mount Canglan.": "塔は静まり、決闘を終えた武松は川沿いの道を譲る。渡河の向こうには滄嵐山の雲がそびえている。",
   "Route map": "経路図",
   "You": "自分",
   "Companions": "仲間",
@@ -19,11 +23,11 @@ export const messages = {
   'Music on': '音楽：入', 'Music off': '音楽：切',
   'Motion on': '演出：入', 'Motion reduced': '演出：控えめ',
   'CHAPTER I · THE JADE GATE': '第一章 · 翠門関',
-  'Twelve legends.': '十二人の伝説。', 'One unbroken oath.': '揺るがぬ誓い。',
+  'Sixteen legends.': '十六人の伝説。', 'One unbroken oath.': '揺るがぬ誓い。',
   'The mountain pass has fallen to the Ashen Banner.': '山の関所は灰旗軍の手に落ちた。',
   'Choose your legend. Read your rival. Reclaim the gate.': '英雄を選び、敵の動きを読み、関所を奪還せよ。',
   'A tale told one duel at a time': '一戦ごとに紡がれる物語',
-  '3 encounters · 12 legends · your next move': '三つの戦場 · 十二人の英雄 · 次の一手はあなたに',
+  '4 acts · 16 legends · your next move': '四つの章 · 十六人の英雄 · 次の一手はあなたに',
   'Game mode': '遊び方', 'Campaign': '物語', 'Quick play': 'クイックプレイ',
   'Quick play stage': '試す章',
   'Trailer ↗': '予告編 ↗',
@@ -287,7 +291,7 @@ export const messages = {
   'game images across the original build and new hero collection. Select any image to open its full-resolution source.': '枚のゲーム画像。画像を選ぶと原寸で表示します。',
   'Character sheets are visual modeling references; final geometry and rigs remain to be built.': '設定画はモデリング用の参考資料です。3Dモデルとリグは今後制作予定です。',
   'View all generation prompts ↗': '画像生成プロンプト一覧 ↗',
-  'The legends': '英雄たち', 'Gameplay sprites': '戦闘用スプライト', 'Modeling reference sheets': 'モデリング設定画', 'The Ashen Banner': '灰旗軍', 'The mountain pass': '山の峠',
+  'Counter-cut emblem': '反撃の紋章', 'Crimson blade emblem': '紅刃の紋章', 'Wandering merchant': '旅の行商人', 'Expansion artwork': '拡張の美術素材', 'The legends': '英雄たち', 'Gameplay sprites': '戦闘用スプライト', 'Modeling reference sheets': 'モデリング設定画', 'The Ashen Banner': '灰旗軍', 'The mountain pass': '山の峠',
   'Ashen guard': '灰旗の衛兵', 'Ashen archer': '灰旗の弓兵', 'Jade Gate courtyard': '翠門関の広場', 'Bamboo ambush · Act II try-run': '竹林の伏兵 · 第二章試作',
   'Climb the cloud road': '雲の道を登れ', 'Answer the bell guard': '鐘楼の番兵を破れ',
   "The armored monks' trial": '鉄甲僧の試練', 'Cut the Ashen Oath': '灰の誓約を断て',

@@ -10,6 +10,9 @@ import { GameView } from "./src/presentation/view.js";
 import { DuelView } from "./src/presentation/duel-view.js";
 import { RoamView } from "./src/presentation/roam-view.js";
 import { HERO_IDS } from "./src/content/heroes.js";
+import { SIGNATURE_ARCHETYPES, SPECIAL_ART_KINDS } from "./src/content/expansion-art.js";
+import { OATHS } from "./src/content/expansion.js";
+import assetManifest from "./docs/asset-manifest.json" with {type: "json"};
 
 let storage = null;
 try { storage = window.localStorage; } catch {}
@@ -41,6 +44,11 @@ const art = [
   "bamboo-crossing-ground", "canglan-terrace-ground",
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
+  "meridian-citadel", "jade-sentinel-sprite", "meridian-acolyte-sprite", "sovereign-sprite", "merchant",
+  ...SIGNATURE_ARCHETYPES.map(id => `sig-${id}`),
+  ...SPECIAL_ART_KINDS.map(id => `special-${id}`),
+  ...OATHS.map(oath => `oath-${oath.id}`),
+  "weather-rain", "weather-night", "weather-fog",
   // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.
   "lu-zhishen-sheet",
 ];
@@ -49,7 +57,8 @@ let statusLanguageOff;
 async function prepare() {
   const status = document.getElementById("load-status"), retry = document.getElementById("retry-assets");
   retry.hidden = true;
-  const results = await Promise.allSettled(art.map((id) => assets.load(id)));
+  const listed = new Set(assetManifest.map(row => row.id));
+  const results = await Promise.allSettled(art.filter(id => listed.has(id)).map((id) => assets.load(id)));
   const missing = results.filter((r) => r.status === "rejected").length;
   const renderStatus = () => { status.textContent = missing ? t(`${missing} illustrations could not load. The card duel is still playable.`) : ""; };
   renderStatus();

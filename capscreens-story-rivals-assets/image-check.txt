@@ -1,0 +1,8 @@
+venom-adept: 1024x1536 RGB
+venom-adept-sprite: 1254x1254 RGBA alpha 0..255 (true transparency)
+sig-counter: 1254x1254 RGBA alpha 0..255 (true transparency)
+sig-bleedCut: 1254x1254 RGBA alpha 0..255 (true transparency)
+merchant: 1024x1536 RGB
+meridian-citadel: 1672x941 RGB
+jade-sentinel-sprite: 1254x1254 RGBA alpha 0..255 (true transparency)
+meridian-acolyte-sprite: 1254x1254 RGBA alpha 0..255 (true transparency)

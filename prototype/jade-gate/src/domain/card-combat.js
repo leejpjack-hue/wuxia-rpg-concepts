@@ -1,4 +1,4 @@
-import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
+import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES } from "../content/duels.js";
 import { techniqueCost } from "../content/curios.js";
 import { HEROES } from "../content/heroes.js";
 import { oathFor, signatureById, specialFor } from "../content/expansion.js";
@@ -8,7 +8,7 @@ export const ASSIST_DAMAGE = 8;
 
 /** Pure, synchronous turns. No timers, DOM, random hit chance, or background damage. */
 export function createCardCombat(g, bus, { encounter } = {}) {
-  const roster = DUEL_ROSTERS[encounter?.id];
+  const roster = rosterForEncounter(encounter?.id, g.runMode);
   if (!roster) throw new Error("This encounter has no card duel yet.");
   g.turns ||= 0;
   // Run curios bend duel rules; effects below read this set.

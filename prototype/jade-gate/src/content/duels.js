@@ -1,5 +1,6 @@
+import { STORY_RIVALS, STORY_ROSTERS } from "./story-rivals.js";
 // Card combat tuning is separate from the archived real-time arena rules.
-// Roster totals are kept stable across reshuffles so run stats stay comparable.
+// Quick Play retains its original roster; Story uses named hero rival rosters.
 export const DUEL_ROSTERS = {
   vanguard: ["guard", "bandit"],
   "archer-run": ["archer", "venom-adept", "guard"],
@@ -24,7 +25,11 @@ export const DUEL_ROSTERS = {
   sovereign: ["sovereign"],
 };
 
+export const rosterForEncounter = (encounterId, runMode) =>
+  (runMode === "campaign" ? STORY_ROSTERS[encounterId] : null) || DUEL_ROSTERS[encounterId];
+
 export const DUEL_ENEMIES = {
+  ...STORY_RIVALS,
   guard: {
     name: "Ashen Swordsman", title: "THE VANGUARD", art: "guard-sprite",
     hp: 68, damage: 12, reward: 120,
@@ -41,7 +46,7 @@ export const DUEL_ENEMIES = {
     pattern: ["bleed", "strike", "double"],
   },
   "venom-adept": {
-    name: "Venom Adept", title: "THE SILENT ADDER", art: "archer-sprite",
+    heroId: "venom-adept", name: "The Venom Adept", title: "THE SILENT ADDER", art: "venom-adept-sprite",
     hp: 52, damage: 12, reward: 160,
     pattern: ["poison", "drain", "guard"],
   },
@@ -84,18 +89,18 @@ export const DUEL_ENEMIES = {
   },
   "lu-bu-rival": {
     boss: true,
-    name: "Lü Bu", title: "THE FLYING GENERAL", art: "lu-bu-rival-sprite",
+    heroId: "lu-bu", name: "Lü Bu", title: "THE FLYING GENERAL", art: "lu-bu-rival-sprite",
     hp: 300, damage: 23, reward: 1000,
     pattern: ["heavy", "double", "guard", "heavy", "strike"],
   },
-  // Act IV rivals (sprite art pending — see docs/ASSET-REQUIREMENTS.md).
+  // Act IV has dedicated guard art; the Sovereign keeps its existing fallback.
   "jade-sentinel": {
-    name: "Jade Sentinel", title: "MOON GATE WATCH", art: "canglan-monk-sprite",
+    name: "Jade Sentinel", title: "MOON GATE WATCH", art: "jade-sentinel-sprite",
     hp: 80, damage: 14, reward: 190,
     pattern: ["guard", "bleed", "heavy", "strike"],
   },
   "meridian-acolyte": {
-    name: "Meridian Acolyte", title: "QI VORTEX CHOIR", art: "guard-sprite",
+    name: "Meridian Acolyte", title: "QI VORTEX CHOIR", art: "meridian-acolyte-sprite",
     hp: 68, damage: 15, reward: 200,
     pattern: ["drain", "poison", "strike", "guard"],
   },

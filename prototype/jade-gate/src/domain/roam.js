@@ -2,7 +2,7 @@ import { distance } from './math.js';
 import { groundPoint, SPAWN_MARKERS, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
 export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
-import { DUEL_ROSTERS, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
+import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES } from '../content/duels.js';
 import { techniqueCost } from '../content/curios.js';
 export const ARENA = { width: WORLD.width, height: WORLD.height, margin: 64, top: GROUND.top };
 export const PLAYER_SPEED = 300;
@@ -19,7 +19,7 @@ function segmentDistance(p, a, b) {
 
 /** Grounded exploration. Melee contact opens duels; archers fight in real time. */
 export function createRoam(g, bus, { encounter } = {}) {
-  const roster = DUEL_ROSTERS[encounter?.id];
+  const roster = rosterForEncounter(encounter?.id, g.runMode);
   if (!roster) throw new Error('This encounter has no arena rivals yet.');
   const clock = new FixedClock(), pending = [];
   let serial = 0;

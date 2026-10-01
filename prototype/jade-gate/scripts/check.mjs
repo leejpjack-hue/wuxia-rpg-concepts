@@ -29,6 +29,18 @@ for (const asset of manifest) {
   const data = readFileSync(join(root, asset.file));
   if (data.subarray(1, 4).toString() !== "PNG")
     throw new Error(`Invalid PNG: ${asset.file}`);
+  const contract = asset.contract;
+  if (contract) {
+    const width = data.readUInt32BE(16), height = data.readUInt32BE(20);
+    if (width < contract.minWidth || height < contract.minHeight)
+      throw new Error(`${asset.id} is below its required dimensions`);
+    if (contract.square && width !== height)
+      throw new Error(`${asset.id} must be square`);
+    if (contract.alpha && data[25] !== 6)
+      throw new Error(`${asset.id} must preserve RGBA alpha`);
+    if (contract.aspect === "portrait" && Math.abs(width / height - 2 / 3) > .03)
+      throw new Error(`${asset.id} must be a 2:3 portrait`);
+  }
 }
 // A playable hero needs both assets: a portrait and an alpha sprite.
 // Validate headers so concept sheets cannot quietly ship as character art.

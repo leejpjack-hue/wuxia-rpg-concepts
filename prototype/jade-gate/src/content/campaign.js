@@ -8,7 +8,7 @@ export const ACTS = [
     arena: "arena",
     bossId: "warden",
     next: "bamboo-crossing",
-    unlocks: ["guan-yu"],
+    unlocks: [],
     hazards: [],
     // Branching pass map: single-node rows auto-march; multi-node rows offer a choice.
     // Node shape "type:encounterId"; rest/event nodes carry no encounter.
@@ -72,7 +72,7 @@ export const ACTS = [
     arena: "bamboo-roam",
     bossId: "night-heron",
     next: "mount-canglan",
-    unlocks: ["wu-song"],
+    unlocks: [],
     hazards: ["shallows", "razor-wire"],
     // Water shallows slow every step of this act; the map forks like Act I.
     map: {
@@ -131,7 +131,7 @@ export const ACTS = [
     arena: "mount-canglan",
     bossId: "lu-bu-rival",
     next: "meridian-citadel",
-    unlocks: ["lu-bu"],
+    unlocks: [],
     hazards: ["wind-gust", "falling-pillar"],
     map: {
       rows: [
@@ -144,20 +144,16 @@ export const ACTS = [
     encounters: [
       { id: "canglan-approach", title: "Climb the cloud road",
         tip: "Watch the gusts; they push warriors and arrows across the terrace.",
-        enemies: ["guard", "guard", "archer"], unlocks: ["mu-guiying"],
-        unlockStory: "Mu Guiying rallies her rescued scouts and joins the climb." },
+        enemies: ["guard", "guard", "archer"], unlocks: [], },
       { id: "bell-terrace", title: "Answer the bell guard",
         tip: "Dodge the bell guards and falling masonry.",
-        enemies: ["guard", "guard", "archer"], unlocks: ["liang-hongyu"],
-        unlockStory: "Liang Hongyu answers the temple bell with her war drum and joins the climb." },
+        enemies: ["guard", "guard", "archer"], unlocks: [], },
       { id: "monk-trial", title: "The armored monks' trial", elite: true,
         tip: "Their iron staffs test your timing; a curio awaits the victor.",
-        enemies: ["guard", "guard", "guard"], unlocks: ["liang-hongyu"],
-        unlockStory: "Liang Hongyu answers the temple bell with her war drum and joins the climb." },
+        enemies: ["guard", "guard", "guard"], unlocks: [], },
       { id: "windward-cloister", title: "Cut the Ashen Oath",
         tip: "Break the warding patrol before facing the Flying General.",
-        enemies: ["guard", "archer", "guard"], unlocks: ["nie-yinniang"],
-        unlockStory: "Nie Yinniang cuts the oath's hidden threads and joins the final ascent." },
+        enemies: ["guard", "archer", "guard"], unlocks: [], },
       { id: "lu-bu-rival", title: "Free the Flying General",
         tip: "Read the halberd sweep; guard against the heavy lunge and spend Flow on openings.",
         enemies: ["boss"], bossId: "lu-bu-rival" },
@@ -169,9 +165,7 @@ export const ACTS = [
     name: "The Imperial Meridian Citadel",
     cn: "紫禁血月",
     available: true,
-    // Imperial plate art pending (see docs/ASSET-REQUIREMENTS.md); the Jade Gate
-    // courtyard reads as an imperial forecourt until the designer delivers.
-    arena: "arena",
+    arena: "meridian-citadel",
     bossId: "sovereign",
     next: null,
     unlocks: [],

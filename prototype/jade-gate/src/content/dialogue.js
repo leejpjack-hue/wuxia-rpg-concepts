@@ -156,7 +156,7 @@ export function dialogueFor(key, hero) {
       ),
       line(
         "The road ahead",
-        "Smoke rises from the river crossing. Guan Yu secures the gate and joins your road; tonight, the company shelters at the tea house.",
+        "Smoke rises from the river crossing. Guan Yu withdraws from the gate after your duel; tonight, the company shelters at the tea house.",
       ),
     ];
   if (key === "bamboo-arrival" || key === "act2-arrival" || key === "heron-arrival")
@@ -180,7 +180,7 @@ export function dialogueFor(key, hero) {
       ),
       line(
         "The road ahead",
-        "The pagoda falls silent. Wu Song frees the river boats and joins your road toward the clouds of Mount Canglan.",
+        "The pagoda falls silent. Wu Song yields the river road after your duel. Beyond the crossing rise the clouds of Mount Canglan.",
       ),
     ];
   if (key === "canglan-arrival")

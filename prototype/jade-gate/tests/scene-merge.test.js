@@ -71,7 +71,7 @@ test("all playable acts switch to their own existing ground art at a constant sc
     assert.notEqual(arena.style.backgroundPosition, start);
     assert.equal(arena.style.backgroundRepeat, "repeat-x");
   }
-  assert.equal(new Set(Object.values(ROAM_SCENES).map(s => s.art)).size, 3);
+  assert.equal(new Set(Object.values(ROAM_SCENES).map(s => s.art)).size, 4);
 });
 
 test("route map follows the hero and remaining enemies without changing encounter state", () => {

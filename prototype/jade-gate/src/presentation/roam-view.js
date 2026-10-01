@@ -1,12 +1,13 @@
 import { HEROES } from "../content/heroes.js";
 import { translate } from "../locales/i18n.js";
 import { curioById, techniqueCost } from "../content/curios.js";
-import { WEATHERS } from "../content/expansion.js";
+import { WEATHERS, oathFor } from "../content/expansion.js";
 import { SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
 import { roamScene } from "../content/roam-scenes.js";
 import { BLOCKER_ART } from "./blocker-art.js";
 import { routeMapModel, paintRouteMap } from "./route-map.js";
 import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
+import { expansionArtAvailable } from "../content/expansion-art.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
@@ -372,6 +373,25 @@ export class RoamView {
     const cam = smoothCamera(this.cam, g.p, this.dt);
     this.cam = cam;
     this.applyCamera(cam);
+    const weatherOverlay = this.$("roam-weather-overlay");
+    if (weatherOverlay) {
+      const id = g.weather?.id || "clear";
+      weatherOverlay.hidden = id === "clear" || !expansionArtAvailable(`weather-${id}`);
+      weatherOverlay.dataset.weather = id;
+      weatherOverlay.style.backgroundImage = weatherOverlay.hidden ? "none" : `url("assets/weather-${id}.png")`;
+    }
+    const oathChip = this.$("roam-oath");
+    if (oathChip) {
+      const oath = oathFor([g.p.id, ...(g.party?.followers || [])]);
+      oathChip.hidden = !oath || !expansionArtAvailable(`oath-${oath.id}`);
+      if (!oathChip.hidden && oathChip.dataset.oath !== oath.id) {
+        const icon = this.document.createElement("img");
+        icon.src = `assets/oath-${oath.id}.png`; icon.alt = "";
+        const label = this.document.createElement("span");
+        label.textContent = this.t(oath.name);
+        oathChip.replaceChildren(icon, label); oathChip.dataset.oath = oath.id;
+      } else if (!oathChip.hidden) oathChip.children[1].textContent = this.t(oath.name);
+    }
     SPAWN_MARKERS.forEach((marker, index) => {
       this.place(this.spawnMarkers[index], marker.x, marker.y, cam);
     });
