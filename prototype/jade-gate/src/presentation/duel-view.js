@@ -82,9 +82,26 @@ export class DuelView {
   assist() {
     if (this.busy || this.session.mode !== "playing") return;
     this.onGesture();
-    const result = this.session.combat?.assistStrike?.();
+    const g = this.session.g, d = g?.duel, enemy = g?.enemies?.[0];
+    const followers = g?.party?.followers;
+    if (!d || !enemy || !Array.isArray(followers) || !followers.length) return;
+    if (!d.assistReady || d.assistUsed || this.session.g?.encounterDone) return;
+    const follower = HEROES.find((h) => h.id === followers[0]);
+    if (!follower) return;
+    const oath = oathFor([g.p.id, ...followers]);
+    const damage = Math.round(ASSIST_DAMAGE * (oath ? oath.assistMultiplier : 1));
+    this.busy = true;
     this.render();
-    return result;
+    const combat = this.session.combat;
+    const reduced = this.session.profile.settings.reducedMotion;
+    this.cinematic.assistFlash({ follower, oath, damage }, g.p, enemy, reduced, () => {
+      this.busy = false;
+      let result = false;
+      if (this.session.mode === "playing" && this.session.combat === combat)
+        result = combat.assistStrike?.() || false;
+      this.render();
+      return result;
+    });
   }
 
   image(id, art, name, focus) {
