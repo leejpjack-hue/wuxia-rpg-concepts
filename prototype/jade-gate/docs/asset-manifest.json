@@ -380,6 +380,28 @@
     "prompt": "(see prompts/bamboo-maze.txt)"
   },
   {
+    "id": "bamboo-roam",
+    "file": "assets/bamboo-roam.png",
+    "width": 2560,
+    "height": 1440,
+    "mode": "RGB",
+    "kind": "world-plate",
+    "story": "WU-CAM-11",
+    "wire_issue": 82,
+    "replaces_live_look": "bamboo-maze",
+    "method": "Art Dir · grok-GenerateImage · WU-CAM-11 v2-night · Jev PASS_WITH_NOTES (jev-1.13.0 natural 0.95 interest 2.31)",
+    "prompt": "Natural bamboo grove / grass / river / trees. Soft camera WORLD pan plate. Not corridor-maze. Mood ref: assets/bamboo-river.png @ 58f148f5.",
+    "reference": "assets/bamboo-river.png",
+    "version": "v2-night",
+    "generator": "grok-GenerateImage",
+    "jev": {
+      "model": "jev-1.13.0",
+      "verdict": "PASS_WITH_NOTES",
+      "interest": 2.31,
+      "natural_noul": 0.95
+    }
+  },
+  {
     "id": "night-heron-sprite",
     "file": "assets/night-heron-sprite.png",
     "method": "built-in image_gen · 2026-09-27",
