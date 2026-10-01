@@ -16,7 +16,7 @@
   },
   {
     "id": "sig-focusGuard",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-focusGuard.png"
   },
   {
@@ -26,132 +26,132 @@
   },
   {
     "id": "sig-execute",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-execute.png"
   },
   {
     "id": "sig-charged",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-charged.png"
   },
   {
     "id": "sig-cleanse",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-cleanse.png"
   },
   {
     "id": "sig-drainStrike",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-drainStrike.png"
   },
   {
     "id": "sig-doubleSig",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-doubleSig.png"
   },
   {
     "id": "sig-vanish",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sig-vanish.png"
   },
   {
     "id": "special-guard",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-guard.png"
   },
   {
     "id": "special-archer",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-archer.png"
   },
   {
     "id": "special-bandit",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-bandit.png"
   },
   {
     "id": "special-venom-adept",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-venom-adept.png"
   },
   {
     "id": "special-pugilist",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-pugilist.png"
   },
   {
     "id": "special-ashen-priest",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-ashen-priest.png"
   },
   {
     "id": "special-shadow-assassin",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-shadow-assassin.png"
   },
   {
     "id": "special-skiff-archer",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-skiff-archer.png"
   },
   {
     "id": "special-warden",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-warden.png"
   },
   {
     "id": "special-night-heron",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-night-heron.png"
   },
   {
     "id": "special-canglan-monk",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/special-canglan-monk.png"
   },
   {
     "id": "oath-changshan-vow",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-changshan-vow.png"
   },
   {
     "id": "oath-ridge-brothers",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-ridge-brothers.png"
   },
   {
     "id": "oath-twin-moons",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-twin-moons.png"
   },
   {
     "id": "oath-war-sisters",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-war-sisters.png"
   },
   {
     "id": "oath-silent-strings",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-silent-strings.png"
   },
   {
     "id": "oath-garrison-wall",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/oath-garrison-wall.png"
   },
   {
     "id": "weather-rain",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/weather-rain.png"
   },
   {
     "id": "weather-night",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/weather-night.png"
   },
   {
     "id": "weather-fog",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/weather-fog.png"
   },
   {
@@ -176,7 +176,7 @@
   },
   {
     "id": "sovereign-sprite",
-    "status": "deferred",
+    "status": "generated",
     "file": "assets/sovereign-sprite.png"
   }
 ]
