@@ -1,0 +1,14 @@
+{
+  "idle0": {
+    "bgPos": "0% 0%",
+    "bg": "url(\"assets/zhao-yun-sheet.png\")",
+    "cls": "sheet-anim",
+    "moving": false
+  },
+  "idle1": {
+    "bgPos": "0% 0%",
+    "bg": "url(\"assets/zhao-yun-sheet.png\")",
+    "animTime": 1.1666666666666674
+  },
+  "heldSeconds": 1.1666666666666674
+}
