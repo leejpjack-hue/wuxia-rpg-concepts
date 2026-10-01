@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { HEROES } from "../src/content/heroes.js";
 import { ACTS } from "../src/content/campaign.js";
 import { DUEL_ENEMIES, DUEL_ROSTERS, rosterForEncounter, escortSquadFor } from "../src/content/duels.js";
-import { STORY_HERO_IDS, isStoryHero } from "../src/content/story-rivals.js";
+import { STORY_HERO_IDS, isStoryHero, STORY_RIVALS } from "../src/content/story-rivals.js";
 import { campaignHeroUnlocked } from "../src/domain/unlocks.js";
 import { specialFor } from "../src/content/expansion.js";
 import { session, memoryStorage, playCampaign, quickParty, clearEncounter, walkMap } from "./helpers.js";
@@ -67,4 +67,28 @@ test("old unlocks and recruits cannot change Story roles or resume a rival check
   game.profile.checkpoint = { heroId: "guan-yu", actId: "jade-gate" };
   assert.equal(game.continueCheckpoint(), false);
   assert.equal(game.mode, "menu");
+});
+
+test("named legends anchor their areas: tougher than the grunts, special due sooner", () => {
+  // Legends clear the toughest Act-I grunt band (pugilist 78 hp, 13 damage).
+  for (const [kind, def] of Object.entries(STORY_RIVALS)) {
+    assert(def.hp > 78, `${kind} (${def.hp} hp) out-healths the grunt band`);
+    assert(def.damage >= 11, `${kind} (${def.damage} damage) hits like a leader`);
+    assert(def.hp < 210, `${kind} stays below the boss tier`);
+  }
+  // The art opens half-gathered: one unanswered exchange brings the special due,
+  // and the next reply unleashes it.
+  const game = session();
+  game.start("zhao-yun", "campaign");
+  game.advanceDialogue(true);
+  const leader = game.g.roam.field.findIndex(rival => rival.kind.startsWith("hero-"));
+  game.beginDuel(leader);
+  assert.equal(game.g.enemies[0].focus, 1);
+  assert(!game.combat.intent().special);
+  game.combat.act("attack");
+  assert(!game.combat.intent().special);
+  game.combat.act("attack");
+  assert.equal(game.combat.intent().special, true); // due on the third exchange
+  game.combat.act("attack");
+  assert(game.g.duel.log.some(text => text.includes("unleashes")), "the legend unleashed the special");
 });

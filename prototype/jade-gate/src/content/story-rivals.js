@@ -18,7 +18,8 @@ export const STORY_RIVALS = Object.fromEntries(HEROES.filter(hero =>
 ).map(hero => [`hero-${hero.id}`, {
   heroId: hero.id, name: hero.name, title: hero.title,
   art: `${hero.id}-sprite`, portrait: hero.id,
-  hp: Math.round(hero.hp * .55), damage: Math.round(hero.damage * .42), reward: 170,
+  // Named legends anchor their areas: clearly above the grunts, below bosses.
+  hp: Math.round(hero.hp * .85), damage: Math.round(hero.damage * .5), reward: 170,
   pattern: patterns[hero.id],
 }]));
 
