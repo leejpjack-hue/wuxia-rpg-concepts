@@ -345,36 +345,37 @@ test("full campaign story progression drives AudioDirector transitions seamlessl
   game.advanceDialogue(true);
   assert.equal(modes.at(-1), "battle");
 
-  // Clear encounter 1: discipline upgrade
+  // Clear area 1 (its named legend falls): discipline upgrade
   clearEncounter(game);
   assert.equal(modes.at(-1), "upgrade");
   assert(sfx.some((s) => s.type === "upgrade"));
 
-  // Choose discipline: the pass forks (map scene)
+  // Choose discipline: straight back onto the same open pass (battle)
   game.chooseDiscipline("power");
-  assert.equal(modes.at(-1), "select");
-  walkMap(game, (nodes) => nodes.find((node) => node.startsWith("ambush:")));
   assert.equal(modes.at(-1), "battle");
 
-  // Clear encounter 2: discipline upgrade
+  // Clear area 2 (the leaderless archer gauntlet is wiped): discipline upgrade
   clearEncounter(game);
   assert.equal(modes.at(-1), "upgrade");
 
-  // Choose discipline: row 2 map, march into the crossfire duel
+  // Choose discipline: back to the pass
   game.chooseDiscipline("vitality");
-  assert.equal(modes.at(-1), "select");
-  walkMap(game, (nodes) => nodes.find((node) => node.startsWith("duel:")));
   assert.equal(modes.at(-1), "battle");
 
-  // Clear encounter 3, then the final discipline auto-marches to the boss intro
+  // Clear area 3 (the Act I elite): judgement and curio offers open on the map
   clearEncounter(game);
+  assert.equal(modes.at(-1), "select");
+  if (game.g.map.judgement) game.resolveJudgement(true);
+  game.chooseCurio(game.g.map.pendingCurios[0]);
   assert.equal(modes.at(-1), "upgrade");
   game.chooseDiscipline("vitality");
+  assert.equal(modes.at(-1), "battle");
+
+  // Walk to the boss: his challenge bars the way with words first
+  const warden = game.g.roam.field.findIndex((rival) => rival.kind === "warden");
+  game.beginDuel(warden);
   assert.equal(modes.at(-1), "boss");
-
-  // Advance dialogue into boss combat
   game.advanceDialogue(true);
-  assert.equal(modes.at(-1), "boss");
 
   // Pause and resume boss combat
   game.pause();

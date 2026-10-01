@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { session, memoryStorage, quickParty } from './helpers.js';
+import { session, memoryStorage, quickParty, clearEncounter } from './helpers.js';
 import { applyCultivation, hasPerk, strikeNode } from "../src/domain/progression.js";
 import { MERIDIAN_NODES, migrateRanks } from "../src/content/meridians.js";
 import { makePlayer } from "../src/domain/player.js";
@@ -60,29 +60,13 @@ test("Phoenix Eye widens curio drafts to four choices", () => {
   game.save();
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  // Clear row 0, choose a discipline, take the elite for a draft.
-  let guard = 0;
-  while (game.mode !== "map" && guard++ < 100) {
-    if (game.mode === "exploring" || game.mode === "playing") {
-      if (game.mode === "exploring") { game.beginDuel(0); continue; }
-      const p = game.g.p, intent = game.combat.intent();
-      const action = game.g.duel.tea && p.hp < p.maxHp - 35 ? "tea"
-        : p.flow >= p.cost ? "technique"
-        : ["heavy", "guard"].includes(intent.kind) ? "guard" : "attack";
-      game.combat.act(action);
-    } else if (game.mode === "upgrade") game.chooseDiscipline("power");
-    else if (game.mode === "dialogue") game.advanceDialogue(true);
-  }
-  game.chooseNode("elite:gate-vanguard");
-  guard = 0;
-  while (game.mode !== "upgrade" && guard++ < 300) {
-    if (game.mode === "exploring") { game.beginDuel(0); continue; }
-    if (game.mode === "playing") {
-      const p = game.g.p, intent = game.combat.intent();
-      game.combat.act(p.flow >= p.cost ? "technique" : ["heavy", "guard"].includes(intent.kind) ? "guard" : "attack");
-    }
-  }
+  // Vanguard falls, the archer gauntlet is wiped, then the elite draft opens.
+  clearEncounter(game);
   game.chooseDiscipline("power");
+  clearEncounter(game);
+  game.chooseDiscipline("power");
+  clearEncounter(game);
+  assert.equal(game.mode, "map");
   assert.equal(game.g.map.pendingCurios.length, 4);
 });
 

@@ -2,6 +2,7 @@ import { SaveStore } from "../src/platform/save-store.js";
 import { GameSession } from "../src/domain/session.js";
 import { createCardCombat } from "../src/domain/card-combat.js";
 import { techniqueCost } from "../src/content/curios.js";
+import { DUEL_ENEMIES } from "../src/content/duels.js";
 export function memoryStorage(initial = {}) {
   const data = new Map(Object.entries(initial));
   return {
@@ -37,9 +38,20 @@ export function duelPolicy(game) {
         : "attack";
 }
 export function engageRival(game) {
-  const enemy = game.g.roam.field[0];
-  if (!enemy.ranged) return game.beginDuel(0);
-  Object.assign(game.g.p, { x: enemy.x + 80, y: enemy.y });
+  const field = game.g.roam.field;
+  let target = field[0];
+  if (game.g.openField) {
+    // Walk the pass west → east: straight to the westernmost area's leader;
+    // leaderless outposts are cut down rival by rival until they fall.
+    const area = field[0].area;
+    const leader = field.find(
+      (rival) => rival.area === area && !rival.ranged &&
+        (DUEL_ENEMIES[rival.kind]?.boss || rival.kind.startsWith("hero-")));
+    if (leader) target = leader;
+  }
+  const index = field.indexOf(target);
+  if (!target.ranged) return game.beginDuel(index);
+  Object.assign(game.g.p, { x: target.x + 80, y: target.y });
   game.roam.act(game.g.p.flow >= game.g.p.cost ? "technique" : "strike");
   for (let i = 0; i < 50 && game.mode === "exploring"; i++) game.step(1 / 60, {});
   return true;
@@ -81,6 +93,8 @@ export function walkMap(game, pick = (nodes) => nodes[0]) {
       game.resolveEvent(0);
       continue;
     }
+    // Open field: the map scene only hosts offers — stranding here is a bug.
+    if (game.g.openField) throw new Error("open-field map has no offers to resolve");
     const nodes = game.act.map.rows[map.row].filter((node) => !map.cleared.includes(node));
     if (!nodes.length) throw new Error("map row has no open nodes");
     game.chooseNode(pick(nodes));

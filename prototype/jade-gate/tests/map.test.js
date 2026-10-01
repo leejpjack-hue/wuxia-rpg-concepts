@@ -1,45 +1,45 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { session, memoryStorage, clearEncounter, walkMap, quickParty } from './helpers.js';
+import { session, memoryStorage, clearEncounter, walkMap, quickParty, duelPolicy } from './helpers.js';
 import { CURIOS } from "../src/content/curios.js";
 
-test("campaign map: auto rows march, choice rows offer their nodes, boss closes the act", () => {
+test("the open pass supersedes the branching map: nodes are inert, the front moves east", () => {
   const game = session();
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  assert.equal(game.mode, "exploring"); // row 0 (single node) never shows the map
+  assert.equal(game.mode, "exploring"); // the whole act waits on one open pass
   assert.equal(game.g.map.row, 0);
+  // Row nodes no longer gate travel — every rival already stands on the field.
+  assert.equal(game.chooseNode("ambush:archer-run"), false);
+  assert.equal(game.chooseNode("elite:gate-vanguard"), false);
+  assert.equal(game.chooseNode("duel:crossfire"), false);
+  assert.equal(game.encounter.id, "vanguard");
   clearEncounter(game);
   game.chooseDiscipline("power");
-  assert.equal(game.mode, "map");
-  assert.equal(game.g.map.row, 1);
-  // Row 1: ambush or elite; row 2: event, rest or duel; row 3: boss.
-  const rows = game.act.map.rows;
-  assert.deepEqual(rows[1], ["ambush:archer-run", "elite:gate-vanguard"]);
-  assert.equal(game.chooseNode("duel:crossfire"), false); // not in this row
-  game.chooseNode("ambush:archer-run");
-  assert.equal(game.mode, "exploring");
-  assert.equal(game.encounter.id, "archer-run");
+  assert.equal(game.mode, "exploring"); // no map scene between areas
+  assert.equal(game.encounter.id, "archer-run"); // the front moved east
 });
 
-test("elite victory drafts three curios; the pick is carried and applied in duels", () => {
+test("elite area victory drafts three curios; the pick is carried and applied in duels", () => {
   const game = session();
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
+  // Vanguard falls to its leader; the leaderless archer-run must be wiped.
   clearEncounter(game);
   game.chooseDiscipline("power");
-  game.chooseNode("elite:gate-vanguard");
   clearEncounter(game);
   game.chooseDiscipline("power");
+  clearEncounter(game); // gate-vanguard is the Act I elite
   assert.equal(game.mode, "map");
   const draft = game.g.map.pendingCurios;
   assert.equal(draft.length, 3);
   assert.equal(new Set(draft).size, 3);
   assert(game.g.totalKills >= 3);
+  if (game.g.map.judgement) game.resolveJudgement(true);
   game.chooseCurio(draft[0]);
   assert.deepEqual(game.g.curios, [draft[0]]);
   assert.equal(game.g.map.pendingCurios.length, 0); // unchosen drafts are lost
-  assert.equal(game.mode, "map"); // still choosing row 2's node
+  assert.equal(game.mode, "upgrade"); // offers settle into the discipline
   // The carried curio changes duel rules: Jade Pendant heals on first guard.
   // Use a plain guard (quick play vanguard) so no status effects disturb the math.
   const pendant = session();
@@ -55,65 +55,38 @@ test("elite victory drafts three curios; the pick is carried and applied in duel
   assert.equal(pendant.g.p.hp, afterFirst - pendant.g.duel.lastIncoming); // pendant is once per duel
 });
 
-test("event and rest nodes resolve without combat and advance the map", () => {
+test("a cleared pass grants a roadside breather to the wounded hero", () => {
   const game = session();
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  game.chooseNode("elite:gate-vanguard");
-  clearEncounter(game);
-  game.chooseDiscipline("power");
-  if (game.g.map.judgement) game.resolveJudgement(true);
-  if (game.g.map.pendingCurios.length) game.chooseCurio(game.g.map.pendingCurios[0]);
-  assert.equal(game.mode, "upgrade"); // judgement + draft settle into the discipline
-  game.chooseDiscipline("power");
-  assert.equal(game.mode, "map");
+  const leader = game.g.roam.field.findIndex((rival) => rival.kind.startsWith("hero-"));
+  game.beginDuel(leader);
+  // A lethal technique takes no reply, so the breather is the only healing.
+  game.g.enemies[0].hp = 1;
   game.g.p.hp = 50;
-  game.chooseNode("rest:roadside");
-  assert.ok(game.g.p.hp > 50, "roadside rest heals");
-  // Row 3 is a single boss node: the rest auto-marches straight into the intro.
-  assert.equal(game.mode, "dialogue");
-  assert.equal(game.dialogue.key, "warden-intro");
+  game.g.p.flow = 100;
+  const flow = game.g.p.flow;
+  game.combat.act("technique");
+  assert.equal(game.mode, "upgrade");
+  assert.equal(game.g.p.hp, 87); // +12 rival-defeat restore, +25 breather with the pass
+  assert.equal(game.g.p.flow, flow - game.g.p.cost + 8 + 10); // technique cost, +8 defeat, +10 breather
+});
 
-  const eventGame = session();
-  eventGame.start("zhao-yun", "campaign");
-  eventGame.advanceDialogue(true);
-  clearEncounter(eventGame);
-  eventGame.chooseDiscipline("power");
-  eventGame.chooseNode("ambush:archer-run");
-  clearEncounter(eventGame);
-  eventGame.chooseDiscipline("power");
-  assert.equal(eventGame.mode, "map");
-  eventGame.g.p.hp = 60; // wounded before accepting the tea
-  const hp = eventGame.g.p.hp;
-  eventGame.chooseNode("event:travelers-gift");
-  assert.equal(eventGame.mode, "map");
-  eventGame.resolveEvent(0);
-  assert.ok(eventGame.g.p.hp > hp); // shared tea heals
-  // The event row ends the choices; row 3's boss auto-marches into its intro.
-  assert.equal(eventGame.mode, "dialogue");
-  assert.equal(eventGame.dialogue.key, "warden-intro");
-
-  const trapGame = session();
-  trapGame.start("zhao-yun", "campaign");
-  trapGame.advanceDialogue(true);
-  clearEncounter(trapGame);
-  trapGame.chooseDiscipline("power");
-  trapGame.chooseNode("ambush:archer-run");
-  clearEncounter(trapGame);
-  trapGame.chooseDiscipline("power");
-  trapGame.chooseNode("event:travelers-gift");
-  const trapHp = trapGame.g.p.hp;
-  trapGame.resolveEvent(1);
-  assert.equal(trapGame.g.p.hp, trapHp - 8); // needle trap
-  assert.equal(trapGame.g.curios.length, 0); // drafted, not yet taken
-  assert.equal(trapGame.g.map.pendingCurios.length, 1); // the sealed box offers one
-  assert.equal(trapGame.mode, "map");
-  trapGame.chooseCurio(trapGame.g.map.pendingCurios[0]);
-  assert.equal(trapGame.g.curios.length, 1);
-  // With the box emptied, row 3's boss auto-marches.
-  assert.equal(trapGame.mode, "dialogue");
+test("roadside content of the old branching map is gone with its nodes", () => {
+  // Event, rest and shop nodes traveled with the branching map; the open pass
+  // replaces them with the per-area breather (covered above) and elite offers.
+  const game = session();
+  game.start("zhao-yun", "campaign");
+  game.advanceDialogue(true);
+  assert.equal(game.g.map.event, null);
+  assert(!game.g.map.shop);
+  assert.equal(game.chooseNode("rest:roadside"), false);
+  assert.equal(game.chooseNode("event:travelers-gift"), false);
+  assert.equal(game.chooseNode("shop:merchant"), false);
+  // The shop machinery itself still serves future touchpoints.
+  assert(game.openShop("shop:merchant"));
+  assert(game.g.map.shop, "the shop can still open");
+  game.g.map.shop = null;
 });
 
 test("curio effects: twin irons cadence, feather cost, sash protect, tally renown", () => {
@@ -175,16 +148,27 @@ test("curio effects: twin irons cadence, feather cost, sash protect, tally renow
   assert.equal(eye.combat.intent(eye.g.enemies[0], 1).kind, "heavy");
 });
 
-test("checkpoint at the map restores row, cleared nodes and carried curios", () => {
+test("checkpoint at the elite offers recovers as the pending discipline", () => {
   const storage = memoryStorage();
   const game = session(storage);
   game.start("zhao-yun", "campaign");
   game.advanceDialogue(true);
+  // Vanguard falls, archer-run is wiped, then the elite offers open.
   clearEncounter(game);
   game.chooseDiscipline("power");
-  game.chooseNode("elite:gate-vanguard");
   clearEncounter(game);
   game.chooseDiscipline("power");
+  clearEncounter(game);
+  assert.equal(game.mode, "map");
+  // Reload before resolving the offers: the draft is lost, the discipline waits.
+  // (A private snapshot: this branch keeps saving, and must not clobber the shared save.)
+  const midOffer = session(memoryStorage(Object.fromEntries(storage.data)));
+  assert(midOffer.continueCheckpoint());
+  assert.equal(midOffer.mode, "upgrade");
+  midOffer.chooseDiscipline("power");
+  assert.equal(midOffer.mode, "exploring");
+
+  // Reload after taking the curio: the pick is carried, the run still finishes.
   if (game.g.map.judgement) game.resolveJudgement(true);
   game.chooseCurio(game.g.map.pendingCurios[0]);
   assert.equal(game.mode, "upgrade");
@@ -193,19 +177,17 @@ test("checkpoint at the map restores row, cleared nodes and carried curios", () 
   assert(restored.continueCheckpoint());
   assert.equal(restored.mode, "upgrade"); // checkpoint saved as the pending discipline
   restored.chooseDiscipline("power");
-  assert.equal(restored.g.map.row, 2);
   assert.deepEqual(restored.g.curios, carried);
-  assert(restored.g.map.cleared.includes("elite:gate-vanguard"));
+  assert(restored.g.openField.cleared.includes("gate-vanguard"));
+  assert(restored.g.roam.field.some((rival) => rival.area === "warden"));
   // The restored run can still finish the act.
-  walkMap(restored, (nodes) => nodes.find((n) => n.startsWith("duel:")) || nodes[0]);
   let guard = 0;
   while (!["waystation", "victory", "defeat"].includes(restored.mode) && guard++ < 200) {
     if (restored.mode === "dialogue") restored.advanceDialogue(true);
     else if (restored.mode === "exploring" || restored.mode === "playing")
       clearEncounter(restored);
     else if (restored.mode === "upgrade") restored.chooseDiscipline("power");
-    else if (restored.mode === "map")
-      walkMap(restored, (nodes) => nodes.find((n) => n.startsWith("duel:")) || nodes[0]);
+    else if (restored.mode === "map") walkMap(restored);
   }
   assert.equal(restored.mode, "waystation");
 });

@@ -14,7 +14,7 @@ import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
 import { createRoam, isRanged } from "./roam.js";
-import { DUEL_ENEMIES } from "../content/duels.js";
+import { DUEL_ENEMIES, isNamedRivalKind, rosterForEncounter } from "../content/duels.js";
 import {
   applyCultivation,
   awardResult,
@@ -53,6 +53,9 @@ export class GameSession {
       bus.on("roam:contact", () => this.beginDuel()),
       bus.on("roam:rival-defeated", () => {
         if (this.mode === "exploring" && !this.g.roam.field.length) {
+          // Open field: the act boss is melee and only falls in a duel, so an
+          // emptied field means something is off — never auto-finish there.
+          if (this.g.openField) return;
           this.g.encounterDone = true;
           this.clearEncounter();
         }
@@ -146,9 +149,14 @@ export class GameSession {
       curios: [],
       party: party ? { lead: party.lead, followers: [...party.followers] } : { lead: hero.id, followers: [] },
       // Campaign-only branching map; null in Quick play (linear encounters).
+      // In the open field the map scene only hosts elite offers.
       map: runMode === "campaign" && act.map ? { row: 0, cleared: [], pendingCurios: [], event: null } : null,
+      // Dynasty-Warriors open field: campaign passes deploy everyone at once
+      // on one persistent map; areas fall when their leader falls.
+      openField: runMode === "campaign" ? { cleared: [] } : null,
     };
-    this.prepareEncounter();
+    if (runMode === "campaign") this.prepareOpenField();
+    else this.prepareEncounter();
   }
   start(heroId, runMode = "campaign", actId = "jade-gate", party = null) {
     if (!["menu", "defeat", "victory", "waystation"].includes(this.mode))
@@ -243,6 +251,43 @@ export class GameSession {
     g.duel = null;
     this.roam = createRoam(g, this.bus, { encounter: this.encounter });
   }
+  /**
+   * Open-field campaign (Dynasty-Warriors style): every pass rival of the act
+   * deploys at once on one persistent map. Each encounter owns an area; the
+   * areas run west → east with the act boss anchored deepest. Nothing resets
+   * between areas — the same roam survives until the act ends.
+   */
+  prepareOpenField() {
+    const g = this.g, act = this.act;
+    const cleared = new Set(g.openField.cleared);
+    const live = act.encounters.filter((encounter) => !cleared.has(encounter.id));
+    const roster = [], areas = [], anchors = {};
+    live.forEach((encounter, areaIndex) => {
+      for (const kind of rosterForEncounter(encounter.id, g.runMode)) {
+        roster.push(kind);
+        areas.push(encounter.id);
+      }
+      // Spread areas along the pass; the act boss holds the far clearing.
+      const span = Math.max(1, live.length - 1);
+      anchors[encounter.id] = encounter.bossId
+        ? { x: 9400, y: 620 }
+        : { x: 780 + areaIndex * (8400 / span), y: [430, 560, 690][areaIndex % 3] };
+    });
+    const first = act.encounters.find((encounter) => !cleared.has(encounter.id)) || act.encounters[0];
+    g.encounterIndex = act.encounters.indexOf(first);
+    g.wave = g.encounterIndex + 1;
+    g.enemies = [];
+    g.shots = [];
+    g.pickups = [];
+    g.effects = [];
+    g.waveTime = 0;
+    g.encounterDone = false;
+    g.hitStop = 0;
+    g.duel = null;
+    const encounter = { id: `open:${act.id}`, hazards: [...(act.hazards || [])], enemies: [] };
+    this.combat = this.combatFactory(g, this.bus, { seed: 1337 + g.encounterIndex, encounter, roster });
+    this.roam = createRoam(g, this.bus, { encounter, roster, areas, anchors });
+  }
   checkpoint(stage) {
     if (this.g.runMode !== "campaign") return;
     const g = this.g,
@@ -271,6 +316,7 @@ export class GameSession {
       turns: g.turns || 0,
       curios: [...g.curios],
       map: g.map ? { row: g.map.row, cleared: [...g.map.cleared] } : null,
+      openField: g.openField ? [...g.openField.cleared] : null,
     };
     this.save();
   }
@@ -295,6 +341,13 @@ export class GameSession {
     ) {
       this.checkpoint("waystation");
       this.transition("waystation");
+    } else if (this.g?.pendingBossDuel != null) {
+      // The boss finished speaking: the challenge waits on the pass.
+      const index = this.g.pendingBossDuel;
+      this.g.pendingBossDuel = null;
+      this.checkpoint("combat");
+      this.transition("exploring");
+      this.beginDuel(index);
     } else {
       this.checkpoint("combat");
       this.transition("exploring");
@@ -316,6 +369,14 @@ export class GameSession {
   arriveAtRow() {
     const map = this.g.map;
     const rows = this.act.map.rows;
+    // Open field: the field is the map; rows only host elite offers now.
+    if (this.g.openField) {
+      if (this.mode !== "map") {
+        this.checkpoint("map");
+        this.transition("map");
+      }
+      return true;
+    }
     if (map.row >= rows.length) return false;
     if (!map.pendingCurios.length && !map.event && rows[map.row].length === 1) {
       this.selectNode(rows[map.row][0]);
@@ -353,6 +414,8 @@ export class GameSession {
   }
   chooseNode(node) {
     if (this.mode !== "map" || !this.g.map) return false;
+    // Open field: every rival is already on the pass — no node marching.
+    if (this.g.openField) return false;
     const rows = this.act.map.rows;
     if (!rows[this.g.map.row]?.includes(node)) return false;
     if (!this.g.map.cleared.includes(node)) this.g.map.cleared.push(node);
@@ -582,10 +645,22 @@ export class GameSession {
     this.g.roam.contact = index;
     const enemy = field[index];
     this.unlockCodex("rivals", enemy.kind);
+    // Open field: the HUD and music follow the area whose rival stepped to.
+    const areaEncounter = this.g.openField
+      ? this.act.encounters.find((item) => item.id === enemy.area)
+      : null;
+    if (areaEncounter) this.g.encounterIndex = this.act.encounters.indexOf(areaEncounter);
     // First blood on the pass or a sneak contact: the duel opens with a reel.
     const ambush = !!(enemy.firstBlood || this.g.roam.sneaking);
     this.g.roam.sneaking = false;
-    this.combat.begin?.(enemy.kind, enemy.id, ambush);
+    // Open field: the act boss bars the way with words before blades (once).
+    if (this.g.openField && DUEL_ENEMIES[enemy.kind]?.boss && !this.g.openField.intros?.[enemy.kind]) {
+      (this.g.openField.intros ||= {})[enemy.kind] = true;
+      this.g.pendingBossDuel = index;
+      this.beginDialogue(`${enemy.kind}-intro`);
+      return true;
+    }
+    this.combat.begin?.(enemy.kind, enemy.id, ambush, !!areaEncounter?.elite);
     this.transition("playing");
     this.bus.emit("audio:sfx", { type: "ui_click" });
     this.bus.emit("notice", { text: ambush ? `${enemy.name} reels from your ambush` : `${enemy.name} bars your way` });
@@ -596,8 +671,27 @@ export class GameSession {
     const removed = this.roam.removeContacted();
     if (!removed) return;
     this.g.lastDefeatedKind = removed.kind;
-    if (!this.g.roam.field.length) {
+    // Open field: a fallen boss or named legend scatters their whole area.
+    const leader = DUEL_ENEMIES[removed.kind]?.boss || isNamedRivalKind(removed.kind);
+    if (this.g.openField && leader) {
+      this.clearOpenArea(removed.area);
+      return;
+    }
+    if (!this.g.roam.field.length && !this.g.openField) {
       this.clearEncounter();
+      return;
+    }
+    if (this.g.openField) {
+      // A leaderless outpost falls only when its last rival falls.
+      if (removed.area && !this.g.roam.field.some((rival) => rival.area === removed.area)) {
+        this.clearOpenArea(removed.area);
+        return;
+      }
+      this.transition("exploring");
+      const left = this.g.roam.field.length;
+      this.bus.emit("notice", {
+        text: `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
+      });
       return;
     }
     const left = this.g.roam.field.length;
@@ -613,6 +707,59 @@ export class GameSession {
       text: canSwap
         ? "Tap a follower chip to swap lead before the next rival"
         : `${left} ${left === 1 ? "rival" : "rivals"} remain${left === 1 ? "s" : ""} on the pass`,
+    });
+  }
+  /** Open field: the leader's area scatters; elites still face the judgement. */
+  clearOpenArea(area) {
+    const g = this.g;
+    if (!g.openField || g.openField.cleared.includes(area)) return;
+    const encounter = this.act.encounters.find((item) => item.id === area);
+    const scattered = this.roam.scatterArea(area);
+    g.openField.cleared.push(area);
+    // A cleared pass yields a fresh pot of tea and a breather, as cleared
+    // encounters and roadside rests once did.
+    if (g.duel) g.duel.tea = g.p.teaPots ?? 1;
+    const healed = Math.min(25, g.p.maxHp - g.p.hp);
+    g.p.hp += healed;
+    g.p.flow = Math.min(100, g.p.flow + 10);
+    const next = this.act.encounters.find((item) => !g.openField.cleared.includes(item.id));
+    g.encounterIndex = next ? this.act.encounters.indexOf(next) : this.act.encounters.length - 1;
+    if (encounter?.bossId) {
+      // The act's biggest boss has fallen: the pass is won.
+      this.finish(true);
+      return;
+    }
+    this.bus.emit("notice", {
+      text: scattered.length
+        ? `${encounter?.title || "The pass"} falls — ${scattered.length} ${scattered.length === 1 ? "rival" : "rivals"} scatter.`
+        : `${encounter?.title || "The pass"} falls.`,
+    });
+    if (encounter?.elite) {
+      // Elite areas keep their map offers: curio draft and the judgement.
+      g.map.current = `elite:${area}`;
+      if (!g.map.cleared.includes(g.map.current)) g.map.cleared.push(g.map.current);
+      g.map.pendingCurios = this.draftCurios();
+      if (g.lastDefeatedKind)
+        g.map.judgement = {
+          kind: g.lastDefeatedKind,
+          name: DUEL_ENEMIES[g.lastDefeatedKind]?.name || "The fallen",
+        };
+      g.map.pendingUpgrade = true;
+      this.checkpoint("map");
+      this.transition("map");
+      return;
+    }
+    this.checkpoint("upgrade");
+    this.transition("upgrade");
+    this.bus.emit("audio:sfx", { type: "upgrade" });
+  }
+  /** Back to the same open field — positions, curios and cleared areas intact. */
+  resumeOpenField() {
+    this.checkpoint("combat");
+    this.transition("exploring");
+    const left = this.g.roam.field.length;
+    this.bus.emit("notice", {
+      text: `${left} ${left === 1 ? "rival" : "rivals"} still hold${left === 1 ? "s" : ""} the pass`,
     });
   }
   clearEncounter() {
@@ -706,6 +853,12 @@ export class GameSession {
     applyUpgrade(this.g.p, id);
     this.g.p.hp = Math.min(this.g.p.maxHp, this.g.p.hp + 22);
     this.g.p.flow = Math.min(100, this.g.p.flow + 20);
+    // Open field: back to the same pass — the map never resets between areas.
+    if (this.g.openField) {
+      this.resumeOpenField();
+      this.bus.emit("audio:sfx", { type: "ui_click" });
+      return true;
+    }
     if (this.g.map) {
       this.g.map.event = null;
       this.advanceRow();
@@ -791,7 +944,13 @@ export class GameSession {
         entry.endsWith(`:${this.act.encounters[this.g.encounterIndex]?.id}`));
       if (node) this.g.map.current = node;
     }
-    this.prepareEncounter();
+    if (this.g.openField) {
+      // Rejoin the persistent field minus every area already scattered.
+      this.g.openField.cleared = (cp.openField || []).filter((id) =>
+        this.act.encounters.some((encounter) => encounter.id === id));
+      this.g.curios = cp.curios.filter((id) => CURIO_IDS.includes(id));
+      this.prepareOpenField();
+    } else this.prepareEncounter();
     const dialogueStages = [
       "arrival",
       "warden-intro",
@@ -810,7 +969,13 @@ export class GameSession {
     ];
     if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);
-    else if (cp.stage === "map" && this.g.map) this.arriveAtRow();
+    else if (cp.stage === "map" && this.g.map && !this.g.openField) this.arriveAtRow();
+    else if (cp.stage === "map" && this.g.openField) {
+      // Reload during elite offers: the draft is gone, but the discipline still waits.
+      this.transition("exploring");
+      this.g.encounterDone = true;
+      this.transition("upgrade");
+    }
     else if (cp.stage === "waystation") this.transition("waystation");
     else if (cp.stage === "upgrade") {
       // Menu-to-upgrade restoration uses a validated encounter entry, without simulating a frame.
