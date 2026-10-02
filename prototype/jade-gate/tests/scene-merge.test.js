@@ -69,7 +69,8 @@ test("all playable acts switch to their own existing ground art at a constant sc
     view.applyCamera({ x: 8500, y: 600 });
     assert.equal(arena.style.backgroundSize, scale);
     assert.notEqual(arena.style.backgroundPosition, start);
-    assert.equal(arena.style.backgroundRepeat, "repeat-x");
+    // The taller maze world tiles on both axes: vertical scroll stays covered.
+    assert.equal(arena.style.backgroundRepeat, "repeat");
   }
   assert.equal(new Set(Object.values(ROAM_SCENES).map(s => s.art)).size, 4);
 });

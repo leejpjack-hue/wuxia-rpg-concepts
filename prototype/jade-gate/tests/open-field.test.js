@@ -26,18 +26,30 @@ function winDuel(game) {
 test("campaign deploys every rival of the act on one open map; Quick Play stays linear", () => {
   const game = storySession();
   const expected = actOne.encounters.flatMap((encounter) => rosterForEncounter(encounter.id, "campaign"));
-  assert.deepEqual(game.g.roam.field.map((rival) => rival.kind), expected);
-  // Areas tag every rival, areas spread west → east, and the boss anchors deepest.
+  // Tripled ranks: the story roster once, plus two ranks of act grunts.
+  assert.equal(game.g.roam.field.length, expected.length * 3);
+  for (const kind of expected)
+    assert(game.g.roam.field.some((rival) => rival.kind === kind), `${kind} still deploys`);
+  // Areas tag every rival, camps deepen along the maze, and the boss anchors deepest.
   for (const rival of game.g.roam.field) assert(rival.area, `${rival.kind} carries its area`);
+  const maze = game.g.roam.maze;
+  assert(maze, "the open field is a hedge maze");
   const areas = [...new Set(game.g.roam.field.map((rival) => rival.area))];
   assert.deepEqual(areas, actOne.encounters.map((encounter) => encounter.id));
-  const anchors = areas.map((id) => game.g.roam.field.find((rival) => rival.area === id).x);
-  anchors.slice(1).forEach((x, i) => assert(x >= anchors[i] - 200, "areas never fold backwards"));
+  // The boss encounter anchors at the maze's dedicated deepest room.
+  const anchorOf = (id) => (id === "warden" ? maze.anchors.boss : maze.anchors[id]);
+  const depths = areas.map((id) => {
+    const anchor = anchorOf(id);
+    return maze.distanceAt(anchor.x, anchor.y);
+  });
+  depths.slice(1).forEach((depth, i) => assert(depth > depths[i], "camps never fold back toward the gate"));
   const boss = game.g.roam.field.find((rival) => DUEL_ENEMIES[rival.kind]?.boss);
-  assert(boss.x > 9000, "the act boss holds the far clearing");
+  assert(boss, "the act boss deploys");
+  assert.equal(maze.distanceAt(boss.x, boss.y), Math.max(...depths), "the act boss holds the deepest room");
   const quick = session();
   quick.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
   assert.equal(quick.g.openField, null);
+  assert.equal(quick.g.roam.maze, null);
   assert.deepEqual(quick.g.roam.field.map((rival) => rival.kind), rosterForEncounter("vanguard", "quickplay"));
 });
 

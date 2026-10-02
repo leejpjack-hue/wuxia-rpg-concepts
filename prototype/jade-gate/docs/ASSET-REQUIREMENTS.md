@@ -117,3 +117,23 @@ defeat screen (“The jianghu stretches beyond the maps…”).
 ## Card-duel action images — follow-up
 
 See [DUEL-ACTION-ASSETS.md](DUEL-ACTION-ASSETS.md) for the character pose list, including the failed Zhao Yun / Hu Sanniang requests, the cancelled Guan Yu retry, and the remaining deferred images. No new action PNGs were generated in this pass. The earlier 36-file expansion batch is a separate delivered batch.
+
+## 9. Hedge maze pass (open field)
+
+Shipped with procedural painting (blocker-texture wall tiles on the effects
+canvas, flat tone fallback). All of the below are wanted replacements:
+
+- `assets/maze-wall-{act}.png` — one tileable wall texture per act (jade-gate
+  bamboo hedge, bamboo-crossing river reed, mount-canglan terrace stone,
+  meridian-citadel imperial wall). Square, tileable on all edges; drawn at
+  320×320 world units per tile. Replaces the current blocker-texture pattern.
+- `assets/shrine-lantern.png` — wayside shrine sprite (lit and extinguished
+  variants, or one sprite + dimming handled in code). Stone lantern with a
+  warm amber glow, transparent square ≥512. Currently drawn procedurally on
+  the effects canvas.
+- `assets/route-map-frame.png` (optional) — decorative frame for the taller
+  11:4 route map canvas.
+
+### Notes
+- The maze layout itself is seeded per run (runId + act) and regenerates
+  identically from checkpoints; only the wall/shrine art is a drop-in concern.

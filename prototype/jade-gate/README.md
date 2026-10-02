@@ -30,7 +30,9 @@ Music is synthesized in the browser. Acts II and III each have their own 32-bar 
 
 ## Engagement on the pass
 
-The restored maze spans four 2,560-unit stretches. The newer south clearing remains connected, while the east opening leads through alternating gaps to the distant Act I Warden. Open **Route map / 経路図** below the party health chips to see walls, your camera, companions and remaining rivals; markers disappear as rivals are defeated. Collapse it to keep the controls compact. Japanese remains the default.
+Story acts deploy the whole pass at once on one seeded **hedge maze** that climbs and descends as well as running west → east. Camp plazas anchor along the path (the act boss holds the deepest room), rival ranks are tripled with act grunts, arrows stop at hedges — corners are cover — and wayside shrine lanterns in the dead ends restore health, Flow and nerve once each. The maze rebuilds identically from a checkpoint. Quick play and the endless wander keep the classic stone passes.
+
+Open **Route map / 経路図** below the party health chips to see the maze walls, shrines, your camera, companions and remaining rivals; markers disappear as rivals are defeated. Collapse it to keep the controls compact. Japanese remains the default.
 
 Each act now has its own exploration ground: natural forest in Act I, a lantern-lit bamboo crossing derived from the latest `bamboo-roam.png` in Act II, and a new Mount Canglan stone terrace in Act III. Act II card duels use that latest original landscape. Natural blocker cutouts follow the collision walls, and the terrace uses their rock detail. Zhao Yun and Hu Sanniang retain their original clean transparent sprites with subtle walking motion; unapproved replacement sheets remain archived in the manifest. Lu Zhishen retains his approved sheet animation.
 

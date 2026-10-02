@@ -14,7 +14,9 @@ import { makePlayer } from "./player.js";
 import { createEnemies } from "./encounters.js";
 import { createCombat } from "./combat.js";
 import { createRoam, isRanged } from "./roam.js";
-import { DUEL_ENEMIES, isNamedRivalKind, rosterForEncounter } from "../content/duels.js";
+import { generateMaze, hashSeed } from "./maze.js";
+import { seededRandom } from "../engine/clock.js";
+import { DUEL_ENEMIES, isNamedRivalKind, isEscortKind, rosterForEncounter } from "../content/duels.js";
 import {
   applyCultivation,
   awardResult,
@@ -62,6 +64,7 @@ export class GameSession {
       }),
       bus.on("duel:won", () => this.endDuel()),
       bus.on("combat:defeat", () => this.finish(false)),
+      bus.on("roam:rest", (shrine) => this.restAtShrine(shrine)),
     ];
   }
   get mode() {
@@ -253,26 +256,43 @@ export class GameSession {
   }
   /**
    * Open-field campaign (Dynasty-Warriors style): every pass rival of the act
-   * deploys at once on one persistent map. Each encounter owns an area; the
-   * areas run west → east with the act boss anchored deepest. Nothing resets
-   * between areas — the same roam survives until the act ends.
+   * deploys at once on one persistent hedge maze that climbs and descends as
+   * well as running west → east. Each encounter owns a camp plaza anchored by
+   * path distance from the west gate; the act boss holds the deepest room.
+   * Ranks are tripled with act grunts, and wayside shrines dot the dead ends.
+   * Nothing resets between areas — the same roam survives until the act ends.
    */
   prepareOpenField() {
     const g = this.g, act = this.act;
     const cleared = new Set(g.openField.cleared);
     const live = act.encounters.filter((encounter) => !cleared.has(encounter.id));
-    const roster = [], areas = [], anchors = {};
-    live.forEach((encounter, areaIndex) => {
+    const maze = generateMaze(hashSeed(`${g.runId}:${act.id}:maze`), {
+      areas: live.filter((encounter) => !encounter.bossId).map((encounter) => encounter.id),
+    });
+    const roster = [], areas = [];
+    live.forEach((encounter) => {
       for (const kind of rosterForEncounter(encounter.id, g.runMode)) {
         roster.push(kind);
         areas.push(encounter.id);
       }
-      // Spread areas along the pass; the act boss holds the far clearing.
-      const span = Math.max(1, live.length - 1);
-      anchors[encounter.id] = encounter.bossId
-        ? { x: 9400, y: 620 }
-        : { x: 780 + areaIndex * (8400 / span), y: [430, 560, 690][areaIndex % 3] };
     });
+    // Triple the ranks: the story roster stands as-is; the extra bodies are
+    // act grunts folded into the existing camps, so a fallen legend still
+    // scatters the whole (now much thicker) area.
+    const gruntKinds = [...new Set(roster.filter((kind) =>
+      !isNamedRivalKind(kind) && !DUEL_ENEMIES[kind]?.boss && !isEscortKind(kind)))];
+    const pool = gruntKinds.length ? gruntKinds : ["guard"];
+    const rng = seededRandom(hashSeed(`${g.runId}:${act.id}:ranks`));
+    const target = roster.length * 3;
+    const coreCount = roster.length;
+    while (roster.length < target) {
+      const area = areas[Math.floor(rng() * areas.length)];
+      roster.push(pool[Math.floor(rng() * pool.length)]);
+      areas.push(area);
+    }
+    const anchors = {};
+    for (const encounter of live)
+      anchors[encounter.id] = encounter.bossId ? maze.anchors.boss : maze.anchors[encounter.id];
     const first = act.encounters.find((encounter) => !cleared.has(encounter.id)) || act.encounters[0];
     g.encounterIndex = act.encounters.indexOf(first);
     g.wave = g.encounterIndex + 1;
@@ -286,7 +306,7 @@ export class GameSession {
     g.duel = null;
     const encounter = { id: `open:${act.id}`, hazards: [...(act.hazards || [])], enemies: [] };
     this.combat = this.combatFactory(g, this.bus, { seed: 1337 + g.encounterIndex, encounter, roster });
-    this.roam = createRoam(g, this.bus, { encounter, roster, areas, anchors });
+    this.roam = createRoam(g, this.bus, { encounter, roster, areas, anchors, maze, coreCount });
   }
   checkpoint(stage) {
     if (this.g.runMode !== "campaign") return;
@@ -688,8 +708,10 @@ export class GameSession {
       return;
     }
     if (this.g.openField) {
-      // A leaderless outpost falls only when its last rival falls.
-      if (removed.area && !this.g.roam.field.some((rival) => rival.area === removed.area)) {
+      // A camp breaks when its story core falls: legends and bosses headliner
+      // the fall, and leaderless outposts hold only while their original
+      // story rivals do — the extra ranks scatter with them.
+      if (removed.area && !this.g.roam.field.some((rival) => rival.area === removed.area && rival.core !== false)) {
         this.clearOpenArea(removed.area);
         return;
       }
@@ -767,6 +789,23 @@ export class GameSession {
     this.bus.emit("notice", {
       text: `${left} ${left === 1 ? "rival" : "rivals"} still hold${left === 1 ? "s" : ""} the pass`,
     });
+  }
+  /** Wayside shrine (one incense each): health, Flow, nerve and a fresh tea pot. */
+  restAtShrine(shrine) {
+    if (this.mode !== "exploring" || !this.g?.roam) return false;
+    const p = this.g.p;
+    const healed = Math.min(35, p.maxHp - p.hp);
+    p.hp += healed;
+    p.flow = Math.min(100, p.flow + 45);
+    p.composure = 0;
+    p.rattled = false;
+    p.teaPots = Math.min(3, (p.teaPots ?? 1) + 1);
+    if (this.g.duel) this.g.duel.tea = p.teaPots;
+    this.bus.emit("notice", {
+      text: `You rest at the wayside shrine: +${healed} health, Flow returns, your nerve steadies, and a fresh pot of tea is steeped.`,
+    });
+    this.bus.emit("audio:sfx", { type: "heal" });
+    return true;
   }
   clearEncounter() {
     if (!["playing", "exploring"].includes(this.mode)) return;

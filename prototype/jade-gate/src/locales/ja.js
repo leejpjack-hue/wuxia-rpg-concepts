@@ -201,6 +201,9 @@ export const messages = {
   // Judgement.
   'Spare or finish': '助けるか、止めを刺すか', 'Spare — the people will remember': '見逃す——民は忘れない', 'Finish — the Banner nods': '止め——灰旗軍が頷く',
   'Finish — the Banner nods (+{count} Renown)': '止め——灰旗軍が頷く（+{count}名声）',
+  // Open-field hedge maze: wayside shrines and the route map legend.
+  'You rest at the wayside shrine: +{count} health, Flow returns, your nerve steadies, and a fresh pot of tea is steeped.': '道端の祠で休む —— 体力が{count}回復し、気が満ち、心が落ち着き、新しい茶が淹れられる。',
+  'REST': '休息', 'Shrines': '祠',
   '{name} kneels among the fallen. Your call is remembered.': '{name}が倒れた者たちの中で膝をついている。お前の裁定は記憶される。',
   '{name} slips into the mists — and into your roster.': '{name}は霧の中へ消え——そして仲間に加わる。',
   '{name} limps away. The people will remember.': '{name}は足を引きずり去る。民は忘れない。',

@@ -161,9 +161,9 @@
 .reduced-motion .original-walk { animation: none !important; }
 .route-overview { align-self: center; width: min(100%, 520px); padding: 8px 12px; border: 1px solid #bfe9df33; border-radius: 6px; background: #071410; }
 .route-overview summary { cursor: pointer; font-size: 12px; color: var(--gold); }
-.route-overview canvas { display: block; width: 100%; height: auto; aspect-ratio: 5 / 1; margin-top: 6px; }
+.route-overview canvas { display: block; width: min(100%, 340px); height: auto; margin-top: 6px; }
 .route-legend { display: flex; gap: 16px; justify-content: center; margin: 3px 0; font-size: 11px; }
-.route-you { color: #fff3cf; } .route-party { color: #79c5dc; } .route-rivals { color: #ed8f75; }
+.route-you { color: #fff3cf; } .route-party { color: #79c5dc; } .route-rivals { color: #ed8f75; } .route-shrine { color: #ffca6e; }
 
 .roam-spawn-marker {
   position: absolute;

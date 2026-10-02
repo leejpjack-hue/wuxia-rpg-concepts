@@ -41,6 +41,7 @@ export class RoamView {
     this.context = this.$("roam-effects")?.getContext("2d");
     this.sprites = new Map();
     this.followers = new Map();
+    this.wallPattern = null;
     this.blockerArt = BLOCKER_ART.map(prop => {
       const node = document.createElement("div");
       node.className = "roam-thicket";
@@ -167,7 +168,8 @@ export class RoamView {
     }
     const px = cam.x / (scene.tileWidth - VIEWPORT.width) * 100;
     const py = (cam.y + scene.topCrop) / (scene.artHeight - VIEWPORT.height) * 100;
-    arena.style.backgroundRepeat = "repeat-x";
+    // The taller maze world scrolls past one plate's height: tile both axes.
+    arena.style.backgroundRepeat = "repeat";
     arena.style.backgroundSize = `${scene.tileWidth / VIEWPORT.width * 100}% ${scene.artHeight / VIEWPORT.height * 100}%`;
     arena.style.backgroundPosition = `${px}% ${py}%`;
   }
@@ -392,11 +394,17 @@ export class RoamView {
         oathChip.replaceChildren(icon, label); oathChip.dataset.oath = oath.id;
       } else if (!oathChip.hidden) oathChip.children[1].textContent = this.t(oath.name);
     }
+    // The maze replaces the painted-stone props: thicket art and spawn marks
+    // would float inside hedges, so they step aside for the labyrinth.
+    const inMaze = !!g.roam.maze;
     SPAWN_MARKERS.forEach((marker, index) => {
-      this.place(this.spawnMarkers[index], marker.x, marker.y, cam);
+      const node = this.spawnMarkers[index];
+      node.hidden = inMaze;
+      this.place(node, marker.x, marker.y, cam);
     });
     BLOCKER_ART.forEach((prop, index) => {
       const node = this.blockerArt[index];
+      node.hidden = inMaze;
       this.place(node, prop.x, prop.y, cam);
       node.style.width = `${prop.size / VIEWPORT.width * 100}%`;
       node.style.height = `${prop.size / VIEWPORT.height * 100}%`;
@@ -447,6 +455,8 @@ export class RoamView {
     const c = this.context; if (!c) return;
     const to = (x, y) => worldToScreen(x, y, cam);
     c.clearRect(0, 0, VIEWPORT.width, VIEWPORT.height);
+    if (g.roam.maze) this.drawMazeWalls(c, g.roam.maze, cam);
+    this.drawShrines(c, g, to);
     for (const actor of [g.p, ...(g.roam.followers || []), ...g.roam.field]) {
       const p = to(actor.x, actor.y);
       c.fillStyle = '#06141088'; c.beginPath(); c.ellipse(p.x, p.y, 32, 9, 0, 0, Math.PI*2); c.fill();
@@ -482,6 +492,65 @@ export class RoamView {
       c.restore();
     }
     if (this.debugCollision) paintCollisionDebug(c, cam);
+  }
+  /** Hedge walls: visible tiles painted with the act's blocker texture (flat
+   *  tone until it loads), a pale cap so the rows read as standing hedges. */
+  drawMazeWalls(c, maze, cam) {
+    const T = maze.tile;
+    const i0 = Math.max(0, Math.floor((cam.x - maze.ox) / T) - 1);
+    const i1 = Math.min(maze.tw - 1, Math.floor((cam.x + VIEWPORT.width - maze.ox) / T) + 1);
+    const j0 = Math.max(0, Math.floor((cam.y - maze.oy) / T) - 1);
+    const j1 = Math.min(maze.th - 1, Math.floor((cam.y + VIEWPORT.height - maze.oy) / T) + 1);
+    const pattern = this.wallPatternFor(c);
+    c.save();
+    c.translate(-cam.x, -cam.y);
+    for (let j = j0; j <= j1; j++)
+      for (let i = i0; i <= i1; i++) {
+        if (!maze.isWallTile(i, j)) continue;
+        const x = maze.ox + i * T, y = maze.oy + j * T;
+        c.fillStyle = pattern || "#2c4234";
+        c.fillRect(x, y, T, T);
+        c.fillStyle = "#41603f";
+        c.fillRect(x, y, T, 10);
+      }
+    c.restore();
+  }
+  /** Blocker-art pattern for the current act's hedges (loaded once). */
+  wallPatternFor(c) {
+    const blocker = roamScene(this.session?.act?.id).blocker;
+    if (this.wallPattern?.blocker === blocker) return this.wallPattern.pattern;
+    if (this.wallPattern?.loading === blocker) return null;
+    const entry = { blocker, loading: blocker, pattern: null };
+    this.wallPattern = entry;
+    const image = this.document.createElement("img");
+    image.onload = () => {
+      entry.pattern = c.createPattern(image, "repeat");
+      delete entry.loading;
+    };
+    image.src = `assets/${blocker}.png`;
+    return null;
+  }
+  /** Wayside shrines: a stone lantern whose light dies once the rest is used. */
+  drawShrines(c, g, to) {
+    for (const shrine of g.roam.shrines || []) {
+      const p = to(shrine.x, shrine.y);
+      if (p.x < -120 || p.x > VIEWPORT.width + 120 || p.y < -120 || p.y > VIEWPORT.height + 120) continue;
+      c.save();
+      c.globalAlpha = shrine.used ? 0.45 : 1;
+      if (!shrine.used) {
+        const glow = 26 + Math.sin(this.animTime * 3) * 6;
+        const grad = c.createRadialGradient(p.x, p.y - 36, 4, p.x, p.y - 36, glow);
+        grad.addColorStop(0, "#ffd98acc");
+        grad.addColorStop(1, "#ffd98a00");
+        c.fillStyle = grad;
+        c.beginPath(); c.arc(p.x, p.y - 36, glow, 0, Math.PI * 2); c.fill();
+      }
+      c.fillStyle = "#57584f";
+      c.fillRect(p.x - 14, p.y - 26, 28, 26);
+      c.fillStyle = shrine.used ? "#3f4038" : "#ffd98a";
+      c.fillRect(p.x - 9, p.y - 46, 18, 20);
+      c.restore();
+    }
   }
   /** Cached FRAME-00 sheet row for heroId, or null (legacy still). */
   sheetFor(heroId) {

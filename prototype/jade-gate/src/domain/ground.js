@@ -3,16 +3,17 @@ import { clamp } from './math.js';
 /** Fixed on-screen frame. World may be larger; roam-view scrolls via camera. */
 export const VIEWPORT = { width: 1280, height: 720 };
 
-/** Four forest stretches, retaining the newer south pocket. */
+/** Four forest stretches, retaining the newer south pocket. The world grew
+ *  taller for the maze passes: corridors now climb and descend as well. */
 export const MAZE_SEGMENT_WIDTH = 2560;
-export const WORLD = { width: MAZE_SEGMENT_WIDTH * 4, height: 1440 };
+export const WORLD = { width: MAZE_SEGMENT_WIDTH * 4, height: 3520 };
 
 // Feet-space across the enlarged world. Same courtyard trapezoid flare as the
 // original 1280×720 pass, stretched so the first screen stays walkable and the
 // hero (and PARTY followers) can roam past the old right/bottom edges.
 export const GROUND = {
-  top: 290,
-  bottom: 1350,
+  top: 160,
+  bottom: 3360,
   rearLeft: 280,
   rearRight: WORLD.width - 280,
   frontLeft: 135,
@@ -182,14 +183,15 @@ export const BLOCKERS = [
 ];
 
 /** Resolve feet against radius-expanded AABBs, sweeping X then Y to slide.
- * Supplying the previous point prevents even a long step tunnelling through.
- */
-export function resolveBlockers(x, y, radius = 18, from = { x, y }) {
+ *  Supplying the previous point prevents even a long step tunnelling through.
+ *  `walls` overrides the classic BLOCKERS (the maze passes inject their own);
+ *  classic passes and quick play keep the painted-stone layout. */
+export function resolveBlockers(x, y, radius = 18, from = { x, y }, walls = BLOCKERS) {
   const start = groundPoint(from.x, from.y);
   const target = groundPoint(x, y);
   let px = start.x, py = start.y;
   // Recover an overlapping starting point using the nearest free edge.
-  for (const b of BLOCKERS) {
+  for (const b of walls) {
     const left = b.x - radius, right = b.x + b.w + radius;
     const top = b.y - radius, bottom = b.y + b.h + radius;
     if (px > left && px < right && py > top && py < bottom) {
@@ -202,13 +204,13 @@ export function resolveBlockers(x, y, radius = 18, from = { x, y }) {
     }
   }
   let nextX = target.x;
-  for (const b of BLOCKERS) {
+  for (const b of walls) {
     if (py <= b.y-radius || py >= b.y+b.h+radius) continue;
     if (px <= b.x-radius && nextX > b.x-radius) nextX = b.x-radius;
     if (px >= b.x+b.w+radius && nextX < b.x+b.w+radius) nextX = b.x+b.w+radius;
   }
   let nextY = target.y;
-  for (const b of BLOCKERS) {
+  for (const b of walls) {
     if (nextX <= b.x-radius || nextX >= b.x+b.w+radius) continue;
     if (py <= b.y-radius && nextY > b.y-radius) nextY = b.y-radius;
     if (py >= b.y+b.h+radius && nextY < b.y+b.h+radius) nextY = b.y+b.h+radius;

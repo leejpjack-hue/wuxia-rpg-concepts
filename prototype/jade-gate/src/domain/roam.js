@@ -1,5 +1,5 @@
 import { distance } from './math.js';
-import { groundPoint, SPAWN_MARKERS, resolveBlockers, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
+import { groundPoint, SPAWN_MARKERS, resolveBlockers, BLOCKERS, GROUND, onGround, WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE } from './ground.js';
 export { WORLD, VIEWPORT, cameraFocus, smoothCamera, DEADZONE };
 import { FixedClock, seededRandom } from '../engine/clock.js';
 import { rosterForEncounter, DUEL_ENEMIES, HERO_TECHNIQUES, isEscortKind, isNamedRivalKind } from '../content/duels.js';
@@ -25,15 +25,20 @@ function openFieldPoint(anchor, index) {
 }
 
 /** Grounded exploration. Melee contact opens duels; archers fight in real time.
- *  Open-field mode (roster + areas + anchors) deploys every pass rival of an
- *  act at once on one persistent map, tagged by the area they hold. */
-export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, anchors } = {}) {
+ *  Open-field mode (roster + areas + anchors + maze) deploys every pass rival
+ *  of an act at once on one persistent maze map, tagged by the area they hold. */
+export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, anchors, maze, coreCount = rosterForEncounter(encounter?.id, g.runMode)?.length ?? 0 } = {}) {
   const roster = explicitRoster || rosterForEncounter(encounter?.id, g.runMode);
   if (!roster) throw new Error('This encounter has no arena rivals yet.');
   const openField = Array.isArray(areas) && areas.length === roster.length;
   const clock = new FixedClock(), pending = [];
   let serial = 0;
   const hazardRandom = seededRandom(7171 + g.encounterIndex * 37);
+  // Maze passes collide against the labyrinth walls; classic passes keep the
+  // painted-stone BLOCKERS. Slide helpers keep every actor out of the hedges.
+  const walls = maze ? maze.rects : BLOCKERS;
+  const slide = (actor, x, y, radius = 18) => resolveBlockers(x, y, radius, actor, walls);
+  const sight = (a, b) => !maze || maze.rayClear(a.x, a.y, b.x, b.y);
   /** CAM-09 markers + CAM-04 scroll: last (or sole) rival homes past the
    *  first 1280×720 screen; earlier rivals stay on near markers. */
   function spawnMarkerFor(index, count) {
@@ -54,6 +59,8 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     const def = DUEL_ENEMIES[kind];
     const escort = isEscortKind(kind);
     const area = openField ? areas[index] : null;
+    // The story-deployed core holds the camp; extra grunts are the ranks.
+    const core = openField ? index < coreCount : true;
     // Open-field groups spawn around their area anchor; classic passes use markers.
     const marker = !openField && !escort ? spawnMarkerFor(baseIndex++, base.length) : null;
     const anchor = openField ? anchors?.[area] : null;
@@ -65,7 +72,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     const damageScale = encounter.damageScale ?? (encounter.elite ? 1.15 : 1);
     return { ...def, hp: Math.round(def.hp*eliteScale), damage: Math.round(def.damage*damageScale),
       reward: Math.round(def.reward*(encounter.elite?1.5:1)), ...position, id: `${encounter.id}-field-${index}`, kind,
-      area, maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
+      area, core, maxHp: Math.round(def.hp*eliteScale), ranged: isRanged(kind), radius: 36,
       speed: def.boss ? 70 : 55+index*10,
       homeX: position.x, homeY: position.y, tx: position.x, ty: position.y,
       timer: 0, cooldown: 1.4+index*.4, windup: 0, aim: null,
@@ -91,11 +98,26 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       const ward = group.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
       if (ward) ringEscorts(ward, group.filter(enemy => isEscortKind(enemy.kind)));
     }
+    // The maze has the last word on deployment: any rival the hedges swallowed
+    // walks back toward its camp anchor until the lantern light frees it.
+    if (maze) {
+      for (const enemy of field) {
+        let guard = 0;
+        const anchor = anchors?.[enemy.area] || maze.start;
+        while (maze.blocked(enemy.x, enemy.y, 28) && guard++ < 12) {
+          enemy.x += (anchor.x - enemy.x) * 0.35;
+          enemy.y += (anchor.y - enemy.y) * 0.35;
+        }
+        if (maze.blocked(enemy.x, enemy.y, 28)) Object.assign(enemy, { x: anchor.x, y: anchor.y });
+        Object.assign(enemy, { homeX: enemy.x, homeY: enemy.y, tx: enemy.x, ty: enemy.y });
+      }
+    }
   } else {
     const ward = field.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
     if (ward) ringEscorts(ward, field.filter(enemy => isEscortKind(enemy.kind)));
   }
-  Object.assign(g.p, { x: 640, y: 500 });
+  const spawn = maze ? maze.start : { x: 640, y: 500 };
+  Object.assign(g.p, spawn);
   const partyFollowers = (g.party?.followers || []).map((id, index) => {
     const point = groundPoint(g.p.x - 48 * (index + 1), g.p.y + 12 * (index + 1));
     return { id, x: point.x, y: point.y, dx: g.p.dx || 1 };
@@ -110,7 +132,10 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     followers: partyFollowers, trail: seedTrail,
     strikeCD: 0, dodgeCD: 0, invulnerable: 0, dash: 0, facingX: 1, facingY: 0,
     sneaking: false, sneakMaster: g.p.id === 'nie-yinniang',
-    windTime: 0, windX: 0, pillarTimer: 3, pillar: null };
+    windTime: 0, windX: 0, pillarTimer: 3, pillar: null,
+    maze: maze || null,
+    // Wayside shrines restore a spent hero once each: health, Flow and nerve.
+    shrines: maze ? maze.shrines.map(shrine => ({ ...shrine, used: false })) : [] };
   const roam = g.roam;
   function effect(kind, x, y, text = '') {
     roam.effects.push({ id: ++serial, kind, x, y, text, life: .55 });
@@ -130,7 +155,8 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     if (action === 'technique' && g.p.flow < techniqueCost(g.p, g.curios)) return false;
     // Rattled heroes reach shorter on the pass until they rest.
     const range = (action === 'technique' ? 280 : 175) * (g.p.rattled ? 0.8 : 1);
-    const targets = field.filter(e => distance(e, g.p) < range);
+    // Hedges block a swing in the maze: no first blood through walls.
+    const targets = field.filter(e => distance(e, g.p) < range && sight(g.p, e));
     roam.strikeCD = action === 'technique' ? .8 : .38;
     if (action === 'technique') g.p.flow -= techniqueCost(g.p, g.curios);
     effect(action, g.p.x, g.p.y);
@@ -167,10 +193,16 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     const dx = enemy.tx-enemy.x, dy = enemy.ty-enemy.y, d = Math.hypot(dx,dy);
     if (d > 8) {
       const step = Math.min(d, enemy.speed*dt);
-      Object.assign(enemy, groundPoint(enemy.x+dx/d*step, enemy.y+dy/d*step));
+      Object.assign(enemy, slide(enemy, enemy.x+dx/d*step, enemy.y+dy/d*step, 20));
     }
     if (d <= 8 || enemy.timer <= 0) {
-      const point = groundPoint(enemy.homeX+(enemy.rng()*2-1)*180*(g.weather?.wanderScale || 1), enemy.homeY+(enemy.rng()*2-1)*100*(g.weather?.wanderScale || 1));
+      // Maze patrols pick a stroll the hedges actually allow.
+      let point = null;
+      for (let tries = 0; tries < 4 && !point; tries++) {
+        const candidate = groundPoint(enemy.homeX+(enemy.rng()*2-1)*180*(g.weather?.wanderScale || 1), enemy.homeY+(enemy.rng()*2-1)*100*(g.weather?.wanderScale || 1));
+        if (!maze || !maze.blocked(candidate.x, candidate.y, 26)) point = candidate;
+      }
+      if (!point) point = { x: enemy.homeX, y: enemy.homeY };
       enemy.tx = point.x; enemy.ty = point.y; enemy.timer = 1.2+enemy.rng()*1.6;
     }
   }
@@ -200,7 +232,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       // Intercepting guards outpace the hero so the line stays closed.
       const pace = engaged ? 335 : enemy.speed;
       const step = Math.min(md, pace*dt);
-      Object.assign(enemy, groundPoint(enemy.x+mx/md*step, enemy.y+my/md*step));
+      Object.assign(enemy, slide(enemy, enemy.x+mx/md*step, enemy.y+my/md*step, 20));
     }
   }
   function archer(enemy, dt) {
@@ -220,7 +252,10 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
         ? (roam.sneakMaster ? g.weather.sneakMasterAggo || 260 : g.weather.sneakAggro)
         : (roam.sneakMaster ? 300 : 420);
       const aggro = roam.sneaking ? sneakBase : Math.round(850 * (g.weather?.aggroMultiplier ?? 1));
-      if (enemy.cooldown <= 0 && distance(enemy,g.p)<aggro) {
+      // Volley budget: with tripled ranks, only a handful of arrows fly at
+      // once — a wall of simultaneous archers would shred any hero.
+      // In the maze an archer only draws when a clear line exists through the hedges.
+      if (enemy.cooldown <= 0 && roam.shots.length < 6 && distance(enemy,g.p)<aggro && sight(enemy, g.p)) {
         enemy.windup = .85; enemy.aim = {x:g.p.x,y:g.p.y};
         bus.emit('audio:sfx',{type:'enemy_windup'});
       }
@@ -247,15 +282,20 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
           roam.pillar = null;
         }
       } else if ((roam.pillarTimer -= dt) <= 0) {
-        roam.pillar = groundPoint(250 + hazardRandom() * (WORLD.width - 500), 375 + hazardRandom() * Math.min(400, GROUND.bottom - 450));
-        roam.pillar.time = 1.15;
+        // Stonefall roams the whole maze; never drops a pillar inside a hedge.
+        let point = null;
+        for (let tries = 0; tries < 4 && !point; tries++) {
+          const candidate = groundPoint(250 + hazardRandom() * (WORLD.width - 500), GROUND.top + 120 + hazardRandom() * (GROUND.bottom - GROUND.top - 240));
+          if (!maze || !maze.blocked(candidate.x, candidate.y, 40)) point = candidate;
+        }
+        if (point) roam.pillar = { ...point, time: 1.15 };
         roam.pillarTimer = 4.5 + hazardRandom() * 2;
-        bus.emit('audio:sfx', {type:'enemy_windup'});
+        bus.emit('audio:sfx',{type:'enemy_windup'});
       }
     }
     for (const item of roam.effects) item.life -= dt;
     roam.effects = roam.effects.filter(e => e.life>0);
-    Object.assign(g.p, resolveBlockers(g.p.x,g.p.y));
+    Object.assign(g.p, slide(g.p, g.p.x, g.p.y));
     const {dx=0,dy=0} = input || {}, len = Math.hypot(dx,dy);
     if (len) { roam.facingX=dx/len; roam.facingY=dy/len; }
     if (len || roam.dash>0) {
@@ -263,11 +303,11 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       const shallowsFactor = isRoamInShallows(encounter,g)
         ? (g.weather?.shallowsFactor ?? SHALLOWS_ROAM_SPEED_FACTOR) : 1;
       const speed = roam.dash>0 ? 720 : PLAYER_SPEED*sneakFactor*shallowsFactor;
-      Object.assign(g.p, resolveBlockers(g.p.x+(roam.facingX*speed+roam.windX)*dt,g.p.y+roam.facingY*speed*dt, 18, g.p));
+      Object.assign(g.p, slide(g.p, g.p.x+(roam.facingX*speed+roam.windX)*dt, g.p.y+roam.facingY*speed*dt));
       if (roam.facingX) g.p.dx=roam.facingX>0?1:-1;
     }
     if (!len && roam.dash <= 0 && roam.windX)
-      Object.assign(g.p, resolveBlockers(g.p.x + roam.windX * dt, g.p.y, 18, g.p));
+      Object.assign(g.p, slide(g.p, g.p.x + roam.windX * dt, g.p.y));
     g.p.moving = !!len;
     // WU-PARTY-04: denser trail + larger lag so followers ease along the path
     // instead of stacking on the lead or snapping across the courtyard.
@@ -288,7 +328,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
         // Pace toward the lagged point — never teleport; ease when close, catch up when far.
         const pace = dist > 220 ? PLAYER_SPEED * 1.05 : dist > 48 ? PLAYER_SPEED * 0.88 : PLAYER_SPEED * 0.55;
         const step = Math.min(dist, pace * dt);
-        Object.assign(follower, resolveBlockers(follower.x + (dx / dist) * step, follower.y + (dy / dist) * step, 18, follower));
+        Object.assign(follower, slide(follower, follower.x + (dx / dist) * step, follower.y + (dy / dist) * step));
       }
       // Soft separation from the prior party member so they do not stack.
       const prior = i === 0 ? g.p : roam.followers[i - 1];
@@ -296,13 +336,20 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       const sep = Math.hypot(sepX, sepY);
       if (sep > 0 && sep < 36) {
         const push = ((36 - sep) / 36) * PLAYER_SPEED * 0.35 * dt;
-        Object.assign(follower, resolveBlockers(follower.x + (sepX / sep) * push, follower.y + (sepY / sep) * push, 18, follower));
+        Object.assign(follower, slide(follower, follower.x + (sepX / sep) * push, follower.y + (sepY / sep) * push));
       }
       // WU-PARTY-07: cosmetic facing mirrors lead, not chase delta.
       follower.dx = g.p.dx;
     }
     for (const action of pending.splice(0)) {
       act(action); if (g.mode !== 'exploring') return;
+    }
+    // Wayside shrines: stepping to the lantern rests the party once per shrine.
+    for (const shrine of roam.shrines) {
+      if (shrine.used || distance(g.p, shrine) > 64) continue;
+      shrine.used = true;
+      effect('rest', shrine.x, shrine.y, 'REST');
+      bus.emit('roam:rest', { id: shrine.id });
     }
     for (const enemy of field) {
       if (isEscortKind(enemy.kind)) {
@@ -322,6 +369,8 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     for (const shot of roam.shots) {
       shot.vx += roam.windX * dt * .7;
       const before={x:shot.x,y:shot.y}; shot.x+=shot.vx*dt; shot.y+=shot.vy*dt; shot.life-=dt;
+      // Hedges stop arrows cold — corners are cover in the maze.
+      if (maze && maze.blocked(shot.x, shot.y, 8)) shot.life = 0;
       if (segmentDistance(g.p,before,shot)<26) {
         shot.life=0;
         if (!roam.invulnerable) {
