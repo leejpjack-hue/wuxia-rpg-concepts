@@ -381,6 +381,17 @@ export class GameView {
         );
         b.className = "upgrade";
       });
+    } else if (g.openField) {
+      // Open field: every rival is already deployed on the pass, so there are
+      // no nodes to march. This scene is a wayside stop — always exitable.
+      this.modal(
+        `ACT ${session.act.number} · ${this.t(session.act.name.toUpperCase())}`,
+        "Wayside on the open pass",
+        carried
+          ? `The pass stretches on. Carried curios: ${this.t(carried)}`
+          : "The pass stretches on. Rivals hold their ground ahead.",
+      );
+      this.button("Return to the pass", () => session.resumeOpenField(), { primary: true });
     } else {
       const rows = session.act.map.rows;
       const nodes = rows[map.row] || [];

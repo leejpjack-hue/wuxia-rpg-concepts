@@ -111,3 +111,34 @@ test("cleared areas persist through a checkpoint save and continue", () => {
   assert(!resumed.g.roam.field.some((rival) => rival.area === "vanguard"));
   assert(resumed.g.roam.field.some((rival) => rival.area === "warden"));
 });
+
+test("resolving an elite offer on the live map scene notifies the view (no stuck judgement)", () => {
+  const game = storySession();
+  // gate-vanguard is the Act I elite: its leader's fall opens the judgement
+  // plus a curio draft on the map scene.
+  const eliteLeader = game.g.roam.field.find(
+    (rival) => isLeader(rival.kind) && rival.area === "gate-vanguard");
+  assert(eliteLeader, "the elite area has a leader");
+  assert(game.beginDuel(game.g.roam.field.indexOf(eliteLeader)));
+  winDuel(game);
+  assert.equal(game.mode, "map");
+  assert(game.g.map.judgement, "the elite faces the judgement");
+  assert(game.g.map.pendingCurios.length >= 1, "the elite recovers a curio draft");
+  // Regression: with the map scene already up, resolving one offer must emit
+  // state:changed, or the browser keeps showing the resolved judgement modal
+  // and every further click no-ops (the reported stuck screen).
+  let renders = 0;
+  const off = game.bus.on("state:changed", (event) => {
+    if (event.current === "map") renders++;
+  });
+  game.resolveJudgement(true);
+  assert.equal(game.g.map.judgement, null);
+  assert.equal(renders, 1, "the view re-renders to show the curio draft");
+  // The whole offer chain still walks: curio → discipline → back to the pass.
+  game.chooseCurio(game.g.map.pendingCurios[0]);
+  assert.equal(game.mode, "upgrade");
+  game.chooseDiscipline("power");
+  assert.equal(game.mode, "exploring");
+  assert(game.g.openField.cleared.includes("gate-vanguard"));
+  off();
+});

@@ -76,6 +76,9 @@ export const messages = {
   'Mastered': '皆伝', 'The journey': '旅路',
   // Branching pass map and curios.
   'The pass forks ahead': '峠が分かれている', 'Choose your next step along the pass.': 'この先の道を選びましょう。',
+  'Wayside on the open pass': '開かれた峠の道端', 'Return to the pass': '峠へ戻る',
+  'The pass stretches on. Rivals hold their ground ahead.': '峠は続いている。先には敵たちが構えている。',
+  'The pass stretches on. Carried curios: {curios}': '峠は続いている。携えた品：{curios}',
   'A curio recovered': '奇妙な品を手に入れた',
   'The fallen carried curios. Choose one to carry for the rest of the run.': '倒した敵が奇妙な品を携えていた。ひとつを選び、旅の終わりまで携えよう。',
   'A sealed box from the wayside. Take the curio within.': '道端で拾った封をした箱。中の品を取り出す。',
@@ -197,6 +200,7 @@ export const messages = {
   '{follower} answers the {oath} ({cn}): {n} damage, +{flow} Flow.': '{follower}が{oath}（{cn}）に応じる：{n}ダメージ、気＋{flow}。',
   // Judgement.
   'Spare or finish': '助けるか、止めを刺すか', 'Spare — the people will remember': '見逃す——民は忘れない', 'Finish — the Banner nods': '止め——灰旗軍が頷く',
+  'Finish — the Banner nods (+{count} Renown)': '止め——灰旗軍が頷く（+{count}名声）',
   '{name} kneels among the fallen. Your call is remembered.': '{name}が倒れた者たちの中で膝をついている。お前の裁定は記憶される。',
   '{name} slips into the mists — and into your roster.': '{name}は霧の中へ消え——そして仲間に加わる。',
   '{name} limps away. The people will remember.': '{name}は足を引きずり去る。民は忘れない。',

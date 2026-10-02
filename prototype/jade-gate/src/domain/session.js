@@ -374,7 +374,13 @@ export class GameSession {
       if (this.mode !== "map") {
         this.checkpoint("map");
         this.transition("map");
-      }
+      } else
+        // An offer settled while the map scene was already up (judgement →
+        // curio draft); re-render so the next offer replaces the resolved one.
+        this.bus.emit("state:changed", {
+          previous: "map", current: "map", boss: false, dialogueKey: null, stage: "map",
+          runMode: this.g.runMode, actId: this.g.actId, encounterIndex: this.g.encounterIndex,
+        });
       return true;
     }
     if (map.row >= rows.length) return false;
