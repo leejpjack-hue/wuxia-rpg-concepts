@@ -32,6 +32,16 @@ export function loadSheetManifest(manifestRows, heroId) {
   return row;
 }
 
+/** A reviewed walk-only 2×2 atlas takes precedence over the legacy action sheet. */
+export function loadRoamSheetManifest(manifestRows, heroId) {
+  const walk = manifestRows?.find(row => row.id === `${heroId}-walk` && row.runtimeApproved === true);
+  const frames = walk?.anims?.walk?.frames;
+  const filesValid = !walk?.frameFiles || (Array.isArray(walk.frameFiles) && walk.frameFiles.length === 4 && walk.frameFiles.every(file => typeof file === 'string' && file.length > 0));
+  if (walk?.file && filesValid && Array.isArray(frames) && frames.length === 4 &&
+    frames.every(cell => Array.isArray(cell) && cell.length === 2 && cell.every(n => Number.isInteger(n) && n >= 0 && n < 2))) return walk;
+  return loadSheetManifest(manifestRows, heroId);
+}
+
 /** Load the sibling PNG through AssetStore; missing art keeps legacy stills. */
 export async function loadSheet(assetStore, manifestRows, heroId) {
   const sheet = loadSheetManifest(manifestRows, heroId);
@@ -91,6 +101,9 @@ export function applySheetFrame(node, sheet, cell) {
   if (!node || !sheet?.file || !cell) return false;
   const { cols, rows } = sheetGrid(sheet);
   const { col, row } = cell;
+  if (!Number.isInteger(col) || !Number.isInteger(row) || col < 0 || row < 0 || col >= cols || row >= rows) return false;
+  const file = sheet.frameFiles ? sheet.frameFiles[row * cols + col] : sheet.file;
+  if (!file) return false;
   node.classList?.add?.("sheet-anim");
   const current = getSrc(node);
   if (current && !current.startsWith("data:") && node.dataset) {
@@ -99,10 +112,11 @@ export function applySheetFrame(node, sheet, cell) {
   if (getSrc(node) !== TRANSPARENT_PIXEL) setSrc(node, TRANSPARENT_PIXEL);
   const x = cols <= 1 ? 0 : (col / (cols - 1)) * 100;
   const y = rows <= 1 ? 0 : (row / (rows - 1)) * 100;
-  node.style.backgroundImage = `url("${sheet.file}")`;
+  node.style.backgroundImage = `url("${file}")`;
   node.style.backgroundRepeat = "no-repeat";
-  node.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
-  node.style.backgroundPosition = `${x}% ${y}%`;
+  // Separate supplied PNGs already contain one complete frame; do not crop them as an atlas.
+  node.style.backgroundSize = sheet.frameFiles ? "100% 100%" : `${cols * 100}% ${rows * 100}%`;
+  node.style.backgroundPosition = sheet.frameFiles ? "0% 0%" : `${x}% ${y}%`;
   return true;
 }
 

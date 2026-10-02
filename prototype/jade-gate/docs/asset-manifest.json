@@ -88,6 +88,14 @@
     "file": "assets/zhao-yun-duel-poses.png",
     "method": "built-in image_gen \u00b7 Codex gpt-6.1-sol high \u00b7 2026-10-01 duel-action batch",
     "prompt": "Use case: identity-preserve. Asset type: production animation atlas for a wuxia card-duel cinematic. Reference image: approved Zhao Yun sprite, identity/costume/weapon reference only. Create ONE square transparent PNG divided into exactly 2 columns and 2 rows of equal square cells, four poses of this SAME adult character. Each cell is an independent full-body sprite facing RIGHT, identical body scale and lighting, body centered within its cell, feet at 90 percent of cell height. Reserve clear padding on every edge of EVERY CELL: complete hair, boots and entire weapon remain inside each cell with no overlap across the center lines. Preserve the reference face, age, build, hairstyle, costume, colors, armor, weapon design and number of weapons. Change the articulated arm, torso, knee and weapon pose substantially: top-left = coil the spear across the chest; top-right = drive a long straight spear thrust to the right; bottom-left = crouch with spear drawn behind the shoulder, robe coiling; bottom-right = explosive full-body dragon spear lunge to the right, ivory robe sweeping back. The bottom row is the cinematic special attack: clearly more powerful and dynamic body poses than the top row, NOT just glow applied to the same standing pose. Premium crisp painterly wuxia game rendering matching the reference. Square grid, four isolated cutouts, genuinely transparent alpha throughout empty space. No text, labels, grid lines, frames, floor, shadows, scenic background, particles, detached weapons, extra limbs or cropped weapons. This is a functional 2x2 sprite atlas, not a montage.",
+    "atlasSize": [1254, 1254],
+    "poseRects": {
+      "windup": [40, 15, 512, 612],
+      "strike": [550, 15, 704, 612],
+      "focus": [40, 15, 512, 612],
+      "special": [550, 15, 704, 612]
+    },
+    "reviewNote": "Both bottom-row figures overlap and are excluded. Reuse the two complete top-row poses for focus/special with technique choreography until replacement artwork is generated.",
     "runtimeApproved": true,
     "contract": {
       "minWidth": 1024,
@@ -1491,6 +1499,105 @@
     "method": "built-in image_gen",
     "prompt": "Use case: stylized-concept. Asset type: single square RGBA gameplay sprite, at least 1024x1024, true transparent alpha background. The adult male Ashen Sovereign boss in blood-moon imperial regalia, black jade and crimson armor, restrained golden crown, sword and halberd weapon forms hinted in a compact back-mounted harness, imposing calm stance, one main long straight sword. Full body facing RIGHT in a compact ready stance, feet aligned at 90 percent height, silhouette and weapons entirely inside 8 percent safe margins. Painterly polished realistic wuxia cutout, slightly raised three-quarter viewpoint, readable at 140px tall. No floor, no painted shadow, no scenery, no text, no watermark, no multiple figures.",
     "expansion": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "zhao-yun-walk",
+    "file": "assets/zhao-yun-walk.png",
+    "role": "walk-frame",
+    "method": "User-generated ChatGPT image supplied 2026-10-02; original PNG copied unchanged",
+    "source": "ChatGPT Image 2 Oct 2026, 22_38_24-1.png",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "frameFiles": [
+      "assets/zhao-yun-walk.png",
+      "assets/zhao-yun-walk-02.png",
+      "assets/zhao-yun-walk-03.png",
+      "assets/zhao-yun-walk-04.png"
+    ],
+    "anims": {
+      "walk": {
+        "frames": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "fps": 8,
+        "loop": true
+      }
+    }
+  },
+  {
+    "id": "zhao-yun-walk-02",
+    "file": "assets/zhao-yun-walk-02.png",
+    "role": "walk-frame",
+    "method": "User-generated ChatGPT image supplied 2026-10-02; original PNG copied unchanged",
+    "source": "ChatGPT Image 2 Oct 2026, 22_38_34-2.png",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "zhao-yun-walk-03",
+    "file": "assets/zhao-yun-walk-03.png",
+    "role": "walk-frame",
+    "method": "User-generated ChatGPT image supplied 2026-10-02; original PNG copied unchanged",
+    "source": "ChatGPT Image 2 Oct 2026, 22_38_39-3.png",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "zhao-yun-walk-04",
+    "file": "assets/zhao-yun-walk-04.png",
+    "role": "walk-frame",
+    "method": "User-generated ChatGPT image supplied 2026-10-02; original PNG copied unchanged",
+    "source": "ChatGPT Image 2 Oct 2026, 22_38_43-4.png",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "granite-pine-blocker",
+    "file": "assets/granite-pine-blocker.png",
+    "method": "User-generated ChatGPT image supplied 2026-10-02; original PNG copied unchanged",
+    "source": "ChatGPT Image 2 Oct 2026, 22_27_42.png",
+    "runtimeApproved": true,
     "contract": {
       "minWidth": 1024,
       "minHeight": 1024,

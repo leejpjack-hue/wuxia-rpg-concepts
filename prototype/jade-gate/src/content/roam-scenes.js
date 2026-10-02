@@ -7,14 +7,16 @@ export const ROAM_SCENES = {
   },
   "bamboo-crossing": {
     art: "bamboo-crossing-ground", blocker: "bamboo-thicket-blocker",
+    blockerFilter: "brightness(.52) saturate(.65) hue-rotate(16deg)",
     tileWidth: 5120, artHeight: 2880, topCrop: 350,
   },
   "mount-canglan": {
-    art: "canglan-terrace-ground", blocker: "bamboo-thicket-blocker",
+    art: "canglan-terrace-ground", blocker: "granite-pine-blocker",
     tileWidth: 4096, artHeight: 2880, topCrop: 300,
   },
   "meridian-citadel": {
-    art: "meridian-citadel", blocker: "bamboo-thicket-blocker",
+    art: "meridian-citadel", blocker: "granite-pine-blocker",
+    blockerFilter: "brightness(.78) saturate(.75)",
     tileWidth: 4096, artHeight: 2880, topCrop: 550,
   },
 };

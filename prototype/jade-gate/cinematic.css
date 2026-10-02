@@ -14,7 +14,7 @@
 .film-actor { position:absolute; bottom:19%; height:66%; width:42%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 8px #0008); transition:transform .32s cubic-bezier(.12,.8,.25,1),filter .2s,opacity .3s; }
 .film-actor.sheet-anim { object-fit:fill; }
 /* Square atlas cells must stay square at wide and narrow duel sizes. */
-.film-actor.duel-pose { width:min(42cqw, 66cqh); height:auto; aspect-ratio:1; }
+.film-actor.duel-pose { height:min(42cqw, 66cqh); width:auto; aspect-ratio:1; }
 .film-hero { left:4%; transform:translateX(-8%); }
 .film-enemy { right:4%; transform:scaleX(-1); }
 [data-phase=strike] .film-hero { transform:translateX(65%) rotate(-9deg); }

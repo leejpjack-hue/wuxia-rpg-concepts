@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>Character and maze art review</title><link rel="stylesheet" href="roam.css"><style>
+body{background:#0b1414;color:#eee;margin:20px;font:16px system-ui}main{max-width:1280px;margin:auto}label{display:inline-flex;align-items:center;gap:8px;margin:10px}button,select{padding:9px;background:#20332f;color:#eee;border:1px solid #857a58;border-radius:5px}#roam-arena{aspect-ratio:16/9;width:100%}#roam-effects{z-index:1}#roam-hero{z-index:2!important;height:27%;pointer-events:none}.note{color:#d8c995}
+</style></head><body><main><h1>Character and maze art review</h1><p class="note">Real exploration renderer: whole maze props and act lighting. Zhao Yun uses your four supplied walking frames. Mountain/citadel blockers use your granite-and-pine cutout.</p><label>Act <select id="act"><option value="jade-gate">Stage I · Bamboo forest</option><option value="bamboo-crossing">Stage II · Moonlit crossing</option><option value="mount-canglan">Stage III · Mountain terrace</option><option value="meridian-citadel">Stage IV · Citadel</option></select></label><label>Hero <select id="actor"><option value="zhao-yun">Zhao Yun</option><option value="lu-zhishen">Lu Zhishen</option></select></label><button id="walk">Walk</button><button id="still">Stand</button><label>Frame <select id="frame"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></label><label>Camera <select id="camera"><option value="start">Start</option><option value="middle">Middle</option></select></label><div id="roam-arena" class="roam-stage"><canvas id="roam-effects" width="1280" height="720"></canvas><img id="roam-hero" src="assets/zhao-yun-sprite.png" alt="Hero"></div><p><a href="./" style="color:#d8c995">Play the game</a> · <a href="capscreens-duel-action-poses/preview.html" style="color:#d8c995">Card action review</a></p>
+<script type="module">
+import {RoamView} from './src/presentation/roam-view.js';
+import {generateMaze} from './src/domain/maze.js';
+import manifest from './docs/asset-manifest.json' with {type:'json'};
+const $=id=>document.getElementById(id), maze=generateMaze(42);
+const view=Object.create(RoamView.prototype);view.document=document;view.$=$;view.session={act:{id:'jade-gate'}};view.manifest=manifest;view.sheetByHero=new Map();view.wallImages=new Map();
+let moving=false, clock=0, frozen=null;
+function draw(t){clock=t/1000;view.animTime=frozen===null?clock:frozen/8;
+ const hero=$('roam-hero'),id=$('actor').value;
+ const cam=$('camera').value==='start'?{x:maze.start.x-420,y:maze.start.y-430}:{x:4000,y:1300};
+ view.session.act.id=$('act').value;view.applyCamera(cam);
+ const c=$('roam-effects').getContext('2d');c.clearRect(0,0,1280,720);view.drawMazeWalls(c,maze,cam);
+ hero.style.left='33%';hero.style.top='60%';view.applyActorSheet(hero,id,moving);
+ requestAnimationFrame(draw);
+}
+$('walk').onclick=()=>{moving=true;frozen=null};$('still').onclick=()=>{moving=false;frozen=null};$('frame').onchange=()=>{moving=true;frozen=Number($('frame').value)};
+$('actor').onchange=()=>{const hero=$('roam-hero');hero.dataset.stillSrc=`assets/${$('actor').value}-sprite.png`;hero.src=hero.dataset.stillSrc};
+requestAnimationFrame(draw);
+</script></main></body></html>
