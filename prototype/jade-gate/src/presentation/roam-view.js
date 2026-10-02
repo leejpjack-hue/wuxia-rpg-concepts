@@ -4,6 +4,7 @@ import { curioById, techniqueCost } from "../content/curios.js";
 import { WEATHERS, oathFor } from "../content/expansion.js";
 import { SPAWN_MARKERS, VIEWPORT, WORLD, smoothCamera, worldToScreen } from "../domain/ground.js";
 import { roamScene } from "../content/roam-scenes.js";
+import { paintMazeWalls } from "./maze-wall-art.js";
 import { BLOCKER_ART } from "./blocker-art.js";
 import { routeMapModel, paintRouteMap } from "./route-map.js";
 import { isCollisionDebugOn, paintCollisionDebug } from "./collision-debug.js";
@@ -11,7 +12,7 @@ import { expansionArtAvailable } from "../content/expansion-art.js";
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 // FRAME-02 stub — Codex replaces via #19; see src/platform/sheet-anim.js header.
 import {
-  loadSheetManifest,
+  loadRoamSheetManifest,
   sampleAnim,
   applySheetFrame,
   clearSheetFrame,
@@ -41,7 +42,7 @@ export class RoamView {
     this.context = this.$("roam-effects")?.getContext("2d");
     this.sprites = new Map();
     this.followers = new Map();
-    this.wallPattern = null;
+    this.wallImages = new Map();
     this.blockerArt = BLOCKER_ART.map(prop => {
       const node = document.createElement("div");
       node.className = "roam-thicket";
@@ -165,6 +166,10 @@ export class RoamView {
       arena.dataset.scene = this.session?.act?.id || "jade-gate";
       arena.style.backgroundImage = `url("${file}")`;
       arena.style.setProperty?.("--blocker-art", `url("assets/${scene.blocker}.png")`);
+      arena.style.setProperty?.("--blocker-filter", scene.blockerFilter || "none");
+      arena.style.setProperty?.("--blocker-size", scene.blockerCrop ? `${100 / scene.blockerCrop[2]}% ${100 / scene.blockerCrop[3]}%` : "contain");
+      arena.style.setProperty?.("--blocker-position", scene.blockerCrop ? "0% 0%" : "center");
+      arena.style.setProperty?.("--blocker-clip", scene.blockerCrop ? "polygon(8% 32%,19% 12%,43% 4%,68% 10%,90% 29%,96% 63%,82% 89%,51% 97%,18% 84%,3% 60%)" : "none");
     }
     const px = cam.x / (scene.tileWidth - VIEWPORT.width) * 100;
     const py = (cam.y + scene.topCrop) / (scene.artHeight - VIEWPORT.height) * 100;
@@ -493,42 +498,22 @@ export class RoamView {
     }
     if (this.debugCollision) paintCollisionDebug(c, cam);
   }
-  /** Hedge walls: visible tiles painted with the act's blocker texture (flat
-   *  tone until it loads), a pale cap so the rows read as standing hedges. */
+  /** Stamp whole cutouts at world scale. Upright props are not repeating floor textures. */
   drawMazeWalls(c, maze, cam) {
-    const T = maze.tile;
-    const i0 = Math.max(0, Math.floor((cam.x - maze.ox) / T) - 1);
-    const i1 = Math.min(maze.tw - 1, Math.floor((cam.x + VIEWPORT.width - maze.ox) / T) + 1);
-    const j0 = Math.max(0, Math.floor((cam.y - maze.oy) / T) - 1);
-    const j1 = Math.min(maze.th - 1, Math.floor((cam.y + VIEWPORT.height - maze.oy) / T) + 1);
-    const pattern = this.wallPatternFor(c);
-    c.save();
-    c.translate(-cam.x, -cam.y);
-    for (let j = j0; j <= j1; j++)
-      for (let i = i0; i <= i1; i++) {
-        if (!maze.isWallTile(i, j)) continue;
-        const x = maze.ox + i * T, y = maze.oy + j * T;
-        c.fillStyle = pattern || "#2c4234";
-        c.fillRect(x, y, T, T);
-        c.fillStyle = "#41603f";
-        c.fillRect(x, y, T, 10);
-      }
-    c.restore();
+    const scene = roamScene(this.session?.act?.id);
+    const image = this.wallImageFor(scene.blocker);
+    paintMazeWalls(c, maze, cam, image, scene.blockerFilter, scene.blockerCrop);
   }
-  /** Blocker-art pattern for the current act's hedges (loaded once). */
-  wallPatternFor(c) {
-    const blocker = roamScene(this.session?.act?.id).blocker;
-    if (this.wallPattern?.blocker === blocker) return this.wallPattern.pattern;
-    if (this.wallPattern?.loading === blocker) return null;
-    const entry = { blocker, loading: blocker, pattern: null };
-    this.wallPattern = entry;
-    const image = this.document.createElement("img");
-    image.onload = () => {
-      entry.pattern = c.createPattern(image, "repeat");
-      delete entry.loading;
-    };
-    image.src = `assets/${blocker}.png`;
-    return null;
+  wallImageFor(blocker) {
+    if (!this.wallImages) this.wallImages = new Map();
+    if (!this.wallImages.has(blocker)) {
+      const image = this.document.createElement("img");
+      const entry = { image: null };
+      this.wallImages.set(blocker, entry);
+      image.onload = () => { entry.image = image; };
+      image.src = `assets/${blocker}.png`;
+    }
+    return this.wallImages.get(blocker).image;
   }
   /** Wayside shrines: a stone lantern whose light dies once the rest is used. */
   drawShrines(c, g, to) {
@@ -555,7 +540,7 @@ export class RoamView {
   /** Cached FRAME-00 sheet row for heroId, or null (legacy still). */
   sheetFor(heroId) {
     if (this.sheetByHero.has(heroId)) return this.sheetByHero.get(heroId);
-    const sheet = loadSheetManifest(this.manifest, heroId);
+    const sheet = loadRoamSheetManifest(this.manifest, heroId);
     this.sheetByHero.set(heroId, sheet);
     return sheet;
   }
@@ -573,8 +558,8 @@ export class RoamView {
    */
   applyActorSheet(node, heroId, moving) {
     if (!node) return;
-    node.classList?.toggle?.("original-walk", ["zhao-yun", "hu-sanniang"].includes(heroId) && moving);
     const sheet = this.sheetFor(heroId);
+    node.classList?.toggle?.("original-walk", !sheet && ["zhao-yun", "hu-sanniang"].includes(heroId) && moving);
     if (!sheet?.anims) {
       clearSheetFrame(node);
       return;
@@ -586,6 +571,7 @@ export class RoamView {
       return;
     }
     // Standing: frozen still — first idle cell or [0,0]; never advance idle loop.
+    if (!sheet.anims.idle) { clearSheetFrame(node); return; }
     const first = sheet.anims.idle?.frames?.[0];
     const still = first?.length >= 2 ? { col: first[0], row: first[1] } : { col: 0, row: 0 };
     applySheetFrame(node, sheet, still);

@@ -120,13 +120,13 @@ See [DUEL-ACTION-ASSETS.md](DUEL-ACTION-ASSETS.md) for the character pose list, 
 
 ## 9. Hedge maze pass (open field)
 
-Shipped with procedural painting (blocker-texture wall tiles on the effects
-canvas, flat tone fallback). All of the below are wanted replacements:
+Shipped with whole transparent bamboo and granite/pine props on the effects
+canvas, with act-specific lighting. Optional future assets:
 
 - `assets/maze-wall-{act}.png` — one tileable wall texture per act (jade-gate
   bamboo hedge, bamboo-crossing river reed, mount-canglan terrace stone,
   meridian-citadel imperial wall). Square, tileable on all edges; drawn at
-  320×320 world units per tile. Replaces the current blocker-texture pattern.
+  320×320 world units per tile. Would require a separate texture-rendering path; do not replace the current whole-prop assets with an opaque tile.
 - `assets/shrine-lantern.png` — wayside shrine sprite (lit and extinguished
   variants, or one sprite + dimming handled in code). Stone lantern with a
   warm amber glow, transparent square ≥512. Currently drawn procedurally on
@@ -137,3 +137,7 @@ canvas, flat tone fallback). All of the below are wanted replacements:
 ### Notes
 - The maze layout itself is seeded per run (runId + act) and regenerates
   identically from checkpoints; only the wall/shrine art is a drop-in concern.
+
+### 2026-10-02 art correction follow-up
+
+See [ART-CORRECTIONS.md](ART-CORRECTIONS.md) for Zhao Yun's accepted card crop correction and the user-supplied artwork. Four separate walking PNGs are now integrated as the reviewed `zhao-yun-walk` sequence. The transparent `granite-pine-blocker` is used in Stages III/IV. The original damaged action sheet remains disabled; replacement card artwork is deferred at the user's request.

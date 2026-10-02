@@ -194,3 +194,40 @@ test("drawAnimFrame no-ops on missing animation, image or sheet", () => {
   assert.equal(drawAnimFrame(ctx, null, FRAME00, "walk", 0), false);
   assert.equal(drawAnimFrame(ctx, {}, null, "walk", 0), false);
 });
+
+test('reviewed walk-only atlas cycles four cells while preserving the original standing sprite', async () => {
+ const {loadRoamSheetManifest}=await import('../src/platform/sheet-anim.js');
+ const {RoamView}=await import('../src/presentation/roam-view.js');
+ const row={id:'zhao-yun-walk',file:'assets/zhao-yun-walk-v2.png',runtimeApproved:true,
+  anims:{walk:{frames:[[0,0],[1,0],[0,1],[1,1]],fps:8,loop:true}}};
+ const names=new Set(),node={src:'assets/zhao-yun-sprite.png',dataset:{},style:{},classList:{add:n=>names.add(n),remove:n=>names.delete(n),toggle:(n,on)=>on?names.add(n):names.delete(n)}};
+ const view=Object.create(RoamView.prototype);view.manifest=[row];view.sheetByHero=new Map();
+ for(const [i,pos] of ['0% 0%','100% 0%','0% 100%','100% 100%'].entries()){
+  view.animTime=i/8;view.applyActorSheet(node,'zhao-yun',true);
+  assert.equal(node.style.backgroundPosition,pos);
+  assert.equal(node.style.backgroundSize,'200% 200%');
+ }
+ view.applyActorSheet(node,'zhao-yun',false);
+ assert.equal(node.src,'assets/zhao-yun-sprite.png');assert.equal(names.has('sheet-anim'),false);
+ assert.equal(loadRoamSheetManifest([{...row,runtimeApproved:false}],'zhao-yun'),null);
+});
+
+test('supplied Zhao Yun walking PNGs cycle whole images and restore the original standing sprite', async () => {
+ const {loadRoamSheetManifest}=await import('../src/platform/sheet-anim.js');
+ const {RoamView}=await import('../src/presentation/roam-view.js');
+ const row=loadRoamSheetManifest(assetManifest,'zhao-yun');
+ assert.equal(row.frameFiles.length,4);
+ const names=new Set(),node={src:'assets/zhao-yun-sprite.png',dataset:{},style:{},classList:{add:n=>names.add(n),remove:n=>names.delete(n),toggle:(n,on)=>on?names.add(n):names.delete(n)}};
+ const view=Object.create(RoamView.prototype);view.manifest=assetManifest;view.sheetByHero=new Map();
+ for(let i=0;i<4;i++){
+  view.animTime=i/row.anims.walk.fps;view.applyActorSheet(node,'zhao-yun',true);
+  assert.equal(node.style.backgroundImage,`url("${row.frameFiles[i]}")`);
+  assert.equal(node.style.backgroundSize,'100% 100%');
+  assert.equal(node.style.backgroundPosition,'0% 0%');
+ }
+ view.animTime=4/row.anims.walk.fps;view.applyActorSheet(node,'zhao-yun',true);
+ assert.equal(node.style.backgroundImage,`url("${row.frameFiles[0]}")`);
+ view.applyActorSheet(node,'zhao-yun',false);
+ assert.equal(node.src,'assets/zhao-yun-sprite.png');assert.equal(names.has('sheet-anim'),false);
+ assert.equal(loadRoamSheetManifest([{...row,frameFiles:row.frameFiles.slice(0,3)}],'zhao-yun'),null);
+});

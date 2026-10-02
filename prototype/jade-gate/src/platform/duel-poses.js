@@ -13,11 +13,27 @@ export function loadDuelPoses(manifest, fighterId) {
   const legacy = row.id.endsWith('-sheet');
   if (!Object.keys(DUEL_POSE_CELLS).every(key => Array.isArray(cells[key]) &&
     cells[key].length === 2 && cells[key].every((n, axis) => Number.isInteger(n) && n >= 0 && n < (legacy ? [4, 3][axis] : 2)))) return null;
+  if (row.poseRects && (!Array.isArray(row.atlasSize) || !row.atlasSize.every(n => Number.isInteger(n) && n > 0) || row.atlasSize.length !== 2 ||
+    !Object.keys(DUEL_POSE_CELLS).every(key => {
+      const r = row.poseRects[key];
+      return Array.isArray(r) && r.length === 4 && r.every(Number.isInteger) && r[0] >= 0 && r[1] >= 0 && r[2] > 0 && r[3] > 0 &&
+        r[0] + r[2] <= row.atlasSize[0] && r[1] + r[3] <= row.atlasSize[1];
+    }))) return null;
   return { ...row, anims: legacy ? row.anims : { poses: { frames: Object.values(cells) } } };
 }
 
 export function applyDuelPose(node, atlas, pose) {
-  if (!atlas || !applySheetFrame(node, atlas, atlas.duelPoses[pose])) return false;
+  const cell = atlas?.duelPoses?.[pose];
+  if (!cell || !applySheetFrame(node, atlas, { col: cell[0], row: cell[1] })) return false;
+  const rect = atlas.poseRects?.[pose];
+  node.style.aspectRatio = '';
+  if (rect) {
+    const [x, y, w, h] = rect, [aw, ah] = atlas.atlasSize;
+    // Reviewed pixel bounds isolate irregularly laid-out art without touching the source PNG.
+    node.style.backgroundSize = `${aw / w * 100}% ${ah / h * 100}%`;
+    node.style.backgroundPosition = `${aw === w ? 0 : x / (aw - w) * 100}% ${ah === h ? 0 : y / (ah - h) * 100}%`;
+    node.style.aspectRatio = `${w} / ${h}`;
+  }
   node.classList.add('duel-pose');
   node.dataset.duelPose = pose;
   return true;
@@ -25,6 +41,7 @@ export function applyDuelPose(node, atlas, pose) {
 
 export function clearDuelPose(node) {
   clearSheetFrame(node);
+  if (node?.style) node.style.aspectRatio = '';
   node?.classList?.remove('duel-pose');
   if (node?.dataset) delete node.dataset.duelPose;
 }

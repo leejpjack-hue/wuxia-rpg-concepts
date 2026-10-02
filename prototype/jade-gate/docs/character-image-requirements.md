@@ -108,3 +108,9 @@ If the sheet uses 256² cells, set `frameW`/`frameH` to `256`. Roam **must** rea
 ## Card-only cinematic poses
 
 Card duels additionally support `<hero-id>-duel-poses.png`, an approved 2×2 RGBA atlas with wind-up, strike, focus and special cells. This is separate from the 4×3 walking sheet. The exact contract, failed generation list and saved prompts are in [DUEL-ACTION-ASSETS.md](DUEL-ACTION-ASSETS.md). Keep the original walking art and costume-specific boss identity intact. Only reviewed images receive `runtimeApproved: true`.
+
+### Reviewed irregular atlases and walk-only artwork
+
+Card artwork whose figures do not fit equal cells can supply `atlasSize: [actualWidth,actualHeight]` and four `poseRects` values `[x,y,width,height]`. Bounds must isolate complete figures without including a neighboring figure. Overlapping figures cannot be rescued with a larger crop; exclude them and record the fallback in `reviewNote`. The renderer keeps source proportions.
+
+A separate reviewed `<hero-id>-walk` record may contain only `anims.walk` with four coordinates in reading order `[[0,0],[1,0],[0,1],[1,1]]`. Supply either a cell-safe 2×2 atlas or a `frameFiles` array of four separate full-frame PNG paths. Separate PNGs display whole, without cropping; all four must have matching square RGBA canvas dimensions, character scale, feet baseline, facing, costume, and weapon grip. Register each PNG as a reviewed `role:"walk-frame"` asset so it preloads. Roaming prefers this record over the legacy `<hero-id>-sheet`, requires `runtimeApproved:true`, and restores the existing standing sprite when movement stops. See [ART-CORRECTIONS.md](ART-CORRECTIONS.md) for Zhao Yun's supplied sequence and provenance.

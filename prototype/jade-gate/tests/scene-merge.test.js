@@ -92,19 +92,27 @@ test("route map follows the hero and remaining enemies without changing encounte
   assert.equal(next.rivals.length, 1);
 });
 
-test("restored character approval keeps clean Zhao Yun and Hu Sanniang sprites while walking", () => {
+test("Zhao Yun uses supplied walking frames while Hu Sanniang retains the original sprite", () => {
   for (const id of ["zhao-yun", "hu-sanniang"]) {
-    assert.equal(loadSheetManifest(manifest, id), null);
+    assert.equal(loadSheetManifest(manifest, id), null); // damaged legacy sheets stay disabled
     const classes = new Set();
-    const node = { src: `assets/${id}-sprite.png`, style: {}, classList: {
-      toggle: (name, active) => active ? classes.add(name) : classes.delete(name), remove: name => classes.delete(name),
+    const node = { src: `assets/${id}-sprite.png`, dataset:{}, style: {}, classList: {
+      add: name => classes.add(name), toggle: (name, active) => active ? classes.add(name) : classes.delete(name), remove: name => classes.delete(name),
     } };
     const view = Object.create(RoamView.prototype);
-    view.manifest = manifest; view.sheetByHero = new Map();
+    view.manifest = manifest; view.sheetByHero = new Map();view.animTime=0;
     view.applyActorSheet(node, id, true);
-    assert.equal(node.src, `assets/${id}-sprite.png`);
-    assert(classes.has("original-walk"));
+    if(id==='zhao-yun') {
+      assert(classes.has("sheet-anim"));
+      assert.equal(node.style.backgroundImage,'url("assets/zhao-yun-walk.png")');
+      assert.equal(node.style.backgroundSize,'100% 100%');
+      assert(!classes.has("original-walk"));
+    } else {
+      assert.equal(node.src, `assets/${id}-sprite.png`);
+      assert(classes.has("original-walk"));
+    }
     view.applyActorSheet(node, id, false);
-    assert(!classes.has("original-walk"));
+    assert.equal(node.src, `assets/${id}-sprite.png`);
+    assert(!classes.has("original-walk"));assert(!classes.has("sheet-anim"));
   }
 });

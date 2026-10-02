@@ -42,6 +42,8 @@ const art = [
   "bamboo-river", "bamboo-maze", "bamboo-roam", "mount-canglan",
   "bamboo-maze-natural", "bamboo-thicket-blocker",
   "bamboo-crossing-ground", "canglan-terrace-ground",
+  "granite-pine-blocker",
+  ...assetManifest.filter(row => row.role === 'walk-frame' && row.runtimeApproved).map(row => row.id),
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
   "meridian-citadel", "jade-sentinel-sprite", "meridian-acolyte-sprite", "sovereign-sprite", "merchant",

@@ -145,9 +145,11 @@
 
 .roam-thicket {
   position: absolute;
-  background: center / contain no-repeat var(--blocker-art, url("assets/bamboo-thicket-blocker.png"));
+  background: var(--blocker-position, center) / var(--blocker-size, contain) no-repeat var(--blocker-art, url("assets/bamboo-thicket-blocker.png"));
   transform: translate(-50%, -50%) scaleX(var(--flip, 1)) rotate(var(--tilt, 0deg));
   pointer-events: none;
+  filter: var(--blocker-filter, none);
+  clip-path: var(--blocker-clip, none);
 }
 @keyframes original-walk {
   from { transform: translate(-50%, -100%) scaleX(var(--face, 1)); }

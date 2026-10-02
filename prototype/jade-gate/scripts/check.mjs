@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { HERO_IDS } from "../src/content/heroes.js";
 import { loadDuelPoses } from "../src/platform/duel-poses.js";
+import { loadRoamSheetManifest } from "../src/platform/sheet-anim.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -33,11 +34,22 @@ for (const asset of manifest) {
   if (asset.duelPoses) {
     const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, '');
     if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
+    if (asset.atlasSize && (asset.atlasSize[0] !== data.readUInt32BE(16) || asset.atlasSize[1] !== data.readUInt32BE(20)))
+      throw new Error(`${asset.id} crop bounds must use the actual PNG dimensions`);
     if (asset.id.endsWith('-duel-poses') &&
       (data.readUInt32BE(16) !== data.readUInt32BE(20) || data.readUInt32BE(16) < 1024 || data[25] !== 6))
       throw new Error(`${asset.id} must be a square RGBA atlas at least 1024px wide`);
   }
   const contract = asset.contract;
+  if (asset.frameFiles) {
+    if (!loadRoamSheetManifest([asset], asset.id.replace(/-walk$/, ''))) throw new Error(`Invalid walk sequence: ${asset.id}`);
+    for (const file of asset.frameFiles) {
+      if (!manifest.some(row => row.file === file && row.runtimeApproved)) throw new Error(`Unreviewed walking frame: ${file}`);
+      const frame = readFileSync(join(root, file));
+      if (frame.readUInt32BE(16) !== data.readUInt32BE(16) || frame.readUInt32BE(20) !== data.readUInt32BE(20) || frame[25] !== 6)
+        throw new Error(`${file} must match the walking sequence canvas and preserve RGBA alpha`);
+    }
+  }
   if (contract) {
     const width = data.readUInt32BE(16), height = data.readUInt32BE(20);
     if (width < contract.minWidth || height < contract.minHeight)
