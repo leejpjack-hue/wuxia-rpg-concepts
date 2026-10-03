@@ -5,12 +5,15 @@
 body{margin:0;padding:24px;background:#0b1414;color:#eee;font:15px system-ui}main{max-width:1100px;margin:auto}h1{font:32px Georgia}label{display:inline-flex;gap:8px;align-items:center;margin:6px}select,button{font:inherit;padding:9px;border:1px solid #9d8b60;background:#182a27;color:#f2e7cd;border-radius:4px}button{cursor:pointer}nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.duel-table{position:relative;width:100%;height:580px;padding:0;box-sizing:border-box;overflow:hidden;--arena-image:url('../assets/arena.png')}#status{color:#d9c799;line-height:1.6}.strike-film{border-radius:6px}@media(max-width:600px){body{padding:12px}.duel-table{height:420px}}
 </style></head><body><main><h1>Duel action review</h1>
 <label>Hero <select id="hero"></select></label><label>Rival <select id="rival"></select></label>
-<label>Action <select id="action"><option value="attack">Attack</option><option value="technique">Technique</option><option value="signature">Signature</option></select></label>
+<label>Action <select id="action"><option value="attack">Attack</option><option value="technique">Technique</option><option value="signature">Signature</option><option value="guard">Guard</option><option value="tea">Tea</option></select></label>
+<label>Language <select id="language"><option value="ja">日本語</option><option value="en">English</option></select></label>
 <label><input id="special" type="checkbox" checked> Rival special</label><label><input id="reduced" type="checkbox"> Reduced motion</label>
-<nav><button id="play">Play sequence</button><button data-beat="prepare">Wind-up</button><button data-beat="focus">Special focus</button><button data-beat="strike">Strike pose</button><button data-beat="impact">Impact pose</button><button data-beat="reply">Rival wind-up</button><button data-beat="counter">Rival strike</button><button id="cancel">Cancel</button></nav>
+<nav><button id="play">Play sequence</button><button data-beat="prepare">Wind-up</button><button data-beat="focus">Special focus</button><button data-beat="strike">Strike pose</button><button data-beat="impact">Impact pose</button><button data-beat="reply">Rival wind-up</button><button data-beat="counter-focus">Rival special close-up</button><button data-beat="counter">Rival strike</button><button data-beat="counter-impact">Rival impact</button><button id="cancel">Cancel</button></nav>
 <div id="table" class="duel-table"></div><p id="status" role="status"></p><a href="../" style="color:#d9c799">Return to game</a>
 <script type="module">
 import {HEROES} from '../src/content/heroes.js';
+import {DUEL_ENEMIES} from '../src/content/duels.js';
+import {translate} from '../src/locales/i18n.js';
 import {DuelCinematic,StrikeTimeline} from '../src/presentation/duel-cinematic.js';
 import {loadDuelPoses} from '../src/platform/duel-poses.js';
 import manifest from '../docs/asset-manifest.json' with {type:'json'};
@@ -18,21 +21,24 @@ import manifest from '../docs/asset-manifest.json' with {type:'json'};
 const base=document.createElement('base');base.href='../';document.head.append(base);
 const $=id=>document.getElementById(id);
 for(const id of ['hero','rival'])for(const h of HEROES){const o=document.createElement('option');o.value=h.id;o.textContent=`${h.cn} · ${h.name}`;$(id).append(o);}
-$('hero').value='lu-zhishen';$('rival').value='guan-yu';
+for(const [kind,rival] of Object.entries(DUEL_ENEMIES)){if(kind.startsWith('hero-'))continue;const o=document.createElement('option');o.value=`enemy:${kind}`;o.textContent=rival.name;$('rival').append(o);}
+$('hero').value='zhao-yun';$('rival').value='guan-yu';
 let film;
 function play(stopAt=null){
  film?.cancel();$('table').replaceChildren();
- const hero=HEROES.find(h=>h.id===$('hero').value), rival=HEROES.find(h=>h.id===$('rival').value);
+ const hero=HEROES.find(h=>h.id===$('hero').value), kind=$('rival').value;
+ const legend=HEROES.find(h=>h.id===kind);
+ const rival=legend?{...legend,heroId:legend.id,kind:`hero-${legend.id}`,art:`${legend.id}-sprite`}:{...DUEL_ENEMIES[kind.slice(6)],kind:kind.slice(6)};
  const tasks=[];
  const timeline=stopAt?new StrikeTimeline((fn,ms)=>{tasks.push({fn,ms});return tasks.length},()=>{}):new StrikeTimeline();
- film=new DuelCinematic(document,$('table'),()=>{},text=>text,timeline);
- film.play($('action').value,hero,{...rival,heroId:rival.id,kind:`hero-${rival.id}`,art:`${rival.id}-sprite`},{damage:34,incoming:12,intent:$('special').checked?'special':'heavy'},$('reduced').checked,()=>{$('status').textContent+=' · Sequence complete';});
+ film=new DuelCinematic(document,$('table'),()=>{},text=>translate(text,$('language').value),timeline);
+ film.play($('action').value,hero,rival,{damage:34,incoming:12,intent:$('special').checked?'special':'heavy'},$('reduced').checked,()=>{$('status').textContent+=' · Sequence complete';});
  if(stopAt && stopAt!=='prepare')for(const {fn} of tasks.sort((a,b)=>a.ms-b.ms)){fn();if(film.node.dataset.phase===stopAt)break;}
- const art=h=>loadDuelPoses(manifest,h.id)?'action frames available':'new action images pending';
+ const art=h=>loadDuelPoses(manifest,h.art?.replace(/-sprite$/,'')||h.id)?'action frames available':'new action images pending';
  $('status').textContent=`${hero.name}: ${art(hero)}. ${rival.name}: ${art(rival)}. ${stopAt?'Frozen at '+stopAt:'Playing actual game timeline'}.`;
 }
 $('play').onclick=()=>play();$('cancel').onclick=()=>film?.cancel();
 for(const b of document.querySelectorAll('[data-beat]'))b.onclick=()=>play(b.dataset.beat);
-for(const id of ['hero','rival','action','special','reduced'])$(id).onchange=()=>play('prepare');
+for(const id of ['hero','rival','action','special','reduced','language'])$(id).onchange=()=>play('prepare');
 play('prepare');
 </script></main></body></html>

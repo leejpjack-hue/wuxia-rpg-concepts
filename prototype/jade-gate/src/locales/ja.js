@@ -1,6 +1,7 @@
 // English source phrases are stable message keys. Templates also cover domain
 // journals, allowing an existing battle log to change language without mutation.
 export const messages = {
+  "RIVAL TECHNIQUE": "敵の奥義",
   "Story rival · playable in Quick Play": "物語の対戦相手・クイックプレイで使用可能",
   "This hero is a Story rival. Use Quick Play to play them.": "この英雄は物語の対戦相手です。クイックプレイで使用できます。",
   "Smoke rises from the river crossing. Guan Yu withdraws from the gate after your duel; tonight, the company shelters at the tea house.": "渡河の向こうに煙が上がる。決闘を終えた関羽は関所から退き、今夜、一行は茶屋に身を寄せる。",

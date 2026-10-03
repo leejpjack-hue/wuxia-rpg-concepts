@@ -5,3 +5,5 @@ Eight original synthetic voice clips rendered locally using macOS `say`: Japanes
 Japanese clips 1–3 use rate 205, clip 4 rate 220; English clips 1–2 rate 190, clip 3 rate 200, clip 4 rate 210. Regenerate with `say -v Kyoko -r 205 -o /tmp/clip.aiff 'text'`, then `afconvert -f WAVE -d LEI16 /tmp/clip.aiff clip.wav`. Japanese pronunciation follows the system voice. These are synthesized performances, not recordings of a voice actor.
 
 The playback rate is increased only if a clip exceeds its allotted cue window. The shared audio clock keeps the 10-second montage, subtitles, effects and recorded voice synchronized. Pause suspends that clock; replay clears all old sources first.
+
+2026-10-02: cue 2 was re-rendered with the same Kyoko/Daniel voices and rates to say sixteen legends, matching the current roster. Both language tracks retain the original four cue windows. The two contact sounds follow `TRAILER_IMPACTS`; the closing bronze chord follows the title reveal at 8.6 seconds. The score drops beneath narration for clearer speech. All visual artwork is reused from the existing game.

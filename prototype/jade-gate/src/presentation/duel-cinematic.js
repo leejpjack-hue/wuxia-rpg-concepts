@@ -1,6 +1,7 @@
 import assetManifest from "../../docs/asset-manifest.json" with { type: "json" };
 import { loadSheetManifest, sampleAnim, applySheetFrame, clearSheetFrame } from "../platform/sheet-anim.js";
-import { signatureById } from "../content/expansion.js";
+import { HEROES } from "../content/heroes.js";
+import { signatureById, specialFor } from "../content/expansion.js";
 import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../content/expansion-art.js";
 import { loadDuelPoses, applyDuelPose, clearDuelPose } from "../platform/duel-poses.js";
 
@@ -12,6 +13,22 @@ export const CUTS = {
   assist: [['prepare', 0], ['flash', 80], ['impact', 380], ['end', 900]],
   intro: [['open', 0], ['clash', 620], ['out', 1600], ['end', 1900]],
 };
+// Relative to the reply beat; the special uses the same charge/strike spacing as the hero.
+export const COUNTER_CUTS = {
+  strike: [['counter', 180], ['counter-impact', 480], ['end', 1100]],
+  special: [['counter-focus', 280], ['counter', 1180], ['counter-impact', 1480], ['end', 2130]],
+};
+const rivalStyles = {
+  'lu-bu-rival': 'lu-bu', 'canglan-monk': 'lu-zhishen', pugilist: 'wu-song',
+  'shadow-assassin': 'nie-yinniang', 'night-heron': 'nie-yinniang',
+};
+export function rivalFilmIdentity(enemy) {
+  const artId = enemy.art?.replace(/-sprite$/, '');
+  const fighter = HEROES.find(hero => hero.id === (enemy.heroId || artId));
+  return { style: fighter?.id || rivalStyles[enemy.kind] || 'rival',
+    color: enemy.color || fighter?.color || '#ff9c90', seal: fighter?.cn || '技',
+    special: specialFor(enemy.kind)?.name || fighter?.skill || enemy.skill || 'RIVAL TECHNIQUE' };
+}
 export const cutFor = (action, reduced) =>
   reduced ? CUTS.still
     : (action === 'technique' || action === 'signature') ? CUTS.special
@@ -77,6 +94,10 @@ export class DuelCinematic {
     node.hidden = false;
     node.className = className;
     node.style.setProperty('--strike-color', hero.color);
+    this.rivalIdentity = rivalFilmIdentity(enemy);
+    node.style.setProperty('--rival-color', this.rivalIdentity.color);
+    node.classList.add(`rival-style-${this.rivalIdentity.style}`);
+    node.dataset.attacker = 'hero';
     const filmHero = node.querySelector('.film-hero');
     clearDuelPose(filmHero);
     const filmEnemy = node.querySelector('.film-enemy');
@@ -131,16 +152,17 @@ export class DuelCinematic {
     const strikeAt = cut.find(([phase]) => phase === 'strike')[1];
     const sigArt = action === 'signature' && !reduced ? signatureArtFor(hero.id) : null;
     if (sigArt) setActionArt(node, sigArt);
-    const specialArt = !reduced && result.intent === 'special' ? specialArtFor(enemy) : null;
+
     // The rival's counter mirrors the hero's beats: reply coils, counter dashes, counter-impact lands.
     const counter = !reduced && result.incoming > 0;
+    const counterSpecial = counter && result.intent === 'special';
+    const specialArt = counterSpecial ? specialArtFor(enemy) : null;
     if (counter) {
       node.classList.add(`counter-${result.intent || 'strike'}`);
       const replyAt = cut.find(([phase]) => phase === 'reply')[1];
-      const counterAt = replyAt + 180;
-      const hitAt = counterAt + 300;
-      cut.push(['counter', counterAt], ['counter-impact', hitAt]);
-      cut[cut.findIndex(([phase]) => phase === 'end')] = ['end', hitAt + 620];
+      cut.splice(cut.findIndex(([phase]) => phase === 'end'), 1);
+      for (const [phase, delay] of COUNTER_CUTS[counterSpecial ? 'special' : 'strike'])
+        cut.push([phase, replyAt + delay]);
       cut.sort((a, b) => a[1] - b[1]);
     }
     if (attack?.frames?.length) {
@@ -160,7 +182,8 @@ export class DuelCinematic {
         if (phase === 'reply') clearDuelPose(filmHero);
       }
       if (counter && this.enemyPoses) {
-        if (phase === 'reply') applyDuelPose(filmEnemy, this.enemyPoses, result.intent === 'special' ? 'focus' : 'windup');
+        if (phase === 'reply') applyDuelPose(filmEnemy, this.enemyPoses, 'windup');
+        if (phase === 'counter-focus') applyDuelPose(filmEnemy, this.enemyPoses, 'focus');
         if (phase === 'counter' || phase === 'counter-impact')
           applyDuelPose(filmEnemy, this.enemyPoses, result.intent === 'special' ? 'special' : 'strike');
       }
@@ -191,11 +214,24 @@ export class DuelCinematic {
         number.textContent = counter ? '' : result.incoming ? `−${result.incoming}` : '';
         caption.textContent = this.t(result.lethal ? 'RIVAL DEFEATED' : result.stunned ? 'ENEMY STUNNED · NO REPLY' : result.incoming ? `${enemy.name} · COUNTERSTRIKE` : 'THE ENEMY HOLDS GUARD');
         if (result.incoming && !counter) this.cue({type:'hurt'});
-        if (counter) this.cue({type:'enemy_windup'});
+        if (counter) {
+          node.dataset.attacker = 'enemy';
+          node.style.setProperty('--strike-color', this.rivalIdentity.color);
+          this.cue({type:'enemy_windup'});
+        }
+        if (counterSpecial) {
+          node.querySelector('.film-title').textContent = this.t(this.rivalIdentity.special);
+          node.querySelector('.film-seal').textContent = this.rivalIdentity.seal;
+          caption.textContent = this.t(enemy.name);
+        }
+        if (specialArt) setActionArt(node, specialArt);
+      }
+      if (phase === 'counter-focus') {
+        this.cue({type:'charge'});
         if (specialArt) setActionArt(node, specialArt);
       }
       if (phase === 'counter') {
-        this.cue({type:'strike'});
+        this.cue({type: counterSpecial ? 'special' : 'strike', param: enemy.heroId || enemy.kind});
         if (specialArt) setActionArt(node, specialArt);
       }
       if (phase === 'counter-impact') {

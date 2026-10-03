@@ -13,11 +13,15 @@
     <div class="editorial"><p id="eyebrow">江湖の物語 · 公式ティーザー</p><span>01 / 10 SECONDS</span></div>
     <section id="screen" class="screen" aria-label="ゲームトレーラー" data-scene="title">
       <div class="letterbox top"></div><div class="letterbox bottom"></div>
-      <div class="scene" data-shot="pass"><img class="backdrop" src="assets/arena.png" alt=""><div class="mist"></div><img class="wanderer" src="assets/zhao-yun-sprite.png" alt=""><span class="vertical-script">山河有盡<br>寸刃不移</span></div>
-      <div class="scene" data-shot="legends"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="hero-line"><img src="assets/guan-yu-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/qin-liangyu-sprite.png" alt=""><img src="assets/lu-bu-sprite.png" alt=""></div></div>
-      <div class="scene" data-shot="duel"><img class="backdrop" src="assets/mount-canglan.png" alt=""><div class="duel-grid"></div><div class="duel-card hero"><span>趙雲 · 白龍</span><img src="assets/zhao-yun-sprite.png" alt="趙雲"><small>龍の突撃 / DRAGON RUSH</small></div><span class="versus">對</span><div class="duel-card rival"><span>呂布 · 飛将</span><img src="assets/lu-bu-rival-sprite.png" alt="呂布"><small>SKYBREAKER</small></div><div class="slash"></div><div class="impact"></div><div class="impact-word">蒼龍破</div></div>
-      <div class="scene" data-shot="journey"><img class="backdrop" src="assets/mount-canglan.png" alt=""><div id="roster" class="roster"></div></div>
-      <div class="scene title-scene" data-shot="title"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="title-art"><img src="assets/lu-zhishen-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""></div><div class="title-lockup"><span class="title-seal">四</span><p>BLADES OF THE FOUR</p><h1 id="end-title">四人の刃</h1><span id="end-line">今、江湖へ。</span></div></div>
+      <div id="camera" class="camera">
+        <div class="scene" data-shot="pass"><img class="backdrop" src="assets/arena.png" alt=""><div class="mist"></div><img id="wanderer" class="wanderer" src="assets/zhao-yun-sprite.png" alt=""><img class="foreground" src="assets/bamboo-thicket-blocker.png" alt=""><span class="vertical-script">山河有盡<br>寸刃不移</span></div>
+        <div class="scene" data-shot="legends"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="hero-line"><img src="assets/guan-yu-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/qin-liangyu-sprite.png" alt=""><img src="assets/lu-bu-sprite.png" alt=""></div></div>
+        <div class="scene" data-shot="duel"><img class="backdrop" src="assets/mount-canglan.png" alt=""><div class="duel-grid"></div><div class="duel-card hero"><span>趙雲 · 白龍</span><div class="fighter-frame"><img id="duel-hero" src="assets/zhao-yun-sprite.png" alt="趙雲"></div><small>龍の突撃 / DRAGON RUSH</small></div><span class="versus">對</span><div class="duel-card rival"><span>呂布 · 飛将</span><div class="fighter-frame"><img id="duel-rival" src="assets/lu-bu-rival-sprite.png" alt="呂布"></div><small>SKYBREAKER</small></div><div class="qi-aura"></div><div class="speed-lines"></div><div class="slash"></div><div class="shock-ring"></div><div class="impact-word">蒼龍破</div></div>
+        <div class="scene" data-shot="journey"><img class="landscape river" src="assets/bamboo-river.png" alt=""><img class="landscape mountain" src="assets/mount-canglan.png" alt=""><img class="landscape citadel" src="assets/meridian-citadel.png" alt=""><img class="traveler" src="assets/zhao-yun-sprite.png" alt=""><div class="route-line"></div><span id="location" class="location"></span></div>
+        <div class="scene title-scene" data-shot="title"><img class="backdrop" src="assets/bamboo-river.png" alt=""><div class="title-art"><img src="assets/lu-zhishen-sprite.png" alt=""><img src="assets/zhao-yun-sprite.png" alt=""><img src="assets/hu-sanniang-sprite.png" alt=""></div><div class="title-lockup"><span class="title-seal">四</span><p>BLADES OF THE FOUR</p><h1 id="end-title">四人の刃</h1><span id="end-line">今、江湖へ。</span></div></div>
+        <div id="closeup" class="closeup" aria-hidden="true"><img data-focus="zhao-yun" src="assets/zhao-yun.png" alt=""><img data-focus="hu-sanniang" src="assets/hu-sanniang.png" alt=""><img data-focus="lu-zhishen" src="assets/lu-zhishen.png" alt=""><div class="portrait-shade"></div><div class="portrait-rule"></div><div class="portrait-caption"><span id="portrait-role"></span><strong id="portrait-name"></strong></div></div>
+      </div>
+      <div class="impact"></div><div class="cut-wipe"></div>
       <div class="vignette"></div><div id="embers" class="embers" aria-hidden="true"></div>
       <div id="copy" class="copy"><p id="shot-kicker"></p><h2 id="shot-title"></h2></div>
       <p id="subtitle" class="subtitle"></p>
@@ -35,7 +39,7 @@
     <p id="status" role="status" aria-live="polite"></p>
     <details><summary id="transcript-label">ナレーション全文</summary><p id="transcript"></p></details>
   </main>
-  <footer><span>BLADES OF THE FOUR</span><span id="footer-copy">十二の伝説 · 三つの章 · 一つの誓い</span></footer>
+  <footer><span>BLADES OF THE FOUR</span><span id="footer-copy">十六の伝説 · 四つの章 · 一つの誓い</span></footer>
   <script type="module" src="trailer.js"></script>
 </body>
 </html>

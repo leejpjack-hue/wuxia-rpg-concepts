@@ -42,3 +42,44 @@ test('both narration tracks have real PCM audio and fit their non-overlapping cu
     }
   }
 });
+
+test('editorial cuts cover the film and bring a face into view at each narration entrance', async () => {
+  const { TRAILER_CUTS } = await import('../src/content/trailer.js');
+  let end = 0;
+  for (const shot of TRAILER_CUTS) {
+    assert.equal(shot.start, end);
+    assert.ok(shot.end > shot.start);
+    assert.equal(trailerFrame(shot.start).shot.id, shot.id);
+    if (shot.focus) assert.ok(readFileSync(new URL(`../assets/${shot.focus}.png`, import.meta.url)).length > 0);
+    end = shot.end;
+  }
+  assert.equal(end, TRAILER_DURATION);
+  for (const cue of TRAILER_VOICE) assert.ok(trailerFrame(cue.start).shot.focus, cue.file);
+  assert.equal(trailerFrame(10).shot.id, 'reveal');
+});
+
+test('contact poses hold at the shared sound cue and replay samples the same motion', async () => {
+  const { TRAILER_IMPACTS } = await import('../src/content/trailer.js');
+  for (const [index, hit] of TRAILER_IMPACTS.entries()) {
+    const contact = trailerFrame(hit.at);
+    assert.equal(contact.pose, index ? 'special' : 'strike');
+    assert.equal(contact.effects.travel, 1);
+    assert.equal(trailerFrame(hit.at + .04).effects.travel, 1);
+    assert.ok(contact.effects.flash > 0);
+    assert.ok(contact.effects.ringOpacity > 0);
+    assert.deepEqual(trailerFrame(hit.at), contact);
+  }
+  assert.equal(trailerFrame(5.7).pose, 'focus');
+  assert.ok(trailerFrame(5.7).effects.energy > 0);
+  assert.equal(trailerFrame(6.5).effects.travel, 0);
+  assert.equal(trailerFrame(6.5).effects.flash, 0);
+});
+
+test('reduced motion retains every scene and subtitle while disabling all camera/impact effects', () => {
+  for (let t = 0; t <= 10; t += .02) {
+    const normal = trailerFrame(t), reduced = trailerFrame(t, true);
+    assert.equal(reduced.scene, normal.scene);
+    assert.equal(reduced.voice, normal.voice);
+    assert.ok(Object.values(reduced.effects).every(value => value === 0));
+  }
+});
