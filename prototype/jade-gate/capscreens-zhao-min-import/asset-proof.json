@@ -1,0 +1,44 @@
+[
+  {
+    "file": "assets/zhao-min-sprite.png",
+    "sha256": "cf3af34d8206dad2e779140f15c79c1eb924812e6b57758a04c3d3f3e720e219",
+    "mode": "RGBA",
+    "size": [
+      1254,
+      1254
+    ],
+    "clearPixelPercent": 80.73,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "visibleBoundsAlpha32": [
+      399,
+      40,
+      996,
+      1215
+    ],
+    "originalBytesPreserved": true
+  },
+  {
+    "file": "assets/zhao-min-duel-windup.png",
+    "sha256": "135855cc2e8f9e5e273f9ac1eb51d3be5347e1928e4b3570d2a12828eee7d45b",
+    "mode": "RGBA",
+    "size": [
+      1254,
+      1254
+    ],
+    "clearPixelPercent": 78.64,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "visibleBoundsAlpha32": [
+      274,
+      14,
+      933,
+      1226
+    ],
+    "originalBytesPreserved": true
+  }
+]

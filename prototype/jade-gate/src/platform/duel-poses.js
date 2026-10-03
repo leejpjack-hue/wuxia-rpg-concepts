@@ -19,13 +19,19 @@ export function loadDuelPoses(manifest, fighterId) {
       return Array.isArray(r) && r.length === 4 && r.every(Number.isInteger) && r[0] >= 0 && r[1] >= 0 && r[2] > 0 && r[3] > 0 &&
         r[0] + r[2] <= row.atlasSize[0] && r[1] + r[3] <= row.atlasSize[1];
     }))) return null;
+  // Individually approved native PNGs can replace poses as the new set arrives.
+  if (row.poseFiles && (typeof row.poseFiles !== 'object' || Array.isArray(row.poseFiles) ||
+    !Object.entries(row.poseFiles).every(([pose, file]) => Object.hasOwn(DUEL_POSE_CELLS, pose) &&
+      typeof file === 'string' && manifest.some(entry => entry.file === file && entry.runtimeApproved === true && entry.contract?.square && entry.contract?.alpha)))) return null;
   return { ...row, anims: legacy ? row.anims : { poses: { frames: Object.values(cells) } } };
 }
 
 export function applyDuelPose(node, atlas, pose) {
   const cell = atlas?.duelPoses?.[pose];
-  if (!cell || !applySheetFrame(node, atlas, { col: cell[0], row: cell[1] })) return false;
-  const rect = atlas.poseRects?.[pose];
+  const file = atlas?.poseFiles?.[pose];
+  const source = file ? { file, anims: { poses: { frames: [[0, 0]] } } } : atlas;
+  if (!cell || !applySheetFrame(node, source, file ? { col: 0, row: 0 } : { col: cell[0], row: cell[1] })) return false;
+  const rect = file ? null : atlas.poseRects?.[pose];
   node.style.aspectRatio = '';
   if (rect) {
     const [x, y, w, h] = rect, [aw, ah] = atlas.atlasSize;

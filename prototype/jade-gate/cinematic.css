@@ -73,7 +73,8 @@
 
 /* Technique: charge close-up, title slam, whip pan, long hit-stop, flash, heavy shake, pull-out. */
 .action-technique[data-phase=prepare] .film-title { opacity:0; }
-.action-technique[data-phase=focus] .film-camera { transform-origin:26% 60%; transform:scale(1.55); transition-duration:.85s; transition-timing-function:cubic-bezier(.35,0,.15,1); }
+/* Anchor the charge zoom at head height, mirrored by the rival close-up below. */
+.action-technique[data-phase=focus] .film-camera { transform-origin:26% 15%; transform:scale(1.55); transition-duration:.85s; transition-timing-function:cubic-bezier(.35,0,.15,1); }
 .action-technique[data-phase=focus] .film-aura { opacity:1; }
 .action-technique[data-phase=focus] .film-backdrop { filter:saturate(.3) brightness(.65); }
 .action-technique[data-phase=focus] .film-hero { transform:translateX(-6%) translateY(-1.5%) scale(1.03); filter:brightness(1.18) drop-shadow(0 0 14px var(--strike-color)) drop-shadow(0 0 38px var(--strike-color)); transition-duration:.8s; }
@@ -261,7 +262,7 @@
 }
 /* Signature reuses the technique charge close-up so the emblem has a focus beat. */
 .action-signature[data-phase=prepare] .film-title { opacity: 0; }
-.action-signature[data-phase=focus] .film-camera { transform-origin: 26% 60%; transform: scale(1.5); transition-duration: .85s; transition-timing-function: cubic-bezier(.35,0,.15,1); }
+.action-signature[data-phase=focus] .film-camera { transform-origin: 26% 15%; transform: scale(1.5); transition-duration: .85s; transition-timing-function: cubic-bezier(.35,0,.15,1); }
 .action-signature[data-phase=focus] .film-aura { opacity: 1; }
 .action-signature[data-phase=focus] .film-backdrop { filter: saturate(.35) brightness(.7); }
 .action-signature[data-phase=focus] .film-hero { transform: translateX(-6%) translateY(-1.5%) scale(1.03); filter: brightness(1.18) drop-shadow(0 0 14px var(--strike-color)) drop-shadow(0 0 38px var(--strike-color)); transition-duration: .8s; }

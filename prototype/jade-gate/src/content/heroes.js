@@ -614,6 +614,7 @@ export const HEROES = [
     id: "zhao-min",
     hidden: true,
     keyArt: "assets/zhao-min.jpg",
+    cinematicArt: "assets/zhao-min-sprite.png",
     name: "Zhao Min",
     cn: "赵敏",
     title: "The Mongol Princess",

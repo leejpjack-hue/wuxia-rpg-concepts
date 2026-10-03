@@ -41,7 +41,7 @@ for (const asset of manifest) {
       throw new Error(`${asset.id} JPEG was copied as-is and cannot carry a PNG contract`);
     if (asset.duelPoses) {
       const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, "");
-      if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
+      if (!loadDuelPoses(manifest, fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
     }
     continue;
   }
@@ -49,7 +49,7 @@ for (const asset of manifest) {
     throw new Error(`Invalid PNG: ${asset.file}`);
   if (asset.duelPoses) {
     const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, '');
-    if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
+    if (!loadDuelPoses(manifest, fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
     if (asset.atlasSize && (asset.atlasSize[0] !== data.readUInt32BE(16) || asset.atlasSize[1] !== data.readUInt32BE(20)))
       throw new Error(`${asset.id} crop bounds must use the actual PNG dimensions`);
     // Qin / Gu / Bao atlases shipped on main as square RGB (color type 2). This slice

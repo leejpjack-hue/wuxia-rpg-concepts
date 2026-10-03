@@ -6,6 +6,7 @@ import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../conten
 import { loadDuelPoses, applyDuelPose, clearDuelPose } from "../platform/duel-poses.js";
 const stillSrc = (fighterOrId) => {
   const hero = typeof fighterOrId === "string" ? HEROES.find((item) => item.id === fighterOrId) : fighterOrId;
+  if (hero?.cinematicArt) return hero.cinematicArt;
   if (hero?.keyArt) return hero.keyArt;
   const id = hero?.id || fighterOrId;
   return `assets/${id}-sprite.png`;
@@ -114,7 +115,7 @@ export class DuelCinematic {
     this.heroPoses = loadDuelPoses(this.manifest, hero.id);
     // Use art identity, so a boss costume is never replaced by a different hero costume.
     this.enemyPoses = loadDuelPoses(this.manifest, enemy.art?.replace(/-sprite$/, ''));
-    // Hidden heroes have no *-sprite.png; stillSrc falls back to keyArt / atlas identity.
+    // Resolve reviewed cinematic stills by art identity, including story boss variants.
     filmEnemy.src = filmEnemy.dataset.stillSrc = stillSrc(enemy.art?.replace(/-sprite$/, '') || enemy.heroId || enemy);
     node.querySelector('.film-seal').textContent = hero.cn || '';
     node.querySelector('.film-number').textContent = '';
