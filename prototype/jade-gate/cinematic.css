@@ -28,7 +28,8 @@
 [data-phase=counter] .film-hero { transform:translateX(-8%); }
 [data-phase=counter-impact] .film-enemy { transform:translateX(-52%) scaleX(-1) rotate(-5deg); }
 [data-phase=counter-impact] .film-hero { animation:struck-hero .46s linear both; }
-.finisher[data-phase=reply] .film-enemy { transform:translateX(34%) translateY(6%) scaleX(-1) rotate(-32deg); opacity:0; transition-duration:.9s; }
+/* A counter reply stays on stage. The defeated fade must not blank .film-enemy for every rival. */
+.finisher[data-phase=reply]:not(.counter) .film-enemy { transform:translateX(34%) translateY(6%) scaleX(-1) rotate(-32deg); opacity:0; transition-duration:.9s; }
 .film-trail,.film-ring,.film-sparks { position:absolute; opacity:0; pointer-events:none; }
 .film-trail { left:39%; top:29%; width:39%; height:35%; border-top:9px solid #fff9dd; border-radius:50%; transform:rotate(-35deg); filter:drop-shadow(0 0 12px var(--strike-color)); }
 [data-phase=strike] .film-trail { animation:blade-trail .5s ease-out both; }

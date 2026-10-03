@@ -213,7 +213,7 @@ export class DuelCinematic {
         if (result.damage) this.cue({type: result.lethal ? 'finisher' : 'hit', param: enemy.type});
         number.textContent = result.damage ? `−${result.damage}` : result.heal ? `+${result.heal}` : this.t('Guard');
         caption.textContent = this.t(result.lethal ? 'FINISHING BLOW' : result.stunned ? 'STAGGERED' : action === 'technique' || action === 'signature' ? 'GUARD PIERCED' : 'IMPACT');
-        node.classList.toggle('finisher', result.lethal);
+        node.classList.toggle('finisher', result.lethal === true);
         if (sigArt) clearActionArt(node);
       }
       if (phase === 'reply') {

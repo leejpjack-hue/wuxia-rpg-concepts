@@ -399,6 +399,30 @@ test('rival special charges, switches identity and poses, then commits once afte
     assert.equal(node.dataset.attacker,'hero');assert.equal(node.style['--strike-color'],hero.color);
   }
 });
+test('a non-lethal counter reply does not take the defeated rival fade',()=>{
+  const {film,node,callbacks}=filmFixture([duelAtlas('guan-yu')]);
+  film.play('attack',hero,poseRival,{damage:10,incoming:12,intent:'special'},false,()=>{});
+  let sawReply=false;
+  for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
+    fn();
+    if(node.dataset.phase==='reply'){
+      sawReply=true;
+      assert.equal(node.classList.contains('finisher'),false);
+      assert.equal(node.classList.contains('counter'),true);
+      assert.equal(node.querySelector('.film-enemy').dataset.duelPose,'windup');
+    }
+  }
+  assert.equal(sawReply,true);
+  const lethal=filmFixture([duelAtlas('guan-yu')]);
+  lethal.film.play('attack',hero,poseRival,{damage:40,incoming:0,lethal:true},false,()=>{});
+  for(const {fn} of lethal.callbacks.sort((a,b)=>a.ms-b.ms)){
+    fn();
+    if(lethal.node.dataset.phase==='reply'){
+      assert.equal(lethal.node.classList.contains('finisher'),true);
+      assert.equal(lethal.node.classList.contains('counter'),false);
+    }
+  }
+});
 test('cancel during the rival special focus prevents stale attack, impact and completion callbacks',()=>{
   const {film,node,callbacks,cues}=filmFixture([duelAtlas('guan-yu')]);
   let commits=0;
