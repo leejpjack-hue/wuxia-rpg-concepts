@@ -67,6 +67,13 @@ test('hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PN
     assert.equal(atlas.runtimeApproved, true);
     assert.deepEqual(atlas.duelPoses, DUEL_POSE_CELLS);
     assert.deepEqual(sheetGrid(atlas), {cols:2, rows:2});
+    assert.deepEqual(atlas.atlasSize, [1024, 1024]);
+    const half = atlas.atlasSize[0] / 2;
+    for (const [pose, [col, row]] of Object.entries(DUEL_POSE_CELLS)) {
+      const [x, y, w, h] = atlas.poseRects[pose];
+      assert(x >= col * half && y >= row * half && x + w <= (col + 1) * half && y + h <= (row + 1) * half, `${hero.id} ${pose}`);
+    }
   }
   assert.equal(loadDuelPoses(manifest, 'qin-liangyu').file, 'assets/qin-liangyu-duel-poses.png');
+  assert.equal(loadDuelPoses(manifest, 'guan-yu').poseRects, undefined);
 });
