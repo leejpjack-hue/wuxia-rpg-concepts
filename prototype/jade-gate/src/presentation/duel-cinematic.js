@@ -114,7 +114,8 @@ export class DuelCinematic {
     this.heroPoses = loadDuelPoses(this.manifest, hero.id);
     // Use art identity, so a boss costume is never replaced by a different hero costume.
     this.enemyPoses = loadDuelPoses(this.manifest, enemy.art?.replace(/-sprite$/, ''));
-    filmEnemy.src = filmEnemy.dataset.stillSrc = `assets/${enemy.art}.png`;
+    // Hidden heroes have no *-sprite.png; stillSrc falls back to keyArt / atlas identity.
+    filmEnemy.src = filmEnemy.dataset.stillSrc = stillSrc(enemy.art?.replace(/-sprite$/, '') || enemy.heroId || enemy);
     node.querySelector('.film-seal').textContent = hero.cn || '';
     node.querySelector('.film-number').textContent = '';
     return node;
