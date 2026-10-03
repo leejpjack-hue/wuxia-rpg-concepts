@@ -57,13 +57,13 @@ test('unreviewed, malformed or missing atlases safely retain the existing sprite
  assert.equal(loadDuelPoses(manifest,'missing-character'),null);
 });
 
-test('hidden novel atlases are approved 2x2 JPEGs and do not replace live PNG paths', () => {
+test('hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PNG paths', () => {
   const hidden = HEROES.filter(hero => hero.hidden);
   assert.equal(hidden.length, 20);
   for (const hero of hidden) {
     const atlas = loadDuelPoses(manifest, hero.id);
     assert(atlas, hero.id);
-    assert.equal(atlas.file, `assets/${hero.id}-duel-poses.jpg`);
+    assert.equal(atlas.file, `assets/${hero.id}-duel-poses.png`);
     assert.equal(atlas.runtimeApproved, true);
     assert.deepEqual(atlas.duelPoses, DUEL_POSE_CELLS);
     assert.deepEqual(sheetGrid(atlas), {cols:2, rows:2});

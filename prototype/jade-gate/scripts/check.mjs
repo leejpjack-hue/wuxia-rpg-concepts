@@ -91,12 +91,17 @@ for (const hero of HEROES.filter((hero) => hero.hidden)) {
   const atlas = manifest.find((asset) => asset.id === `${hero.id}-duel-poses`);
   if (!portrait || portrait.file !== (hero.keyArt || `assets/${hero.id}.jpg`))
     throw new Error(`Hidden portrait not wired: ${hero.id}`);
-  if (!atlas?.file?.endsWith(".jpg") || !atlas.duelPoses)
+  if (!atlas?.file?.endsWith(".png") || !atlas.duelPoses)
     throw new Error(`Hidden duel atlas not wired: ${hero.id}`);
-  for (const row of [portrait, atlas]) {
-    if (fileKind(readFileSync(join(root, row.file))) !== "jpeg")
-      throw new Error(`${row.id} must stay real JPEG bytes`);
-  }
+  // Portraits stay real JPEG bytes. These 20 hidden atlases must be square RGBA PNG ≥1024.
+  if (fileKind(readFileSync(join(root, portrait.file))) !== "jpeg")
+    throw new Error(`${portrait.id} must stay real JPEG bytes`);
+  const atlasData = readFileSync(join(root, atlas.file));
+  if (fileKind(atlasData) !== "png")
+    throw new Error(`${atlas.id} must be PNG bytes`);
+  const aw = atlasData.readUInt32BE(16), ah = atlasData.readUInt32BE(20), ct = atlasData[25];
+  if (aw !== ah || aw < 1024 || ct !== 6)
+    throw new Error(`${atlas.id} must be a square RGBA PNG at least 1024px wide (color type 6)`);
 }
 for (const heroId of HEROES.filter((hero) => !hero.hidden).map((hero) => hero.id)) {
   for (const suffix of ["", "-sprite"]) {
