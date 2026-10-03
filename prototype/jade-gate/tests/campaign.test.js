@@ -325,7 +325,7 @@ test("Act II is live: map rows, elite encounter, boss duel content, and later ac
 });
 
 test("Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and resolution vignettes", () => {
-  for (const hero of HEROES) {
+  for (const hero of HEROES.filter((hero) => !hero.hidden)) {
     // Arrival vignette
     const arrival = dialogueFor("bamboo-arrival", hero);
     assert.equal(arrival.length, 2);

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import manifest from '../docs/asset-manifest.json' with {type:'json'};
+import { HEROES } from '../src/content/heroes.js';
 import {loadDuelPoses,applyDuelPose,DUEL_POSE_CELLS} from '../src/platform/duel-poses.js';
 import {sheetGrid,loadSheetManifest} from '../src/platform/sheet-anim.js';
 
@@ -54,4 +55,18 @@ test('unreviewed, malformed or missing atlases safely retain the existing sprite
  assert(loadDuelPoses([row],'test'));
  for(const bad of [{...row,runtimeApproved:false},{...row,runtimeApproved:undefined},{...row,duelPoses:{windup:[0,0]}},{...row,duelPoses:{...DUEL_POSE_CELLS,strike:[2,0]}}])assert.equal(loadDuelPoses([bad],'test'),null);
  assert.equal(loadDuelPoses(manifest,'missing-character'),null);
+});
+
+test('hidden novel atlases are approved 2x2 JPEGs and do not replace live PNG paths', () => {
+  const hidden = HEROES.filter(hero => hero.hidden);
+  assert.equal(hidden.length, 20);
+  for (const hero of hidden) {
+    const atlas = loadDuelPoses(manifest, hero.id);
+    assert(atlas, hero.id);
+    assert.equal(atlas.file, `assets/${hero.id}-duel-poses.jpg`);
+    assert.equal(atlas.runtimeApproved, true);
+    assert.deepEqual(atlas.duelPoses, DUEL_POSE_CELLS);
+    assert.deepEqual(sheetGrid(atlas), {cols:2, rows:2});
+  }
+  assert.equal(loadDuelPoses(manifest, 'qin-liangyu').file, 'assets/qin-liangyu-duel-poses.png');
 });

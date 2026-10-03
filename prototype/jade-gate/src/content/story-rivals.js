@@ -14,7 +14,7 @@ const patterns = {
   "yang-zhi": ["heavy", "bleed", "guard"],
 };
 export const STORY_RIVALS = Object.fromEntries(HEROES.filter(hero =>
-  !isStoryHero(hero.id) && !["lu-bu", "venom-adept"].includes(hero.id)
+  !hero.hidden && !isStoryHero(hero.id) && !["lu-bu", "venom-adept"].includes(hero.id)
 ).map(hero => [`hero-${hero.id}`, {
   heroId: hero.id, name: hero.name, title: hero.title,
   art: `${hero.id}-sprite`, portrait: hero.id,

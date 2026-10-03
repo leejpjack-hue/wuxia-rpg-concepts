@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import { HERO_IDS } from "../src/content/heroes.js";
+import { HEROES } from "../src/content/heroes.js";
 import { loadDuelPoses } from "../src/platform/duel-poses.js";
 import { loadRoamSheetManifest } from "../src/platform/sheet-anim.js";
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -27,18 +27,39 @@ for (const path of walk(root)) {
 const manifest = JSON.parse(
   readFileSync(join(root, "docs/asset-manifest.json"), "utf8"),
 );
+function fileKind(data) {
+  if (data.length >= 3 && data[0] === 0xff && data[1] === 0xd8 && data[2] === 0xff) return "jpeg";
+  if (data.length >= 8 && data.subarray(1, 4).toString() === "PNG") return "png";
+  return "unknown";
+}
 for (const asset of manifest) {
   const data = readFileSync(join(root, asset.file));
-  if (data.subarray(1, 4).toString() !== "PNG")
+  const kind = fileKind(data);
+  // Hidden novel keys are JPEG copied as-is. Do not read PNG IHDR bytes on them.
+  if (kind === "jpeg") {
+    if (asset.contract || asset.atlasSize || asset.frameFiles || asset.poseRects)
+      throw new Error(`${asset.id} JPEG was copied as-is and cannot carry a PNG contract`);
+    if (asset.duelPoses) {
+      const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, "");
+      if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
+    }
+    continue;
+  }
+  if (kind !== "png")
     throw new Error(`Invalid PNG: ${asset.file}`);
   if (asset.duelPoses) {
     const fighterId = asset.id.replace(/-(duel-poses|sheet)$/, '');
     if (!loadDuelPoses([asset], fighterId)) throw new Error(`Invalid or unapproved duel poses: ${asset.id}`);
     if (asset.atlasSize && (asset.atlasSize[0] !== data.readUInt32BE(16) || asset.atlasSize[1] !== data.readUInt32BE(20)))
       throw new Error(`${asset.id} crop bounds must use the actual PNG dimensions`);
+    // Qin / Gu / Bao atlases shipped on main as square RGB (color type 2). This slice
+    // does not recompress them; every other duel atlas still has to be RGBA.
+    const shippedRgb = new Set(["gu-dasao-duel-poses", "qin-liangyu-duel-poses", "bao-sanniang-duel-poses"]);
+    const rgbAsShipped = shippedRgb.has(asset.id) && data[25] === 2;
     if (asset.id.endsWith('-duel-poses') &&
-      (data.readUInt32BE(16) !== data.readUInt32BE(20) || data.readUInt32BE(16) < 1024 || data[25] !== 6))
+      (data.readUInt32BE(16) !== data.readUInt32BE(20) || data.readUInt32BE(16) < 1024 || (data[25] !== 6 && !rgbAsShipped)))
       throw new Error(`${asset.id} must be a square RGBA atlas at least 1024px wide`);
+    asset.__rgbAsShipped = rgbAsShipped;
   }
   const contract = asset.contract;
   if (asset.frameFiles) {
@@ -56,7 +77,7 @@ for (const asset of manifest) {
       throw new Error(`${asset.id} is below its required dimensions`);
     if (contract.square && width !== height)
       throw new Error(`${asset.id} must be square`);
-    if (contract.alpha && data[25] !== 6)
+    if (contract.alpha && data[25] !== 6 && !asset.__rgbAsShipped)
       throw new Error(`${asset.id} must preserve RGBA alpha`);
     if (contract.aspect === "portrait" && Math.abs(width / height - 2 / 3) > .03)
       throw new Error(`${asset.id} must be a 2:3 portrait`);
@@ -65,7 +86,19 @@ for (const asset of manifest) {
 // A playable hero needs both assets: a portrait and an alpha sprite.
 // Validate headers so concept sheets cannot quietly ship as character art.
 const listed = new Set(manifest.map((asset) => asset.id));
-for (const heroId of HERO_IDS) {
+for (const hero of HEROES.filter((hero) => hero.hidden)) {
+  const portrait = manifest.find((asset) => asset.id === hero.id);
+  const atlas = manifest.find((asset) => asset.id === `${hero.id}-duel-poses`);
+  if (!portrait || portrait.file !== (hero.keyArt || `assets/${hero.id}.jpg`))
+    throw new Error(`Hidden portrait not wired: ${hero.id}`);
+  if (!atlas?.file?.endsWith(".jpg") || !atlas.duelPoses)
+    throw new Error(`Hidden duel atlas not wired: ${hero.id}`);
+  for (const row of [portrait, atlas]) {
+    if (fileKind(readFileSync(join(root, row.file))) !== "jpeg")
+      throw new Error(`${row.id} must stay real JPEG bytes`);
+  }
+}
+for (const heroId of HEROES.filter((hero) => !hero.hidden).map((hero) => hero.id)) {
   for (const suffix of ["", "-sprite"]) {
     const id = heroId + suffix;
     if (!listed.has(id)) throw new Error(`Hero asset missing from manifest: ${id}`);
@@ -153,7 +186,7 @@ for (const record of sheetRecords) {
 
 if (sheetJobs.size === 0) {
   console.log(
-    `Checked all JavaScript modules, ${manifest.length} images and both assets for ${HERO_IDS.length} heroes.`,
+    `Checked all JavaScript modules, ${manifest.length} images and both assets for ${HEROES.filter((hero) => !hero.hidden).length} playable heroes.`,
   );
   console.log(
     "WU-FRAME-05: no *-sheet.png assets yet — soft-pass (sheet grid rules idle until art lands).",
@@ -166,6 +199,6 @@ if (sheetJobs.size === 0) {
     assertSheetRecord({ ...record, file }, readFileSync(path));
   }
   console.log(
-    `Checked all JavaScript modules, ${manifest.length} images and both assets for ${HERO_IDS.length} heroes; validated ${sheetJobs.size} action sheet(s) (3×4 RGBA grid + anim keys).`,
+    `Checked all JavaScript modules, ${manifest.length} images and both assets for ${HEROES.filter((hero) => !hero.hidden).length} playable heroes; validated ${sheetJobs.size} action sheet(s) (3×4 RGBA grid + anim keys).`,
   );
 }

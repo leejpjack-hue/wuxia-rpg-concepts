@@ -12,7 +12,7 @@ import { SAVE_KEY } from "../src/platform/save-store.js";
 test("every non-protagonist hero appears as an illustrated named Story rival", () => {
   const kinds = new Set(ACTS.flatMap(act => act.encounters.flatMap(encounter => rosterForEncounter(encounter.id, "campaign"))));
   const rivals = [...kinds].map(kind => ({ ...DUEL_ENEMIES[kind], kind }));
-  for (const hero of HEROES.filter(hero => !isStoryHero(hero.id))) {
+  for (const hero of HEROES.filter(hero => !hero.hidden && !isStoryHero(hero.id))) {
     const rival = rivals.find(rival => rival.heroId === hero.id);
     assert(rival, `No Story rival for ${hero.id}`);
     assert.equal(rival.name, hero.name);
@@ -65,7 +65,7 @@ test("old unlocks and recruits cannot change Story roles or resume a rival check
   game.profile.earnedHeroes = ["mu-guiying", "liang-hongyu", "nie-yinniang"];
   game.profile.recruits = ["venom-adept"];
   for (const hero of HEROES) assert.equal(campaignHeroUnlocked(game.profile, hero.id), isStoryHero(hero.id));
-  for (const hero of HEROES.filter(hero => !isStoryHero(hero.id)))
+  for (const hero of HEROES.filter(hero => !hero.hidden && !isStoryHero(hero.id)))
     assert.throws(() => game.start(hero.id, "campaign"), /Quick play only|Story rival/);
   game.profile.checkpoint = { heroId: "guan-yu", actId: "jade-gate" };
   assert.equal(game.continueCheckpoint(), false);
@@ -94,4 +94,20 @@ test("named legends anchor their areas: tougher than the grunts, special due soo
   assert.equal(game.combat.intent().special, true); // due on the third exchange
   game.combat.act("attack");
   assert(game.g.duel.log.some(text => text.includes("unleashes")), "the legend unleashed the special");
+});
+
+test("hidden novel heroes stay off the selectable roster until the flag flips", () => {
+  const hidden = HEROES.filter(hero => hero.hidden);
+  assert.equal(hidden.length, 20);
+  assert.equal(hidden.filter(hero => hero.keyArt?.endsWith(".jpg")).length, 20);
+  const game = session();
+  assert.equal(HEROES.filter(hero => !hero.hidden && !hero.recruitedOnly).length, 15);
+  for (const hero of hidden) {
+    assert.equal(game.profile.unlockedHeroes.includes(hero.id), false);
+    assert.equal(isStoryHero(hero.id), false);
+    assert.throws(() => game.start(hero.id, "campaign"), /hidden until unlocked/);
+    assert.throws(() => game.start(hero.id, "quickplay", "jade-gate", quickParty(hero.id)), /hidden until unlocked/);
+  }
+  const shown = { ...hidden[0], hidden: false };
+  assert.equal(shown.hidden, false);
 });

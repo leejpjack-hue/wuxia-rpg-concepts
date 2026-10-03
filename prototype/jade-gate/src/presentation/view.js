@@ -22,10 +22,10 @@ export class GameView {
     this.ready = false;
     this.noticeTime = 0;
     this.onGesture = onGesture;
-    const roster = HEROES.filter((hero) => !hero.recruitedOnly || session.profile.recruits?.includes(hero.id));
+    const roster = HEROES.filter((hero) => !hero.hidden && (!hero.recruitedOnly || session.profile.recruits?.includes(hero.id)));
     this.$("heroes").innerHTML = roster.map(
       (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="assets/${hero.id}.png" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
+        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="${hero.keyArt || `assets/${hero.id}.png`}" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
@@ -248,7 +248,7 @@ export class GameView {
         : `${this.t("Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival")} · ${this.partyIds.length}/3`;
     if (this.$("open-codex")) {
       const codex = profile.codex || { heroes: {}, rivals: {}, curios: {} };
-      const total = HEROES.length + Object.keys(DUEL_ENEMIES).length + 12;
+      const total = HEROES.filter((hero) => !hero.hidden).length + Object.keys(DUEL_ENEMIES).length + 12;
       const seen = Object.keys(codex.heroes || {}).length +
         Object.keys(codex.rivals || {}).length + Object.keys(codex.curios || {}).length;
       this.$("open-codex").textContent = `${this.t("Codex")} ${seen}/${total}`;

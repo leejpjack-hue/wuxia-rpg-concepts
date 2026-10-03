@@ -125,7 +125,7 @@ export const ENEMY_SPECIALS = {
   "meridian-acolyte": { name: "Vortex Palm", scale: 2.0, drain: 15, focus: 3 },
   sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4 },
 };
-const heroSpecials = Object.fromEntries(HEROES.map(hero => {
+const heroSpecials = Object.fromEntries(HEROES.filter(hero => !hero.hidden).map(hero => {
   const sig = SIGNATURES[hero.id];
   return [`hero-${hero.id}`, {
     name: hero.skill, focus: 3, scale: sig.archetype === "execute" ? 2.4 : 1.8,

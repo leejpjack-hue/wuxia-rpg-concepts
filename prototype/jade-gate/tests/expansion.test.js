@@ -13,7 +13,7 @@ const game = (storage = memoryStorage()) =>
   new GameSession(new SaveStore(storage), { combatFactory: createCardCombat });
 
 test("every hero (and the recruit) carries a signature action", () => {
-  for (const hero of HEROES)
+  for (const hero of HEROES.filter((hero) => !hero.hidden))
     assert(SIGNATURES[hero.id], `${hero.id} lacks a signature`);
   for (const signature of Object.values(SIGNATURES)) {
     assert(signature.flow >= 15 && signature.flow <= 35);
