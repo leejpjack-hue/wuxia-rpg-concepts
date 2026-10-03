@@ -797,8 +797,8 @@
   {
     "id": "gu-dasao-sprite",
     "file": "assets/gu-dasao-sprite.png",
-    "method": "Strike cell from assets/gu-dasao-duel-poses.png (top-right quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
-    "prompt": "Roster sprite for Gu Dasao taken from the existing duel-sheet strike cell. Same costume and cleaver strike as that cell. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
+    "method": "Wind-up cell from assets/gu-dasao-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "prompt": "Roster sprite for Gu Dasao taken from the existing duel-sheet wind-up cell. Same costume, cleavers raised and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/gu-dasao.png"
   },
   {
@@ -841,8 +841,8 @@
   {
     "id": "qin-liangyu-sprite",
     "file": "assets/qin-liangyu-sprite.png",
-    "method": "Strike cell from assets/qin-liangyu-duel-poses.png (top-right quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
-    "prompt": "Roster sprite for Qin Liangyu taken from the existing duel-sheet strike cell. Same costume and spear thrust as that cell. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
+    "method": "Wind-up cell from assets/qin-liangyu-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "prompt": "Roster sprite for Qin Liangyu taken from the existing duel-sheet wind-up cell. Same costume, spear drawn back and ready, not mid-thrust. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/qin-liangyu.png"
   },
   {
@@ -885,8 +885,8 @@
   {
     "id": "bao-sanniang-sprite",
     "file": "assets/bao-sanniang-sprite.png",
-    "method": "Strike cell from assets/bao-sanniang-duel-poses.png (top-right quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
-    "prompt": "Roster sprite for Bao Sanniang taken from the existing duel-sheet strike cell. Same costume and sword strike as that cell. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
+    "method": "Wind-up cell from assets/bao-sanniang-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "prompt": "Roster sprite for Bao Sanniang taken from the existing duel-sheet wind-up cell. Same costume, blade held back and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/bao-sanniang.png"
   },
   {
