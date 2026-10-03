@@ -797,7 +797,7 @@
   {
     "id": "gu-dasao-sprite",
     "file": "assets/gu-dasao-sprite.png",
-    "method": "Wind-up cell from assets/gu-dasao-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Roster sprite for Gu Dasao taken from the existing duel-sheet wind-up cell. Same costume, cleavers raised and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/gu-dasao.png"
   },
@@ -841,7 +841,7 @@
   {
     "id": "qin-liangyu-sprite",
     "file": "assets/qin-liangyu-sprite.png",
-    "method": "Wind-up cell from assets/qin-liangyu-duel-poses.png (top-left quadrant). Black backdrop removed. Scaled down so the full figure, including the spear, fits a 1254 square RGBA canvas with an 8% side margin and the Zhao Yun sprite foot line. Not redrawn.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Roster sprite for Qin Liangyu taken from the existing duel-sheet wind-up cell. Same costume, spear drawn back and ready, not mid-thrust. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/qin-liangyu.png"
   },
@@ -885,7 +885,7 @@
   {
     "id": "bao-sanniang-sprite",
     "file": "assets/bao-sanniang-sprite.png",
-    "method": "Wind-up cell from assets/bao-sanniang-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Roster sprite for Bao Sanniang taken from the existing duel-sheet wind-up cell. Same costume, blade held back and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/bao-sanniang.png"
   },
@@ -2975,125 +2975,125 @@
   {
     "id": "jia-zheng-sprite",
     "file": "assets/jia-zheng-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Jia Zheng, the Rongguo steward: adult Chinese official in dark court robes with a white court tablet, full body facing right in a guarded stance, square canvas, alpha outside the figure."
   },
   {
     "id": "jia-yucun-sprite",
     "file": "assets/jia-yucun-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Jia Yucun, the provincial magistrate: adult Chinese official in grey-blue scholar robes with a court tablet, full body facing right in a measuring stance, square canvas, alpha outside the figure."
   },
   {
     "id": "bao-zheng-sprite",
     "file": "assets/bao-zheng-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Bao Zheng, the iron-faced judge: stern adult Chinese magistrate in black-and-red court robes holding a straight judge's blade, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "di-renjie-sprite",
     "file": "assets/di-renjie-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Di Renjie, the detective chancellor: adult Chinese official in crimson court robes with a scholar's fan, full body facing right in a reading stance, square canvas, alpha outside the figure."
   },
   {
     "id": "kuang-zhong-sprite",
     "file": "assets/kuang-zhong-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Kuang Zhong, the Suzhou magistrate: adult Chinese official in slate court robes with a court tablet, full body facing right in a holding stance, square canvas, alpha outside the figure."
   },
   {
     "id": "fan-jin-sprite",
     "file": "assets/fan-jin-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Fan Jin, the examination scholar: gaunt adult Chinese scholar in patched robes with a scholar's fan, wild-eyed, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "lu-su-sprite",
     "file": "assets/lu-su-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Lu Su, the coalition advisor: warm adult Chinese strategist in layered teal robes with a long spear, full body facing right in a bracing stance, square canvas, alpha outside the figure."
   },
   {
     "id": "xun-yu-sprite",
     "file": "assets/xun-yu-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Xun Yu, the strategist of Wei: composed adult Chinese advisor in dark indigo court robes with a scholar's fan, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "song-jiang-sprite",
     "file": "assets/song-jiang-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Song Jiang, the timely rain: bearded adult Chinese leader in dark-green outlaw robes, full body facing right in an open-armed stance, square canvas, alpha outside the figure."
   },
   {
     "id": "wu-yong-sprite",
     "file": "assets/wu-yong-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Wu Yong, the star of wisdom: lean adult Chinese strategist in patched scholar robes with a feathered fan, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "jia-yuanchun-sprite",
     "file": "assets/jia-yuanchun-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Jia Yuanchun, the imperial consort: adult Chinese noblewoman in layered phoenix-embroidered palace robes with a palace fan, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "xue-baochai-sprite",
     "file": "assets/xue-baochai-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Xue Baochai: adult Chinese noblewoman in dignified gold-trimmed robes with a golden locket and a slim blade fan, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "lin-daiyu-sprite",
     "file": "assets/lin-daiyu-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Lin Daiyu: slender adult Chinese poetess in pale mourning-white silks with a flower hoe and a hidden jian, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "wang-xifeng-sprite",
     "file": "assets/wang-xifeng-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Wang Xifeng: sharp-eyed adult Chinese household manager in vivid red-and-gold silks, paired concealed dao, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "diaochan-sprite",
     "file": "assets/diaochan-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Diaochan, the chain-scheme dancer: adult Chinese dancer in flowing moonlight silks with twin ribbon-daggers, full body facing right mid-turn, square canvas, alpha outside the figure."
   },
   {
     "id": "yang-yuhuan-sprite",
     "file": "assets/yang-yuhuan-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Yang Yuhuan, the precious consort: adult Chinese noblewoman in rainbow-skirt tang robes with a long silk streamer, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "zhen-huan-sprite",
     "file": "assets/zhen-huan-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Zhen Huan, the palace survivor: adult Chinese court lady in subdued plum court robes with a hairpin blade, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "empress-yixiu-sprite",
     "file": "assets/empress-yixiu-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Empress Yixiu, regent of the hall of twenty: adult Chinese empress in deep ceremonial gold robes with a jade scepter, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "hua-fei-sprite",
     "file": "assets/hua-fei-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Transparent roam sprite for Hua Fei, the favored consort: adult Chinese noblewoman in extravagant bright court silks with a horsewhisk and rings, full body facing right, square canvas, alpha outside the figure."
   },
   {
     "id": "zhao-min-sprite",
     "file": "assets/zhao-min-sprite.png",
-    "method": "User-generated Zhao Min ready stance, shared 2026-10-03. Image 1 of 4 downloaded from the public ChatGPT share; original 1254×1254 RGBA PNG copied byte-for-byte. Full boots and legs retained. No redraw, crop, resize or alpha conversion.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "prompt": "Approved adult Zhao Min ready stance: black short dress, open ivory shirt, tied long black hair and tall black boots. Right-facing full-body unarmed guard. True transparent background. This is an idle/ready sprite, not an attack or walking sequence.",
     "source": "https://chatgpt.com/s/m_6ac108d917348191bad512d5cf77ec3f",
     "sourceImage": 1,
-    "sha256": "cf3af34d8206dad2e779140f15c79c1eb924812e6b57758a04c3d3f3e720e219",
+    "sha256": "7e3725b4cc01dbc59f179f69761242c27d019c8974ed42c93473eaf4c5603d77",
     "reference": "assets/zhao-min.jpg",
     "runtimeApproved": true,
     "contract": {
@@ -3106,9 +3106,9 @@
   {
     "id": "zhao-min-duel-windup",
     "file": "assets/zhao-min-duel-windup.png",
-    "method": "User-generated raised-knee wind-up shared 2026-10-03; original 1254×1254 RGBA PNG copied byte-for-byte, with complete supporting boot.",
+    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
     "source": "https://chatgpt.com/s/m_6ac10d1407748191a3b654aaeb645331",
-    "sha256": "135855cc2e8f9e5e273f9ac1eb51d3be5347e1928e4b3570d2a12828eee7d45b",
+    "sha256": "da3d20f5351f50f3d73704fe335f45eb2284ad659241433e4222ad06c2b4fffb",
     "prompt": "Adult Zhao Min in black short dress, ivory open shirt and tall black boots; full-body right-facing raised-knee kick preparation, fists guarding the face. True transparent background.",
     "reference": "assets/zhao-min-sprite.png",
     "runtimeApproved": true,
