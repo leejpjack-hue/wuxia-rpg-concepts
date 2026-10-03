@@ -841,7 +841,7 @@
   {
     "id": "qin-liangyu-sprite",
     "file": "assets/qin-liangyu-sprite.png",
-    "method": "Wind-up cell from assets/qin-liangyu-duel-poses.png (top-left quadrant). Black backdrop removed. Placed on a 1254 square RGBA canvas with the Zhao Yun sprite foot margin. Not redrawn.",
+    "method": "Wind-up cell from assets/qin-liangyu-duel-poses.png (top-left quadrant). Black backdrop removed. Scaled down so the full figure, including the spear, fits a 1254 square RGBA canvas with an 8% side margin and the Zhao Yun sprite foot line. Not redrawn.",
     "prompt": "Roster sprite for Qin Liangyu taken from the existing duel-sheet wind-up cell. Same costume, spear drawn back and ready, not mid-thrust. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
     "reference": "assets/qin-liangyu.png"
   },
