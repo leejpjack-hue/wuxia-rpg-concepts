@@ -1,4 +1,4 @@
-import { TRAILER_VOICE, TRAILER_DURATION } from '../content/trailer.js';
+import { TRAILER_VOICE, TRAILER_DURATION, TRAILER_IMPACTS, TRAILER_CUTS } from '../content/trailer.js';
 
 // One context owns the score, effects, voice and clock, including pause/resume.
 export class TrailerAudio {
@@ -31,6 +31,14 @@ export class TrailerAudio {
     master.gain.setValueAtTime(1, this.origin + 9.65);
     master.gain.linearRampToValueAtTime(0, this.origin + TRAILER_DURATION);
     this.mix = master; this.limiter = limiter;
+    const score = ctx.createGain(); score.connect(master); this.score = score;
+    score.gain.setValueAtTime(.8, this.origin);
+    for (const cue of TRAILER_VOICE) {
+      score.gain.setValueAtTime(.8, this.origin + Math.max(0, cue.start - .08));
+      score.gain.linearRampToValueAtTime(.46, this.origin + cue.start);
+      score.gain.setValueAtTime(.46, this.origin + cue.end - .05);
+      score.gain.linearRampToValueAtTime(.8, this.origin + cue.end);
+    }
     const tone = (at, frequency, duration, level, type = 'sine', endFrequency = frequency) => {
       const oscillator = ctx.createOscillator(), gain = ctx.createGain();
       oscillator.type = type; oscillator.frequency.setValueAtTime(frequency, this.origin + at);
@@ -38,7 +46,7 @@ export class TrailerAudio {
       gain.gain.setValueAtTime(0, this.origin + at);
       gain.gain.linearRampToValueAtTime(level, this.origin + at + .012);
       gain.gain.exponentialRampToValueAtTime(.0001, this.origin + at + duration);
-      oscillator.connect(gain); gain.connect(master);
+      oscillator.connect(gain); gain.connect(score);
       oscillator.start(this.origin + at); oscillator.stop(this.origin + at + duration);
       oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
       this.nodes.push(oscillator);
@@ -51,12 +59,18 @@ export class TrailerAudio {
       tone(at, notes[(i * 3 + Math.floor(i / 8)) % notes.length], .6, .045, 'triangle');
       if (i % 2 === 0) tone(at, 105, .22, .17, 'sine', 36);
     }
-    for (const at of [0,2.15,4.2,5.15,5.65,6.5,8]) {
+    const reveal = TRAILER_CUTS.find(c => c.id === 'reveal').start;
+    for (const at of [0, 2.15, 4.2, ...TRAILER_IMPACTS.map(hit => hit.at), 6.5, reveal]) {
       tone(at, 125, .5, .22, 'sine', 38);
-      this.noise(at, at === 8 ? 1.7 : .36, .085, master);
+      this.noise(at, at === reveal ? 1.3 : .3, .085, score);
     }
-    this.noise(4.65, .48, .12, master);
-    [146.83,293.66,440,587.33].forEach(f => tone(8, f, 1.95, .058, 'triangle'));
+    // Lead the two visible weapon contacts with a short blade sweep.
+    for (const hit of TRAILER_IMPACTS) {
+      this.noise(hit.at - .22, .22, .10 * hit.power, score);
+      [740, 1110, 1776].forEach(f => tone(hit.at, f, .24, .025 * hit.power, 'sine', f * .92));
+    }
+    this.noise(5.5, .44, .07, score);
+    [146.83,293.66,440,587.33].forEach(f => tone(reveal, f, 1.35, .058, 'triangle'));
     for (const cue of TRAILER_VOICE) {
       const source = ctx.createBufferSource(), gain = ctx.createGain();
       source.buffer = this.buffers.get(`${language}-${cue.file}`);
@@ -88,7 +102,7 @@ export class TrailerAudio {
   resume() { return this.context?.resume(); }
   stop() {
     for (const node of this.nodes) { try { node.stop(); } catch {} node.disconnect(); }
-    this.nodes = []; this.mix?.disconnect(); this.limiter?.disconnect();
+    this.nodes = []; this.score?.disconnect(); this.mix?.disconnect(); this.limiter?.disconnect();
   }
   dispose() { this.stop(); return this.context?.close(); }
 }

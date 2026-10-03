@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { session, clearEncounter, quickParty } from './helpers.js';
 import { groundPoint, onGround } from '../src/domain/ground.js';
 import { HERO_IDS, HEROES } from '../src/content/heroes.js';
-import { StrikeTimeline, DuelCinematic, CUTS, cutFor } from '../src/presentation/duel-cinematic.js';
+import { StrikeTimeline, DuelCinematic, CUTS, COUNTER_CUTS, cutFor, rivalFilmIdentity } from '../src/presentation/duel-cinematic.js';
 import { translate } from '../src/locales/i18n.js';
 const frames = (g,n,input={}) => { for(let i=0;i<n;i++) g.step(1/60,input); };
 function crossfire() {
@@ -92,7 +92,7 @@ test('film cuts run in time order; a technique charges up before it strikes, a p
 
 function filmFixture(manifest=[]){
   const parts=new Map(), cues=[], callbacks=[];
-  const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(){}},
+  const node={hidden:false,className:'',dataset:{},innerHTML:'',style:{setProperty(name,value){this[name]=value;}},
     // Real-DOM classList semantics backed by className, so counter/finisher toggles are observable.
     classList:{
       add(...names){node.className=[...new Set([...node.className.split(/\s+/).filter(Boolean),...names])].join(' ');},
@@ -273,7 +273,7 @@ test('counter-special shows special telegraph art on reply/counter then clears',
   assert.equal(art.hidden,true); // not yet — appears on reply
   for(const {fn} of callbacks.sort((a,b)=>a.ms-b.ms)){
     fn();
-    if(node.dataset.phase==='reply'||node.dataset.phase==='counter'){
+    if(['reply','counter-focus','counter'].includes(node.dataset.phase)){
       assert.equal(art.hidden,false);
       assert.match(art.src,/special-guard\.png$/);
     }
@@ -332,7 +332,8 @@ test('named rival normal and special replies switch their own poses and cancella
     const tasks=callbacks.splice(0).sort((a,b)=>a.ms-b.ms);
     for(const task of tasks){
       task.fn();
-      if(node.dataset.phase==='reply')assert.equal(img.dataset.duelPose,intent==='special'?'focus':'windup');
+      if(node.dataset.phase==='reply')assert.equal(img.dataset.duelPose,'windup');
+      if(node.dataset.phase==='counter-focus')assert.equal(img.dataset.duelPose,'focus');
       if(node.dataset.phase==='counter'){
         assert.equal(img.dataset.duelPose,intent==='special'?'special':'strike');
         film.cancel();break;
@@ -359,4 +360,74 @@ test('assist poses belong to the follower and clear back to the follower sprite 
   for(const {fn} of callbacks){fn();if(!node.hidden)assert.equal(img.dataset.duelPose,'strike');}
   assert.equal(commits,1);assert.equal(img.src,'assets/guan-yu-sprite.png');
   assert.equal(img.style.backgroundImage,'');
+});
+
+
+test('rival special charges, switches identity and poses, then commits once after its impact hold',()=>{
+  for(const action of ['attack','guard','tea','technique','signature']){
+    const {film,node,callbacks,cues}=filmFixture([duelAtlas(hero.id),duelAtlas('guan-yu')]);
+    const guan=HEROES.find(h=>h.id==='guan-yu'), enemy={...poseRival,name:guan.name};
+    let commits=0;
+    film.play(action,hero,enemy,{damage:action==='attack'?10:0,incoming:12,intent:'special'},false,()=>commits++);
+    assert.equal(node.style['--strike-color'],hero.color);
+    const phases=['prepare'], times={};
+    const tasks=callbacks.sort((a,b)=>a.ms-b.ms);
+    for(const {fn,ms} of tasks.slice(0,-1)){
+      fn(); times[node.dataset.phase]=ms;
+      if(phases.at(-1)!==node.dataset.phase)phases.push(node.dataset.phase);
+      assert.equal(commits,0);
+      if(node.dataset.phase==='counter-focus'){
+        assert.equal(node.dataset.attacker,'enemy');
+        assert.equal(node.querySelector('.film-enemy').dataset.duelPose,'focus');
+        assert.equal(node.querySelector('.film-title').textContent,guan.skill);
+        assert.equal(node.querySelector('.film-seal').textContent,guan.cn);
+        assert.equal(node.style['--strike-color'],guan.color);
+        assert.equal(node.querySelector('.film-action-art').hidden,false);
+      }
+      if(['counter','counter-impact'].includes(node.dataset.phase))
+        assert.equal(node.querySelector('.film-enemy').dataset.duelPose,'special');
+    }
+    const opening=['prepare',...(['technique','signature'].includes(action)?['focus']:[])];
+    assert.deepEqual(phases,[...opening,'strike','impact','reply','counter-focus','counter','counter-impact']);
+    assert.equal(times.counter-times['counter-focus'],900);
+    assert.ok(tasks.at(-1).ms-times['counter-impact']>=620);
+    assert.ok(cues.includes('charge'));assert.ok(cues.includes('special'));
+    assert.equal(node.querySelector('.film-number').textContent,'−12');
+    tasks.at(-1).fn();tasks.at(-1).fn();assert.equal(commits,1);
+    assert.equal(node.hidden,true);
+    film.play('attack',hero,enemy,{incoming:0},false,()=>{});
+    assert.equal(node.dataset.attacker,'hero');assert.equal(node.style['--strike-color'],hero.color);
+  }
+});
+test('cancel during the rival special focus prevents stale attack, impact and completion callbacks',()=>{
+  const {film,node,callbacks,cues}=filmFixture([duelAtlas('guan-yu')]);
+  let commits=0;
+  film.play('attack',hero,poseRival,{incoming:12,intent:'special'},false,()=>commits++);
+  const tasks=callbacks.sort((a,b)=>a.ms-b.ms);
+  for(const {fn} of tasks){fn();if(node.dataset.phase==='counter-focus')break;}
+  film.cancel();const sounds=cues.length;
+  tasks.forEach(({fn})=>fn());
+  assert.equal(commits,0);assert.equal(cues.length,sounds);assert.equal(node.hidden,true);
+  assert.equal(node.querySelector('.film-enemy').src,'assets/guan-yu-sprite.png');
+  assert.equal(node.querySelector('.film-action-art').hidden,true);
+});
+test('a special with no incoming damage and reduced motion never charges or displays special art',()=>{
+  for(const [incoming,reduced] of [[0,false],[12,true]]){
+    const {film,node,callbacks,cues}=filmFixture();
+    film.play('guard',hero,{...rival,kind:'guard'},{incoming,intent:'special'},reduced,()=>{});
+    for(const {fn} of callbacks){fn();assert.equal(node.querySelector('.film-action-art').hidden,true);}
+    assert.ok(!cues.includes('charge'));assert.ok(!cues.includes('special'));
+  }
+});
+test('rival motion uses its own identity and bosses retain their costume-specific sprite fallback',()=>{
+  for(const fighter of HEROES){
+    const identity=rivalFilmIdentity({heroId:fighter.id,kind:`hero-${fighter.id}`,art:`${fighter.id}-sprite`});
+    assert.equal(identity.style,fighter.id);assert.equal(identity.color,fighter.color);assert.equal(identity.special,fighter.skill);
+  }
+  assert.equal(rivalFilmIdentity({heroId:'lu-bu',kind:'lu-bu-rival',art:'lu-bu-rival-sprite'}).special,'Skyfall Halberd');
+  const {film,node,callbacks}=filmFixture([duelAtlas('lu-bu')]);
+  film.play('attack',hero,{heroId:'lu-bu',kind:'lu-bu-rival',art:'lu-bu-rival-sprite'},{incoming:10,intent:'special'},false,()=>{});
+  for(const {fn} of callbacks){fn();assert.equal(node.querySelector('.film-enemy').src,'assets/lu-bu-rival-sprite.png');}
+  assert.equal(COUNTER_CUTS.special.at(-1)[0],'end');
+  assert.notEqual(translate('RIVAL TECHNIQUE'),'RIVAL TECHNIQUE');
 });
