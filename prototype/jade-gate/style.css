@@ -101,6 +101,35 @@ nav button[aria-pressed="true"] {
   color: var(--gold);
   background: #1a2826;
 }
+.menu-toggle {
+  width: fit-content;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  cursor: pointer;
+  list-style-position: inside;
+}
+.menu-toggle::marker { color: var(--jade); }
+.menu-toggle:hover { background: #263331; border-color: var(--jade); }
+.menu-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
+.header-menu { position: relative; margin-left: auto; z-index: 5; }
+.header-menu > summary { margin-left: auto; }
+.header-menu > nav {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(650px, calc(100vw - 40px));
+  padding: 18px;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px #0008;
+}
+.header-menu nav a { display: block; }
+.header-menu nav button { font-size: 12px; padding: 8px 12px; }
 main {
   max-width: 1500px;
   margin: auto;

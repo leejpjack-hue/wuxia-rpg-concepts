@@ -20,6 +20,7 @@
 }
 .roam-stage {
   position: relative;
+  isolation: isolate;
   width: 100%;
   aspect-ratio: 16 / 9;
   /* Per-act ground plate on the 1280×720 frame. applyCamera pans it. */
@@ -53,6 +54,9 @@
 .roam-rival.first-blood {
   filter: drop-shadow(0 0 14px #ff9d6bbb) saturate(1.35);
 }
+.roam-menu { margin-top: 16px; }
+.roam-menu > summary { margin: 0 auto; }
+.roam-menu[open] > summary { margin-bottom: 18px; }
 .roam-controls {
   display: flex;
   align-items: center;

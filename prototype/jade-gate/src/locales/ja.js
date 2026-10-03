@@ -20,6 +20,8 @@ export const messages = {
   'A WUXIA CARD RPG': '武侠カードRPG',
   'Art collection ↗': '画廊 ↗',
   'Language': '言語',
+  'Menu': 'メニュー', 'Settings and links': '設定とリンク',
+  'Controls and route map': '操作と経路図',
   'Sound on': '音声：入', 'Sound off': '音声：切',
   'Music on': '音楽：入', 'Music off': '音楽：切',
   'Motion on': '演出：入', 'Motion reduced': '演出：控えめ',
