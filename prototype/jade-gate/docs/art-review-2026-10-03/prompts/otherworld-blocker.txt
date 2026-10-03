@@ -1,0 +1,7 @@
+# otherworld-blocker
+
+Status: RECOMMENDED NEW / whole-prop maze blocker; requires new manifest row and scene wiring
+Attach: assets/granite-pine-blocker.png for camera angle and prop footprint; otherworld-ground.png for palette
+Delivery filename: assets/otherworld-blocker.png
+
+ONE isolated cluster of broken paper-white Chinese lattice screens and pale stone rubble for a haunted examination-hall street. Low battered carved timber lattice sections, weathered whitewashed wood, pale grey fractured footing stones and a little dull jade moss; restrained ash-grey and cold jade palette matching the attached otherworld ground. A compact irregular rounded footprint, complete silhouette viewed from the same raised three-quarter game camera as the attached blocker. Visibly solid and blocking at 320 world units; no central passage through the prop. Keep screens low enough to read as an obstacle, not a giant building. Entire cluster inside an 8 percent safe margin. Match the ground lighting with a subtle warm upper-left edge. Square 1024x1024 PNG with TRUE transparent alpha. No flat ground rectangle, floor tile, painted checkerboard, cast shadow, black background, glow, characters, sky, text, grid or border. This is a whole transparent prop, NOT an opaque tileable wall texture.

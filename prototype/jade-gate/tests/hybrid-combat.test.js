@@ -130,6 +130,21 @@ test('reduced motion skips the duel intro entirely',()=>{
   film.intro(hero,rival,false,true);
   assert.equal(node.hidden,true);assert.equal(callbacks.length,0);assert.deepEqual(cues,[]);
 });
+
+test('Zhao Min uses her approved transparent ready sprite in opening and non-attack film beats',()=>{
+  const zhaoMin=HEROES.find(h=>h.id==='zhao-min');
+  const boss={kind:'zhao-min-rival',art:'zhao-min-sprite',name:'Zhao Min',title:'Bridge keeper'};
+  const {film,node,flush}=filmFixture();
+  film.intro(hero,boss,false,false);
+  assert.equal(node.querySelector('.film-enemy').src,'assets/zhao-min-sprite.png');
+  flush();
+  for(const reduced of [false,true]) {
+    film.play('guard',zhaoMin,boss,{damage:0,incoming:0},reduced,()=>{});
+    assert.equal(node.querySelector('.film-hero').src,'assets/zhao-min-sprite.png');
+    assert.equal(node.querySelector('.film-enemy').src,'assets/zhao-min-sprite.png');
+    flush();
+  }
+});
 test('acting during the intro cuts to the technique film; intro beats never fire and the turn commits once',()=>{
   const {film,node,cues,callbacks,flush}=filmFixture();
   film.intro(hero,rival,false,false);

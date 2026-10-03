@@ -132,6 +132,10 @@ Validation includes a shared-roster contact/duel test, every non-protagonist ide
 
 ### Card-only body poses (1 October 2026)
 
+A hero can declare `cinematicArt` as a reviewed transparent still-image path independently of its opaque gallery `keyArt`. Zhao Min uses her user-generated full-body ready sprite for opening, guard and reduced-motion shots; action poses resolve separately through the atlas and optional file overrides. This override also resolves by the story rival's art identity.
+
+An atlas can also declare partial `poseFiles` keyed by `windup`, `strike`, `focus` or `special`. Each path must reference a runtime-approved square-alpha manifest asset. The renderer displays these native single-frame PNGs without atlas cropping, then returns to the existing atlas for other poses. Zhao Min's raised-knee wind-up and ready-stance focus use this path while her normal/special contact images await replacement.
+
 `src/platform/duel-poses.js` resolves an approved `<fighter-id>-duel-poses` atlas with four named cells: `windup`, `strike`, `focus`, `special`. Existing reviewed sheets can declare the same cells explicitly (Lu Zhishen). Hero attacks and rival replies switch pose at cinematic beats and hold contact artwork through impact. Assists use the follower’s own atlas. Cancellation clears both sides; reduced motion uses stills and the existing short timing. Combat still commits once at the original timeline completion. Walking sheets remain independent. Signatures share their hero’s technique choreography.
 
 Generation failed for Zhao Yun and Hu Sanniang; the user deferred further generation. No new pose PNGs are claimed. Lu Zhishen’s existing frames are wired; the other fifteen heroes continue with their existing sprites until the pending art is delivered. See `prototype/jade-gate/docs/DUEL-ACTION-ASSETS.md` for statuses and prompts.

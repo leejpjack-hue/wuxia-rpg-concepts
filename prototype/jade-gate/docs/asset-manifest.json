@@ -2910,7 +2910,7 @@
   {
     "id": "zhao-min-duel-poses",
     "file": "assets/zhao-min-duel-poses.png",
-    "method": "Matted from the existing assets/zhao-min-duel-poses.jpg (1280x720 2x2 RGB sheet) with rembg; resampled into a 1024x1024 square RGBA atlas. Not redrawn or regenerated with an image model.",
+    "method": "Matted from the existing assets/zhao-min-duel-poses.jpg (1280x720 2x2 RGB sheet) with rembg; resampled into a 1024x1024 square RGBA atlas. Not redrawn or regenerated with an image model. Native full-body wind-up and guard-focus overrides supplied by the user on 2026-10-03; strike/special remain atlas crops pending replacement.",
     "prompt": "Hidden 2x2 duel atlas for Zhao Min (赵敏). Transparent cutouts matted from the shipped JPEG sheet; character/costume/weapon/motion strokes retained; studio backdrop, fleur-de-lis, and red seal removed. Cell order: windup, strike, focus, special. Not redrawn.",
     "runtimeApproved": true,
     "duelPoses": {
@@ -2966,6 +2966,10 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
+    },
+    "poseFiles": {
+      "windup": "assets/zhao-min-duel-windup.png",
+      "focus": "assets/zhao-min-sprite.png"
     }
   },
   {
@@ -3085,7 +3089,34 @@
   {
     "id": "zhao-min-sprite",
     "file": "assets/zhao-min-sprite.png",
-    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V's bridge keeper. Not generated in this change. Bytes unchanged.",
-    "prompt": "Transparent roam sprite for Zhao Min, keeper of the cloud causeway: adult Chinese-Mongol princess in riding leathers over bright silk, silver soft sword and open iron fan, full body facing right, square canvas, alpha outside the figure."
+    "method": "User-generated Zhao Min ready stance, shared 2026-10-03. Image 1 of 4 downloaded from the public ChatGPT share; original 1254×1254 RGBA PNG copied byte-for-byte. Full boots and legs retained. No redraw, crop, resize or alpha conversion.",
+    "prompt": "Approved adult Zhao Min ready stance: black short dress, open ivory shirt, tied long black hair and tall black boots. Right-facing full-body unarmed guard. True transparent background. This is an idle/ready sprite, not an attack or walking sequence.",
+    "source": "https://chatgpt.com/s/m_6ac108d917348191bad512d5cf77ec3f",
+    "sourceImage": 1,
+    "sha256": "cf3af34d8206dad2e779140f15c79c1eb924812e6b57758a04c3d3f3e720e219",
+    "reference": "assets/zhao-min.jpg",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "zhao-min-duel-windup",
+    "file": "assets/zhao-min-duel-windup.png",
+    "method": "User-generated raised-knee wind-up shared 2026-10-03; original 1254×1254 RGBA PNG copied byte-for-byte, with complete supporting boot.",
+    "source": "https://chatgpt.com/s/m_6ac10d1407748191a3b654aaeb645331",
+    "sha256": "135855cc2e8f9e5e273f9ac1eb51d3be5347e1928e4b3570d2a12828eee7d45b",
+    "prompt": "Adult Zhao Min in black short dress, ivory open shirt and tall black boots; full-body right-facing raised-knee kick preparation, fists guarding the face. True transparent background.",
+    "reference": "assets/zhao-min-sprite.png",
+    "runtimeApproved": true,
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   }
 ]

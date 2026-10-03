@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import manifest from '../docs/asset-manifest.json' with {type:'json'};
 import { HEROES } from '../src/content/heroes.js';
-import {loadDuelPoses,applyDuelPose,DUEL_POSE_CELLS} from '../src/platform/duel-poses.js';
+import {loadDuelPoses,applyDuelPose,clearDuelPose,DUEL_POSE_CELLS} from '../src/platform/duel-poses.js';
 import {sheetGrid,loadSheetManifest} from '../src/platform/sheet-anim.js';
 
 test('each pose crops exactly its own quadrant; legacy monk cells select the attack row',()=>{
@@ -76,4 +76,30 @@ test('hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PN
   }
   assert.equal(loadDuelPoses(manifest, 'qin-liangyu').file, 'assets/qin-liangyu-duel-poses.png');
   assert.equal(loadDuelPoses(manifest, 'guan-yu').poseRects, undefined);
+});
+
+test('Zhao Min native wind-up and focus keep full canvases while contact poses retain the existing atlas',()=>{
+ const atlas=loadDuelPoses(manifest,'zhao-min');
+ const classes=new Set();
+ const node={src:'assets/zhao-min-sprite.png',dataset:{},style:{},classList:{add:n=>classes.add(n),remove:n=>classes.delete(n)}};
+ for(const [pose,file] of [['windup','zhao-min-duel-windup'],['focus','zhao-min-sprite']]) {
+  applyDuelPose(node,atlas,pose);
+  assert.equal(node.style.backgroundImage,`url("assets/${file}.png")`);
+  assert.equal(node.style.backgroundSize,'100% 100%');
+  assert.equal(node.style.backgroundPosition,'0% 0%');
+  assert.equal(node.style.aspectRatio,'');
+  applyDuelPose(node,atlas,'strike');
+  assert.equal(node.style.backgroundImage,'url("assets/zhao-min-duel-poses.png")');
+  assert.notEqual(node.style.backgroundSize,'100% 100%');
+ }
+ clearDuelPose(node);
+ assert.equal(node.src,'assets/zhao-min-sprite.png');
+ assert.equal(node.style.backgroundImage,'');
+ assert.equal(classes.has('duel-pose'),false);
+});
+
+test('separate duel poses reject unknown pose names and unreviewed or non-transparent files',()=>{
+ const row=manifest.find(r=>r.id==='zhao-min-duel-poses');
+ for(const poseFiles of [{missing:'assets/zhao-min-sprite.png'},{windup:'assets/not-reviewed.png'},{focus:'assets/zhao-min.jpg'}])
+  assert.equal(loadDuelPoses([...manifest.filter(r=>r.id!==row.id),{...row,poseFiles}],'zhao-min'),null);
 });

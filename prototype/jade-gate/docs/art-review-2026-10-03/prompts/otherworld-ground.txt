@@ -1,0 +1,7 @@
+# otherworld-ground
+
+Status: REQUIRED NEW / Act V exploration
+Attach: assets/meridian-citadel.png for rendering style; your approved fog-bound corpse-street board for composition
+Delivery filename: assets/otherworld-ground.png
+
+A haunted Chinese otherworld street at pale dawn after a golden sky-rift. A broad continuous band of weathered pale grey stone paving fills the lower 80 percent of the image, viewed from a raised three-quarter game camera. Low moss, cracked curb stones, dim paper lanterns and collapsed paifang fragments along the top and bottom verges only. A few respectfully covered fallen figures along distant verges, no graphic injuries. Cold jade-grey ambient light with very restrained amber lantern accents; fine shallow fog along distant architecture, no opaque fog across the walkable ground. Keep all central ground flat and visibly walkable. Put any horizon and distant buildings only in the upper 15 percent. Make left and right edges join as a horizontally repeating street: identical paving scale, level and lighting; no central vanishing-point composition. No fixed maze, blocking furniture, people or enormous stairs inside the play band. Crisp premium painterly wuxia environmental rendering. Landscape PNG, native 3072x1728 preferred or at least 2048x1152, opaque. No letters, seals, logo, watermark, UI, border or characters.

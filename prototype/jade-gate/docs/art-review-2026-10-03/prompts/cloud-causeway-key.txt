@@ -1,0 +1,7 @@
+# cloud-causeway-key
+
+Status: OPTIONAL STORY KEY / needs finale backdrop support before it can display
+Attach: your approved cloud causeway reference board; otherworld.png for painting style
+Delivery filename: assets/cloud-causeway-key.png
+
+Cinematic wuxia finale: an ancient pale stone causeway crosses a vast sea of clouds toward a distant Chinese palace and a warm golden gateway home. Broken lattice railings and weathered stone details, believable continuous bridge surface, cold jade-grey mist below and warm amber light at the far end. No maze or detached platforms. Wide 16:9 establishing camera, palace high in the frame, restrained open central area for finale text. Match the premium painterly rendering of the attached otherworld background. Opaque landscape PNG, native 3072x1728 preferred or at least 2048x1152. No characters, readable lettering, signatures, logo, UI, frame or border.
