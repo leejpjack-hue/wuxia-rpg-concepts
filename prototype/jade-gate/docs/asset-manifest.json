@@ -797,8 +797,8 @@
   {
     "id": "gu-dasao-sprite",
     "file": "assets/gu-dasao-sprite.png",
-    "method": "Antigravity remake · Jev ~0.75 transparent sprite 2026-09-29",
-    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Gu Dasao: red headband, charcoal kit, blood-red sash, exactly two broad cleaver-knives. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "method": "Cut from the approved 2026-10-03 key assets/gu-dasao.png. Original portrait pixels only, matted onto a 1254 square RGBA canvas with the same margins as zhao-yun-sprite.png. Old sprite pixels removed. Not a new drawing.",
+    "prompt": "Roster sprite for Gu Dasao, cut from the approved key assets/gu-dasao.png. Same adult inn-fighter, red headband, charcoal kit, blood-red sash, exactly two cleavers. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No redraw, no old sprite pixels, no ground, shadow, or labels.",
     "reference": "assets/gu-dasao.png"
   },
   {
@@ -841,8 +841,8 @@
   {
     "id": "qin-liangyu-sprite",
     "file": "assets/qin-liangyu-sprite.png",
-    "method": "Antigravity remake · Jev ~0.75 transparent sprite 2026-09-29",
-    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Same adult Qin Liangyu: crimson-trimmed lamellar, red cape, exactly one white-shaft spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "method": "Cut from the approved 2026-10-03 key assets/qin-liangyu.png. Original portrait pixels only, matted onto a 1254 square RGBA canvas with the same margins as zhao-yun-sprite.png. Old sprite pixels removed. Not a new drawing.",
+    "prompt": "Roster sprite for Qin Liangyu, cut from the approved key assets/qin-liangyu.png. Same adult commander in ivory and crimson with exactly one white-shaft spear. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No redraw, no old sprite pixels, no ground, shadow, or labels.",
     "reference": "assets/qin-liangyu.png"
   },
   {
@@ -885,8 +885,8 @@
   {
     "id": "bao-sanniang-sprite",
     "file": "assets/bao-sanniang-sprite.png",
-    "method": "Antigravity remake · transparent sprite 2026-09-30; GrabCut alpha-keyed from Stitch checkerboard JPEG",
-    "prompt": "Locked Antigravity remake 2026-09-30. Same adult Bao Sanniang: jade-green charcoal kit, crimson sash, long spear. Square 1024 RGBA sprite, elevated three-quarter ready pose facing right, actual transparent background. No ground, shadow, or labels.",
+    "method": "Cut from the approved 2026-10-03 key assets/bao-sanniang.png. Original portrait pixels only, matted onto a 1254 square RGBA canvas with the same margins as zhao-yun-sprite.png. Old sprite pixels removed. Not a new drawing.",
+    "prompt": "Roster sprite for Bao Sanniang, cut from the approved key assets/bao-sanniang.png. Same adult spear heroine in a jade-green wrap with a crimson sash and exactly one long spear. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No redraw, no old sprite pixels, no ground, shadow, or labels.",
     "reference": "assets/bao-sanniang.png"
   },
   {
