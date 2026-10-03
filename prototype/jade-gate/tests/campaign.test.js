@@ -102,7 +102,7 @@ test("Act IV finale: the whole campaign clears into the Sovereign's throne and t
   assert.equal(game.mode, "waystation", `finale walk ended on ${game.mode}`);
   assert.ok(picks.includes("boss-intro") && picks.includes("boss-fall"));
   assert(game.profile.completedActs.includes("meridian-citadel"));
-  assert.equal(game.act.next, null); // no further act: the oath stands fulfilled
+  assert.equal(game.act.next, "otherworld"); // the rift opens after the citadel
 });
 test("Lü Bu is locked in new campaigns but playable in quick play", () => {
   const game = session();

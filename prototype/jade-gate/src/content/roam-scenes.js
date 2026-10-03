@@ -19,5 +19,12 @@ export const ROAM_SCENES = {
     blockerFilter: "brightness(.78) saturate(.75)",
     tileWidth: 4096, artHeight: 2880, topCrop: 550,
   },
+  // Act V placeholder plate: the citadel painting tinted toward a cold
+  // otherworld dawn until the rift-street ground art lands (ASSET-REQUIREMENTS §10).
+  "otherworld": {
+    art: "meridian-citadel", blocker: "granite-pine-blocker",
+    blockerFilter: "brightness(.6) saturate(.6) hue-rotate(-24deg)",
+    tileWidth: 4096, artHeight: 2880, topCrop: 460,
+  },
 };
 export const roamScene = actId => ROAM_SCENES[actId] || ROAM_SCENES["jade-gate"];

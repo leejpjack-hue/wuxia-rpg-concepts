@@ -219,5 +219,59 @@ export function dialogueFor(key, hero) {
       line("The Ashen Sovereign", "So the moon sets… Keep your jianghu, then. It was never the throne I feared losing — only the silence after."),
       line("The road ahead", "The blood moon fades over the Meridian Citadel. The gates open onto a ordinary dawn, and the jianghu belongs to whoever walks it kindly. The oath is fulfilled."),
     ];
+  // Act V — the otherworld: rift, corpse street, hall of twenty, first round,
+  // and the cloud causeway home. The trio lands a hundred to two hundred
+  // years after their own story, among twenty legends stolen from other books.
+  if (key === "rift-arrival")
+    return [
+      line(
+        "The Rift",
+        "The dawn after the Sovereign's fall lasts one heartbeat. A golden seam splits the sky above the shattered gates and drinks the blood moon's last light — then it takes the three of you, the way a river takes leaves.",
+      ),
+      line(
+        "The far side",
+        "Stone under your back. Fog, and a street that smells of old smoke. The stars are wrong, the dynasty on the coins is one you never served — a hundred years, maybe two, from the gate you saved.",
+      ),
+      line(hero.name, "Then we save this street the same way. Together — watch my back when we rise."),
+    ];
+  if (key === "hall-reveal")
+    return [
+      line(
+        "The Hall of Twenty",
+        "Beyond the great gate: a hall vast as an examination courtyard. Twenty desks stand in ranked rows, and twenty faces turn towards you as one — judges, chancellors, consorts, legends pulled out of their own unfinished stories.",
+      ),
+      line(
+        "Empress Yixiu",
+        "Stray characters from a closed book. The edict gathered us here to be written into a kinder court, and it will do the same for you. Kneel and be edited gently — or stand, duel all twenty of us, and win the bridge home.",
+      ),
+      line(hero.name, "We are not characters. We are the hand that holds the pen. Let the bench take its seats — we will call on them one by one."),
+    ];
+  if (key === "first-round")
+    return [
+      line(
+        "The Lattice Halls",
+        "The twenty rise from their desks and scatter into the maze of lattice screens — silk sleeves, judge's blades, fans half-opened behind every panel. The first round begins where the lanterns burn lowest.",
+      ),
+      line(hero.name, "Better to fight them on my feet than be judged on my knees. Open the screens — first round."),
+    ];
+  if (key === "zhao-min-rival-intro")
+    return [
+      line(
+        "Zhao Min",
+        "Nineteen of my twenty have fallen to your blades, and the edict is nearly spent. I am Zhao Min — the last keeper. The bridge home crosses my shadow, and I have been looking forward to this duel since the hall went quiet.",
+      ),
+      line(hero.name, "A keeper who smiles at her own gate. Then let it be a duel worth crossing for — after you, the clouds part."),
+    ];
+  if (key === "zhao-min-rival-fall")
+    return [
+      line(
+        "Zhao Min",
+        "Well struck… the bond snaps — you feel it too, don't you? The hall was a cage; the bridge was always yours. Cross while the sky still remembers your names.",
+      ),
+      line(
+        "The road home",
+        "The twentieth desk stands empty. Below the causeway the clouds open onto your own morning — a hundred years untouched, a gate still worth guarding. The story folds itself shut behind you as you walk.",
+      ),
+    ];
   throw new Error(`Unknown dialogue: ${key}`);
 }

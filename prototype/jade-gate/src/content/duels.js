@@ -1,4 +1,4 @@
-import { STORY_RIVALS, STORY_ROSTERS } from "./story-rivals.js";
+import { STORY_RIVALS, STORY_ROSTERS, OTHERWORLD_RIVALS } from "./story-rivals.js";
 // Card combat tuning is separate from the archived real-time arena rules.
 // Quick Play retains its original roster; Story uses named hero rival rosters.
 export const DUEL_ROSTERS = {
@@ -23,6 +23,13 @@ export const DUEL_ROSTERS = {
   "inner-guard": ["jade-sentinel", "meridian-acolyte", "jade-sentinel"],
   "citadel-watch": ["meridian-acolyte", "jade-sentinel"],
   sovereign: ["sovereign"],
+  // Act V: the otherworld — story rosters carry the twenty; these are the
+  // Quick Play fallbacks.
+  "rift-street": ["jade-sentinel", "jade-sentinel"],
+  "hall-watch": ["jade-sentinel", "meridian-acolyte", "jade-sentinel"],
+  "hall-of-twenty": ["meridian-acolyte", "jade-sentinel"],
+  "lattice-first-round": ["meridian-acolyte", "archer", "jade-sentinel"],
+  "zhao-min-rival": ["zhao-min-rival"],
 };
 
 /**
@@ -62,6 +69,7 @@ export const rosterForEncounter = (encounterId, runMode) =>
 
 export const DUEL_ENEMIES = {
   ...STORY_RIVALS,
+  ...OTHERWORLD_RIVALS,
   guard: {
     name: "Ashen Swordsman", title: "THE VANGUARD", art: "guard-sprite",
     hp: 68, damage: 12, reward: 120,
@@ -141,6 +149,13 @@ export const DUEL_ENEMIES = {
     name: "The Ashen Sovereign", title: "THRONE OF THE BLOOD MOON", art: "sovereign-sprite",
     hp: 280, damage: 18, reward: 1500,
     pattern: ["heavy", "poison", "double", "strike", "heavy"],
+  },
+  // Act V finale: the last of the twenty keeps the bridge home.
+  "zhao-min-rival": {
+    boss: true,
+    heroId: "zhao-min", name: "Zhao Min", title: "KEEPER OF THE CLOUD CAUSEWAY", art: "zhao-min-sprite",
+    hp: 330, damage: 21, reward: 1800,
+    pattern: ["double", "strike", "guard", "heavy", "strike"],
   },
   // Escort bodyguards: light duel stats (they are many; their roam movement,
   // not their duels, is what shields the named legend rivals).

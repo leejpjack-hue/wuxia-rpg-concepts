@@ -141,3 +141,32 @@ canvas, with act-specific lighting. Optional future assets:
 ### 2026-10-02 art correction follow-up
 
 See [ART-CORRECTIONS.md](ART-CORRECTIONS.md) for Zhao Yun's accepted card crop correction and the user-supplied artwork. Four separate walking PNGs are now integrated as the reviewed `zhao-yun-walk` sequence. The transparent `granite-pine-blocker` is used in Stages III/IV. The original damaged action sheet remains disabled; replacement card artwork is deferred at the user's request.
+
+## 10. Act V — the Rift and the Hall of Twenty (otherworld)
+
+Act V (2026-10-03) plays on a placeholder: the Meridian Citadel plate tinted
+cold (`roam-scenes.js → "otherworld"`, `blockerFilter` hue-rotate), and the
+citadel arena painting behind its card duels. The twenty rival sprites and
+duel atlases already ship; the items below are the scene backgrounds the
+designer is supplying from their approved reference boards. Match the
+reference images: golden sky-rift over shattered paifang, fog-bound corpse
+street, the examination hall of twenty, the lattice-screen chambers, and the
+cloud causeway to the palace.
+
+| File | Status today | Required |
+|---|---|---|
+| `assets/otherworld-ground.png` | **PLACEHOLDER** — tinted `meridian-citadel` plate | Act V exploration ground: the corpse-street otherworld (fog, pale dawn, unburied fallen along the verges). Repeatable plate like the other acts (landscape, horizon above the play band). Wire by swapping `ROAM_SCENES["otherworld"].art`. |
+| `assets/otherworld.png` | **PLACEHOLDER** — reuses `meridian-citadel.png` | Act V card-duel arena backdrop: the shattered-gate rift street or the lattice-hall interior, 16:9 landscape. Wire via the act's `arena` field. |
+| `assets/maze-wall-otherworld.png` | optional | Tileable wall texture for the act's hedges (paper-white lattice screens rather than hedge/bamboo). Square, tileable edges, 320 world units per tile. |
+| `assets/hall-of-twenty-key.png` | optional | Story key art for the scene-6 reveal: the vast examination hall, twenty desks in ranked rows, the trio small at the door. 16:9, displayed behind the reveal dialogue if a backdrop slot is added. |
+| `assets/cloud-causeway-key.png` | optional | Scene-8 key art: the stone causeway over a sea of clouds toward home, for the finale/waystation card. 16:9. |
+
+### Notes
+- The five reference boards (rift, street, hall, lattice round, causeway) map
+  to story beats, not separate acts: scene text lives in `dialogue.js`
+  (`rift-arrival`, `hall-reveal`, `first-round`, `zhao-min-rival-intro/fall`)
+  and encounters in `campaign.js` Act V.
+- The twenty rivals' sprites (`<id>-sprite.png`) and duel atlases are already
+  cut, registered in the manifest, and in use; no new character art is needed
+  for this act.
+

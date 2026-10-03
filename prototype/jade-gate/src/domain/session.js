@@ -202,6 +202,7 @@ export class GameSession {
       const arrivalKey = act.id === "bamboo-crossing" ? "bamboo-arrival"
         : act.id === "mount-canglan" ? "canglan-arrival"
         : act.id === "meridian-citadel" ? "citadel-arrival"
+        : act.id === "otherworld" ? "rift-arrival"
         : "arrival";
       this.beginDialogue(arrivalKey);
     } else {
@@ -688,6 +689,14 @@ export class GameSession {
       this.beginDialogue(`${enemy.kind}-intro`);
       return true;
     }
+    // Open field: story areas (the hall reveal, the first round) speak once
+    // when the hero first crosses blades inside them.
+    if (this.g.openField && areaEncounter?.intro && !this.g.openField.areaIntros?.[areaEncounter.id]) {
+      (this.g.openField.areaIntros ||= {})[areaEncounter.id] = true;
+      this.g.pendingBossDuel = index;
+      this.beginDialogue(areaEncounter.intro);
+      return true;
+    }
     this.combat.begin?.(enemy.kind, enemy.id, ambush, !!areaEncounter?.elite);
     this.transition("playing");
     this.bus.emit("audio:sfx", { type: "ui_click" });
@@ -1013,6 +1022,11 @@ export class GameSession {
       "citadel-arrival",
       "sovereign-intro",
       "sovereign-fall",
+      "rift-arrival",
+      "hall-reveal",
+      "first-round",
+      "zhao-min-rival-intro",
+      "zhao-min-rival-fall",
     ];
     if (dialogueStages.includes(cp.stage))
       this.beginDialogue(cp.stage);

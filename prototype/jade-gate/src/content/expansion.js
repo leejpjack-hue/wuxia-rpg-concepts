@@ -124,6 +124,7 @@ export const ENEMY_SPECIALS = {
   "jade-sentinel": { name: "Moon Gate Slam", scale: 2.2, heroBleed: { turns: 2, amount: 3 }, focus: 3 },
   "meridian-acolyte": { name: "Vortex Palm", scale: 2.0, drain: 15, focus: 3 },
   sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4 },
+  "zhao-min-rival": { name: "Verdict of the Silver Fan", scale: 1.1, hits: 2, focus: 4 },
 };
 const heroSpecials = Object.fromEntries(HEROES.filter(hero => !hero.hidden).map(hero => {
   const sig = SIGNATURES[hero.id];
@@ -135,7 +136,18 @@ const heroSpecials = Object.fromEntries(HEROES.filter(hero => !hero.hidden).map(
     ...(sig.hits ? { hits: sig.hits, scale: .9 } : {}),
   }];
 }));
-export const specialFor = (kind) => ENEMY_SPECIALS[kind] || heroSpecials[kind] || null;
+// The twenty hidden legends duel with their own named specials (no signature
+// action data exists for them; a standard gathered special keeps their duels
+// telegraphed like any named rival).
+const otherworldSpecials = Object.fromEntries(HEROES.filter(hero => hero.hidden).map(hero => {
+  const pattern = { bleed: { heroBleed: { turns: 2, amount: 3 } }, drain: { drain: 10 }, mend: { mend: 8 } };
+  const tags = { "lin-daiyu": "bleed", "jia-yucun": "bleed", "xue-baochai": "bleed", "wang-xifeng": "bleed",
+    "wu-yong": "drain", "zhen-huan": "drain", "empress-yixiu": "drain",
+    "lu-su": "mend", "song-jiang": "mend" }[hero.id];
+  return [`hero-${hero.id}`, { name: hero.skill, focus: 3, scale: 1.9, ...(pattern[tags] || {}) }];
+}));
+export const specialFor = (kind) =>
+  ENEMY_SPECIALS[kind] || heroSpecials[kind] || otherworldSpecials[kind] || null;
 
 /** Judgement: elites (never bosses) can be spared or finished. */
 export const JUDGEMENT = {

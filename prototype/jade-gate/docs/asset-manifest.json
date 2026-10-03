@@ -2967,5 +2967,125 @@
       "square": true,
       "alpha": true
     }
+  },
+  {
+    "id": "jia-zheng-sprite",
+    "file": "assets/jia-zheng-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Jia Zheng, the Rongguo steward: adult Chinese official in dark court robes with a white court tablet, full body facing right in a guarded stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "jia-yucun-sprite",
+    "file": "assets/jia-yucun-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Jia Yucun, the provincial magistrate: adult Chinese official in grey-blue scholar robes with a court tablet, full body facing right in a measuring stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "bao-zheng-sprite",
+    "file": "assets/bao-zheng-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Bao Zheng, the iron-faced judge: stern adult Chinese magistrate in black-and-red court robes holding a straight judge's blade, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "di-renjie-sprite",
+    "file": "assets/di-renjie-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Di Renjie, the detective chancellor: adult Chinese official in crimson court robes with a scholar's fan, full body facing right in a reading stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "kuang-zhong-sprite",
+    "file": "assets/kuang-zhong-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Kuang Zhong, the Suzhou magistrate: adult Chinese official in slate court robes with a court tablet, full body facing right in a holding stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "fan-jin-sprite",
+    "file": "assets/fan-jin-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Fan Jin, the examination scholar: gaunt adult Chinese scholar in patched robes with a scholar's fan, wild-eyed, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "lu-su-sprite",
+    "file": "assets/lu-su-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Lu Su, the coalition advisor: warm adult Chinese strategist in layered teal robes with a long spear, full body facing right in a bracing stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "xun-yu-sprite",
+    "file": "assets/xun-yu-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Xun Yu, the strategist of Wei: composed adult Chinese advisor in dark indigo court robes with a scholar's fan, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "song-jiang-sprite",
+    "file": "assets/song-jiang-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Song Jiang, the timely rain: bearded adult Chinese leader in dark-green outlaw robes, full body facing right in an open-armed stance, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "wu-yong-sprite",
+    "file": "assets/wu-yong-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Wu Yong, the star of wisdom: lean adult Chinese strategist in patched scholar robes with a feathered fan, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "jia-yuanchun-sprite",
+    "file": "assets/jia-yuanchun-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Jia Yuanchun, the imperial consort: adult Chinese noblewoman in layered phoenix-embroidered palace robes with a palace fan, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "xue-baochai-sprite",
+    "file": "assets/xue-baochai-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Xue Baochai: adult Chinese noblewoman in dignified gold-trimmed robes with a golden locket and a slim blade fan, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "lin-daiyu-sprite",
+    "file": "assets/lin-daiyu-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Lin Daiyu: slender adult Chinese poetess in pale mourning-white silks with a flower hoe and a hidden jian, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "wang-xifeng-sprite",
+    "file": "assets/wang-xifeng-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Wang Xifeng: sharp-eyed adult Chinese household manager in vivid red-and-gold silks, paired concealed dao, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "diaochan-sprite",
+    "file": "assets/diaochan-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Diaochan, the chain-scheme dancer: adult Chinese dancer in flowing moonlight silks with twin ribbon-daggers, full body facing right mid-turn, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "yang-yuhuan-sprite",
+    "file": "assets/yang-yuhuan-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Yang Yuhuan, the precious consort: adult Chinese noblewoman in rainbow-skirt tang robes with a long silk streamer, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "zhen-huan-sprite",
+    "file": "assets/zhen-huan-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Zhen Huan, the palace survivor: adult Chinese court lady in subdued plum court robes with a hairpin blade, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "empress-yixiu-sprite",
+    "file": "assets/empress-yixiu-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Empress Yixiu, regent of the hall of twenty: adult Chinese empress in deep ceremonial gold robes with a jade scepter, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "hua-fei-sprite",
+    "file": "assets/hua-fei-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V otherworld rivals. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Hua Fei, the favored consort: adult Chinese noblewoman in extravagant bright court silks with a horsewhisk and rings, full body facing right, square canvas, alpha outside the figure."
+  },
+  {
+    "id": "zhao-min-sprite",
+    "file": "assets/zhao-min-sprite.png",
+    "method": "Cut from the approved hidden key art (deliverables/roster-novel-young-2026-10-03) as a square RGBA sprite; registered 2026-10-03 for Act V's bridge keeper. Not generated in this change. Bytes unchanged.",
+    "prompt": "Transparent roam sprite for Zhao Min, keeper of the cloud causeway: adult Chinese-Mongol princess in riding leathers over bright silk, silver soft sword and open iron fan, full body facing right, square canvas, alpha outside the figure."
   }
 ]

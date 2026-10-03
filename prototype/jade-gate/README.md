@@ -2,6 +2,8 @@
 
 A local wuxia RPG that mixes button-driven movement with turn-based duels: walk the mountain pass, and when you meet a rival the fight becomes one hero card versus one enemy card. Follow the Jade Gate story, read each rival's next move, choose your action, learn disciplines and spend earned Renown on permanent cultivation.
 
+The story runs five acts. After the Ashen Sovereign falls at the Meridian Citadel, a golden rift tears the sky and flings the three story heroes — Zhao Yun, Lu Zhishen and Hu Sanniang — a hundred to two hundred years into a pocket otherworld. There, twenty legends stolen from other books (the Red Chamber, the Liangshan marsh, the court of Judge Bao and Di Renjie, the inner palaces) wait in a vast examination hall: refuse the regent's judgement and duel all twenty, camp by camp, until the last keeper — Zhao Min — yields the cloud causeway home. Act V unlocks after the citadel.
+
 ## Play locally
 
 Run `python3 serve.py` here and open http://127.0.0.1:8765/. On macOS, double-click `Play.command`. No npm installation, API key, account or build step is needed. Keep the server running; Ctrl+C stops it.

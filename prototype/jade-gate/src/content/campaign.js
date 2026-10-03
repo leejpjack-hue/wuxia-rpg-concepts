@@ -167,7 +167,7 @@ export const ACTS = [
     available: true,
     arena: "meridian-citadel",
     bossId: "sovereign",
-    next: null,
+    next: "otherworld",
     unlocks: [],
     hazards: ["qi-vortex"],
     map: {
@@ -194,6 +194,48 @@ export const ACTS = [
       { id: "sovereign", title: "Face the Ashen Sovereign",
         tip: "Below half health the Blood Moon Edict falls twice as often. Break the gathering with techniques.",
         enemies: ["boss"], bossId: "sovereign" },
+    ],
+  },
+  {
+    // Act V: the Sovereign's fall tears a rift that flings the trio a hundred
+    // years onward into a pocket otherworld, where twenty stolen legends
+    // guard the only bridge home. Scenes: rift, corpse street, hall of
+    // twenty, first round, cloud causeway.
+    id: "otherworld",
+    number: 5,
+    name: "The Rift and the Hall of Twenty",
+    cn: "裂口 · 廿賢殿",
+    available: true,
+    arena: "meridian-citadel",
+    bossId: "zhao-min-rival",
+    next: null,
+    unlocks: [],
+    hazards: [],
+    map: {
+      rows: [
+        ["duel:rift-street"],
+        ["event:travelers-gift", "rest:roadside", "elite:hall-watch"],
+        ["duel:hall-of-twenty"],
+        ["duel:lattice-first-round", "rest:roadside"],
+        ["boss:zhao-min-rival"],
+      ],
+    },
+    encounters: [
+      { id: "rift-street", title: "Land on the corpse street",
+        tip: "The rift spits you out over a fog-bound street of the unburied. The twenty's inspectors come to appraise the strays.",
+        enemies: ["guard", "guard", "archer"] },
+      { id: "hall-watch", title: "Break the hall watch", elite: true,
+        tip: "Stewards and strategists screen the great gate. They hit harder and drop a curio.",
+        enemies: ["guard", "guard", "guard"] },
+      { id: "hall-of-twenty", title: "Refuse the hall's judgement", intro: "hall-reveal",
+        tip: "Twenty desks in ranked rows. Defy the regent and her bench answers.",
+        enemies: ["guard", "archer", "guard"] },
+      { id: "lattice-first-round", title: "First round in the lattice halls", intro: "first-round",
+        tip: "Screens and silk hide blades. Cut through the pavilion court to reach the causeway stair.",
+        enemies: ["guard", "guard", "archer"] },
+      { id: "zhao-min-rival", title: "Cross the cloud causeway past Zhao Min",
+        tip: "The last keeper duels on the bridge. Below half health her verdicts fall twice as fast.",
+        enemies: ["boss"], bossId: "zhao-min-rival" },
     ],
   },
 ];
@@ -282,6 +324,21 @@ export const BOSSES = {
     phases: [
       { at: 1, name: "First weapon form", wind: 1, cooldown: 1.2, radius: 130, damage: 26, bursts: 1 },
       { at: 0.5, name: "Blood Moon Edict", wind: 0.6, cooldown: 0.8, radius: 90, damage: 30, bursts: 3 },
+    ],
+  },
+  "zhao-min-rival": {
+    name: "Zhao Min",
+    cn: "趙敏",
+    title: "Keeper of the Cloud Causeway",
+    mechanics: ["silver-fan-volleys", "bridge-verdicts"],
+    design: {
+      perch: "The head of the cloud causeway, above a sea of falling mist",
+      telegraphs: "Snapped fan verdicts that cross the whole bridge width",
+      lore: "The last of the twenty, guarding the only way home. She duels gladly; below half health her verdicts fall twice as fast.",
+    },
+    phases: [
+      { at: 1, name: "Silken fan volley", wind: 0.85, cooldown: 1.05, radius: 135, damage: 26, bursts: 1 },
+      { at: 0.5, name: "Verdict of the Silver Storm", wind: 0.55, cooldown: 0.75, radius: 95, damage: 30, bursts: 3 },
     ],
   },
 };
