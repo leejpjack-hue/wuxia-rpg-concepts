@@ -5,6 +5,7 @@ import { groundPoint, onGround } from '../src/domain/ground.js';
 import { HERO_IDS, HEROES } from '../src/content/heroes.js';
 import { StrikeTimeline, DuelCinematic, CUTS, COUNTER_CUTS, cutFor, rivalFilmIdentity } from '../src/presentation/duel-cinematic.js';
 import { translate } from '../src/locales/i18n.js';
+import assetManifest from '../docs/asset-manifest.json' with {type:'json'};
 const frames = (g,n,input={}) => { for(let i=0;i<n;i++) g.step(1/60,input); };
 function crossfire() {
   const g=session();g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));clearEncounter(g);g.chooseDiscipline('power');return g;
@@ -143,6 +144,31 @@ test('Zhao Min uses her approved transparent ready sprite in opening and non-att
     assert.equal(node.querySelector('.film-hero').src,'assets/zhao-min-sprite.png');
     assert.equal(node.querySelector('.film-enemy').src,'assets/zhao-min-sprite.png');
     flush();
+  }
+});
+test('the supplied pose sets drive hero strikes and story-rival counters through the real film timeline',()=>{
+  const heroes=HEROES.filter(h=>h.hidden || ['gu-dasao','qin-liangyu','bao-sanniang'].includes(h.id));
+  for(const fighter of heroes)for(const action of ['attack','technique']){
+    const enemy={art:`${fighter.id}-sprite`,heroId:fighter.id,kind:`${fighter.id}-rival`,name:fighter.name,title:fighter.title};
+    const {film,node,callbacks}=filmFixture(assetManifest);
+    const heroNode=node.querySelector('.film-hero'),enemyNode=node.querySelector('.film-enemy');
+    let commits=0;
+    film.play(action,fighter,enemy,{damage:20,incoming:10,intent:action==='attack'?'strike':'special'},false,()=>commits++);
+    assert.equal(enemyNode.src,`assets/${fighter.id}-sprite.png`);
+    const expectPose=(part,pose)=>assert.equal(part.style.backgroundImage,`url("assets/${fighter.id}-duel-${pose}.png")`,`${fighter.id}: ${node.dataset.phase}`);
+    expectPose(heroNode,action==='attack'?'windup':'focus');
+    callbacks.sort((a,b)=>a.ms-b.ms);
+    while(callbacks.length){
+      callbacks.shift().fn();
+      if(node.hidden)continue;
+      if(['strike','impact'].includes(node.dataset.phase))expectPose(heroNode,action==='attack'?'strike':'special');
+      if(node.dataset.phase==='reply')expectPose(enemyNode,'windup');
+      if(node.dataset.phase==='counter-focus')expectPose(enemyNode,'focus');
+      if(['counter','counter-impact'].includes(node.dataset.phase))expectPose(enemyNode,action==='attack'?'strike':'special');
+    }
+    assert.equal(commits,1);
+    assert.equal(heroNode.src,`assets/${fighter.id}-sprite.png`);
+    assert.equal(enemyNode.src,`assets/${fighter.id}-sprite.png`);
   }
 });
 test('acting during the intro cuts to the technique film; intro beats never fire and the turn commits once',()=>{

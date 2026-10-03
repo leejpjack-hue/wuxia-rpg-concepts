@@ -797,9 +797,19 @@
   {
     "id": "gu-dasao-sprite",
     "file": "assets/gu-dasao-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Roster sprite for Gu Dasao taken from the existing duel-sheet wind-up cell. Same costume, cleavers raised and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
-    "reference": "assets/gu-dasao.png"
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Gu Dasao ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "reference": "assets/gu-dasao.png",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "d1af038c7a037fd6b412bfeac5975ff2934e4b6f53115a505a051e3468cab0c2",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "gu-dasao-duel-poses",
@@ -830,7 +840,14 @@
         1,
         1
       ]
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/gu-dasao-duel-windup.png",
+      "strike": "assets/gu-dasao-duel-strike.png",
+      "focus": "assets/gu-dasao-duel-focus.png",
+      "special": "assets/gu-dasao-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "qin-liangyu",
@@ -841,9 +858,19 @@
   {
     "id": "qin-liangyu-sprite",
     "file": "assets/qin-liangyu-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Roster sprite for Qin Liangyu taken from the existing duel-sheet wind-up cell. Same costume, spear drawn back and ready, not mid-thrust. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
-    "reference": "assets/qin-liangyu.png"
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Qin Liangyu ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "reference": "assets/qin-liangyu.png",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ef73436942deb88279fd60ba35d57b8fa29d94522dc623b6a7791d19ee4958ac",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "qin-liangyu-duel-poses",
@@ -874,7 +901,14 @@
         1,
         1
       ]
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/qin-liangyu-duel-windup.png",
+      "strike": "assets/qin-liangyu-duel-strike.png",
+      "focus": "assets/qin-liangyu-duel-focus.png",
+      "special": "assets/qin-liangyu-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "bao-sanniang",
@@ -885,9 +919,19 @@
   {
     "id": "bao-sanniang-sprite",
     "file": "assets/bao-sanniang-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Roster sprite for Bao Sanniang taken from the existing duel-sheet wind-up cell. Same costume, blade held back and ready, not mid-swing. Square 1254 RGBA, transparent outside the figure, feet near the bottom with Zhao Yun sprite margins. No new pose and no redraw.",
-    "reference": "assets/bao-sanniang.png"
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Sanniang ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "reference": "assets/bao-sanniang.png",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "477331983a41a068b377bd2a2896eb661199b0eb069abcd2e8fb75715f52c4fe",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "bao-sanniang-duel-poses",
@@ -918,7 +962,14 @@
         1,
         1
       ]
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/bao-sanniang-duel-windup.png",
+      "strike": "assets/bao-sanniang-duel-strike.png",
+      "focus": "assets/bao-sanniang-duel-focus.png",
+      "special": "assets/bao-sanniang-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "dian-wei",
@@ -1693,7 +1744,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/jia-zheng-duel-windup.png",
+      "strike": "assets/jia-zheng-duel-strike.png",
+      "focus": "assets/jia-zheng-duel-focus.png",
+      "special": "assets/jia-zheng-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "jia-yucun",
@@ -1760,7 +1818,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/jia-yucun-duel-windup.png",
+      "strike": "assets/jia-yucun-duel-strike.png",
+      "focus": "assets/jia-yucun-duel-focus.png",
+      "special": "assets/jia-yucun-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "bao-zheng",
@@ -1827,7 +1892,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/bao-zheng-duel-windup.png",
+      "strike": "assets/bao-zheng-duel-strike.png",
+      "focus": "assets/bao-zheng-duel-focus.png",
+      "special": "assets/bao-zheng-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "di-renjie",
@@ -1894,7 +1966,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/di-renjie-duel-windup.png",
+      "strike": "assets/di-renjie-duel-strike.png",
+      "focus": "assets/di-renjie-duel-focus.png",
+      "special": "assets/di-renjie-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "kuang-zhong",
@@ -1961,7 +2040,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/kuang-zhong-duel-windup.png",
+      "strike": "assets/kuang-zhong-duel-strike.png",
+      "focus": "assets/kuang-zhong-duel-focus.png",
+      "special": "assets/kuang-zhong-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "fan-jin",
@@ -2028,7 +2114,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/fan-jin-duel-windup.png",
+      "strike": "assets/fan-jin-duel-strike.png",
+      "focus": "assets/fan-jin-duel-focus.png",
+      "special": "assets/fan-jin-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "lu-su",
@@ -2095,7 +2188,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/lu-su-duel-windup.png",
+      "strike": "assets/lu-su-duel-strike.png",
+      "focus": "assets/lu-su-duel-focus.png",
+      "special": "assets/lu-su-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "xun-yu",
@@ -2162,7 +2262,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/xun-yu-duel-windup.png",
+      "strike": "assets/xun-yu-duel-strike.png",
+      "focus": "assets/xun-yu-duel-focus.png",
+      "special": "assets/xun-yu-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "song-jiang",
@@ -2229,7 +2336,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/song-jiang-duel-windup.png",
+      "strike": "assets/song-jiang-duel-strike.png",
+      "focus": "assets/song-jiang-duel-focus.png",
+      "special": "assets/song-jiang-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "wu-yong",
@@ -2296,7 +2410,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/wu-yong-duel-windup.png",
+      "strike": "assets/wu-yong-duel-strike.png",
+      "focus": "assets/wu-yong-duel-focus.png",
+      "special": "assets/wu-yong-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "jia-yuanchun",
@@ -2363,7 +2484,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/jia-yuanchun-duel-windup.png",
+      "strike": "assets/jia-yuanchun-duel-strike.png",
+      "focus": "assets/jia-yuanchun-duel-focus.png",
+      "special": "assets/jia-yuanchun-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "xue-baochai",
@@ -2430,7 +2558,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/xue-baochai-duel-windup.png",
+      "strike": "assets/xue-baochai-duel-strike.png",
+      "focus": "assets/xue-baochai-duel-focus.png",
+      "special": "assets/xue-baochai-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "lin-daiyu",
@@ -2497,7 +2632,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/lin-daiyu-duel-windup.png",
+      "strike": "assets/lin-daiyu-duel-strike.png",
+      "focus": "assets/lin-daiyu-duel-focus.png",
+      "special": "assets/lin-daiyu-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "wang-xifeng",
@@ -2564,7 +2706,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/wang-xifeng-duel-windup.png",
+      "strike": "assets/wang-xifeng-duel-strike.png",
+      "focus": "assets/wang-xifeng-duel-focus.png",
+      "special": "assets/wang-xifeng-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "diaochan",
@@ -2631,7 +2780,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/diaochan-duel-windup.png",
+      "strike": "assets/diaochan-duel-strike.png",
+      "focus": "assets/diaochan-duel-focus.png",
+      "special": "assets/diaochan-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "yang-yuhuan",
@@ -2698,7 +2854,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/yang-yuhuan-duel-windup.png",
+      "strike": "assets/yang-yuhuan-duel-strike.png",
+      "focus": "assets/yang-yuhuan-duel-focus.png",
+      "special": "assets/yang-yuhuan-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "zhen-huan",
@@ -2765,7 +2928,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/zhen-huan-duel-windup.png",
+      "strike": "assets/zhen-huan-duel-strike.png",
+      "focus": "assets/zhen-huan-duel-focus.png",
+      "special": "assets/zhen-huan-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "empress-yixiu",
@@ -2832,7 +3002,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/empress-yixiu-duel-windup.png",
+      "strike": "assets/empress-yixiu-duel-strike.png",
+      "focus": "assets/empress-yixiu-duel-focus.png",
+      "special": "assets/empress-yixiu-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "hua-fei",
@@ -2899,7 +3076,14 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "poseFiles": {
+      "windup": "assets/hua-fei-duel-windup.png",
+      "strike": "assets/hua-fei-duel-strike.png",
+      "focus": "assets/hua-fei-duel-focus.png",
+      "special": "assets/hua-fei-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "zhao-min",
@@ -2969,130 +3153,322 @@
     },
     "poseFiles": {
       "windup": "assets/zhao-min-duel-windup.png",
-      "focus": "assets/zhao-min-sprite.png"
-    }
+      "strike": "assets/zhao-min-duel-strike.png",
+      "focus": "assets/zhao-min-duel-focus.png",
+      "special": "assets/zhao-min-duel-special.png"
+    },
+    "reviewNote": "All four cinematic poses use the approved 2026-10-04 native PNGs through poseFiles. The legacy atlas and crop metadata are retained as fallback only."
   },
   {
     "id": "jia-zheng-sprite",
     "file": "assets/jia-zheng-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Jia Zheng, the Rongguo steward: adult Chinese official in dark court robes with a white court tablet, full body facing right in a guarded stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Zheng ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "adeffb2a486dbe036fd378f11f87211a77cadc7e3ad89d0d2daac5e1324da81a",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "jia-yucun-sprite",
     "file": "assets/jia-yucun-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Jia Yucun, the provincial magistrate: adult Chinese official in grey-blue scholar robes with a court tablet, full body facing right in a measuring stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yucun ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2db281bfc75968cccbc7704227988a683804530cc27eb350cdaf0046c6f04ed0",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "bao-zheng-sprite",
     "file": "assets/bao-zheng-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Bao Zheng, the iron-faced judge: stern adult Chinese magistrate in black-and-red court robes holding a straight judge's blade, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Zheng ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "9969c70fcb3f80a3bbbc1edf73499a7b0fc88515fd1ccc762e912cd6834f7151",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "di-renjie-sprite",
     "file": "assets/di-renjie-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Di Renjie, the detective chancellor: adult Chinese official in crimson court robes with a scholar's fan, full body facing right in a reading stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Di Renjie ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "979bcd689c7304630dc864bec3e2c5deb586834eb275bb8dbd8b379bdfd89deb",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "kuang-zhong-sprite",
     "file": "assets/kuang-zhong-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Kuang Zhong, the Suzhou magistrate: adult Chinese official in slate court robes with a court tablet, full body facing right in a holding stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Kuang Zhong ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "06e3f019a374199437addfea7694f27e8f5568024cafb11b3bfd5e0224a382c4",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "fan-jin-sprite",
     "file": "assets/fan-jin-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Fan Jin, the examination scholar: gaunt adult Chinese scholar in patched robes with a scholar's fan, wild-eyed, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Fan Jin ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7949387b806043feff9b05d123e9b47e61170e456e521fb5e5fadc5bc859517e",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "lu-su-sprite",
     "file": "assets/lu-su-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Lu Su, the coalition advisor: warm adult Chinese strategist in layered teal robes with a long spear, full body facing right in a bracing stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lu Su ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7ca5fe50a0d4257b1715671e90b664c173dcbd39aba2f18ed7fcb6a8564f812f",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "xun-yu-sprite",
     "file": "assets/xun-yu-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Xun Yu, the strategist of Wei: composed adult Chinese advisor in dark indigo court robes with a scholar's fan, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xun Yu ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2201a4d04ef3494ce80de6551f979335f760dca63f56b980e5c3b86c333d1407",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "song-jiang-sprite",
     "file": "assets/song-jiang-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Song Jiang, the timely rain: bearded adult Chinese leader in dark-green outlaw robes, full body facing right in an open-armed stance, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Song Jiang ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "fe852f863b97985d036cad5515103228a9f7110e548c43c1a1d69a6baf91be10",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "wu-yong-sprite",
     "file": "assets/wu-yong-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Wu Yong, the star of wisdom: lean adult Chinese strategist in patched scholar robes with a feathered fan, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wu Yong ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e45c5abc4463bb7f51a56574093bb54515f02a05496b7f65b7224887a957e48e",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "jia-yuanchun-sprite",
     "file": "assets/jia-yuanchun-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Jia Yuanchun, the imperial consort: adult Chinese noblewoman in layered phoenix-embroidered palace robes with a palace fan, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yuanchun ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2ed03065d6d6a78dca8445814ca2669bf08422d1be94835f31d9ea86b3d46441",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "xue-baochai-sprite",
     "file": "assets/xue-baochai-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Xue Baochai: adult Chinese noblewoman in dignified gold-trimmed robes with a golden locket and a slim blade fan, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xue Baochai ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "df0f255e7d09875978955859ce48a5f1dc160959419e4d9a2f60697dc8e21950",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "lin-daiyu-sprite",
     "file": "assets/lin-daiyu-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Lin Daiyu: slender adult Chinese poetess in pale mourning-white silks with a flower hoe and a hidden jian, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lin Daiyu ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "3f6ffd2becddf595e18c54f4bf57d7f1e3123d449755246e70b6f57c3302af6c",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "wang-xifeng-sprite",
     "file": "assets/wang-xifeng-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Wang Xifeng: sharp-eyed adult Chinese household manager in vivid red-and-gold silks, paired concealed dao, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wang Xifeng ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "8bfe6b067245876dbfd4e14770c8a35cd45bd91457870b5cafa5981ee23a5223",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "diaochan-sprite",
     "file": "assets/diaochan-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Diaochan, the chain-scheme dancer: adult Chinese dancer in flowing moonlight silks with twin ribbon-daggers, full body facing right mid-turn, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Diaochan ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "0326d9f1caca76d52dd01876fbe4984b1a6c7c481cf25fb1f39ef311ab621317",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "yang-yuhuan-sprite",
     "file": "assets/yang-yuhuan-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Yang Yuhuan, the precious consort: adult Chinese noblewoman in rainbow-skirt tang robes with a long silk streamer, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Yang Yuhuan ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "73d00adc35e849e629f53a19a64d2a70a4f140a2fde3efc403acb75df7ba9765",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "zhen-huan-sprite",
     "file": "assets/zhen-huan-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Zhen Huan, the palace survivor: adult Chinese court lady in subdued plum court robes with a hairpin blade, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhen Huan ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "a0784520bfe5b7214689095d35945cba057d2959adc1a26b265b694b6a79e9c4",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "empress-yixiu-sprite",
     "file": "assets/empress-yixiu-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Empress Yixiu, regent of the hall of twenty: adult Chinese empress in deep ceremonial gold robes with a jade scepter, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Empress Yixiu ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "dc151c2421d080e72220a91ec59d265ba0e03e98e446d7801ca1d3515356352f",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "hua-fei-sprite",
     "file": "assets/hua-fei-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Transparent roam sprite for Hua Fei, the favored consort: adult Chinese noblewoman in extravagant bright court silks with a horsewhisk and rings, full body facing right, square canvas, alpha outside the figure."
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Hua Fei ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "8836875152615be556700b19b27ffea5fd455b394b183ad9e252cbcd14472a65",
+    "runtimeApproved": true,
+    "role": "sprite",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   },
   {
     "id": "zhao-min-sprite",
     "file": "assets/zhao-min-sprite.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "prompt": "Approved adult Zhao Min ready stance: black short dress, open ivory shirt, tied long black hair and tall black boots. Right-facing full-body unarmed guard. True transparent background. This is an idle/ready sprite, not an attack or walking sequence.",
-    "source": "https://chatgpt.com/s/m_6ac108d917348191bad512d5cf77ec3f",
-    "sourceImage": 1,
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhao Min ready stance; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
     "sha256": "7e3725b4cc01dbc59f179f69761242c27d019c8974ed42c93473eaf4c5603d77",
     "reference": "assets/zhao-min.jpg",
     "runtimeApproved": true,
@@ -3101,15 +3477,16 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "role": "sprite"
   },
   {
     "id": "zhao-min-duel-windup",
     "file": "assets/zhao-min-duel-windup.png",
-    "method": "Approved art-review pose, 2026-10-04. Transparent 1024x1024 RGBA PNG copied as-is, replacing the previous file of the same name.",
-    "source": "https://chatgpt.com/s/m_6ac10d1407748191a3b654aaeb645331",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
     "sha256": "da3d20f5351f50f3d73704fe335f45eb2284ad659241433e4222ad06c2b4fffb",
-    "prompt": "Adult Zhao Min in black short dress, ivory open shirt and tall black boots; full-body right-facing raised-knee kick preparation, fists guarding the face. True transparent background.",
+    "prompt": "Approved complete full-body Zhao Min windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
     "reference": "assets/zhao-min-sprite.png",
     "runtimeApproved": true,
     "contract": {
@@ -3117,6 +3494,1554 @@
       "minHeight": 1024,
       "square": true,
       "alpha": true
-    }
+    },
+    "role": "duel-pose"
+  },
+  {
+    "id": "gu-dasao-duel-windup",
+    "file": "assets/gu-dasao-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Gu Dasao windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "aefa20fef9888e30b0a682239869b373a0071fae30774bb8c4ecb9eb0edcff9b",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/gu-dasao-sprite.png"
+  },
+  {
+    "id": "gu-dasao-duel-strike",
+    "file": "assets/gu-dasao-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Gu Dasao strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "107ec137aa974357c447e51a1e9a12fa2b4d4b7ad4c5875fecc2dc166ca47204",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/gu-dasao-sprite.png"
+  },
+  {
+    "id": "gu-dasao-duel-focus",
+    "file": "assets/gu-dasao-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Gu Dasao focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "6d2070b6fec30f6ce89de191bfaacc2886750cee860392c7b69cb796b7c1ed9c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/gu-dasao-sprite.png"
+  },
+  {
+    "id": "gu-dasao-duel-special",
+    "file": "assets/gu-dasao-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Gu Dasao special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "b2529888ac63b318e7bdacbe233bdbbe5590236706de57d667e0b2ed5f3a4644",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/gu-dasao-sprite.png"
+  },
+  {
+    "id": "qin-liangyu-duel-windup",
+    "file": "assets/qin-liangyu-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Qin Liangyu windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "d2635cc0f44de3b40742c153d6ff042dea13001d4462fddcf5a565cc3c2f6ac5",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/qin-liangyu-sprite.png"
+  },
+  {
+    "id": "qin-liangyu-duel-strike",
+    "file": "assets/qin-liangyu-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Qin Liangyu strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "65781c6cd295974719b1de27ac682c51e34a526f579a843f8ad6cf91500bb021",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/qin-liangyu-sprite.png"
+  },
+  {
+    "id": "qin-liangyu-duel-focus",
+    "file": "assets/qin-liangyu-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Qin Liangyu focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "63c6beefa939588241e597398874ab4b1738be9e703cb2435c5a79b52c33bd4c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/qin-liangyu-sprite.png"
+  },
+  {
+    "id": "qin-liangyu-duel-special",
+    "file": "assets/qin-liangyu-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Qin Liangyu special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "0e091e7a7fbc2c0a3f710ba7f2d0604a8a1a124e2fcf20c18e208f30068114e2",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/qin-liangyu-sprite.png"
+  },
+  {
+    "id": "bao-sanniang-duel-windup",
+    "file": "assets/bao-sanniang-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Sanniang windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ea23dc54750cff6b4234e838a4de618c670acd5f9e27f7ed5a8b2ebba301400c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-sanniang-sprite.png"
+  },
+  {
+    "id": "bao-sanniang-duel-strike",
+    "file": "assets/bao-sanniang-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Sanniang strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "0eb7d874c006d07622208cd01ac2a670ab302e4dbb462d286ddf8c71280717af",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-sanniang-sprite.png"
+  },
+  {
+    "id": "bao-sanniang-duel-focus",
+    "file": "assets/bao-sanniang-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Sanniang focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "684e2aff13c911fa4e87bf21673aacb668d31f9fce01c8603f5a298bcb5351db",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-sanniang-sprite.png"
+  },
+  {
+    "id": "bao-sanniang-duel-special",
+    "file": "assets/bao-sanniang-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Sanniang special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "18afa9a9d692261addf9b3a49ed7600b2cdb7b00d6ef2ec8d77eaa1d6c181a6c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-sanniang-sprite.png"
+  },
+  {
+    "id": "jia-zheng-duel-windup",
+    "file": "assets/jia-zheng-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Zheng windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e554c180bf3c7512be6262cec9cc06db0ac8f626c79bea0b263040f12a804df5",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-zheng-sprite.png"
+  },
+  {
+    "id": "jia-zheng-duel-strike",
+    "file": "assets/jia-zheng-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Zheng strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "a69d81f4d54bfcee76cb7deaabfd211da9b95e7afca65f9f23d34a968791ffc2",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-zheng-sprite.png"
+  },
+  {
+    "id": "jia-zheng-duel-focus",
+    "file": "assets/jia-zheng-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Zheng focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "1c4f18566f83de2db6280b09d383f20fa0b444de0fc1232e7daa1d46b1d83976",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-zheng-sprite.png"
+  },
+  {
+    "id": "jia-zheng-duel-special",
+    "file": "assets/jia-zheng-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Zheng special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "75e79333a802c2aeecaa3207e3183f4b33d6c0e80ae64c4c635d9b1dc8c40e79",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-zheng-sprite.png"
+  },
+  {
+    "id": "jia-yucun-duel-windup",
+    "file": "assets/jia-yucun-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yucun windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "39f8305e37976b96e31d7726fe1b4b5668754680be6e7974515ab2d739e6ce27",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yucun-sprite.png"
+  },
+  {
+    "id": "jia-yucun-duel-strike",
+    "file": "assets/jia-yucun-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yucun strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "479ad1f25599484c44014131a7d05a188684ee92e301b20ffb1d7c2ee1dd9ce5",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yucun-sprite.png"
+  },
+  {
+    "id": "jia-yucun-duel-focus",
+    "file": "assets/jia-yucun-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yucun focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "caaf9158623a37deaf41076e9079577df128c58a0c6f71c752c26c456e7020f7",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yucun-sprite.png"
+  },
+  {
+    "id": "jia-yucun-duel-special",
+    "file": "assets/jia-yucun-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yucun special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "22adc5a2ff59d03f99d1841f47d966413bc49b23124fa2467b7e5c0ab3183bbb",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yucun-sprite.png"
+  },
+  {
+    "id": "bao-zheng-duel-windup",
+    "file": "assets/bao-zheng-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Zheng windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "fd787e5371d3620efef7c986bf387df99cc82046ce978762535c6a22acd9e206",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-zheng-sprite.png"
+  },
+  {
+    "id": "bao-zheng-duel-strike",
+    "file": "assets/bao-zheng-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Zheng strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "847a08900acb74ba8146fbd95633082caf79249d441aa9fcef4afa20f4665d55",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-zheng-sprite.png"
+  },
+  {
+    "id": "bao-zheng-duel-focus",
+    "file": "assets/bao-zheng-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Zheng focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "9ffba3df0ef7f98fced71b773c0d10f2a67f1f119b6a0f3edf12c928ee5805fd",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-zheng-sprite.png"
+  },
+  {
+    "id": "bao-zheng-duel-special",
+    "file": "assets/bao-zheng-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Bao Zheng special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e126aa59f61699c74278d79af85d2d9042c963d01c622777663cc2fd2f41c376",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/bao-zheng-sprite.png"
+  },
+  {
+    "id": "di-renjie-duel-windup",
+    "file": "assets/di-renjie-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Di Renjie windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "d367a01ed5f070bf5b23425e13b89f369175291231f34a3fd961b9c9c214f63c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/di-renjie-sprite.png"
+  },
+  {
+    "id": "di-renjie-duel-strike",
+    "file": "assets/di-renjie-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Di Renjie strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ca79fe4731a0bd5683af9abbdf180d0dc48825a398cc9d48458c5176bf33e3c6",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/di-renjie-sprite.png"
+  },
+  {
+    "id": "di-renjie-duel-focus",
+    "file": "assets/di-renjie-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Di Renjie focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "85e1da5ce951b2749233ce88b7d057f5360ca9a37778bab33780f1c777f20dc8",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/di-renjie-sprite.png"
+  },
+  {
+    "id": "di-renjie-duel-special",
+    "file": "assets/di-renjie-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Di Renjie special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "a0013835c444ee8dcfa55aef0d992d5171e9d9d063aafc2f958015c22fd8a737",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/di-renjie-sprite.png"
+  },
+  {
+    "id": "kuang-zhong-duel-windup",
+    "file": "assets/kuang-zhong-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Kuang Zhong windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2dad50b726406e0876209b8c0de8cd7160beffa24bc44260e24fc0d08ede955b",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/kuang-zhong-sprite.png"
+  },
+  {
+    "id": "kuang-zhong-duel-strike",
+    "file": "assets/kuang-zhong-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Kuang Zhong strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "addcb476e4e924e379a0ab1a190453cdf6ab7403644e3a21f3e5a6420828cdb6",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/kuang-zhong-sprite.png"
+  },
+  {
+    "id": "kuang-zhong-duel-focus",
+    "file": "assets/kuang-zhong-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Kuang Zhong focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "8384fd1ff190916ce5513116a9d5259524e74c5937d06be682be0db2e86fb016",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/kuang-zhong-sprite.png"
+  },
+  {
+    "id": "kuang-zhong-duel-special",
+    "file": "assets/kuang-zhong-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Kuang Zhong special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2766124017a3dd07b9d3e8a11ad7b619701b2a3e9de55b29576843e769f2ed80",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/kuang-zhong-sprite.png"
+  },
+  {
+    "id": "fan-jin-duel-windup",
+    "file": "assets/fan-jin-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Fan Jin windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "6b42e7d60a1cd1f10738cf3539537c986b1b788f4a5e8faeec7a7838471cbcb4",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/fan-jin-sprite.png"
+  },
+  {
+    "id": "fan-jin-duel-strike",
+    "file": "assets/fan-jin-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Fan Jin strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "882227765d2b5b6d2a92c1159978dbf7096380279015360236bb8a9c9d49b6bc",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/fan-jin-sprite.png"
+  },
+  {
+    "id": "fan-jin-duel-focus",
+    "file": "assets/fan-jin-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Fan Jin focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "d97ba75fe5719a66c5334d7826c363f2fa1d61153e5f1ca50b3979c5f422fa33",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/fan-jin-sprite.png"
+  },
+  {
+    "id": "fan-jin-duel-special",
+    "file": "assets/fan-jin-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Fan Jin special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "87d8c755858af346b49f7c7c05ade1674000fe4ee326502ad62c72e6589f5beb",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/fan-jin-sprite.png"
+  },
+  {
+    "id": "lu-su-duel-windup",
+    "file": "assets/lu-su-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lu Su windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "bb44ebc03fc48622eeda31003b6957f0e70c76dfaf538687f1628207982cfc6f",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lu-su-sprite.png"
+  },
+  {
+    "id": "lu-su-duel-strike",
+    "file": "assets/lu-su-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lu Su strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "64c1678fae8c63533339baa851931ae35afb42a570450edaa7eaf9fd2ac7b84c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lu-su-sprite.png"
+  },
+  {
+    "id": "lu-su-duel-focus",
+    "file": "assets/lu-su-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lu Su focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "5fa2727550458dabc4eb638b5f7f2bf61376c742bfaf700a76014ae3bd791aeb",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lu-su-sprite.png"
+  },
+  {
+    "id": "lu-su-duel-special",
+    "file": "assets/lu-su-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lu Su special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "04619bf1e8ef5c6fe74115a6fb185cf1af32a54b3b6e4a49394f5725dee43bc8",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lu-su-sprite.png"
+  },
+  {
+    "id": "xun-yu-duel-windup",
+    "file": "assets/xun-yu-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xun Yu windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "1dbba32dcb62fa8f3408c3942eb0bfd0200984f72fb94f00b6d79adbd042d1a2",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xun-yu-sprite.png"
+  },
+  {
+    "id": "xun-yu-duel-strike",
+    "file": "assets/xun-yu-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xun Yu strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "3c71ef2a7a4796f38f0c75ed4fd26583d1041fb526d04d1c64104fbe55281e20",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xun-yu-sprite.png"
+  },
+  {
+    "id": "xun-yu-duel-focus",
+    "file": "assets/xun-yu-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xun Yu focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "5f1c31b527ce08046aa62c1ea4cdccfebb0bcd3f82a4044cdce369428bbce74a",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xun-yu-sprite.png"
+  },
+  {
+    "id": "xun-yu-duel-special",
+    "file": "assets/xun-yu-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xun Yu special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "652a00d7e1c33cfe960e45b316f08c983f5d3f1219b81f2090e5dfb7b2e0d18b",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xun-yu-sprite.png"
+  },
+  {
+    "id": "song-jiang-duel-windup",
+    "file": "assets/song-jiang-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Song Jiang windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "1a1a2feb5eac3a0885f12cf2c62c552f80079e3f65214a8d376c0c7de5cab3fa",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/song-jiang-sprite.png"
+  },
+  {
+    "id": "song-jiang-duel-strike",
+    "file": "assets/song-jiang-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Song Jiang strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7b041df6aee1b5e3aae00bad4f93a3c4e6f970bcfc9d9edd1b60f29de9aab227",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/song-jiang-sprite.png"
+  },
+  {
+    "id": "song-jiang-duel-focus",
+    "file": "assets/song-jiang-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Song Jiang focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "40bbac4dccb27e6c206ce80079824acbbac645621f2cbb3c3d1993e0d76d0098",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/song-jiang-sprite.png"
+  },
+  {
+    "id": "song-jiang-duel-special",
+    "file": "assets/song-jiang-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Song Jiang special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "fac6aabe2409cacddd5c721b0eaf14c4b5b2fb30187e60abf790499bb7309ef2",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/song-jiang-sprite.png"
+  },
+  {
+    "id": "wu-yong-duel-windup",
+    "file": "assets/wu-yong-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wu Yong windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "1d4dd3eb62fece7544eb9b996c70af81de9a0dcc89a58607524f1deacba67707",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wu-yong-sprite.png"
+  },
+  {
+    "id": "wu-yong-duel-strike",
+    "file": "assets/wu-yong-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wu Yong strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "3d02d955e4c078d5830b9d124e898988c8f9166b33df1a5f3cf4f71c56a00e80",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wu-yong-sprite.png"
+  },
+  {
+    "id": "wu-yong-duel-focus",
+    "file": "assets/wu-yong-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wu Yong focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "66448f957767809e711ccca64e1efbbce0db2d4a169a59d1040bbb0833f0ac25",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wu-yong-sprite.png"
+  },
+  {
+    "id": "wu-yong-duel-special",
+    "file": "assets/wu-yong-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wu Yong special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "8f9abfb900da3d564be1123eecab657628ca17f6ce68f6d5c1415928161c2e9b",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wu-yong-sprite.png"
+  },
+  {
+    "id": "jia-yuanchun-duel-windup",
+    "file": "assets/jia-yuanchun-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yuanchun windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "2f1983973c949b901d909f66a84e0d68caa1a3e23091e8838d03035164a7c301",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yuanchun-sprite.png"
+  },
+  {
+    "id": "jia-yuanchun-duel-strike",
+    "file": "assets/jia-yuanchun-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yuanchun strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "5727eedecd5c3fa196fca371706a083333549972341ce39410f88741a4b6321c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yuanchun-sprite.png"
+  },
+  {
+    "id": "jia-yuanchun-duel-focus",
+    "file": "assets/jia-yuanchun-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yuanchun focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "14c22bdc6b131dab78d79e4e7ae4cb5dbfc58f23bb915cb2305e59b5792a784d",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yuanchun-sprite.png"
+  },
+  {
+    "id": "jia-yuanchun-duel-special",
+    "file": "assets/jia-yuanchun-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Jia Yuanchun special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "b9f9ecb86ef2bb7394824a9d33226a4fb78aaeaef91a9da49cca3d0acaeb59d8",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/jia-yuanchun-sprite.png"
+  },
+  {
+    "id": "xue-baochai-duel-windup",
+    "file": "assets/xue-baochai-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xue Baochai windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "56359bfa5ae845ed81133982b4c54d17d813daf35e1c60dda40c8dce9ca2aa7f",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xue-baochai-sprite.png"
+  },
+  {
+    "id": "xue-baochai-duel-strike",
+    "file": "assets/xue-baochai-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xue Baochai strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "067c396871554171baa1b2bcf936f81b826c6231b798f3efc20195a3467a14f5",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xue-baochai-sprite.png"
+  },
+  {
+    "id": "xue-baochai-duel-focus",
+    "file": "assets/xue-baochai-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xue Baochai focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "046bc30ad8eab4596d07ab5560dad88fc0d2f7c00f6202d84b61e68aaeaf537c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xue-baochai-sprite.png"
+  },
+  {
+    "id": "xue-baochai-duel-special",
+    "file": "assets/xue-baochai-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Xue Baochai special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "b99907f48698275f1d933147a4ae2bc3e3588cc3ec7c49fa935b278a60efd70c",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/xue-baochai-sprite.png"
+  },
+  {
+    "id": "lin-daiyu-duel-windup",
+    "file": "assets/lin-daiyu-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lin Daiyu windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ab25a12a75297364f946f24ee5c7c4f18d06f07a0e0039e3ae310f49dcde92f4",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lin-daiyu-sprite.png"
+  },
+  {
+    "id": "lin-daiyu-duel-strike",
+    "file": "assets/lin-daiyu-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lin Daiyu strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "1ac2a499af468215489211a29a365475e238f7a601213ed5c73412f7aef82802",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lin-daiyu-sprite.png"
+  },
+  {
+    "id": "lin-daiyu-duel-focus",
+    "file": "assets/lin-daiyu-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lin Daiyu focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "d69b69aa30addc835c29fb9fdc0358175728b677eae83b0ef99bb599ba67c7f6",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lin-daiyu-sprite.png"
+  },
+  {
+    "id": "lin-daiyu-duel-special",
+    "file": "assets/lin-daiyu-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Lin Daiyu special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "94b482b6e1615d2748fce945873fd86dc3979a1fb9b4203c7602cc0c10cfbbc1",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/lin-daiyu-sprite.png"
+  },
+  {
+    "id": "wang-xifeng-duel-windup",
+    "file": "assets/wang-xifeng-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wang Xifeng windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7cb694a9a5b921969355c920f69c8c07adf8b984ba0c730fd76e2495f8745c0f",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wang-xifeng-sprite.png"
+  },
+  {
+    "id": "wang-xifeng-duel-strike",
+    "file": "assets/wang-xifeng-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wang Xifeng strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "5a07c6552f15e5a1ed1f25e2b78a56f976513ea7cb6e775fecccf9561c901478",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wang-xifeng-sprite.png"
+  },
+  {
+    "id": "wang-xifeng-duel-focus",
+    "file": "assets/wang-xifeng-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wang Xifeng focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "cb81eb20a7489990e164b05db3f539a3dd300cae5b0fee577a505a6d263591a4",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wang-xifeng-sprite.png"
+  },
+  {
+    "id": "wang-xifeng-duel-special",
+    "file": "assets/wang-xifeng-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Wang Xifeng special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e937367bde98eb8b011be23d5fe61e52b33ca58d5cd8e1924b99f188493a7ada",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/wang-xifeng-sprite.png"
+  },
+  {
+    "id": "diaochan-duel-windup",
+    "file": "assets/diaochan-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Diaochan windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "49f8280fb5456518a636fa02a3bd910adceb49b6b8038c6517081bd042c34b90",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/diaochan-sprite.png"
+  },
+  {
+    "id": "diaochan-duel-strike",
+    "file": "assets/diaochan-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Diaochan strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ea8e5032887e87e6fa7f16858b37a589661fc2155047e9695c9b479fd6ed1193",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/diaochan-sprite.png"
+  },
+  {
+    "id": "diaochan-duel-focus",
+    "file": "assets/diaochan-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Diaochan focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7d1ee70a5b8c0d8fe4c7554fd5d0e11d7ea656beed8bcab736ddc0ee9e85fce8",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/diaochan-sprite.png"
+  },
+  {
+    "id": "diaochan-duel-special",
+    "file": "assets/diaochan-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Diaochan special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "46437f60588eabfd4dc47085db7fb0efbc4b23f0ffa81b04dae2e48fcd7a4307",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/diaochan-sprite.png"
+  },
+  {
+    "id": "yang-yuhuan-duel-windup",
+    "file": "assets/yang-yuhuan-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Yang Yuhuan windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "46eb5571d20d5804b3e08c01b07ed71fbb94f52e48ee51b0a5525c30990403bb",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/yang-yuhuan-sprite.png"
+  },
+  {
+    "id": "yang-yuhuan-duel-strike",
+    "file": "assets/yang-yuhuan-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Yang Yuhuan strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "088382b17a009f39e515fae20e234b9e22ada963d30b83c6a91085fe20c3ca80",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/yang-yuhuan-sprite.png"
+  },
+  {
+    "id": "yang-yuhuan-duel-focus",
+    "file": "assets/yang-yuhuan-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Yang Yuhuan focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "3dc4c743e3bad212b06e3dc81d24d4c0f42126342b40bb6d85a4e3627453c886",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/yang-yuhuan-sprite.png"
+  },
+  {
+    "id": "yang-yuhuan-duel-special",
+    "file": "assets/yang-yuhuan-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Yang Yuhuan special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "f1a7f2dafba6adb3f521379506855bd39fff733d67191314d2f99da3dcf00aa0",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/yang-yuhuan-sprite.png"
+  },
+  {
+    "id": "zhen-huan-duel-windup",
+    "file": "assets/zhen-huan-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhen Huan windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e2fffcff09cb9f3f6e2042a9ba8bfe1bb1e009ed1008c2572bb27affedc4bb04",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhen-huan-sprite.png"
+  },
+  {
+    "id": "zhen-huan-duel-strike",
+    "file": "assets/zhen-huan-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhen Huan strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "646e70b37cc59f30a7fc5dd4f24402f4f28067dd875cdae16e30b906b28bbff2",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhen-huan-sprite.png"
+  },
+  {
+    "id": "zhen-huan-duel-focus",
+    "file": "assets/zhen-huan-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhen Huan focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "ef5e526c01433fb7fd988ca89a119971c89c5381d9d9354631f3b05fd4e3f189",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhen-huan-sprite.png"
+  },
+  {
+    "id": "zhen-huan-duel-special",
+    "file": "assets/zhen-huan-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhen Huan special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "094db3540cfdf63504b3ead04e3fcac63a53d7683be928eb1ecaabd6941bad7d",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhen-huan-sprite.png"
+  },
+  {
+    "id": "empress-yixiu-duel-windup",
+    "file": "assets/empress-yixiu-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Empress Yixiu windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "636b1d0d62123e466314a71f57c929c0478a7f7470e82829f657e6fbef4f8ced",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/empress-yixiu-sprite.png"
+  },
+  {
+    "id": "empress-yixiu-duel-strike",
+    "file": "assets/empress-yixiu-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Empress Yixiu strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "911ee9112316cfc3be174f2560a2ed6809c473d18ed50a3ff88d5344dfc4ba3d",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/empress-yixiu-sprite.png"
+  },
+  {
+    "id": "empress-yixiu-duel-focus",
+    "file": "assets/empress-yixiu-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Empress Yixiu focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "b98291e0660d540f8cc0dfa5b20a516982ecaec19ae6921e7160599d813c3a43",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/empress-yixiu-sprite.png"
+  },
+  {
+    "id": "empress-yixiu-duel-special",
+    "file": "assets/empress-yixiu-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Empress Yixiu special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "779212d4b3e87fa5b0b139a2d2364bd8dbf0b9fd1ca20548a7b6353b21f29701",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/empress-yixiu-sprite.png"
+  },
+  {
+    "id": "hua-fei-duel-windup",
+    "file": "assets/hua-fei-duel-windup.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Hua Fei windup pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "6be4f50bdacf789742e41f4bb7c2e830f9c8b45590b8de25ab58507b6ff4bfe7",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/hua-fei-sprite.png"
+  },
+  {
+    "id": "hua-fei-duel-strike",
+    "file": "assets/hua-fei-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Hua Fei strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "fe27e62bbae567c220c2c9284a2d3a5b0ee5f8b697c432a8be5002df2bcc3f62",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/hua-fei-sprite.png"
+  },
+  {
+    "id": "hua-fei-duel-focus",
+    "file": "assets/hua-fei-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Hua Fei focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "7bbd57a8a2c52a683aab16f8143d4c1312a897e280ae0ff78629e8c9b2445c87",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/hua-fei-sprite.png"
+  },
+  {
+    "id": "hua-fei-duel-special",
+    "file": "assets/hua-fei-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Hua Fei special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "f7fb7d1dac8783b23e40feebd31010d019dbb23567c954f41aa30dc7db679b14",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/hua-fei-sprite.png"
+  },
+  {
+    "id": "zhao-min-duel-strike",
+    "file": "assets/zhao-min-duel-strike.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhao Min strike pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "349846bd85e69bccf806336db683d23f3d658dceb543958fed022e0ec8b4a269",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhao-min-sprite.png"
+  },
+  {
+    "id": "zhao-min-duel-focus",
+    "file": "assets/zhao-min-duel-focus.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhao Min focus pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "e9400624c53bbe5f170a82648d2a16cfe946a0341506c5b706c40bdeaffa1100",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhao-min-sprite.png"
+  },
+  {
+    "id": "zhao-min-duel-special",
+    "file": "assets/zhao-min-duel-special.png",
+    "method": "Approved art-review image supplied in GitHub PR #106 on 2026-10-04; native 1024×1024 RGBA PNG reviewed and registered without altering image bytes.",
+    "prompt": "Approved complete full-body Zhao Min special pose; right-facing character with transparent surroundings. Registration description; the original generation prompt was not supplied in PR #106.",
+    "source": "https://github.com/leejpjack-hue/wuxia-rpg-concepts/commit/2ee33b885b72259a474162f41726e3ca3a33da75",
+    "sha256": "77277b8d8c3526186d1c64d9db8a30487d4becfec82c9cf3220355f5c7bc546e",
+    "runtimeApproved": true,
+    "role": "duel-pose",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    },
+    "reference": "assets/zhao-min-sprite.png"
   }
 ]

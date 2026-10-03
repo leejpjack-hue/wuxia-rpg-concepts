@@ -1,5 +1,6 @@
 # Qin Liangyu / 秦良玉
 
+INTEGRATED 4 October 2026: all five supplied images are installed; all four card poses are selected in combat. Requests below are retained as generation references.
 Review: RECOVER
 Duel atlas is RGB with solid black background. Neighbouring-cell red cloth fragments are visible; roam sprite retains a stray fragment. Recover alpha/clean per-cell first.
 

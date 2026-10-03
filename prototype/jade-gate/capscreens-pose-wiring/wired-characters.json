@@ -1,0 +1,232 @@
+[
+  {
+    "id": "gu-dasao",
+    "cinematicArt": "assets/gu-dasao-sprite.png",
+    "poseFiles": {
+      "windup": "assets/gu-dasao-duel-windup.png",
+      "strike": "assets/gu-dasao-duel-strike.png",
+      "focus": "assets/gu-dasao-duel-focus.png",
+      "special": "assets/gu-dasao-duel-special.png"
+    }
+  },
+  {
+    "id": "qin-liangyu",
+    "cinematicArt": "assets/qin-liangyu-sprite.png",
+    "poseFiles": {
+      "windup": "assets/qin-liangyu-duel-windup.png",
+      "strike": "assets/qin-liangyu-duel-strike.png",
+      "focus": "assets/qin-liangyu-duel-focus.png",
+      "special": "assets/qin-liangyu-duel-special.png"
+    }
+  },
+  {
+    "id": "bao-sanniang",
+    "cinematicArt": "assets/bao-sanniang-sprite.png",
+    "poseFiles": {
+      "windup": "assets/bao-sanniang-duel-windup.png",
+      "strike": "assets/bao-sanniang-duel-strike.png",
+      "focus": "assets/bao-sanniang-duel-focus.png",
+      "special": "assets/bao-sanniang-duel-special.png"
+    }
+  },
+  {
+    "id": "jia-zheng",
+    "cinematicArt": "assets/jia-zheng-sprite.png",
+    "poseFiles": {
+      "windup": "assets/jia-zheng-duel-windup.png",
+      "strike": "assets/jia-zheng-duel-strike.png",
+      "focus": "assets/jia-zheng-duel-focus.png",
+      "special": "assets/jia-zheng-duel-special.png"
+    }
+  },
+  {
+    "id": "jia-yucun",
+    "cinematicArt": "assets/jia-yucun-sprite.png",
+    "poseFiles": {
+      "windup": "assets/jia-yucun-duel-windup.png",
+      "strike": "assets/jia-yucun-duel-strike.png",
+      "focus": "assets/jia-yucun-duel-focus.png",
+      "special": "assets/jia-yucun-duel-special.png"
+    }
+  },
+  {
+    "id": "bao-zheng",
+    "cinematicArt": "assets/bao-zheng-sprite.png",
+    "poseFiles": {
+      "windup": "assets/bao-zheng-duel-windup.png",
+      "strike": "assets/bao-zheng-duel-strike.png",
+      "focus": "assets/bao-zheng-duel-focus.png",
+      "special": "assets/bao-zheng-duel-special.png"
+    }
+  },
+  {
+    "id": "di-renjie",
+    "cinematicArt": "assets/di-renjie-sprite.png",
+    "poseFiles": {
+      "windup": "assets/di-renjie-duel-windup.png",
+      "strike": "assets/di-renjie-duel-strike.png",
+      "focus": "assets/di-renjie-duel-focus.png",
+      "special": "assets/di-renjie-duel-special.png"
+    }
+  },
+  {
+    "id": "kuang-zhong",
+    "cinematicArt": "assets/kuang-zhong-sprite.png",
+    "poseFiles": {
+      "windup": "assets/kuang-zhong-duel-windup.png",
+      "strike": "assets/kuang-zhong-duel-strike.png",
+      "focus": "assets/kuang-zhong-duel-focus.png",
+      "special": "assets/kuang-zhong-duel-special.png"
+    }
+  },
+  {
+    "id": "fan-jin",
+    "cinematicArt": "assets/fan-jin-sprite.png",
+    "poseFiles": {
+      "windup": "assets/fan-jin-duel-windup.png",
+      "strike": "assets/fan-jin-duel-strike.png",
+      "focus": "assets/fan-jin-duel-focus.png",
+      "special": "assets/fan-jin-duel-special.png"
+    }
+  },
+  {
+    "id": "lu-su",
+    "cinematicArt": "assets/lu-su-sprite.png",
+    "poseFiles": {
+      "windup": "assets/lu-su-duel-windup.png",
+      "strike": "assets/lu-su-duel-strike.png",
+      "focus": "assets/lu-su-duel-focus.png",
+      "special": "assets/lu-su-duel-special.png"
+    }
+  },
+  {
+    "id": "xun-yu",
+    "cinematicArt": "assets/xun-yu-sprite.png",
+    "poseFiles": {
+      "windup": "assets/xun-yu-duel-windup.png",
+      "strike": "assets/xun-yu-duel-strike.png",
+      "focus": "assets/xun-yu-duel-focus.png",
+      "special": "assets/xun-yu-duel-special.png"
+    }
+  },
+  {
+    "id": "song-jiang",
+    "cinematicArt": "assets/song-jiang-sprite.png",
+    "poseFiles": {
+      "windup": "assets/song-jiang-duel-windup.png",
+      "strike": "assets/song-jiang-duel-strike.png",
+      "focus": "assets/song-jiang-duel-focus.png",
+      "special": "assets/song-jiang-duel-special.png"
+    }
+  },
+  {
+    "id": "wu-yong",
+    "cinematicArt": "assets/wu-yong-sprite.png",
+    "poseFiles": {
+      "windup": "assets/wu-yong-duel-windup.png",
+      "strike": "assets/wu-yong-duel-strike.png",
+      "focus": "assets/wu-yong-duel-focus.png",
+      "special": "assets/wu-yong-duel-special.png"
+    }
+  },
+  {
+    "id": "jia-yuanchun",
+    "cinematicArt": "assets/jia-yuanchun-sprite.png",
+    "poseFiles": {
+      "windup": "assets/jia-yuanchun-duel-windup.png",
+      "strike": "assets/jia-yuanchun-duel-strike.png",
+      "focus": "assets/jia-yuanchun-duel-focus.png",
+      "special": "assets/jia-yuanchun-duel-special.png"
+    }
+  },
+  {
+    "id": "xue-baochai",
+    "cinematicArt": "assets/xue-baochai-sprite.png",
+    "poseFiles": {
+      "windup": "assets/xue-baochai-duel-windup.png",
+      "strike": "assets/xue-baochai-duel-strike.png",
+      "focus": "assets/xue-baochai-duel-focus.png",
+      "special": "assets/xue-baochai-duel-special.png"
+    }
+  },
+  {
+    "id": "lin-daiyu",
+    "cinematicArt": "assets/lin-daiyu-sprite.png",
+    "poseFiles": {
+      "windup": "assets/lin-daiyu-duel-windup.png",
+      "strike": "assets/lin-daiyu-duel-strike.png",
+      "focus": "assets/lin-daiyu-duel-focus.png",
+      "special": "assets/lin-daiyu-duel-special.png"
+    }
+  },
+  {
+    "id": "wang-xifeng",
+    "cinematicArt": "assets/wang-xifeng-sprite.png",
+    "poseFiles": {
+      "windup": "assets/wang-xifeng-duel-windup.png",
+      "strike": "assets/wang-xifeng-duel-strike.png",
+      "focus": "assets/wang-xifeng-duel-focus.png",
+      "special": "assets/wang-xifeng-duel-special.png"
+    }
+  },
+  {
+    "id": "diaochan",
+    "cinematicArt": "assets/diaochan-sprite.png",
+    "poseFiles": {
+      "windup": "assets/diaochan-duel-windup.png",
+      "strike": "assets/diaochan-duel-strike.png",
+      "focus": "assets/diaochan-duel-focus.png",
+      "special": "assets/diaochan-duel-special.png"
+    }
+  },
+  {
+    "id": "yang-yuhuan",
+    "cinematicArt": "assets/yang-yuhuan-sprite.png",
+    "poseFiles": {
+      "windup": "assets/yang-yuhuan-duel-windup.png",
+      "strike": "assets/yang-yuhuan-duel-strike.png",
+      "focus": "assets/yang-yuhuan-duel-focus.png",
+      "special": "assets/yang-yuhuan-duel-special.png"
+    }
+  },
+  {
+    "id": "zhen-huan",
+    "cinematicArt": "assets/zhen-huan-sprite.png",
+    "poseFiles": {
+      "windup": "assets/zhen-huan-duel-windup.png",
+      "strike": "assets/zhen-huan-duel-strike.png",
+      "focus": "assets/zhen-huan-duel-focus.png",
+      "special": "assets/zhen-huan-duel-special.png"
+    }
+  },
+  {
+    "id": "empress-yixiu",
+    "cinematicArt": "assets/empress-yixiu-sprite.png",
+    "poseFiles": {
+      "windup": "assets/empress-yixiu-duel-windup.png",
+      "strike": "assets/empress-yixiu-duel-strike.png",
+      "focus": "assets/empress-yixiu-duel-focus.png",
+      "special": "assets/empress-yixiu-duel-special.png"
+    }
+  },
+  {
+    "id": "hua-fei",
+    "cinematicArt": "assets/hua-fei-sprite.png",
+    "poseFiles": {
+      "windup": "assets/hua-fei-duel-windup.png",
+      "strike": "assets/hua-fei-duel-strike.png",
+      "focus": "assets/hua-fei-duel-focus.png",
+      "special": "assets/hua-fei-duel-special.png"
+    }
+  },
+  {
+    "id": "zhao-min",
+    "cinematicArt": "assets/zhao-min-sprite.png",
+    "poseFiles": {
+      "windup": "assets/zhao-min-duel-windup.png",
+      "strike": "assets/zhao-min-duel-strike.png",
+      "focus": "assets/zhao-min-duel-focus.png",
+      "special": "assets/zhao-min-duel-special.png"
+    }
+  }
+]

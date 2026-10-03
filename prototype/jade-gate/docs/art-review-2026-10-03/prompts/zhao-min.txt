@@ -1,7 +1,8 @@
 # Zhao Min / 赵敏
 
-Review: STRIKE AND SPECIAL REQUIRED — IDLE, WINDUP AND FOCUS INTEGRATED
-Image 1 from the first share is installed as the full-body ready sprite and special-focus pose. The second share supplies the complete raised-knee wind-up. Generate only STRIKE and SPECIAL below; other requests are retained for reference.
+INTEGRATED 4 October 2026: all five supplied images are installed; all four card poses are selected in combat. Requests below are retained as generation references.
+Review: IDLE, WINDUP, STRIKE, FOCUS AND SPECIAL INTEGRATED
+Image 1 from the first share is installed as the full-body ready sprite and special-focus pose. The second share supplies the complete raised-knee wind-up. PR #106 subsequently supplied the complete four-pose set. All requests below are reference material.
 Wind-up/strike/special truncate supporting leg; focus is complete. Special repeats normal kick; twin jian absent.
 
 Attach `assets/zhao-min-sprite.png` to every remaining request as the approved identity reference. Attach the existing duel sheet as a SECOND reference only for motion/props, not for its missing limbs or black background. The key controls face, costume and full-body proportions. These prompts preserve the current art direction; they do not silently adopt conflicting old weapon metadata.

@@ -1,5 +1,6 @@
 # Bao Zheng / 包拯
 
+INTEGRATED 4 October 2026: all five supplied images are installed; all four card poses are selected in combat. Requests below are retained as generation references.
 Review: REGENERATE
 All four poses lack complete lower bodies; alpha matte fades through dark clothing. Face looks younger than the moustached key.
 

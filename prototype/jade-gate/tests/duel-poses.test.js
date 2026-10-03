@@ -78,8 +78,8 @@ test('hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PN
   assert.equal(loadDuelPoses(manifest, 'guan-yu').poseRects, undefined);
 });
 
-test('Zhao Min native wind-up and focus keep full canvases while contact poses retain the existing atlas',()=>{
- const atlas=loadDuelPoses(manifest,'zhao-min');
+test('partial native overrides keep full canvases while other poses retain the existing atlas',()=>{
+ const atlas={...loadDuelPoses(manifest,'zhao-min'),poseFiles:{windup:'assets/zhao-min-duel-windup.png',focus:'assets/zhao-min-sprite.png'}};
  const classes=new Set();
  const node={src:'assets/zhao-min-sprite.png',dataset:{},style:{},classList:{add:n=>classes.add(n),remove:n=>classes.delete(n)}};
  for(const [pose,file] of [['windup','zhao-min-duel-windup'],['focus','zhao-min-sprite']]) {
@@ -96,6 +96,24 @@ test('Zhao Min native wind-up and focus keep full canvases while contact poses r
  assert.equal(node.src,'assets/zhao-min-sprite.png');
  assert.equal(node.style.backgroundImage,'');
  assert.equal(classes.has('duel-pose'),false);
+});
+
+test('all 23 supplied character sets render their new single-image poses without legacy crops',()=>{
+ const heroes=HEROES.filter(h=>h.hidden || ['gu-dasao','qin-liangyu','bao-sanniang'].includes(h.id));
+ assert.equal(heroes.length,23);
+ for(const hero of heroes){
+  const atlas=loadDuelPoses(manifest,hero.id);
+  const node={src:hero.cinematicArt,dataset:{},style:{},classList:{add(){},remove(){}}};
+  for(const pose of Object.keys(DUEL_POSE_CELLS)){
+   assert.equal(applyDuelPose(node,atlas,pose),true,`${hero.id}: ${pose}`);
+   assert.equal(node.style.backgroundImage,`url("assets/${hero.id}-duel-${pose}.png")`);
+   assert.equal(node.style.backgroundSize,'100% 100%');
+   assert.equal(node.style.backgroundPosition,'0% 0%');
+   assert.equal(node.style.aspectRatio,'');
+  }
+  clearDuelPose(node);
+  assert.equal(node.src,`assets/${hero.id}-sprite.png`);
+ }
 });
 
 test('separate duel poses reject unknown pose names and unreviewed or non-transparent files',()=>{

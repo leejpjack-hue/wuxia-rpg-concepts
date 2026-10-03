@@ -114,3 +114,14 @@ Card duels additionally support `<hero-id>-duel-poses.png`, an approved 2×2 RGB
 Card artwork whose figures do not fit equal cells can supply `atlasSize: [actualWidth,actualHeight]` and four `poseRects` values `[x,y,width,height]`. Bounds must isolate complete figures without including a neighboring figure. Overlapping figures cannot be rescued with a larger crop; exclude them and record the fallback in `reviewNote`. The renderer keeps source proportions.
 
 A separate reviewed `<hero-id>-walk` record may contain only `anims.walk` with four coordinates in reading order `[[0,0],[1,0],[0,1],[1,1]]`. Supply either a cell-safe 2×2 atlas or a `frameFiles` array of four separate full-frame PNG paths. Separate PNGs display whole, without cropping; all four must have matching square RGBA canvas dimensions, character scale, feet baseline, facing, costume, and weapon grip. Register each PNG as a reviewed `role:"walk-frame"` asset so it preloads. Roaming prefers this record over the legacy `<hero-id>-sheet`, requires `runtimeApproved:true`, and restores the existing standing sprite when movement stops. See [ART-CORRECTIONS.md](ART-CORRECTIONS.md) for Zhao Yun's supplied sequence and provenance.
+
+### Separate cinematic PNGs (4 October 2026)
+
+Saving a pose PNG alone does not select it in combat. For each approved `assets/<id>-duel-windup.png`, `-duel-strike.png`, `-duel-focus.png` and `-duel-special.png`:
+
+1. Register a sibling manifest asset with its exact file path, `role: "duel-pose"`, `runtimeApproved: true`, source/provenance and a square-alpha contract (at least 1024px). Review complete limbs, consistent identity and actual transparency first. The role includes the approved image in game preloading; ready sprites use `role: "sprite"`.
+2. Add the file to the existing `<id>-duel-poses` row's `poseFiles` object under `windup`, `strike`, `focus` or `special`. Partial sets are supported; other beats retain atlas crops. Native files display whole, so never apply the old `poseRects` to them.
+3. Set the hero's `cinematicArt` to the reviewed `assets/<id>-sprite.png` for transparent opening, guard and reduced-motion shots. Gallery/selection key art has its own path.
+4. Run `npm test` and `npm run check`. The check rejects unregistered pose filenames or approved images that combat does not select. Reload the local page to reload JSON/modules, then inspect both hero and rival normal/special beats in `capscreens-duel-action-poses/preview.html`.
+
+The 23-character batch imported in PR #106 now uses all 92 individual poses. Walking requires its own frame sequence; these four attack poses are card-cinematic artwork.

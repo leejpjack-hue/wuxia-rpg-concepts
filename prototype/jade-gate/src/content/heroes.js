@@ -177,6 +177,7 @@ export const HEROES = [
   },
   {
     id: "gu-dasao",
+    cinematicArt: "assets/gu-dasao-sprite.png",
     quickPlayOnly: true,
     name: "Gu Dasao",
     cn: "顧大嫂",
@@ -195,6 +196,7 @@ export const HEROES = [
   },
   {
     id: "qin-liangyu",
+    cinematicArt: "assets/qin-liangyu-sprite.png",
     quickPlayOnly: true,
     name: "Qin Liangyu",
     cn: "秦良玉",
@@ -213,6 +215,7 @@ export const HEROES = [
   },
   {
     id: "bao-sanniang",
+    cinematicArt: "assets/bao-sanniang-sprite.png",
     quickPlayOnly: true,
     name: "Bao Sanniang",
     cn: "鮑三娘",
@@ -270,6 +273,7 @@ export const HEROES = [
 
   {
     id: "jia-zheng",
+    cinematicArt: "assets/jia-zheng-sprite.png",
     hidden: true,
     keyArt: "assets/jia-zheng.jpg",
     name: "Jia Zheng",
@@ -288,6 +292,7 @@ export const HEROES = [
   },
   {
     id: "jia-yucun",
+    cinematicArt: "assets/jia-yucun-sprite.png",
     hidden: true,
     keyArt: "assets/jia-yucun.jpg",
     name: "Jia Yucun",
@@ -306,6 +311,7 @@ export const HEROES = [
   },
   {
     id: "bao-zheng",
+    cinematicArt: "assets/bao-zheng-sprite.png",
     hidden: true,
     keyArt: "assets/bao-zheng.jpg",
     name: "Bao Zheng",
@@ -324,6 +330,7 @@ export const HEROES = [
   },
   {
     id: "di-renjie",
+    cinematicArt: "assets/di-renjie-sprite.png",
     hidden: true,
     keyArt: "assets/di-renjie.jpg",
     name: "Di Renjie",
@@ -342,6 +349,7 @@ export const HEROES = [
   },
   {
     id: "kuang-zhong",
+    cinematicArt: "assets/kuang-zhong-sprite.png",
     hidden: true,
     keyArt: "assets/kuang-zhong.jpg",
     name: "Kuang Zhong",
@@ -360,6 +368,7 @@ export const HEROES = [
   },
   {
     id: "fan-jin",
+    cinematicArt: "assets/fan-jin-sprite.png",
     hidden: true,
     keyArt: "assets/fan-jin.jpg",
     name: "Fan Jin",
@@ -378,6 +387,7 @@ export const HEROES = [
   },
   {
     id: "lu-su",
+    cinematicArt: "assets/lu-su-sprite.png",
     hidden: true,
     keyArt: "assets/lu-su.jpg",
     name: "Lu Su",
@@ -396,6 +406,7 @@ export const HEROES = [
   },
   {
     id: "xun-yu",
+    cinematicArt: "assets/xun-yu-sprite.png",
     hidden: true,
     keyArt: "assets/xun-yu.jpg",
     name: "Xun Yu",
@@ -414,6 +425,7 @@ export const HEROES = [
   },
   {
     id: "song-jiang",
+    cinematicArt: "assets/song-jiang-sprite.png",
     hidden: true,
     keyArt: "assets/song-jiang.jpg",
     name: "Song Jiang",
@@ -432,6 +444,7 @@ export const HEROES = [
   },
   {
     id: "wu-yong",
+    cinematicArt: "assets/wu-yong-sprite.png",
     hidden: true,
     keyArt: "assets/wu-yong.jpg",
     name: "Wu Yong",
@@ -450,6 +463,7 @@ export const HEROES = [
   },
   {
     id: "jia-yuanchun",
+    cinematicArt: "assets/jia-yuanchun-sprite.png",
     hidden: true,
     keyArt: "assets/jia-yuanchun.jpg",
     name: "Jia Yuanchun",
@@ -468,6 +482,7 @@ export const HEROES = [
   },
   {
     id: "xue-baochai",
+    cinematicArt: "assets/xue-baochai-sprite.png",
     hidden: true,
     keyArt: "assets/xue-baochai.jpg",
     name: "Xue Baochai",
@@ -486,6 +501,7 @@ export const HEROES = [
   },
   {
     id: "lin-daiyu",
+    cinematicArt: "assets/lin-daiyu-sprite.png",
     hidden: true,
     keyArt: "assets/lin-daiyu.jpg",
     name: "Lin Daiyu",
@@ -504,6 +520,7 @@ export const HEROES = [
   },
   {
     id: "wang-xifeng",
+    cinematicArt: "assets/wang-xifeng-sprite.png",
     hidden: true,
     keyArt: "assets/wang-xifeng.jpg",
     name: "Wang Xifeng",
@@ -522,6 +539,7 @@ export const HEROES = [
   },
   {
     id: "diaochan",
+    cinematicArt: "assets/diaochan-sprite.png",
     hidden: true,
     keyArt: "assets/diaochan.jpg",
     name: "Diaochan",
@@ -540,6 +558,7 @@ export const HEROES = [
   },
   {
     id: "yang-yuhuan",
+    cinematicArt: "assets/yang-yuhuan-sprite.png",
     hidden: true,
     keyArt: "assets/yang-yuhuan.jpg",
     name: "Yang Yuhuan",
@@ -558,6 +577,7 @@ export const HEROES = [
   },
   {
     id: "zhen-huan",
+    cinematicArt: "assets/zhen-huan-sprite.png",
     hidden: true,
     keyArt: "assets/zhen-huan.jpg",
     name: "Zhen Huan",
@@ -576,6 +596,7 @@ export const HEROES = [
   },
   {
     id: "empress-yixiu",
+    cinematicArt: "assets/empress-yixiu-sprite.png",
     hidden: true,
     keyArt: "assets/empress-yixiu.jpg",
     name: "Empress Yixiu",
@@ -594,6 +615,7 @@ export const HEROES = [
   },
   {
     id: "hua-fei",
+    cinematicArt: "assets/hua-fei-sprite.png",
     hidden: true,
     keyArt: "assets/hua-fei.jpg",
     name: "Hua Fei",

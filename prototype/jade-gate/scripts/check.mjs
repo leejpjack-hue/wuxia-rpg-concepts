@@ -86,6 +86,21 @@ for (const asset of manifest) {
 // A playable hero needs both assets: a portrait and an alpha sprite.
 // Validate headers so concept sheets cannot quietly ship as character art.
 const listed = new Set(manifest.map((asset) => asset.id));
+// Copying approved single-pose art into assets is only half the integration:
+// every approved file must also be selected by its fighter's pose mapping.
+for (const file of readdirSync(join(root, "assets"))) {
+  const match = file.match(/^(.+)-duel-(windup|strike|focus|special)\.png$/);
+  if (!match) continue;
+  const [, fighterId, pose] = match, path = `assets/${file}`;
+  const asset = manifest.find(row => row.file === path);
+  if (!asset) throw new Error(`Unregistered duel image: ${path}; add its manifest row and poseFiles mapping`);
+  if (asset.runtimeApproved === true && loadDuelPoses(manifest, fighterId)?.poseFiles?.[pose] !== path)
+    throw new Error(`Approved duel image is not selected in combat: ${path}`);
+}
+for (const hero of HEROES.filter(hero => hero.cinematicArt)) {
+  if (!manifest.some(row => row.file === hero.cinematicArt && row.runtimeApproved === true && row.contract?.alpha))
+    throw new Error(`Unreviewed cinematic still: ${hero.id}`);
+}
 for (const hero of HEROES.filter((hero) => hero.hidden)) {
   const portrait = manifest.find((asset) => asset.id === hero.id);
   const atlas = manifest.find((asset) => asset.id === `${hero.id}-duel-poses`);

@@ -46,6 +46,8 @@ const art = [
   "bamboo-crossing-ground", "canglan-terrace-ground",
   "granite-pine-blocker",
   ...assetManifest.filter(row => row.role === 'walk-frame' && row.runtimeApproved).map(row => row.id),
+  // Warm the reviewed native poses/stills before a fast cinematic beat needs them.
+  ...assetManifest.filter(row => ['duel-pose', 'sprite'].includes(row.role) && row.runtimeApproved).map(row => row.id),
   "night-heron-sprite", "shadow-assassin-sprite", "skiff-archer-sprite",
   "canglan-monk-sprite", "lu-bu-rival-sprite",
   "meridian-citadel", "jade-sentinel-sprite", "meridian-acolyte-sprite", "sovereign-sprite", "merchant",
@@ -55,7 +57,7 @@ const art = [
   "weather-rain", "weather-night", "weather-fog",
   // FRAME-00 sibling sheets. Roam (FRAME-03) paints these when that hero leads.
   "lu-zhishen-sheet",
-  ...assetManifest.filter(row => row.duelPoses && row.runtimeApproved).map(row => row.id),
+  ...assetManifest.filter(row => row.duelPoses && row.runtimeApproved && Object.keys(row.poseFiles || {}).length < 4).map(row => row.id),
 ];
 view.setReady(true);
 let statusLanguageOff;
