@@ -1,5 +1,6 @@
 # Bao Sanniang / 鮑三娘
 
+INTEGRATED 4 October 2026: all five supplied images are installed; all four card poses are selected in combat. Requests below are retained as generation references.
 Review: RECOVER
 Duel atlas is RGB with a solid black background; full bodies and spear remain. Recover alpha; special resembles normal thrust.
 

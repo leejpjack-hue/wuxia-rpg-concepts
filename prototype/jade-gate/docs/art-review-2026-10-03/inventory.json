@@ -8,7 +8,8 @@
     "reference": "assets/jia-zheng.jpg",
     "promptFile": "prompts/jia-zheng.txt",
     "look": "dark navy Chinese jacket and trousers, short swept-back black hair; match the plain approved key outfit, not additional gold embroidery",
-    "equipmentAsDrawn": "one white folding fan"
+    "equipmentAsDrawn": "one white folding fan",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "jia-yucun",
@@ -19,7 +20,8 @@
     "reference": "assets/jia-yucun.jpg",
     "promptFile": "prompts/jia-yucun.txt",
     "look": "cream long sleeves, dark sleeveless Chinese waistcoat, dark trousers, brown waist sash, black hair tied up",
-    "equipmentAsDrawn": "one short bamboo baton, matching the existing action reference"
+    "equipmentAsDrawn": "one short bamboo baton, matching the existing action reference",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "bao-zheng",
@@ -30,7 +32,8 @@
     "reference": "assets/bao-zheng.jpg",
     "promptFile": "prompts/bao-zheng.txt",
     "look": "black layered Chinese robe, dark trousers and boots, tied black hair, the facial hair and facial proportions of the approved key",
-    "equipmentAsDrawn": "one straight Chinese jian"
+    "equipmentAsDrawn": "one straight Chinese jian",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "di-renjie",
@@ -41,7 +44,8 @@
     "reference": "assets/di-renjie.jpg",
     "promptFile": "prompts/di-renjie.txt",
     "look": "grey patterned Chinese jacket, dark inner shirt and trousers, dark sash, swept-up black hair",
-    "equipmentAsDrawn": "one small round golden token, as in the existing action art; do not substitute an unrelated fan"
+    "equipmentAsDrawn": "one small round golden token, as in the existing action art; do not substitute an unrelated fan",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "kuang-zhong",
@@ -52,7 +56,8 @@
     "reference": "assets/kuang-zhong.jpg",
     "promptFile": "prompts/kuang-zhong.txt",
     "look": "deep teal Chinese jacket and dark trousers, black tied-up hair",
-    "equipmentAsDrawn": "one linked chain of large brass coins, matching the existing duel art"
+    "equipmentAsDrawn": "one linked chain of large brass coins, matching the existing duel art",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "fan-jin",
@@ -63,7 +68,8 @@
     "reference": "assets/fan-jin.jpg",
     "promptFile": "prompts/fan-jin.txt",
     "look": "worn grey-brown scholar jacket and dark trousers, dishevelled tied black hair, anxious expression",
-    "equipmentAsDrawn": "one rolled paper scroll"
+    "equipmentAsDrawn": "one rolled paper scroll",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "lu-su",
@@ -74,7 +80,8 @@
     "reference": "assets/lu-su.jpg",
     "promptFile": "prompts/lu-su.txt",
     "look": "muted green sleeveless outer layer over cream Chinese sleeves, dark trousers and boots, tied black hair",
-    "equipmentAsDrawn": "one short bamboo baton, matching the current action reference"
+    "equipmentAsDrawn": "one short bamboo baton, matching the current action reference",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "xun-yu",
@@ -85,7 +92,8 @@
     "reference": "assets/xun-yu.jpg",
     "promptFile": "prompts/xun-yu.txt",
     "look": "dark sleeveless Chinese waistcoat over cream rolled sleeves, dark trousers and boots, long swept-back black hair",
-    "equipmentAsDrawn": "unarmed palms, exactly as in the approved current action look"
+    "equipmentAsDrawn": "unarmed palms, exactly as in the approved current action look",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "song-jiang",
@@ -96,7 +104,8 @@
     "reference": "assets/song-jiang.jpg",
     "promptFile": "prompts/song-jiang.txt",
     "look": "dark crimson Chinese frog-button jacket, black trousers and shoes, tied black hair and the facial hair of the key",
-    "equipmentAsDrawn": "unarmed fists, exactly as in the current action reference"
+    "equipmentAsDrawn": "unarmed fists, exactly as in the current action reference",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "wu-yong",
@@ -107,7 +116,8 @@
     "reference": "assets/wu-yong.jpg",
     "promptFile": "prompts/wu-yong.txt",
     "look": "layered dark navy scholar robes, long tied black hair",
-    "equipmentAsDrawn": "one dark folding fan"
+    "equipmentAsDrawn": "one dark folding fan",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "jia-yuanchun",
@@ -118,7 +128,8 @@
     "reference": "assets/jia-yuanchun.jpg",
     "promptFile": "prompts/jia-yuanchun.txt",
     "look": "dark red Chinese-inspired fitted knee-length dress, black heels, pinned black hair; preserve the adult approved fashion look",
-    "equipmentAsDrawn": "unarmed palms, as in the current art"
+    "equipmentAsDrawn": "unarmed palms, as in the current art",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "xue-baochai",
@@ -129,7 +140,8 @@
     "reference": "assets/xue-baochai.jpg",
     "promptFile": "prompts/xue-baochai.txt",
     "look": "white short-sleeved Chinese-inspired blouse, black short skirt and ankle boots, pinned black hair",
-    "equipmentAsDrawn": "unarmed fists and kicks, as in the current art"
+    "equipmentAsDrawn": "unarmed fists and kicks, as in the current art",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "lin-daiyu",
@@ -140,7 +152,8 @@
     "reference": "assets/lin-daiyu.jpg",
     "promptFile": "prompts/lin-daiyu.txt",
     "look": "black short Chinese-inspired dress with gold bamboo motif, pale loose shawl, black heels, pinned black hair",
-    "equipmentAsDrawn": "one black folding fan; use it consistently, not a book in later poses"
+    "equipmentAsDrawn": "one black folding fan; use it consistently, not a book in later poses",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "wang-xifeng",
@@ -151,7 +164,8 @@
     "reference": "assets/wang-xifeng.jpg",
     "promptFile": "prompts/wang-xifeng.txt",
     "look": "dark red top, black short skirt, loose black jacket and black heels, pinned black hair",
-    "equipmentAsDrawn": "unarmed fists and kicks, as in the current art"
+    "equipmentAsDrawn": "unarmed fists and kicks, as in the current art",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "diaochan",
@@ -162,7 +176,8 @@
     "reference": "assets/diaochan.jpg",
     "promptFile": "prompts/diaochan.txt",
     "look": "ivory-gold Chinese-inspired short dress, matching heels, long loose black hair",
-    "equipmentAsDrawn": "attached silk ribbons only, matching the current dance action reference"
+    "equipmentAsDrawn": "attached silk ribbons only, matching the current dance action reference",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "yang-yuhuan",
@@ -173,7 +188,8 @@
     "reference": "assets/yang-yuhuan.jpg",
     "promptFile": "prompts/yang-yuhuan.txt",
     "look": "black Chinese-inspired short fitted dress, light ivory loose jacket, strappy heels and long black hair",
-    "equipmentAsDrawn": "unarmed fists, as in the current art"
+    "equipmentAsDrawn": "unarmed fists, as in the current art",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "zhen-huan",
@@ -184,7 +200,8 @@
     "reference": "assets/zhen-huan.jpg",
     "promptFile": "prompts/zhen-huan.txt",
     "look": "pale ivory cropped Chinese-style jacket and short skirt, muted jade-green inner top, adult proportions and pinned hair exactly like the approved key",
-    "equipmentAsDrawn": "unarmed palms, as in the current action look"
+    "equipmentAsDrawn": "unarmed palms, as in the current action look",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "empress-yixiu",
@@ -195,7 +212,8 @@
     "reference": "assets/empress-yixiu.jpg",
     "promptFile": "prompts/empress-yixiu.txt",
     "look": "black Chinese-inspired knee-length dress with restrained gold trim, black heels, pinned black hair",
-    "equipmentAsDrawn": "one slim golden hairpin blade, matching the current special; retain it in every pose"
+    "equipmentAsDrawn": "one slim golden hairpin blade, matching the current special; retain it in every pose",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "hua-fei",
@@ -206,7 +224,8 @@
     "reference": "assets/hua-fei.jpg",
     "promptFile": "prompts/hua-fei.txt",
     "look": "dark red top, black short skirt, loose black jacket and black heels, pinned black hair",
-    "equipmentAsDrawn": "unarmed fists, as in the current action reference"
+    "equipmentAsDrawn": "unarmed fists, as in the current action reference",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "zhao-min",
@@ -218,7 +237,7 @@
     "promptFile": "prompts/zhao-min.txt",
     "look": "black Chinese-inspired short dress, ivory loose shirt and tall black boots, long black hair matching the approved key",
     "equipmentAsDrawn": "unarmed fists and kicks, as in the current action art",
-    "followUp": "Zhao Min's user-generated full-body ready sprite and raised-knee wind-up are integrated. Ready art also supplies special focus; cinematic stills use transparent art and close-ups keep her face visible. Only STRIKE and SPECIAL contact images remain pending. The original audit and before-images below are retained."
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "qin-liangyu",
@@ -229,7 +248,8 @@
     "reference": "assets/qin-liangyu.png",
     "promptFile": "prompts/qin-liangyu.txt",
     "look": "cream-and-red layered Chinese battle tunic, dark trousers and boots, red cape, dark tied hair; match the updated approved key",
-    "equipmentAsDrawn": "exactly one white-shaft Chinese spear"
+    "equipmentAsDrawn": "exactly one white-shaft Chinese spear",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "gu-dasao",
@@ -240,7 +260,8 @@
     "reference": "assets/gu-dasao.png",
     "promptFile": "prompts/gu-dasao.txt",
     "look": "charcoal sleeveless Chinese fighting tunic, crimson waist sash and head wrap, dark trousers and boots, sturdy adult build",
-    "equipmentAsDrawn": "exactly two broad Chinese cleavers"
+    "equipmentAsDrawn": "exactly two broad Chinese cleavers",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   },
   {
     "id": "bao-sanniang",
@@ -251,6 +272,7 @@
     "reference": "assets/bao-sanniang.png",
     "promptFile": "prompts/bao-sanniang.txt",
     "look": "jade-green layered Chinese tunic, crimson sash, dark trousers and boots, tied dark hair matching the updated key",
-    "equipmentAsDrawn": "exactly one long Chinese spear"
+    "equipmentAsDrawn": "exactly one long Chinese spear",
+    "followUp": "Ready sprite and all four individual cinematic poses supplied in PR #106 and wired on 2026-10-04. Original audit decision/reason retained as before-state history."
   }
 ]

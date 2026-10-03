@@ -2,7 +2,7 @@
 
 Reviewed local `main` at **3ff8521**, Act V — the Rift and the Hall of Twenty. Scope: all 20 new hidden characters, Qin Liangyu / Gu Dasao / Bao Sanniang's updated looks, and the current stage materials. This delivery contains an audit, comparison sheets and prompts. Game code and runtime images were not changed; generation was not attempted.
 
-> Follow-up: Zhao Min's user-generated full-body ready sprite and raised-knee wind-up are integrated. Ready art also supplies special focus; cinematic stills use transparent art and close-ups keep her face visible. Only STRIKE and SPECIAL contact images remain pending. The original audit and before-images below are retained.
+> Follow-up (4 October): PR #106 supplied complete ready sprites and four individual cinematic poses for all 23 reviewed characters. All 92 poses are now registered and selected through `poseFiles`; transparent ready art is connected to cinematic stills. The findings and comparison sheets below describe the original pre-generation art. Act V scene recommendations remain outstanding.
 
 ## Priority order
 

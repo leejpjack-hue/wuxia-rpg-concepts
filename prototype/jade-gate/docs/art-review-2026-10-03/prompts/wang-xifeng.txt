@@ -1,5 +1,6 @@
 # Wang Xifeng / 王熙凤
 
+INTEGRATED 4 October 2026: all five supplied images are installed; all four card poses are selected in combat. Requests below are retained as generation references.
 Review: REGENERATE
 Kick poses truncate supporting leg; focus is full body and can supply a temporary idle sprite.
 
