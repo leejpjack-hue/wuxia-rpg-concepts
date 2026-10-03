@@ -1,0 +1,7 @@
+# meridian-citadel-blocker
+
+Status: RECOMMENDED POLISH / Act IV blockers; requires manifest and scene wiring
+Attach: assets/meridian-citadel.png for marble and red lacquer; granite-pine-blocker.png for camera/footprint only
+Delivery filename: assets/meridian-citadel-blocker.png
+
+ONE isolated compact irregular cluster of collapsed Imperial Meridian Citadel architecture as a maze obstacle. Broken pale marble balustrades, carved jade relief fragments, a low broken red-lacquered column and sparse dark moss. Match the attached palace marble, red lacquer and blood-moon ambient lighting; no granite mountain boulders or green pine tree. Raised three-quarter game view matching the existing prop footprint. Solid rounded cluster with no opening through its centre. Entire rubble silhouette fits inside an 8 percent margin on a square 1024x1024 canvas. TRUE transparent-alpha PNG outside the object. No baked floor rectangle, scenery, sky, black or white background, checkerboard, cast shadow, characters, text, border or grid. One whole transparent object, NOT a square opaque wall tile.

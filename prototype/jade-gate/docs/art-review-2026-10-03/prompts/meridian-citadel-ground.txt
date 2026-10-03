@@ -1,0 +1,7 @@
+# meridian-citadel-ground
+
+Status: RECOMMENDED POLISH / Act IV exploration; keep existing meridian-citadel.png for duel background
+Attach: assets/meridian-citadel.png as the identity and palette reference
+Delivery filename: assets/meridian-citadel-ground.png
+
+Create a repeatable exploration ground companion for the attached Imperial Meridian Citadel painting. Preserve pale marble paving with restrained gold and jade inlay, red-lacquered palace columns and faint blood-moon lighting. Raised three-quarter game view, a broad flat traversable marble play band across the lower 80 percent, palace architecture and distant stairs confined to the upper 15 percent and verges. Central floor free of columns, fixed obstacles, pits, steps or baked maze walls. No huge centred circular emblem or vanishing-point courtyard that repeats obviously. Same stone scale and subtle red ambient light across both left and right edges so it repeats horizontally. Crisp premium painterly Chinese wuxia rendering. Opaque landscape PNG, native 3072x1728 preferred or at least 2048x1152. No characters, fighters, text, signature, UI, border or fake transparent background.

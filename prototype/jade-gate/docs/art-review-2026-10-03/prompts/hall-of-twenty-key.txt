@@ -1,0 +1,7 @@
+# hall-of-twenty-key
+
+Status: OPTIONAL STORY KEY / needs dialogue backdrop support before it can display
+Attach: your approved Hall of Twenty reference board; otherworld.png for palette
+Delivery filename: assets/hall-of-twenty-key.png
+
+A cinematic reveal of the vast Chinese examination Hall of Twenty. Exactly twenty empty examiner desks arranged in clear ranked rows, dark wooden columns, pale carved lattice screens and a distant judgement dais. Zhao Yun, Lu Zhishen and Hu Sanniang stand small at the threshold seen from behind, using their attached approved character references; no new outfits. Cold jade-grey dawn light, a narrow warm golden beam through a shattered entrance, awe and suspense. Wide elevated establishing camera, architecture dominates, central lower area quiet enough for dialogue overlay. Premium crisp painterly wuxia concept art. Opaque landscape 16:9 PNG, native 3072x1728 preferred or at least 2048x1152. No readable writing, subtitles, UI, signatures, logo or frame.

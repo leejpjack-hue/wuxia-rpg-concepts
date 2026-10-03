@@ -1,0 +1,1934 @@
+[
+  {
+    "id": "jia-zheng",
+    "pose": "windup",
+    "crop": [
+      52,
+      3,
+      420,
+      470
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      357,
+      457
+    ],
+    "size": [
+      368,
+      467
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-zheng",
+    "pose": "strike",
+    "crop": [
+      514,
+      176,
+      1006,
+      470
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      482,
+      284
+    ],
+    "size": [
+      492,
+      294
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-zheng",
+    "pose": "focus",
+    "crop": [
+      129,
+      514,
+      380,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      241,
+      458
+    ],
+    "size": [
+      251,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-zheng",
+    "pose": "special",
+    "crop": [
+      600,
+      679,
+      1020,
+      981
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      410,
+      291
+    ],
+    "size": [
+      420,
+      302
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yucun",
+    "pose": "windup",
+    "crop": [
+      4,
+      35,
+      509,
+      470
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      495,
+      425
+    ],
+    "size": [
+      505,
+      435
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yucun",
+    "pose": "strike",
+    "crop": [
+      604,
+      136,
+      1020,
+      410
+    ],
+    "visibleBounds": [
+      15,
+      10,
+      406,
+      264
+    ],
+    "size": [
+      416,
+      274
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yucun",
+    "pose": "focus",
+    "crop": [
+      75,
+      515,
+      437,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      352,
+      457
+    ],
+    "size": [
+      362,
+      467
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yucun",
+    "pose": "special",
+    "crop": [
+      706,
+      613,
+      1004,
+      977
+    ],
+    "visibleBounds": [
+      14,
+      11,
+      287,
+      353
+    ],
+    "size": [
+      298,
+      364
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "bao-zheng",
+    "pose": "windup",
+    "crop": [
+      27,
+      71,
+      462,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      11,
+      425,
+      387
+    ],
+    "size": [
+      435,
+      397
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "bao-zheng",
+    "pose": "strike",
+    "crop": [
+      517,
+      100,
+      945,
+      457
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      416,
+      345
+    ],
+    "size": [
+      428,
+      357
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "bao-zheng",
+    "pose": "focus",
+    "crop": [
+      10,
+      658,
+      506,
+      982
+    ],
+    "visibleBounds": [
+      12,
+      10,
+      486,
+      314
+    ],
+    "size": [
+      496,
+      324
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "bao-zheng",
+    "pose": "special",
+    "crop": [
+      594,
+      688,
+      1002,
+      942
+    ],
+    "visibleBounds": [
+      35,
+      10,
+      388,
+      206
+    ],
+    "size": [
+      408,
+      254
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "di-renjie",
+    "pose": "windup",
+    "crop": [
+      6,
+      118,
+      410,
+      470
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      393,
+      342
+    ],
+    "size": [
+      404,
+      352
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "di-renjie",
+    "pose": "strike",
+    "crop": [
+      529,
+      125,
+      1019,
+      470
+    ],
+    "visibleBounds": [
+      16,
+      10,
+      480,
+      335
+    ],
+    "size": [
+      490,
+      345
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "di-renjie",
+    "pose": "focus",
+    "crop": [
+      7,
+      515,
+      493,
+      982
+    ],
+    "visibleBounds": [
+      11,
+      11,
+      476,
+      457
+    ],
+    "size": [
+      486,
+      467
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "di-renjie",
+    "pose": "special",
+    "crop": [
+      534,
+      596,
+      1016,
+      982
+    ],
+    "visibleBounds": [
+      13,
+      10,
+      471,
+      376
+    ],
+    "size": [
+      482,
+      386
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "kuang-zhong",
+    "pose": "windup",
+    "crop": [
+      3,
+      123,
+      489,
+      467
+    ],
+    "visibleBounds": [
+      10,
+      12,
+      467,
+      334
+    ],
+    "size": [
+      486,
+      344
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "kuang-zhong",
+    "pose": "strike",
+    "crop": [
+      518,
+      173,
+      1016,
+      470
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      488,
+      287
+    ],
+    "size": [
+      498,
+      297
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "kuang-zhong",
+    "pose": "focus",
+    "crop": [
+      82,
+      514,
+      431,
+      979
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      339,
+      454
+    ],
+    "size": [
+      349,
+      465
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "kuang-zhong",
+    "pose": "special",
+    "crop": [
+      526,
+      648,
+      988,
+      975
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      451,
+      316
+    ],
+    "size": [
+      462,
+      327
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "fan-jin",
+    "pose": "windup",
+    "crop": [
+      15,
+      4,
+      500,
+      454
+    ],
+    "visibleBounds": [
+      14,
+      10,
+      475,
+      438
+    ],
+    "size": [
+      485,
+      450
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "fan-jin",
+    "pose": "strike",
+    "crop": [
+      528,
+      131,
+      907,
+      460
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      368,
+      303
+    ],
+    "size": [
+      379,
+      329
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "fan-jin",
+    "pose": "focus",
+    "crop": [
+      97,
+      516,
+      464,
+      972
+    ],
+    "visibleBounds": [
+      21,
+      11,
+      356,
+      446
+    ],
+    "size": [
+      367,
+      456
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "fan-jin",
+    "pose": "special",
+    "crop": [
+      521,
+      649,
+      938,
+      875
+    ],
+    "visibleBounds": [
+      14,
+      10,
+      405,
+      214
+    ],
+    "size": [
+      417,
+      226
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lu-su",
+    "pose": "windup",
+    "crop": [
+      5,
+      110,
+      387,
+      469
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      353,
+      348
+    ],
+    "size": [
+      382,
+      359
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lu-su",
+    "pose": "strike",
+    "crop": [
+      515,
+      153,
+      954,
+      470
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      426,
+      307
+    ],
+    "size": [
+      439,
+      317
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lu-su",
+    "pose": "focus",
+    "crop": [
+      57,
+      535,
+      394,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      12,
+      326,
+      437
+    ],
+    "size": [
+      337,
+      447
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lu-su",
+    "pose": "special",
+    "crop": [
+      566,
+      539,
+      958,
+      955
+    ],
+    "visibleBounds": [
+      11,
+      11,
+      378,
+      406
+    ],
+    "size": [
+      392,
+      416
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xun-yu",
+    "pose": "windup",
+    "crop": [
+      3,
+      75,
+      507,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      493,
+      383
+    ],
+    "size": [
+      504,
+      393
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xun-yu",
+    "pose": "strike",
+    "crop": [
+      542,
+      3,
+      1005,
+      467
+    ],
+    "visibleBounds": [
+      30,
+      10,
+      453,
+      454
+    ],
+    "size": [
+      463,
+      464
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xun-yu",
+    "pose": "focus",
+    "crop": [
+      73,
+      514,
+      438,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      355,
+      456
+    ],
+    "size": [
+      365,
+      466
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xun-yu",
+    "pose": "special",
+    "crop": [
+      599,
+      514,
+      998,
+      975
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      389,
+      449
+    ],
+    "size": [
+      399,
+      461
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "song-jiang",
+    "pose": "windup",
+    "crop": [
+      41,
+      5,
+      482,
+      467
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      430,
+      452
+    ],
+    "size": [
+      441,
+      462
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "song-jiang",
+    "pose": "strike",
+    "crop": [
+      557,
+      97,
+      1017,
+      466
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      450,
+      359
+    ],
+    "size": [
+      460,
+      369
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "song-jiang",
+    "pose": "focus",
+    "crop": [
+      92,
+      514,
+      418,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      315,
+      458
+    ],
+    "size": [
+      326,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "song-jiang",
+    "pose": "special",
+    "crop": [
+      554,
+      675,
+      977,
+      982
+    ],
+    "visibleBounds": [
+      17,
+      10,
+      384,
+      297
+    ],
+    "size": [
+      423,
+      307
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wu-yong",
+    "pose": "windup",
+    "crop": [
+      10,
+      17,
+      508,
+      470
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      488,
+      443
+    ],
+    "size": [
+      498,
+      453
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wu-yong",
+    "pose": "strike",
+    "crop": [
+      608,
+      5,
+      1001,
+      465
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      383,
+      442
+    ],
+    "size": [
+      393,
+      460
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wu-yong",
+    "pose": "focus",
+    "crop": [
+      10,
+      542,
+      486,
+      965
+    ],
+    "visibleBounds": [
+      20,
+      11,
+      465,
+      412
+    ],
+    "size": [
+      476,
+      423
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wu-yong",
+    "pose": "special",
+    "crop": [
+      522,
+      616,
+      1020,
+      964
+    ],
+    "visibleBounds": [
+      13,
+      11,
+      488,
+      335
+    ],
+    "size": [
+      498,
+      348
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yuanchun",
+    "pose": "windup",
+    "crop": [
+      58,
+      5,
+      443,
+      465
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      375,
+      450
+    ],
+    "size": [
+      385,
+      460
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yuanchun",
+    "pose": "strike",
+    "crop": [
+      558,
+      6,
+      974,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      406,
+      452
+    ],
+    "size": [
+      416,
+      462
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yuanchun",
+    "pose": "focus",
+    "crop": [
+      149,
+      514,
+      364,
+      979
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      205,
+      455
+    ],
+    "size": [
+      215,
+      465
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "jia-yuanchun",
+    "pose": "special",
+    "crop": [
+      515,
+      567,
+      1021,
+      978
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      496,
+      401
+    ],
+    "size": [
+      506,
+      411
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xue-baochai",
+    "pose": "windup",
+    "crop": [
+      128,
+      4,
+      385,
+      468
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      247,
+      454
+    ],
+    "size": [
+      257,
+      464
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xue-baochai",
+    "pose": "strike",
+    "crop": [
+      533,
+      4,
+      1003,
+      468
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      460,
+      453
+    ],
+    "size": [
+      470,
+      464
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xue-baochai",
+    "pose": "focus",
+    "crop": [
+      166,
+      517,
+      353,
+      979
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      176,
+      452
+    ],
+    "size": [
+      187,
+      462
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "xue-baochai",
+    "pose": "special",
+    "crop": [
+      521,
+      516,
+      1009,
+      979
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      474,
+      453
+    ],
+    "size": [
+      488,
+      463
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lin-daiyu",
+    "pose": "windup",
+    "crop": [
+      6,
+      43,
+      509,
+      470
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      493,
+      417
+    ],
+    "size": [
+      503,
+      427
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lin-daiyu",
+    "pose": "strike",
+    "crop": [
+      524,
+      162,
+      997,
+      470
+    ],
+    "visibleBounds": [
+      20,
+      10,
+      432,
+      298
+    ],
+    "size": [
+      473,
+      308
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lin-daiyu",
+    "pose": "focus",
+    "crop": [
+      91,
+      514,
+      423,
+      982
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      322,
+      458
+    ],
+    "size": [
+      332,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "lin-daiyu",
+    "pose": "special",
+    "crop": [
+      516,
+      581,
+      884,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      358,
+      391
+    ],
+    "size": [
+      368,
+      401
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wang-xifeng",
+    "pose": "windup",
+    "crop": [
+      7,
+      31,
+      481,
+      469
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      463,
+      428
+    ],
+    "size": [
+      474,
+      438
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wang-xifeng",
+    "pose": "strike",
+    "crop": [
+      515,
+      68,
+      1020,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      11,
+      494,
+      390
+    ],
+    "size": [
+      505,
+      400
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wang-xifeng",
+    "pose": "focus",
+    "crop": [
+      155,
+      514,
+      356,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      191,
+      456
+    ],
+    "size": [
+      201,
+      466
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "wang-xifeng",
+    "pose": "special",
+    "crop": [
+      601,
+      514,
+      927,
+      982
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      316,
+      458
+    ],
+    "size": [
+      326,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "diaochan",
+    "pose": "windup",
+    "crop": [
+      8,
+      51,
+      507,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      13,
+      488,
+      407
+    ],
+    "size": [
+      499,
+      417
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "diaochan",
+    "pose": "strike",
+    "crop": [
+      538,
+      42,
+      1020,
+      469
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      472,
+      416
+    ],
+    "size": [
+      482,
+      427
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "diaochan",
+    "pose": "focus",
+    "crop": [
+      143,
+      516,
+      360,
+      979
+    ],
+    "visibleBounds": [
+      10,
+      11,
+      205,
+      453
+    ],
+    "size": [
+      217,
+      463
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "diaochan",
+    "pose": "special",
+    "crop": [
+      528,
+      632,
+      1014,
+      979
+    ],
+    "visibleBounds": [
+      12,
+      10,
+      474,
+      337
+    ],
+    "size": [
+      486,
+      347
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "yang-yuhuan",
+    "pose": "windup",
+    "crop": [
+      39,
+      4,
+      473,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      423,
+      454
+    ],
+    "size": [
+      434,
+      464
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "yang-yuhuan",
+    "pose": "strike",
+    "crop": [
+      516,
+      33,
+      1021,
+      469
+    ],
+    "visibleBounds": [
+      13,
+      11,
+      494,
+      425
+    ],
+    "size": [
+      505,
+      436
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "yang-yuhuan",
+    "pose": "focus",
+    "crop": [
+      156,
+      514,
+      356,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      190,
+      456
+    ],
+    "size": [
+      200,
+      466
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "yang-yuhuan",
+    "pose": "special",
+    "crop": [
+      532,
+      517,
+      1015,
+      980
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      472,
+      452
+    ],
+    "size": [
+      483,
+      463
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhen-huan",
+    "pose": "windup",
+    "crop": [
+      46,
+      3,
+      476,
+      468
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      419,
+      455
+    ],
+    "size": [
+      430,
+      465
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhen-huan",
+    "pose": "strike",
+    "crop": [
+      523,
+      77,
+      1021,
+      466
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      488,
+      379
+    ],
+    "size": [
+      498,
+      389
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhen-huan",
+    "pose": "focus",
+    "crop": [
+      132,
+      514,
+      385,
+      979
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      242,
+      454
+    ],
+    "size": [
+      253,
+      465
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhen-huan",
+    "pose": "special",
+    "crop": [
+      565,
+      524,
+      982,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      406,
+      446
+    ],
+    "size": [
+      417,
+      456
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "empress-yixiu",
+    "pose": "windup",
+    "crop": [
+      105,
+      4,
+      408,
+      469
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      293,
+      455
+    ],
+    "size": [
+      303,
+      465
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "empress-yixiu",
+    "pose": "strike",
+    "crop": [
+      641,
+      4,
+      895,
+      468
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      244,
+      454
+    ],
+    "size": [
+      254,
+      464
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "empress-yixiu",
+    "pose": "focus",
+    "crop": [
+      177,
+      514,
+      337,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      150,
+      455
+    ],
+    "size": [
+      160,
+      466
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "empress-yixiu",
+    "pose": "special",
+    "crop": [
+      531,
+      536,
+      1016,
+      980
+    ],
+    "visibleBounds": [
+      13,
+      10,
+      475,
+      434
+    ],
+    "size": [
+      485,
+      444
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "hua-fei",
+    "pose": "windup",
+    "crop": [
+      35,
+      6,
+      433,
+      456
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      383,
+      432
+    ],
+    "size": [
+      398,
+      450
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "hua-fei",
+    "pose": "strike",
+    "crop": [
+      520,
+      62,
+      1019,
+      470
+    ],
+    "visibleBounds": [
+      12,
+      10,
+      489,
+      398
+    ],
+    "size": [
+      499,
+      408
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "hua-fei",
+    "pose": "focus",
+    "crop": [
+      85,
+      514,
+      426,
+      982
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      331,
+      458
+    ],
+    "size": [
+      341,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "hua-fei",
+    "pose": "special",
+    "crop": [
+      571,
+      514,
+      936,
+      982
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      340,
+      458
+    ],
+    "size": [
+      365,
+      468
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhao-min",
+    "pose": "windup",
+    "crop": [
+      71,
+      5,
+      448,
+      468
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      367,
+      453
+    ],
+    "size": [
+      377,
+      463
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhao-min",
+    "pose": "strike",
+    "crop": [
+      515,
+      57,
+      1022,
+      469
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      496,
+      402
+    ],
+    "size": [
+      507,
+      412
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhao-min",
+    "pose": "focus",
+    "crop": [
+      142,
+      514,
+      370,
+      980
+    ],
+    "visibleBounds": [
+      11,
+      10,
+      218,
+      456
+    ],
+    "size": [
+      228,
+      466
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "zhao-min",
+    "pose": "special",
+    "crop": [
+      518,
+      604,
+      1021,
+      980
+    ],
+    "visibleBounds": [
+      10,
+      10,
+      492,
+      366
+    ],
+    "size": [
+      503,
+      376
+    ],
+    "touchesCrop": false
+  },
+  {
+    "id": "qin-liangyu",
+    "pose": "windup",
+    "crop": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "qin-liangyu",
+    "pose": "strike",
+    "crop": [
+      627,
+      0,
+      1254,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "qin-liangyu",
+    "pose": "focus",
+    "crop": [
+      0,
+      627,
+      627,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "qin-liangyu",
+    "pose": "special",
+    "crop": [
+      627,
+      627,
+      1254,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "gu-dasao",
+    "pose": "windup",
+    "crop": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "gu-dasao",
+    "pose": "strike",
+    "crop": [
+      627,
+      0,
+      1254,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "gu-dasao",
+    "pose": "focus",
+    "crop": [
+      0,
+      627,
+      627,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "gu-dasao",
+    "pose": "special",
+    "crop": [
+      627,
+      627,
+      1254,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "bao-sanniang",
+    "pose": "windup",
+    "crop": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "bao-sanniang",
+    "pose": "strike",
+    "crop": [
+      627,
+      0,
+      1254,
+      627
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "bao-sanniang",
+    "pose": "focus",
+    "crop": [
+      0,
+      627,
+      627,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  },
+  {
+    "id": "bao-sanniang",
+    "pose": "special",
+    "crop": [
+      627,
+      627,
+      1254,
+      1254
+    ],
+    "visibleBounds": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "size": [
+      627,
+      627
+    ],
+    "touchesCrop": true
+  }
+]

@@ -1,0 +1,7 @@
+# otherworld
+
+Status: REQUIRED NEW / Act V duel arena
+Attach: assets/arena.png for background readability; your approved shattered-gate or lattice-hall board
+Delivery filename: assets/otherworld.png
+
+The Hall of Twenty in a haunted Chinese otherworld, shown as a cinematic duel arena. Vast examination-hall interior with ranked desks recessed to the distant sides, paper-white carved lattice screens, dark wood pillars, faded ink scrolls without readable writing, cracked pale stone floor, cold jade-grey fog beyond a shattered paifang doorway, a faint golden rift far above the doorway. Leave the central lower two thirds open with subdued contrast so two large fighter cutouts are readable. No desk, chair, pillar or prop in front of the duel positions. A distant suggested dais without a person. Raised eye-level wide camera, believable Chinese architecture, premium crisp painterly wuxia art matching the game. Distinct from the red Meridian Citadel. Landscape 16:9 PNG, native 3072x1728 preferred or at least 2048x1152, opaque. No rendered fighters, foreground people, text, signatures, logo, UI or border.
