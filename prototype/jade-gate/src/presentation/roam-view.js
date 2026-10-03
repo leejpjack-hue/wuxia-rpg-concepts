@@ -76,6 +76,7 @@ export class RoamView {
     this.cancel = view?.cancelAnimationFrame?.bind(view) || null;
     this.keydown = (event) => {
       if (event.repeat || event.altKey || event.metaKey || event.ctrlKey || ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
+      if (event.target.tagName === "SUMMARY" && ["Space", "Enter"].includes(event.code)) return;
       const action = {KeyJ:"strike", Digit1:"strike", Space:"dodge", KeyK:"dodge", KeyE:"technique", Digit3:"technique", KeyC:"sneak"}[event.code];
       if (action && session.mode === "exploring") { event.preventDefault(); this.onGesture(); this.actions.push(action); }
       if (event.code === "Escape" && session.mode === "exploring") {
