@@ -15,16 +15,13 @@ export const ROAM_SCENES = {
     tileWidth: 4096, artHeight: 2880, topCrop: 300,
   },
   "meridian-citadel": {
-    art: "meridian-citadel", blocker: "granite-pine-blocker",
-    blockerFilter: "brightness(.78) saturate(.75)",
-    tileWidth: 4096, artHeight: 2880, topCrop: 550,
+    art: "meridian-citadel-ground", blocker: "meridian-citadel-blocker",
+    tileWidth: 2560, artHeight: 1440, topCrop: 240,
   },
-  // Act V placeholder plate: the citadel painting tinted toward a cold
-  // otherworld dawn until the rift-street ground art lands (ASSET-REQUIREMENTS §10).
+  // Act V: the otherworld corpse street (MiniMax image-01, 2026-10-03).
   "otherworld": {
-    art: "meridian-citadel", blocker: "granite-pine-blocker",
-    blockerFilter: "brightness(.6) saturate(.6) hue-rotate(-24deg)",
-    tileWidth: 4096, artHeight: 2880, topCrop: 460,
+    art: "otherworld-ground", blocker: "otherworld-blocker",
+    tileWidth: 2560, artHeight: 1440, topCrop: 220,
   },
 };
 export const roamScene = actId => ROAM_SCENES[actId] || ROAM_SCENES["jade-gate"];

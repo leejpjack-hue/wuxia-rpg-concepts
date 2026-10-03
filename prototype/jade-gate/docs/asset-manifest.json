@@ -3118,5 +3118,59 @@
       "square": true,
       "alpha": true
     }
+  },
+  {
+    "id": "otherworld-ground",
+    "file": "assets/otherworld-ground.png",
+    "method": "MiniMax image-01 text-to-image (api.minimax.chat), 2026-10-03, 1280x720 opaque. Non-seeded. Prompt from the art-review-2026-10-03 prompts package (see ASSET-REQUIREMENTS §10).",
+    "prompt": "Haunted Chinese otherworld corpse street at pale dawn after a golden sky-rift; flat walkable pale grey stone band across the lower 80 percent, horizon confined to the top 15 percent, horizontally repeating, cold jade-grey light with restrained amber lantern accents, covered fallen figures on the verges only, no people in the play band, no text or watermark."
+  },
+  {
+    "id": "otherworld",
+    "file": "assets/otherworld.png",
+    "method": "MiniMax image-01 text-to-image (api.minimax.chat), 2026-10-03, 1280x720 opaque, regenerated once to remove rendered fighters. Non-seeded. Act V duel arena.",
+    "prompt": "Completely empty vast Chinese examination-hall interior (Hall of Twenty) as a card-duel arena: ranked desks and paper-white lattice screens pushed to the side walls, cracked pale stone floor open across the central lower two thirds, cold jade-grey fog beyond a shattered paifang doorway, faint golden rift above it; absolutely no people, figures or silhouettes; no text or watermark."
+  },
+  {
+    "id": "otherworld-blocker",
+    "file": "assets/otherworld-blocker.png",
+    "method": "MiniMax image-01 text-to-image on a flat magenta background, 2026-10-03; flood-fill hue key to RGBA, trimmed and fitted to a 1024 square with a 10 percent margin (PIL). Non-seeded.",
+    "prompt": "One isolated compact cluster of broken paper-white lattice screens and pale grey stone rubble for a haunted examination-hall street; solid rounded silhouette on raised three-quarter game camera, no passage through the middle, floating on pure flat magenta with no floor or shadow; square transparent prop.",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
+  },
+  {
+    "id": "hall-of-twenty-key",
+    "file": "assets/hall-of-twenty-key.png",
+    "method": "MiniMax image-01 text-to-image (api.minimax.chat), 2026-10-03, 1280x720 opaque. Story key art for the scene-6 reveal; display wiring (dialogue backdrop) still pending. Non-seeded.",
+    "prompt": "Cinematic reveal of the vast examination Hall of Twenty: twenty empty desks in ranked rows, dark columns, pale lattice screens, distant dais; three small figures from behind at the threshold (swordsman in silver-ivory, broad monk with iron spade, woman in crimson with paired sabers); cold jade-grey dawn with one warm golden beam; no readable text."
+  },
+  {
+    "id": "cloud-causeway-key",
+    "file": "assets/cloud-causeway-key.png",
+    "method": "MiniMax image-01 text-to-image (api.minimax.chat), 2026-10-03, 1280x720 opaque. Story key art for the scene-8 finale; display wiring still pending. Non-seeded.",
+    "prompt": "Cinematic wuxia finale: ancient pale stone causeway crossing a sea of clouds toward a distant Chinese palace and warm golden gateway home; broken lattice railings, believable continuous bridge surface, cold jade-grey mist with warm amber far end; no characters, no readable lettering."
+  },
+  {
+    "id": "meridian-citadel-ground",
+    "file": "assets/meridian-citadel-ground.png",
+    "method": "MiniMax image-01 text-to-image (api.minimax.chat), 2026-10-03, 1280x720 opaque. Act IV exploration ground; the meridian-citadel painting remains its duel arena. Non-seeded.",
+    "prompt": "Repeatable exploration ground for an Imperial citadel courtyard at night under a blood moon: pale marble paving with restrained gold and jade inlay across the lower 80 percent, red-lacquered columns on the verges, faint red ambient light, architecture confined to the top 15 percent; edges matched for horizontal tiling; no obstacles in the play band, no text."
+  },
+  {
+    "id": "meridian-citadel-blocker",
+    "file": "assets/meridian-citadel-blocker.png",
+    "method": "MiniMax image-01 text-to-image on a flat magenta background, 2026-10-03; flood-fill hue key to RGBA, trimmed and fitted to a 1024 square with a 10 percent margin (PIL). Non-seeded.",
+    "prompt": "One isolated compact cluster of collapsed imperial citadel architecture: broken pale marble balustrades, jade relief fragments, a low broken red-lacquered column, dark moss, faint blood-moon light; solid rounded silhouette, no opening through the centre, floating on pure flat magenta with no floor or shadow; square transparent prop.",
+    "contract": {
+      "minWidth": 1024,
+      "minHeight": 1024,
+      "square": true,
+      "alpha": true
+    }
   }
 ]

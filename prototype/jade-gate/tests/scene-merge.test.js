@@ -72,7 +72,7 @@ test("all playable acts switch to their own existing ground art at a constant sc
     // The taller maze world tiles on both axes: vertical scroll stays covered.
     assert.equal(arena.style.backgroundRepeat, "repeat");
   }
-  assert.equal(new Set(Object.values(ROAM_SCENES).map(s => s.art)).size, 4);
+  assert.equal(new Set(Object.values(ROAM_SCENES).map(s => s.art)).size, 5);
 });
 
 test("route map follows the hero and remaining enemies without changing encounter state", () => {

@@ -808,7 +808,7 @@ test("WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles whil
       ["bamboo-crossing", true, "bamboo-roam"],
       ["mount-canglan", true, "mount-canglan"],
       ["meridian-citadel", true, "meridian-citadel"],
-      ["otherworld", true, "meridian-citadel"],
+      ["otherworld", true, "otherworld"],
     ],
   );
 });

@@ -25,9 +25,12 @@ test('stone acts use reviewed granite details, and night bamboo lighting differs
  const {ROAM_SCENES}=await import('../src/content/roam-scenes.js');
  assert.match(ROAM_SCENES['bamboo-crossing'].blockerFilter,/brightness/);
  assert.equal(ROAM_SCENES['jade-gate'].blockerCrop,undefined);
- for(const id of ['mount-canglan','meridian-citadel']){
+ for(const [id, blocker] of [['mount-canglan','granite-pine-blocker'],
+   // Act IV/V carry generated act-specific rubble (ASSET-REQUIREMENTS §10).
+   ['meridian-citadel','meridian-citadel-blocker'],
+   ['otherworld','otherworld-blocker']]){
   const scene=ROAM_SCENES[id];
-  assert.equal(scene.blocker,'granite-pine-blocker');
+  assert.equal(scene.blocker,blocker);
   assert.equal(scene.blockerCrop,undefined,'the supplied prop renders whole, without a ground-plate crop');
  }
 });

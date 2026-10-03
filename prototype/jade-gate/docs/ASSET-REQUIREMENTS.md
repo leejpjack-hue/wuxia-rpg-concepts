@@ -144,29 +144,34 @@ See [ART-CORRECTIONS.md](ART-CORRECTIONS.md) for Zhao Yun's accepted card crop c
 
 ## 10. Act V — the Rift and the Hall of Twenty (otherworld)
 
-Act V (2026-10-03) plays on a placeholder: the Meridian Citadel plate tinted
-cold (`roam-scenes.js → "otherworld"`, `blockerFilter` hue-rotate), and the
-citadel arena painting behind its card duels. The twenty rival sprites and
-duel atlases already ship; the items below are the scene backgrounds the
-designer is supplying from their approved reference boards. Match the
-reference images: golden sky-rift over shattered paifang, fog-bound corpse
-street, the examination hall of twenty, the lattice-screen chambers, and the
-cloud causeway to the palace.
+**2026-10-03 update: generated.** The scene batch below was generated with
+MiniMax `image-01` (Chinese platform) from the `art-review-2026-10-03` prompt
+package, QA-checked visually, and wired in. The blockers were generated on a
+flat magenta background and hue-keyed to true alpha (PIL flood fill), so no
+white floor/shadow residue survives. All plates are native 1280×720 (the
+model's 16:9 ceiling) and the blockers are native 1024² RGBA — below the
+2048×1152 stretch goal, so regenerate at higher resolution if a larger
+pipeline becomes available; file names and wiring stay the same.
 
-| File | Status today | Required |
+| File | Status | Notes |
 |---|---|---|
-| `assets/otherworld-ground.png` | **PLACEHOLDER** — tinted `meridian-citadel` plate | Act V exploration ground: the corpse-street otherworld (fog, pale dawn, unburied fallen along the verges). Repeatable plate like the other acts (landscape, horizon above the play band). Wire by swapping `ROAM_SCENES["otherworld"].art`. |
-| `assets/otherworld.png` | **PLACEHOLDER** — reuses `meridian-citadel.png` | Act V card-duel arena backdrop: the shattered-gate rift street or the lattice-hall interior, 16:9 landscape. Wire via the act's `arena` field. |
-| `assets/maze-wall-otherworld.png` | optional | Tileable wall texture for the act's hedges (paper-white lattice screens rather than hedge/bamboo). Square, tileable edges, 320 world units per tile. |
-| `assets/hall-of-twenty-key.png` | optional | Story key art for the scene-6 reveal: the vast examination hall, twenty desks in ranked rows, the trio small at the door. 16:9, displayed behind the reveal dialogue if a backdrop slot is added. |
-| `assets/cloud-causeway-key.png` | optional | Scene-8 key art: the stone causeway over a sea of clouds toward home, for the finale/waystation card. 16:9. |
+| `assets/otherworld-ground.png` | **GENERATED** | Act V exploration ground: fog-bound corpse street, horizontally repeating, wired via `ROAM_SCENES["otherworld"]`. |
+| `assets/otherworld.png` | **GENERATED** | Act V card-duel arena: the empty Hall of Twenty (regenerated once — the first pass rendered two fighter silhouettes). |
+| `assets/otherworld-blocker.png` | **GENERATED** | Whole-prop maze blocker: broken lattice-screen cluster, magenta-keyed RGBA 1024². |
+| `assets/maze-wall-otherworld.png` | superseded | The whole-prop blocker above replaces the tileable-wall idea for Act V. |
+| `assets/hall-of-twenty-key.png` | **GENERATED** (display pending) | Scene-6 reveal key art; needs dialogue backdrop support before it can display. |
+| `assets/cloud-causeway-key.png` | **GENERATED** (display pending) | Scene-8 finale key art; needs finale backdrop support before it can display. |
+| `assets/meridian-citadel-ground.png` | **GENERATED** | Act IV exploration ground polish (blood-moon marble courtyard); the citadel painting stays as Act IV's duel arena. |
+| `assets/meridian-citadel-blocker.png` | **GENERATED** | Act IV maze blocker: marble/rubble cluster, magenta-keyed RGBA 1024². |
 
 ### Notes
-- The five reference boards (rift, street, hall, lattice round, causeway) map
-  to story beats, not separate acts: scene text lives in `dialogue.js`
-  (`rift-arrival`, `hall-reveal`, `first-round`, `zhao-min-rival-intro/fall`)
-  and encounters in `campaign.js` Act V.
+- Scene text lives in `dialogue.js` (`rift-arrival`, `hall-reveal`,
+  `first-round`, `zhao-min-rival-intro/fall`) and encounters in `campaign.js`
+  Act V.
 - The twenty rivals' sprites (`<id>-sprite.png`) and duel atlases are already
   cut, registered in the manifest, and in use; no new character art is needed
   for this act.
+- Still open from the art review (reference-attached generation, out of scope
+  for the text-to-image pass): 14 duel pose sets to regenerate and 3 RGB
+  atlases to recover.
 

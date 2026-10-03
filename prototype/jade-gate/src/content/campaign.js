@@ -206,7 +206,7 @@ export const ACTS = [
     name: "The Rift and the Hall of Twenty",
     cn: "裂口 · 廿賢殿",
     available: true,
-    arena: "meridian-citadel",
+    arena: "otherworld",
     bossId: "zhao-min-rival",
     next: null,
     unlocks: [],
