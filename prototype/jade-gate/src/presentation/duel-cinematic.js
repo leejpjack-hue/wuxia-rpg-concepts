@@ -4,6 +4,12 @@ import { HEROES } from "../content/heroes.js";
 import { signatureById, specialFor } from "../content/expansion.js";
 import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../content/expansion-art.js";
 import { loadDuelPoses, applyDuelPose, clearDuelPose } from "../platform/duel-poses.js";
+const stillSrc = (fighterOrId) => {
+  const hero = typeof fighterOrId === "string" ? HEROES.find((item) => item.id === fighterOrId) : fighterOrId;
+  if (hero?.keyArt) return hero.keyArt;
+  const id = hero?.id || fighterOrId;
+  return `assets/${id}-sprite.png`;
+};
 
 /** Film cuts: ordered [beat, atMs] pairs. Only the closing `end` beat completes the film. */
 export const CUTS = {
@@ -103,7 +109,7 @@ export class DuelCinematic {
     const filmEnemy = node.querySelector('.film-enemy');
     clearDuelPose(filmEnemy);
     clearActionArt(node);
-    filmHero.src = filmHero.dataset.stillSrc = `assets/${hero.id}-sprite.png`;
+    filmHero.src = filmHero.dataset.stillSrc = stillSrc(hero);
     this.sheet = loadSheetManifest(this.manifest, hero.id);
     this.heroPoses = loadDuelPoses(this.manifest, hero.id);
     // Use art identity, so a boss costume is never replaced by a different hero costume.
@@ -249,7 +255,7 @@ export class DuelCinematic {
     if (reduced) { this.cancel(); complete(); return; }
     const node = this.cast(`strike-film film-assist style-${hero.id} action-assist`, hero, enemy);
     const filmHero = node.querySelector('.film-hero');
-    if (follower?.id) filmHero.src = filmHero.dataset.stillSrc = `assets/${follower.id}-sprite.png`;
+    if (follower?.id) filmHero.src = filmHero.dataset.stillSrc = stillSrc(follower.keyArt ? follower : follower.id);
     const poses = loadDuelPoses(this.manifest, follower?.id || hero.id);
     const oathArt = oath?.id ? `oath-${oath.id}` : null;
     if (oathArt) setActionArt(node, oathArt);

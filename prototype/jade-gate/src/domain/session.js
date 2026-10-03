@@ -118,6 +118,7 @@ export class GameSession {
     for (const id of ids) {
       const hero = HEROES.find((hero) => hero.id === id);
       if (!hero) throw new Error("This hero or act is not available in this build.");
+      if (hero.hidden) throw new Error("This hero is hidden until unlocked.");
       if (hero.recruitedOnly && !this.profile.recruits?.includes(id))
         throw new Error("Spare this rival on the pass to recruit them.");
     }
@@ -170,6 +171,7 @@ export class GameSession {
       act = actById(actId);
     if (!hero || !act?.available)
       throw new Error("This hero or act is not available in this build.");
+    if (hero.hidden) throw new Error("This hero is hidden until unlocked.");
     if (hero.recruitedOnly && !this.profile.recruits?.includes(heroId))
       throw new Error("Spare this rival on the pass to recruit them.");
     if (act.bossId && BOSSES[act.bossId]?.planned && act.available)

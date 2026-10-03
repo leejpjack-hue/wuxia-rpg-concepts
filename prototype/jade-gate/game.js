@@ -9,7 +9,7 @@ import { AudioDirector } from "./src/platform/audio-director.js";
 import { GameView } from "./src/presentation/view.js";
 import { DuelView } from "./src/presentation/duel-view.js";
 import { RoamView } from "./src/presentation/roam-view.js";
-import { HERO_IDS } from "./src/content/heroes.js";
+import { HEROES } from "./src/content/heroes.js";
 import { SIGNATURE_ARCHETYPES, SPECIAL_ART_KINDS } from "./src/content/expansion-art.js";
 import { OATHS } from "./src/content/expansion.js";
 import assetManifest from "./docs/asset-manifest.json" with {type: "json"};
@@ -32,9 +32,11 @@ const view = new GameView(session, document, gesture);
 const duel = new DuelView(session, document, gesture);
 const roam = new RoamView(session, document, gesture);
 const assets = new AssetStore();
+const shownIds = HEROES.filter((hero) => !hero.hidden).map((hero) => hero.id);
 const art = [
-  ...HERO_IDS,
-  ...HERO_IDS.map((id) => `${id}-sprite`),
+  ...shownIds,
+  ...shownIds.map((id) => `${id}-sprite`),
+  ...HEROES.filter((hero) => hero.hidden).map((hero) => hero.id),
   "arena",
   "guard-sprite",
   "archer-sprite",
@@ -61,7 +63,8 @@ async function prepare() {
   const status = document.getElementById("load-status"), retry = document.getElementById("retry-assets");
   retry.hidden = true;
   const listed = new Set(assetManifest.map(row => row.id));
-  const results = await Promise.allSettled(art.filter(id => listed.has(id)).map((id) => assets.load(id)));
+  const srcFor = (id) => assetManifest.find((row) => row.id === id)?.file || `assets/${id}.png`;
+  const results = await Promise.allSettled(art.filter(id => listed.has(id)).map((id) => assets.load(id, srcFor(id))));
   const missing = results.filter((r) => r.status === "rejected").length;
   const renderStatus = () => { status.textContent = missing ? t(`${missing} illustrations could not load. The card duel is still playable.`) : ""; };
   renderStatus();

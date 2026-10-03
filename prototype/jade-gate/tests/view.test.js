@@ -33,7 +33,7 @@ function fixture(storage = memoryStorage()) {
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   for (const match of html.matchAll(/\bid="([^"]+)"/g)) elements.set(match[1], element());
   // Roster mirror: recruited-only heroes stay hidden until spared on the pass.
-  const cards = HEROES.filter(hero => !hero.recruitedOnly).map(hero => {
+  const cards = HEROES.filter(hero => !hero.hidden && !hero.recruitedOnly).map(hero => {
     const card = element(), parts = new Map();
     card.dataset = {hero: hero.id};
     card.querySelector = selector => { if (!parts.has(selector)) parts.set(selector, element()); return parts.get(selector); };

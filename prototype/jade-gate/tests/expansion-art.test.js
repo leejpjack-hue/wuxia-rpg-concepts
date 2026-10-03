@@ -33,7 +33,7 @@ test("required expansion inventory distinguishes generated assets from user-defe
 });
 
 test("hero signatures, special motifs, oaths and weather map to the required filenames", () => {
-  for (const hero of HEROES) assert(inventory.has(signatureArtFor(hero.id)), hero.id);
+  for (const hero of HEROES.filter(hero => !hero.hidden)) assert(inventory.has(signatureArtFor(hero.id)), hero.id);
   for (const kind of SPECIAL_ART_KINDS) assert(inventory.has(specialArtFor({ kind })), kind);
   for (const oath of OATHS) assert(inventory.has(`oath-${oath.id}`), oath.id);
   for (const weather of ["rain", "night", "fog"]) assert(inventory.has(`weather-${weather}`));

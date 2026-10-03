@@ -35,7 +35,7 @@ test('legacy unlocked heroes never become Story protagonists and records remain 
   assert.equal(game.profile.wallet,1234);
   assert.equal(game.profile.records['guan-yu'].wins,3);
   assert.deepEqual(game.profile.completedActs,['jade-gate','bamboo-crossing']);
-  for (const hero of HEROES.slice(3).filter(h=>!h.recruitedOnly))
+  for (const hero of HEROES.slice(3).filter(h=>!h.hidden && !h.recruitedOnly))
     assert.throws(() => game.start(hero.id,'campaign'), /Quick play only|Story rival/);
 });
 
@@ -54,7 +54,7 @@ test('Acts II and III use their own illustrated enemies, translated story and lo
   assert.notDeepEqual(scoreStep('battle-bamboo',0),scoreStep('battle-canglan',0));
   assert.equal(resolveMusicMode({current:'exploring',actId:'mount-canglan',boss:false}),'battle-canglan');
   assert.equal(resolveMusicMode({current:'playing',actId:'mount-canglan',boss:true}),'boss-lubu');
-  for (const hero of HEROES) for (const key of ['canglan-arrival','lu-bu-rival-intro','lu-bu-rival-fall'])
+  for (const hero of HEROES.filter(h => !h.hidden)) for (const key of ['canglan-arrival','lu-bu-rival-intro','lu-bu-rival-fall'])
     for (const line of dialogueFor(key,hero)) assert.notEqual(translate(line.text,'ja'),line.text);
 });
 

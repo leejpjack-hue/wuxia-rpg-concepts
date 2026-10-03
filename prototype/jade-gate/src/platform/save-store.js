@@ -28,7 +28,7 @@ export const defaultProfile = () => ({
   reputation: { people: 0, ashen: 0 },
   recruits: [],
   wander: { bestStage: 0, runs: 0 },
-  unlockedHeroes: HEROES.filter((hero) => !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
+  unlockedHeroes: HEROES.filter((hero) => !hero.hidden && !hero.quickPlayOnly && hero.id !== "lu-bu").map((hero) => hero.id),
   completedActs: [],
   completedRuns: [],
   checkpoint: null,

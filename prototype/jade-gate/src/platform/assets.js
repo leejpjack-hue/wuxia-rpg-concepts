@@ -14,7 +14,7 @@ export class AssetStore {
     this.makeImage = makeImage;
     this.pending = new Map();
   }
-  load(id) {
+  load(id, src = `assets/${id}.png`) {
     if (this.images[id]) return Promise.resolve(this.images[id]);
     if (this.pending.has(id)) return this.pending.get(id);
     const promise = new Promise((resolve, reject) => {
@@ -24,8 +24,8 @@ export class AssetStore {
         resolve(image);
       };
       image.onerror = () =>
-        reject(new Error(`Could not load assets/${id}.png`));
-      image.src = `assets/${id}.png`;
+        reject(new Error(`Could not load ${src}`));
+      image.src = src;
     }).finally(() => this.pending.delete(id));
     this.pending.set(id, promise);
     return promise;

@@ -1604,5 +1604,625 @@
       "square": true,
       "alpha": true
     }
+  },
+  {
+    "id": "jia-zheng",
+    "file": "assets/jia-zheng.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/jia-zheng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Jia Zheng (贾政). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "jia-zheng-duel-poses",
+    "file": "assets/jia-zheng-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/jia-zheng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Jia Zheng (贾政). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "jia-yucun",
+    "file": "assets/jia-yucun.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/jia-yucun.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Jia Yucun (贾雨村). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "jia-yucun-duel-poses",
+    "file": "assets/jia-yucun-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/jia-yucun.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Jia Yucun (贾雨村). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "bao-zheng",
+    "file": "assets/bao-zheng.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/bao-zheng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Bao Zheng (包拯). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "bao-zheng-duel-poses",
+    "file": "assets/bao-zheng-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/bao-zheng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Bao Zheng (包拯). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "di-renjie",
+    "file": "assets/di-renjie.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/di-renjie.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Di Renjie (狄仁杰). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "di-renjie-duel-poses",
+    "file": "assets/di-renjie-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/di-renjie.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Di Renjie (狄仁杰). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "kuang-zhong",
+    "file": "assets/kuang-zhong.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/kuang-zhong.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Kuang Zhong (况钟). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "kuang-zhong-duel-poses",
+    "file": "assets/kuang-zhong-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/kuang-zhong.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Kuang Zhong (况钟). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "fan-jin",
+    "file": "assets/fan-jin.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/fan-jin.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Fan Jin (范进). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "fan-jin-duel-poses",
+    "file": "assets/fan-jin-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/fan-jin.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Fan Jin (范进). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "lu-su",
+    "file": "assets/lu-su.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/lu-su.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Lu Su (鲁肃). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "lu-su-duel-poses",
+    "file": "assets/lu-su-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/lu-su.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Lu Su (鲁肃). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "xun-yu",
+    "file": "assets/xun-yu.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/xun-yu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Xun Yu (荀彧). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "xun-yu-duel-poses",
+    "file": "assets/xun-yu-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/xun-yu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Xun Yu (荀彧). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "song-jiang",
+    "file": "assets/song-jiang.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/song-jiang.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Song Jiang (宋江). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "song-jiang-duel-poses",
+    "file": "assets/song-jiang-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/song-jiang.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Song Jiang (宋江). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "wu-yong",
+    "file": "assets/wu-yong.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/wu-yong.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Wu Yong (吴用). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "wu-yong-duel-poses",
+    "file": "assets/wu-yong-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/wu-yong.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Wu Yong (吴用). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "jia-yuanchun",
+    "file": "assets/jia-yuanchun.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/jia-yuanchun.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Jia Yuanchun (贾元春). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "jia-yuanchun-duel-poses",
+    "file": "assets/jia-yuanchun-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/jia-yuanchun.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Jia Yuanchun (贾元春). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "xue-baochai",
+    "file": "assets/xue-baochai.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/xue-baochai.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Xue Baochai (薛宝钗). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "xue-baochai-duel-poses",
+    "file": "assets/xue-baochai-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/xue-baochai.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Xue Baochai (薛宝钗). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "lin-daiyu",
+    "file": "assets/lin-daiyu.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/lin-daiyu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Lin Daiyu (林黛玉). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "lin-daiyu-duel-poses",
+    "file": "assets/lin-daiyu-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/lin-daiyu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Lin Daiyu (林黛玉). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "wang-xifeng",
+    "file": "assets/wang-xifeng.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/wang-xifeng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Wang Xifeng (王熙凤). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "wang-xifeng-duel-poses",
+    "file": "assets/wang-xifeng-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/wang-xifeng.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Wang Xifeng (王熙凤). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "diaochan",
+    "file": "assets/diaochan.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/diaochan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Diaochan (貂蝉). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "diaochan-duel-poses",
+    "file": "assets/diaochan-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/diaochan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Diaochan (貂蝉). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "yang-yuhuan",
+    "file": "assets/yang-yuhuan.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/yang-yuhuan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Yang Yuhuan (杨玉环). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "yang-yuhuan-duel-poses",
+    "file": "assets/yang-yuhuan-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/yang-yuhuan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Yang Yuhuan (杨玉环). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "zhen-huan",
+    "file": "assets/zhen-huan.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/zhen-huan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Zhen Huan (甄嬛). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "zhen-huan-duel-poses",
+    "file": "assets/zhen-huan-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/zhen-huan.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Zhen Huan (甄嬛). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "empress-yixiu",
+    "file": "assets/empress-yixiu.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/empress-yixiu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Empress Yixiu (宜修). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "empress-yixiu-duel-poses",
+    "file": "assets/empress-yixiu-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/empress-yixiu.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Empress Yixiu (宜修). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "hua-fei",
+    "file": "assets/hua-fei.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/hua-fei.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Hua Fei (华妃). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "hua-fei-duel-poses",
+    "file": "assets/hua-fei-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/hua-fei.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Hua Fei (华妃). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "zhao-min",
+    "file": "assets/zhao-min.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/zhao-min.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden roster key for Zhao Min (赵敏). JPEG copied as-is, including the fleur-de-lis / red-seal signature. Not redrawn, recompressed, resized, or cropped."
+  },
+  {
+    "id": "zhao-min-duel-poses",
+    "file": "assets/zhao-min-duel-poses.jpg",
+    "method": "Copied as-is from deliverables/roster-novel-young-2026-10-03/duel-poses/zhao-min.jpg. Not generated in this change. Bytes unchanged.",
+    "prompt": "Hidden 2x2 duel atlas for Zhao Min (赵敏). JPEG copied as-is. Cell order matches the live film: windup, strike, focus, special. Not redrawn, recompressed, resized, or cropped.",
+    "runtimeApproved": true,
+    "duelPoses": {
+      "windup": [
+        0,
+        0
+      ],
+      "strike": [
+        1,
+        0
+      ],
+      "focus": [
+        0,
+        1
+      ],
+      "special": [
+        1,
+        1
+      ]
+    }
   }
 ]
