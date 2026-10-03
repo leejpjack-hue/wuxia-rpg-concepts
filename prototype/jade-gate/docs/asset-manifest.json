@@ -768,8 +768,8 @@
   {
     "id": "gu-dasao",
     "file": "assets/gu-dasao.png",
-    "method": "Antigravity remake \u00b7 Jev ~0.75 2026-09-29; key LANCZOS-upscaled only to clear npm check \u2265900\u00d71400",
-    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Gu Dasao, adult Water Margin inn-fighter, red headband, charcoal kit, blood-red sash, exactly two broad cleaver-knives. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait key LANCZOS-upscaled only to clear \u2265900\u00d71400. No collage, text, scenery, or extra figures."
+    "method": "Approved key 2026-10-03. JPG width-fit with LANCZOS onto the existing 939x1400 RGB canvas (source x 320-910, full height) and bottom-aligned so both cleavers stay in frame. Upper pad is a per-column extension of the source backdrop edge, not new art.",
+    "prompt": "Approved roster key landed 2026-10-03 for Gu Dasao. Adult inn-fighter, red headband, charcoal kit, blood-red sash, exactly two cleavers, full body kept. Fitted from the approved JPG onto the existing portrait file. Not a new generation."
   },
   {
     "id": "gu-dasao-sprite",
@@ -812,8 +812,8 @@
   {
     "id": "qin-liangyu",
     "file": "assets/qin-liangyu.png",
-    "method": "Antigravity remake \u00b7 Jev ~0.75 2026-09-29; key LANCZOS-upscaled only to clear npm check \u2265900\u00d71400",
-    "prompt": "Locked Antigravity remake, Jev ~0.75 2026-09-29. Qin Liangyu, adult frontier commander, lamellar with crimson trim and cape, exactly one white-shaft spear. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait key LANCZOS-upscaled only to clear \u2265900\u00d71400. No collage, text, scenery, or extra figures."
+    "method": "Approved key 2026-10-03. JPG fitted with LANCZOS onto the existing 939x1400 RGB canvas as a real-pixel 2:3 window (source x 394-877, full height). No redraw, no side crop of the figure or spear.",
+    "prompt": "Approved roster key landed 2026-10-03 for Qin Liangyu. Adult commander in ivory and crimson with exactly one white-shaft spear, full body kept. Fitted from the approved JPG onto the existing portrait file. Not a new generation."
   },
   {
     "id": "qin-liangyu-sprite",
@@ -856,8 +856,8 @@
   {
     "id": "bao-sanniang",
     "file": "assets/bao-sanniang.png",
-    "method": "Antigravity remake \u00b7 2026-09-30 Bao/Dian/Yang jade-gate KEY; LANCZOS 848\u00d71264\u2192939\u00d71400",
-    "prompt": "Locked Antigravity remake 2026-09-30. Bao Sanniang, adult Shu spear heroine, jade-green charcoal wrap armor, crimson sash, exactly one long Chinese spear. One full-body three-quarter combat pose on flat dark charcoal #10191b. Portrait LANCZOS-upscaled only to clear \u2265900\u00d71400. No collage, text, scenery, or extra figures."
+    "method": "Approved key 2026-10-03. JPG fitted with LANCZOS onto the existing 939x1400 RGB canvas as a real-pixel 2:3 window (source x 405-888, full height). No redraw, no side crop of the figure or spear.",
+    "prompt": "Approved roster key landed 2026-10-03 for Bao Sanniang. Adult spear heroine in jade-green wrap with a crimson sash and exactly one long spear, full body kept. Fitted from the approved JPG onto the existing portrait file. Not a new generation."
   },
   {
     "id": "bao-sanniang-sprite",
