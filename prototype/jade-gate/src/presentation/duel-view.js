@@ -6,6 +6,7 @@ import { HEROES } from "../content/heroes.js";
 import { curioById, techniqueCost } from "../content/curios.js";
 import { signatureById, oathFor } from "../content/expansion.js";
 import { signatureArtFor, specialArtFor, expansionArtAvailable } from "../content/expansion-art.js";
+import { characterArt } from "./character-art.js";
 
 export class DuelView {
   constructor(session, document, onGesture = () => {}) {
@@ -104,11 +105,13 @@ export class DuelView {
     });
   }
 
-  image(id, art, name, focus) {
-    const img = this.$(id), path = `assets/${art}.png`;
-    if (img.getAttribute("src") !== path) { img.hidden = false; img.src = path; }
+  image(id, art, name) {
+    const img = this.$(id);
+    if (img.getAttribute("src") !== art.src) { img.hidden = false; img.src = art.src; }
     img.alt = this.t(name);
-    img.style.objectPosition = focus || "";
+    img.style.objectPosition = art.position;
+    img.style.objectFit = art.fit;
+    img.dataset.artFit = art.fit;
   }
   meter(id, value, max) {
     this.$(`${id}-bar`).style.width = `${Math.max(0, Math.min(100, value / max * 100))}%`;
@@ -161,7 +164,7 @@ export class DuelView {
     this.$("hero-symbol").textContent = this.t(p.cn);
     this.$("hero-title").textContent = this.t(p.title);
     this.$("hero-card").style.setProperty("--fighter-color", p.color);
-    this.image("hero-image", p.id, p.name, p.artFocus);
+    this.image("hero-image", characterArt(p, "duel"), p.name);
     this.$("hero-health").textContent = this.t(`${Math.ceil(p.hp)} / ${p.maxHp}`);
     this.$("hero-flow").textContent = this.t(`${Math.floor(p.flow)} / 100`);
     this.meter("hero-health", p.hp, p.maxHp);
@@ -172,7 +175,7 @@ export class DuelView {
       this.$("enemy-name").textContent = this.t(enemy.name);
       this.$("enemy-title").textContent = this.t(enemy.title);
       this.$("enemy-phase").textContent = this.t(enemy.type === "boss" ? `STANCE ${enemy.phase + 1}` : "灰旗");
-      this.image("enemy-image", enemy.art, enemy.name);
+      this.image("enemy-image", { src: `assets/${enemy.art}.png`, fit: "contain", position: "50% 50%" }, enemy.name);
       this.$("enemy-health").textContent = this.t(`${enemy.hp} / ${enemy.maxHp}`);
       this.meter("enemy-health", enemy.hp, enemy.maxHp);
       const intent = this.session.combat.intent();

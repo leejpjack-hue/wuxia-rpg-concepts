@@ -18,7 +18,7 @@
 .fighter-art { position: relative; height: 190px; overflow: hidden; background: radial-gradient(ellipse at center, #546b5f80, #122123); }
 .rival .fighter-art { background: radial-gradient(ellipse at center, #8950446b, #1e1c20); }
 .fighter-art img { width: 100%; height: 100%; object-fit: cover; object-position: center top; position: relative; z-index: 1; }
-.rival .fighter-art img { object-fit: contain; padding: 5px; }
+.fighter-art img[data-art-fit="contain"] { padding: 5px; }
 .art-sigil { position: absolute; inset: 0; display: grid; place-content: center; font: 95px Georgia, serif; color: #b9ccbc25; }
 .fighter-info { padding: 12px 16px 16px; }
 .fighter-title { font-size: 8px; letter-spacing: 1.7px; color: var(--fighter-color); margin: 0 0 3px; }

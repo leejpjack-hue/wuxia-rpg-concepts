@@ -10,6 +10,7 @@ import { JUDGEMENT, SHOP_STOCK, shopItemById, signatureById } from "../content/e
 import { DUEL_ENEMIES } from "../content/duels.js";
 import { signatureArtFor, expansionArtAvailable } from "../content/expansion-art.js";
 import { createSpeaker, portraitFor } from "../platform/speech.js";
+import { characterArt } from "./character-art.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
@@ -31,8 +32,10 @@ export class GameView {
     // hides the hidden ones per the story gate.
     const roster = HEROES.filter((hero) => !hero.recruitedOnly || session.profile.recruits?.includes(hero.id));
     this.$("heroes").innerHTML = roster.map(
-      (hero, index) =>
-        `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="${hero.keyArt || `assets/${hero.id}.png`}" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
+      (hero, index) => {
+        const art = characterArt(hero);
+        return `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="${art.src}" alt="${hero.name} character art" style="object-position: ${art.position}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`;
+      },
     ).join("");
     for (const button of document.querySelectorAll("[data-hero]"))
       button.onclick = () => {
@@ -312,7 +315,13 @@ export class GameView {
       const img = portrait.querySelector("img");
       const caption = portrait.querySelector("figcaption");
       if (img && caption) {
-        img.src = `assets/${artId}.png`;
+        const hero = HEROES.find(entry => entry.id === artId);
+        const art = hero?.cinematicArt || hero?.keyArt
+          ? characterArt(hero, "duel")
+          : { src: `assets/${artId}.png`, fit: "cover", position: "26% 22%" };
+        img.src = art.src;
+        img.style.objectFit = art.fit;
+        img.style.objectPosition = art.position;
         img.alt = this.t(line.speaker);
         caption.textContent = this.t(line.speaker);
         portrait.hidden = false;
