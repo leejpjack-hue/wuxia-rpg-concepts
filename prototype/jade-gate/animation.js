@@ -37,12 +37,113 @@ function portraitSrc(id) {
 }
 
 /** 每個角色塊面喺圖入面嘅位置（研究結論：面要填滿畫面、眼喺上面三分一）。
- *  寫實 2:3 全身畫嘅頭喺頂部 12-16%；方圖 sprite 頭喺頂部 6-10%。 */
-const FACE_FOCUS = {
-  painted: { x: "50%", y: "13%" },   // assets/{id}.png 全身 key art
-  wide:    { x: "50%", y: "10%" },   // 1280x720 橫幅 key art（zhao-min.jpg）
-  square:  { x: "50%", y: "9%" },    // 動作單張 / sprite
-};
+ *  唔靠估：canvas 掃描 alpha 量度人形頂（頭頂）同腳底，眼線 = 頭頂 + 7% 身高。
+ *  下面只係掃描失敗時嘅後備值。 */
+const FACE_FOCUS = { painted: "13%", wide: "10%", square: "9%" };
+
+/** 頭部錨點快取：src+pose → {x, y}（圖像百分比）。 */
+const anchorCache = new Map();
+
+function scanFigureRegion(data, w, h) {
+  const solid = (x, y) => data[(y * w + x) * 4 + 3] > 16;
+  let top = -1, bottom = -1;
+  for (let y = 0; y < h && top < 0; y++)
+    for (let x = 0; x < w; x++) if (solid(x, y)) { top = y; break; }
+  for (let y = h - 1; y >= 0 && bottom < 0; y--)
+    for (let x = 0; x < w; x++) if (solid(x, y)) { bottom = y; break; }
+  if (top < 0 || bottom - top < h * 0.2) return null; // 冇掃到人形
+  const headBottom = Math.min(h - 1, top + Math.round((bottom - top) * 0.16));
+  let xMin = w, xMax = -1;
+  for (let y = top; y <= headBottom; y++)
+    for (let x = 0; x < w; x++) if (solid(x, y)) { if (x < xMin) xMin = x; if (x > xMax) xMax = x; }
+  if (xMax < 0) return null;
+  const height = bottom - top || 1;
+  return {
+    x: (((xMin + xMax) / 2) / w) * 100,          // 頭心中線
+    y: ((top + height * 0.07) / h) * 100,        // 眼線
+  };
+}
+
+/** atlas 姿勢只掃該格：poseRects 有實際框，冇就用格仔座標（新 2×2 / 舊 4×3）。 */
+function poseRegionOf(atlas, pose, naturalW, naturalH) {
+  if (!atlas) return null;
+  const rect = atlas.poseRects?.[pose];
+  if (rect) return { x: rect[0], y: rect[1], w: rect[2], h: rect[3] };
+  const cell = atlas.duelPoses?.[pose];
+  if (!cell || !naturalW || !naturalH) return null;
+  const legacy = atlas.id.endsWith("-sheet");
+  const [cols, rows] = legacy ? [4, 3] : [2, 2];
+  const w = naturalW / cols, h = naturalH / rows;
+  return { x: cell[0] * w, y: cell[1] * h, w, h };
+}
+
+function measureAnchor(src, regionOf) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      try {
+        const r = regionOf ? regionOf(image) : { x: 0, y: 0, w: image.naturalWidth, h: image.naturalHeight };
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(r.w));
+        canvas.height = Math.max(1, Math.round(r.h));
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(image, r.x, r.y, r.w, r.h, 0, 0, canvas.width, canvas.height);
+        resolve(scanFigureRegion(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height));
+      } catch { resolve(null); }
+    };
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
+/** 套用頭部錨點：即時用後備值，量度完（或命中快取）先覆寫 CSS 變數。
+ *  以 dataset.anchorKey 防止快 seek 時舊結果寫落新角色度。 */
+function applyAnchor(closeup, key, src, regionOf, fallbackY) {
+  closeup.dataset.anchorKey = key;
+  const cached = anchorCache.get(key);
+  if (cached) {
+    closeup.style.setProperty("--face-y", cached.y + "%");
+    closeup.style.setProperty("--head-x", cached.x + "%");
+    return;
+  }
+  closeup.style.setProperty("--face-y", fallbackY);
+  closeup.style.setProperty("--head-x", "50%");
+  measureAnchor(src, regionOf).then((anchor) => {
+    anchorCache.set(key, anchor || { x: 50, y: parseFloat(fallbackY) });
+    if (closeup.dataset.anchorKey !== key) return; // 鏡頭已經切咗
+    const hit = anchorCache.get(key);
+    closeup.style.setProperty("--face-y", hit.y + "%");
+    closeup.style.setProperty("--head-x", hit.x + "%");
+  });
+}
+
+/** 錨點要掃邊張圖：poseFiles 行用單張姿勢檔；atlas 行掃該格；其他掃全圖。 */
+function anchorTargetOf(id, pose) {
+  const entry = poseArt(id, pose);
+  const file = entry.atlas?.poseFiles?.[pose] || entry.src;
+  const regionOf = entry.atlas
+    ? entry.atlas.poseFiles?.[pose] ? null
+      : (image) => poseRegionOf(entry.atlas, pose, image.naturalWidth, image.naturalHeight)
+    : null;
+  return { file, regionOf, key: `${file}|${pose}` };
+}
+
+/** 播放前預熱：所有講者嘅錨點先量定，正式播放一刀落位。 */
+function warmAnchors(episode) {
+  for (const scene of episode.scenes)
+    for (const shot of shotsOf(scene)) {
+      if (shot.kind !== "closeup" || !shot.focus) continue;
+      const portrait = portraitSrc(shot.focus);
+      if (portrait) {
+        if (!anchorCache.has(portrait))
+          measureAnchor(portrait, null).then((a) => anchorCache.set(portrait, a || { x: 50, y: 13 }));
+      } else {
+        const { file, regionOf, key } = anchorTargetOf(shot.focus, shot.pose || "focus");
+        if (!anchorCache.has(key))
+          measureAnchor(file, regionOf).then((a) => anchorCache.set(key, a || { x: 50, y: 9 }));
+      }
+    }
+}
 
 /** 裁切級別（研究自對白鏡頭文法）：head 面部填滿、face 頭加肩、bust 半身。 */
 const CROP_ZOOM = {
@@ -721,13 +822,10 @@ function render() {
       const portrait = portraitSrc(shot.focus);
       const kind = portrait ? artKind(shot.focus) : "square";
       const crop = shot.crop || "face";
-      const focus = FACE_FOCUS[kind];
       if (portrait) {
         img.removeAttribute("style");
         img.className = "";
         img.src = portrait;
-        img.style.objectFit = "cover";
-        img.style.objectPosition = `${focus.x} ${focus.y}`;
       } else {
         applyPoseArt(img, shot.focus, shot.pose);
         img.style.height = CROP_ZOOM.square[crop === "head" ? "face" : crop];
@@ -738,6 +836,13 @@ function render() {
       const speakerSide = sideFor(scene, shot.focus);
       closeup.dataset.side = speakerSide;
       closeup.querySelector(".plate").textContent = nameOf(shot.focus);
+      // 頭部錨點（canvas 實測）：個頭永遠喺畫面入面，眼線落喺上面三分一。
+      if (portrait) {
+        applyAnchor(closeup, portrait, portrait, null, FACE_FOCUS[kind]);
+      } else {
+        const { file, regionOf, key } = anchorTargetOf(shot.focus, shot.pose || "focus");
+        applyAnchor(closeup, key, file, regionOf, FACE_FOCUS.square);
+      }
       restartAnimation(closeup, "cut");
     }
     if (shot.kind === "duel" || shot.kind === "fight") {
@@ -831,6 +936,7 @@ function loadEpisode(next) {
   clock = 0;
   playing = false;
   $("play").textContent = "▶ 播放";
+  warmAnchors(next);
   buildBeats(Math.max(...episode.scenes.map((scene) => scene.beats.length)));
   const chapters = $("chapters");
   chapters.innerHTML = "";
