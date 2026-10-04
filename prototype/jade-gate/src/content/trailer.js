@@ -13,6 +13,23 @@ export const TRAILER_VOICE = [
   { start: 4.35, end: 6.45, file: '3', ja: '刃と札で、運命を変えろ。', en: 'Master the blade. Command the duel.' },
   { start: 8.08, end: 9.92, file: '4', ja: '四人の刃。今、江湖へ。', en: 'Blades of the Four. Play now.' },
 ];
+export const TRAILER_CARD_LABELS = {
+  ja: {
+    hero: '趙雲 · 白龍',
+    heroSkill: '龍の突撃 / DRAGON RUSH',
+    rival: '呂布 · 飛将',
+    rivalSkill: 'SKYBREAKER',
+    impactWord: '蒼龍破',
+  },
+  en: {
+    hero: 'ZHAO YUN · WHITE DRAGON',
+    heroSkill: 'DRAGON RUSH',
+    rival: 'LÜ BU · FLYING GENERAL',
+    rivalSkill: 'SKYBREAKER',
+    impactWord: 'AZURE DRAGON',
+  },
+};
+
 // Editorial cuts live on the same clock as the narration and sound effects.
 // A focus is an existing portrait asset, never an independently timed animation.
 export const TRAILER_CUTS = [

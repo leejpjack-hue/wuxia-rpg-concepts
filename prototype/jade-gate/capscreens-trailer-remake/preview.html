@@ -1,0 +1,28 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>Trailer remake review</title><link rel="stylesheet" href="trailer.css"><style>nav{max-width:1180px;margin:20px auto;padding:0 4%;display:flex;flex-wrap:wrap;gap:12px;align-items:center}label{font-size:12px;display:flex;gap:8px;align-items:center}#review-host .transport,#review-host .below,#review-host details,#review-host #status,#review-host .editorial{display:none}#review-host main{margin:10px auto}output{font-size:12px;color:#d6bb7b}</style></head><body><nav><label>Shot <select id="review-shot"><option value=".9">Zhao Yun close-up</option><option value="2.7">Hu Sanniang close-up</option><option value="3.5">Lu Zhishen close-up</option><option value="4.6">Challenge</option><option value="5.21">Strike contact</option><option value="5.7">Qi charge</option><option value="5.99">Special contact</option><option value="6.7">River</option><option value="7.2">Mountain</option><option value="7.7">Citadel</option><option value="9.2">Title reveal</option></select></label><label>Language <select id="review-language"><option value="ja">日本語</option><option value="en">English</option></select></label><label><input id="review-reduced" type="checkbox">Reduced motion</label><label>Time <input id="review-time" type="range" min="0" max="10" step=".01" value=".9"></label><output id="review-label"></output><a href="trailer.html">Play trailer ↗</a></nav><div id="review-host"></div><script type="module">
+import {TrailerView} from './src/presentation/trailer-view.js';
+import {TRAILER_CARD_LABELS} from './src/content/trailer.js';
+import manifest from './docs/asset-manifest.json' with {type:'json'};
+const source=new DOMParser().parseFromString(await(await fetch('trailer.html')).text(),'text/html');
+document.getElementById('review-host').append(source.querySelector('main'));
+const $=id=>document.getElementById(id);$('cover').hidden=true;
+const view=new TrailerView(document,manifest);
+function render(){
+  const language=$('review-language').value,time=Number($('review-time').value);
+  document.documentElement.lang=language;
+  const kicker=$('end-kicker');if(kicker)kicker.textContent=language==='ja'?'BLADES OF THE FOUR':'A WUXIA CARD RPG';
+  $('end-title').textContent=language==='ja'?'四人の刃':'BLADES OF THE FOUR';
+  $('end-line').textContent=language==='ja'?'今、江湖へ。':'YOUR JOURNEY STARTS NOW.';
+  const heroName=$('duel-hero-name');if(heroName)heroName.textContent=TRAILER_CARD_LABELS[language].hero;
+  const heroSkill=$('duel-hero-skill');if(heroSkill)heroSkill.textContent=TRAILER_CARD_LABELS[language].heroSkill;
+  const rivalName=$('duel-rival-name');if(rivalName)rivalName.textContent=TRAILER_CARD_LABELS[language].rival;
+  const rivalSkill=$('duel-rival-skill');if(rivalSkill)rivalSkill.textContent=TRAILER_CARD_LABELS[language].rivalSkill;
+  const impact=$('impact-word');if(impact)impact.textContent=TRAILER_CARD_LABELS[language].impactWord;
+  view.render(time,language,{state:'paused',reduced:$('review-reduced').checked});
+  if (language === 'en' && $('portrait-name')?.textContent === 'LU ZHISHEN') {
+    const roleEl = $('portrait-role');
+    if (roleEl && roleEl.textContent === 'THE TEMPLE STORM') roleEl.textContent = 'THE FLOWER MONK';
+  }
+  $('review-label').textContent=`${time.toFixed(2)} / 10 s`
+}
+$('review-shot').onchange=()=>{$('review-time').value=$('review-shot').value;render()};$('review-time').oninput=render;$('review-language').onchange=render;$('review-reduced').onchange=render;render();
+</script></body></html>

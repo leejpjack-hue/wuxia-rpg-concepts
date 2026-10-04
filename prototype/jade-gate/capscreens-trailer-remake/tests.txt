@@ -1,0 +1,1742 @@
+
+> test
+> node --test tests/*.test.js
+
+TAP version 13
+# Subtest: campaign validates playable acts and gates travel by preceding victories
+ok 1 - campaign validates playable acts and gates travel by preceding victories
+  ---
+  duration_ms: 3.690218
+  type: 'test'
+  ...
+# Subtest: Act II plays end to end: travel, map rows, shallows, Night Heron, tea house return
+ok 2 - Act II plays end to end: travel, map rows, shallows, Night Heron, tea house return
+  ---
+  duration_ms: 63.107716
+  type: 'test'
+  ...
+# Subtest: Act IV finale: the whole campaign clears into the Sovereign's throne and the fulfilled-oath waystation
+ok 3 - Act IV finale: the whole campaign clears into the Sovereign's throne and the fulfilled-oath waystation
+  ---
+  duration_ms: 65.588474
+  type: 'test'
+  ...
+# Subtest: Lü Bu is locked in new campaigns but playable in quick play
+ok 4 - Lü Bu is locked in new campaigns but playable in quick play
+  ---
+  duration_ms: 1.559086
+  type: 'test'
+  ...
+# Subtest: campaign walks the open pass to the boss, tea house and unlocks
+ok 5 - campaign walks the open pass to the boss, tea house and unlocks
+  ---
+  duration_ms: 9.724802
+  type: 'test'
+  ...
+# Subtest: checkpoint resumes the open pass boundary and preserves run upgrades
+ok 6 - checkpoint resumes the open pass boundary and preserves run upgrades
+  ---
+  duration_ms: 7.20972
+  type: 'test'
+  ...
+# Subtest: reload during discipline choice remains a choice, not a combat restart
+ok 7 - reload during discipline choice remains a choice, not a combat restart
+  ---
+  duration_ms: 6.709737
+  type: 'test'
+  ...
+# Subtest: reloading tea house does not grant duplicate rewards
+ok 8 - reloading tea house does not grant duplicate rewards
+  ---
+  duration_ms: 15.986418
+  type: 'test'
+  ...
+# Subtest: a failed attempt does not prevent a continued checkpoint from earning victory rewards
+ok 9 - a failed attempt does not prevent a continued checkpoint from earning victory rewards
+  ---
+  duration_ms: 14.589846
+  type: 'test'
+  ...
+# Subtest: meridian strikes charge once, gate on prerequisites, persist, and affect campaign only
+ok 10 - meridian strikes charge once, gate on prerequisites, persist, and affect campaign only
+  ---
+  duration_ms: 16.890556
+  type: 'test'
+  ...
+# Subtest: quick-play victory records scores without changing campaign wallet/checkpoint/unlocks
+ok 11 - quick-play victory records scores without changing campaign wallet/checkpoint/unlocks
+  ---
+  duration_ms: 5.145066
+  type: 'test'
+  ...
+# Subtest: Act III completion opens Act IV without changing the Story hero roles
+ok 12 - Act III completion opens Act IV without changing the Story hero roles
+  ---
+  duration_ms: 1.074608
+  type: 'test'
+  ...
+# Subtest: invalid content references fail before launching
+ok 13 - invalid content references fail before launching
+  ---
+  duration_ms: 0.789035
+  type: 'test'
+  ...
+# Subtest: Act II is live: map rows, elite encounter, boss duel content, and later acts stay gated
+ok 14 - Act II is live: map rows, elite encounter, boss duel content, and later acts stay gated
+  ---
+  duration_ms: 2.148866
+  type: 'test'
+  ...
+# Subtest: Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and resolution vignettes
+ok 15 - Act II dialogue pack: arrival, Night Heron exchanges for all heroes, and resolution vignettes
+  ---
+  duration_ms: 1.296559
+  type: 'test'
+  ...
+# Subtest: Night Heron checkpoint keys: canonical round-trip and legacy alias support
+ok 16 - Night Heron checkpoint keys: canonical round-trip and legacy alias support
+  ---
+  duration_ms: 16.007484
+  type: 'test'
+  ...
+# Subtest: Act II card duel content: rosters, enemies, elite and roam creation
+ok 17 - Act II card duel content: rosters, enemies, elite and roam creation
+  ---
+  duration_ms: 0.890648
+  type: 'test'
+  ...
+# Subtest: card duels never advance while waiting; pause rejects commands
+ok 18 - card duels never advance while waiting; pause rejects commands
+  ---
+  duration_ms: 7.961915
+  type: 'test'
+  ...
+# Subtest: guard reduces the displayed incoming attack by 80% and builds Flow
+ok 19 - guard reduces the displayed incoming attack by 80% and builds Flow
+  ---
+  duration_ms: 1.259616
+  type: 'test'
+  ...
+# Subtest: unaffordable techniques, invalid actions, and exhausted tea cannot consume a turn
+ok 20 - unaffordable techniques, invalid actions, and exhausted tea cannot consume a turn
+  ---
+  duration_ms: 1.183482
+  type: 'test'
+  ...
+# Subtest: a defeated rival leaves the pass; the hero returns to exploring
+ok 21 - a defeated rival leaves the pass; the hero returns to exploring
+  ---
+  duration_ms: 1.667805
+  type: 'test'
+  ...
+# Subtest: Mountain Bell stuns the reply and Dragon Rush pierces enemy guard
+ok 22 - Mountain Bell stuns the reply and Dragon Rush pierces enemy guard
+  ---
+  duration_ms: 2.033606
+  type: 'test'
+  ...
+# Subtest: zhao-yun can roam and win all card encounters with deliberate choices
+ok 23 - zhao-yun can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 19.603807
+  type: 'test'
+  ...
+# Subtest: lu-zhishen can roam and win all card encounters with deliberate choices
+ok 24 - lu-zhishen can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 13.856152
+  type: 'test'
+  ...
+# Subtest: hu-sanniang can roam and win all card encounters with deliberate choices
+ok 25 - hu-sanniang can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 10.255758
+  type: 'test'
+  ...
+# Subtest: lu-bu can roam and win all card encounters with deliberate choices
+ok 26 - lu-bu can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 7.025542
+  type: 'test'
+  ...
+# Subtest: guan-yu can roam and win all card encounters with deliberate choices
+ok 27 - guan-yu can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 5.858922
+  type: 'test'
+  ...
+# Subtest: wu-song can roam and win all card encounters with deliberate choices
+ok 28 - wu-song can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 3.729764
+  type: 'test'
+  ...
+# Subtest: mu-guiying can roam and win all card encounters with deliberate choices
+ok 29 - mu-guiying can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 3.691953
+  type: 'test'
+  ...
+# Subtest: liang-hongyu can roam and win all card encounters with deliberate choices
+ok 30 - liang-hongyu can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 3.462044
+  type: 'test'
+  ...
+# Subtest: nie-yinniang can roam and win all card encounters with deliberate choices
+ok 31 - nie-yinniang can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 4.908074
+  type: 'test'
+  ...
+# Subtest: sun-shangxiang can roam and win all card encounters with deliberate choices
+ok 32 - sun-shangxiang can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 5.81213
+  type: 'test'
+  ...
+# Subtest: gu-dasao can roam and win all card encounters with deliberate choices
+ok 33 - gu-dasao can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 4.78784
+  type: 'test'
+  ...
+# Subtest: qin-liangyu can roam and win all card encounters with deliberate choices
+ok 34 - qin-liangyu can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 5.967775
+  type: 'test'
+  ...
+# Subtest: bao-sanniang can roam and win all card encounters with deliberate choices
+ok 35 - bao-sanniang can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 5.407069
+  type: 'test'
+  ...
+# Subtest: dian-wei can roam and win all card encounters with deliberate choices
+ok 36 - dian-wei can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 4.250359
+  type: 'test'
+  ...
+# Subtest: yang-zhi can roam and win all card encounters with deliberate choices
+ok 37 - yang-zhi can roam and win all card encounters with deliberate choices
+  ---
+  duration_ms: 6.175973
+  type: 'test'
+  ...
+# Subtest: card campaign restores checkpoints, reaches tea house, buys cultivation, and awards once
+ok 38 - card campaign restores checkpoints, reaches tea house, buys cultivation, and awards once
+  ---
+  duration_ms: 61.975794
+  type: 'test'
+  ...
+# Subtest: defeat rejects extra turns and retry starts a fresh card encounter
+ok 39 - defeat rejects extra turns and retry starts a fresh card encounter
+  ---
+  duration_ms: 1.478521
+  type: 'test'
+  ...
+# Subtest: WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow spend
+ok 40 - WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow spend
+  ---
+  duration_ms: 1.445185
+  type: 'test'
+  ...
+# Subtest: WU-PARTY-09I: assist hidden/no-op without followers; resets on new duel
+ok 41 - WU-PARTY-09I: assist hidden/no-op without followers; resets on new duel
+  ---
+  duration_ms: 8.069558
+  type: 'test'
+  ...
+# Subtest: WU-PARTY-09I: mid-roam assistStrike is a no-op; HUD swapLead still between-encounter only
+ok 42 - WU-PARTY-09I: mid-roam assistStrike is a no-op; HUD swapLead still between-encounter only
+  ---
+  duration_ms: 1.556479
+  type: 'test'
+  ...
+# Subtest: collision debug overlay is off by default
+ok 43 - collision debug overlay is off by default
+  ---
+  duration_ms: 2.478959
+  type: 'test'
+  ...
+# Subtest: collision debug overlay enables via ?debug=1 or true
+ok 44 - collision debug overlay enables via ?debug=1 or true
+  ---
+  duration_ms: 0.429371
+  type: 'test'
+  ...
+# Subtest: paintCollisionDebug strokes world, each CAM-02 blocker, and camera rect
+ok 45 - paintCollisionDebug strokes world, each CAM-02 blocker, and camera rect
+  ---
+  duration_ms: 0.653684
+  type: 'test'
+  ...
+# Subtest: paintCollisionDebug no-ops without ctx or cam
+ok 46 - paintCollisionDebug no-ops without ctx or cam
+  ---
+  duration_ms: 0.18252
+  type: 'test'
+  ...
+# Subtest: weapon hit geometry respects facing, reach, and angle wrapping
+ok 47 - weapon hit geometry respects facing, reach, and angle wrapping
+  ---
+  duration_ms: 1.555035
+  type: 'test'
+  ...
+# Subtest: damage immunity prevents repeated damage and HP never becomes negative
+ok 48 - damage immunity prevents repeated damage and HP never becomes negative
+  ---
+  duration_ms: 0.459851
+  type: 'test'
+  ...
+# Subtest: Zhao Yun: technique spends Flow, damages, and respects cooldown
+ok 49 - Zhao Yun: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 6.019576
+  type: 'test'
+  ...
+# Subtest: Lu Zhishen: technique spends Flow, damages, and respects cooldown
+ok 50 - Lu Zhishen: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.117454
+  type: 'test'
+  ...
+# Subtest: Hu Sanniang: technique spends Flow, damages, and respects cooldown
+ok 51 - Hu Sanniang: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.124084
+  type: 'test'
+  ...
+# Subtest: Lü Bu: technique spends Flow, damages, and respects cooldown
+ok 52 - Lü Bu: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.996293
+  type: 'test'
+  ...
+# Subtest: Guan Yu: technique spends Flow, damages, and respects cooldown
+ok 53 - Guan Yu: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.438173
+  type: 'test'
+  ...
+# Subtest: Wu Song: technique spends Flow, damages, and respects cooldown
+ok 54 - Wu Song: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.969395
+  type: 'test'
+  ...
+# Subtest: Mu Guiying: technique spends Flow, damages, and respects cooldown
+ok 55 - Mu Guiying: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.062786
+  type: 'test'
+  ...
+# Subtest: Liang Hongyu: technique spends Flow, damages, and respects cooldown
+ok 56 - Liang Hongyu: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.110534
+  type: 'test'
+  ...
+# Subtest: Nie Yinniang: technique spends Flow, damages, and respects cooldown
+ok 57 - Nie Yinniang: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.033672
+  type: 'test'
+  ...
+# Subtest: Sun Shangxiang: technique spends Flow, damages, and respects cooldown
+ok 58 - Sun Shangxiang: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 1.592668
+  type: 'test'
+  ...
+# Subtest: Gu Dasao: technique spends Flow, damages, and respects cooldown
+ok 59 - Gu Dasao: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.695109
+  type: 'test'
+  ...
+# Subtest: Qin Liangyu: technique spends Flow, damages, and respects cooldown
+ok 60 - Qin Liangyu: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.490089
+  type: 'test'
+  ...
+# Subtest: Bao Sanniang: technique spends Flow, damages, and respects cooldown
+ok 61 - Bao Sanniang: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.51552
+  type: 'test'
+  ...
+# Subtest: Dian Wei: technique spends Flow, damages, and respects cooldown
+ok 62 - Dian Wei: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.448077
+  type: 'test'
+  ...
+# Subtest: Yang Zhi: technique spends Flow, damages, and respects cooldown
+ok 63 - Yang Zhi: technique spends Flow, damages, and respects cooldown
+  ---
+  duration_ms: 0.430532
+  type: 'test'
+  ...
+# Subtest: low Flow blocks techniques without applying damage or cooldown
+ok 64 - low Flow blocks techniques without applying damage or cooldown
+  ---
+  duration_ms: 0.634646
+  type: 'test'
+  ...
+# Subtest: third swing is a finisher regardless of how many enemies the prior swing hit
+ok 65 - third swing is a finisher regardless of how many enemies the prior swing hit
+  ---
+  duration_ms: 2.208711
+  type: 'test'
+  ...
+# Subtest: perfect evades grant Flow once per attack; damage immunity alone does not
+ok 66 - perfect evades grant Flow once per attack; damage immunity alone does not
+  ---
+  duration_ms: 0.884756
+  type: 'test'
+  ...
+# Subtest: boss transitions phase once, resists light interruption, and accepts technique interruption
+ok 67 - boss transitions phase once, resists light interruption, and accepts technique interruption
+  ---
+  duration_ms: 1.240075
+  type: 'test'
+  ...
+# Subtest: enemy telegraphs inflict damage and arrows resolve collisions
+ok 68 - enemy telegraphs inflict damage and arrows resolve collisions
+  ---
+  duration_ms: 0.818434
+  type: 'test'
+  ...
+# Subtest: pause stops simulation and defeat can restart cleanly
+ok 69 - pause stops simulation and defeat can restart cleanly
+  ---
+  duration_ms: 1.260839
+  type: 'test'
+  ...
+# Subtest: dodge input survives hit-stop but does not leak across pause
+ok 70 - dodge input survives hit-stop but does not leak across pause
+  ---
+  duration_ms: 1.672886
+  type: 'test'
+  ...
+# Subtest: water-shallows movement impedance: domain-side movement slowdown and zone detection
+ok 71 - water-shallows movement impedance: domain-side movement slowdown and zone detection
+  ---
+  duration_ms: 1.556297
+  type: 'test'
+  ...
+# Subtest: roam shallows impedance: hero displacement is 60–70% of dry ground
+ok 72 - roam shallows impedance: hero displacement is 60–70% of dry ground
+  ---
+  duration_ms: 21.804086
+  type: 'test'
+  ...
+# Subtest: Pages output routes its root to the RPG and keeps legacy portraits inside the output
+ok 73 - Pages output routes its root to the RPG and keeps legacy portraits inside the output
+  ---
+  duration_ms: 4.882476
+  type: 'test'
+  ...
+# Subtest: each pose crops exactly its own quadrant; legacy monk cells select the attack row
+ok 74 - each pose crops exactly its own quadrant; legacy monk cells select the attack row
+  ---
+  duration_ms: 3.937142
+  type: 'test'
+  ...
+# Subtest: the approved monk sheet supplies distinct normal and special contact poses without changing walking
+ok 75 - the approved monk sheet supplies distinct normal and special contact poses without changing walking
+  ---
+  duration_ms: 1.304875
+  type: 'test'
+  ...
+# Subtest: Zhao Yun isolates both complete poses and never samples the overlapping bottom row
+ok 76 - Zhao Yun isolates both complete poses and never samples the overlapping bottom row
+  ---
+  duration_ms: 0.608686
+  type: 'test'
+  ...
+# Subtest: generated duel-pose atlases are approved 2x2 cards and do not replace the monk sheet path
+ok 77 - generated duel-pose atlases are approved 2x2 cards and do not replace the monk sheet path
+  ---
+  duration_ms: 1.169669
+  type: 'test'
+  ...
+# Subtest: unreviewed, malformed or missing atlases safely retain the existing sprite
+ok 78 - unreviewed, malformed or missing atlases safely retain the existing sprite
+  ---
+  duration_ms: 0.31833
+  type: 'test'
+  ...
+# Subtest: hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PNG paths
+ok 79 - hidden novel atlases are approved 2x2 RGBA PNGs and do not replace live PNG paths
+  ---
+  duration_ms: 3.205259
+  type: 'test'
+  ...
+# Subtest: partial native overrides keep full canvases while other poses retain the existing atlas
+ok 80 - partial native overrides keep full canvases while other poses retain the existing atlas
+  ---
+  duration_ms: 0.671573
+  type: 'test'
+  ...
+# Subtest: all 23 supplied character sets render their new single-image poses without legacy crops
+ok 81 - all 23 supplied character sets render their new single-image poses without legacy crops
+  ---
+  duration_ms: 2.564439
+  type: 'test'
+  ...
+# Subtest: separate duel poses reject unknown pose names and unreviewed or non-transparent files
+ok 82 - separate duel poses reject unknown pose names and unreviewed or non-transparent files
+  ---
+  duration_ms: 0.810171
+  type: 'test'
+  ...
+# Subtest: escort kinds are light duel rivals with existing sprite art
+ok 83 - escort kinds are light duel rivals with existing sprite art
+  ---
+  duration_ms: 1.35021
+  type: 'test'
+  ...
+# Subtest: escorts join only campaign passes that field a named legend
+ok 84 - escorts join only campaign passes that field a named legend
+  ---
+  duration_ms: 1.690349
+  type: 'test'
+  ...
+# Subtest: escorts deploy in a ring around the last named legend and leave it reachable only by their fall
+ok 85 - escorts deploy in a ring around the last named legend and leave it reachable only by their fall
+  ---
+  duration_ms: 21.678459
+  type: 'test'
+  ...
+# Subtest: escorts never shove into a standing hero, and orphan when their ward falls
+ok 86 - escorts never shove into a standing hero, and orphan when their ward falls
+  ---
+  duration_ms: 13.856379
+  type: 'test'
+  ...
+# Subtest: every opponent including named Story rivals has a registered sprite on disk
+ok 87 - every opponent including named Story rivals has a registered sprite on disk
+  ---
+  duration_ms: 3.583323
+  type: 'test'
+  ...
+# Subtest: required expansion inventory distinguishes generated assets from user-deferred art
+ok 88 - required expansion inventory distinguishes generated assets from user-deferred art
+  ---
+  duration_ms: 2.477997
+  type: 'test'
+  ...
+# Subtest: hero signatures, special motifs, oaths and weather map to the required filenames
+ok 89 - hero signatures, special motifs, oaths and weather map to the required filenames
+  ---
+  duration_ms: 0.646384
+  type: 'test'
+  ...
+# Subtest: every hero (and the recruit) carries a signature action
+ok 90 - every hero (and the recruit) carries a signature action
+  ---
+  duration_ms: 1.468226
+  type: 'test'
+  ...
+# Subtest: signature actions resolve: counter, execute, charged, cleanse, vanish
+ok 91 - signature actions resolve: counter, execute, charged, cleanse, vanish
+  ---
+  duration_ms: 10.244094
+  type: 'test'
+  ...
+# Subtest: rivals gather focus and unleash telegraphed specials; techniques break them
+ok 92 - rivals gather focus and unleash telegraphed specials; techniques break them
+  ---
+  duration_ms: 1.117113
+  type: 'test'
+  ...
+# Subtest: oath pairs double assist damage and grant Flow
+ok 93 - oath pairs double assist damage and grant Flow
+  ---
+  duration_ms: 1.12376
+  type: 'test'
+  ...
+# Subtest: weather is run-seeded and bends the pass
+ok 94 - weather is run-seeded and bends the pass
+  ---
+  duration_ms: 0.267083
+  type: 'test'
+  ...
+# Subtest: composure accrues from real-time wounds and rattles the hero
+ok 95 - composure accrues from real-time wounds and rattles the hero
+  ---
+  duration_ms: 2.420027
+  type: 'test'
+  ...
+# Subtest: the merchant trades run renown for run goods
+ok 96 - the merchant trades run renown for run goods
+  ---
+  duration_ms: 40.41551
+  type: 'test'
+  ...
+# Subtest: judgement: sparing an elite gains the people's favor and can recruit the adder
+ok 97 - judgement: sparing an elite gains the people's favor and can recruit the adder
+  ---
+  duration_ms: 35.513264
+  type: 'test'
+  ...
+# Subtest: the endless wander escalates stages and records the best run
+ok 98 - the endless wander escalates stages and records the best run
+  ---
+  duration_ms: 1.465668
+  type: 'test'
+  ...
+# Subtest: the codex records rivals, heroes and curios as they are met
+ok 99 - the codex records rivals, heroes and curios as they are met
+  ---
+  duration_ms: 0.90736
+  type: 'test'
+  ...
+# Subtest: archer contact and explicit challenge never open a card duel; arrows damage in real time
+ok 100 - archer contact and explicit challenge never open a card duel; arrows damage in real time
+  ---
+  duration_ms: 28.465103
+  type: 'test'
+  ...
+# Subtest: arrows use swept collision, dodge prevents damage, pause freezes projectiles, death exits exploration
+ok 101 - arrows use swept collision, dodge prevents damage, pause freezes projectiles, death exits exploration
+  ---
+  duration_ms: 4.90135
+  type: 'test'
+  ...
+# Subtest: last archer kill advances encounter once, with no orphan arrows or duplicate rewards
+ok 102 - last archer kill advances encounter once, with no orphan arrows or duplicate rewards
+  ---
+  duration_ms: 3.407106
+  type: 'test'
+  ...
+# Subtest: all actors and patrol targets remain on courtyard, including diagonal corners and dodges
+ok 103 - all actors and patrol targets remain on courtyard, including diagonal corners and dodges
+  ---
+  duration_ms: 40.975348
+  type: 'test'
+  ...
+# Subtest: cinematic preview matches actual damage and never consumes a turn
+ok 104 - cinematic preview matches actual damage and never consumes a turn
+  ---
+  duration_ms: 29.292964
+  type: 'test'
+  ...
+# Subtest: cinematic cancellation invalidates queued callbacks; finishing frame commits exactly once
+ok 105 - cinematic cancellation invalidates queued callbacks; finishing frame commits exactly once
+  ---
+  duration_ms: 0.57969
+  type: 'test'
+  ...
+# Subtest: default browser-compatible timer scheduler completes a reduced-motion turn
+ok 106 - default browser-compatible timer scheduler completes a reduced-motion turn
+  ---
+  duration_ms: 221.325306
+  type: 'test'
+  ...
+# Subtest: film cuts run in time order; a technique charges up before it strikes, a plain strike does not
+ok 107 - film cuts run in time order; a technique charges up before it strikes, a plain strike does not
+  ---
+  duration_ms: 0.521541
+  type: 'test'
+  ...
+# Subtest: duel intro opens with a gong and names both fighters, then leaves the table
+ok 108 - duel intro opens with a gong and names both fighters, then leaves the table
+  ---
+  duration_ms: 2.249987
+  type: 'test'
+  ...
+# Subtest: reduced motion skips the duel intro entirely
+ok 109 - reduced motion skips the duel intro entirely
+  ---
+  duration_ms: 0.587532
+  type: 'test'
+  ...
+# Subtest: Zhao Min uses her approved transparent ready sprite in opening and non-attack film beats
+ok 110 - Zhao Min uses her approved transparent ready sprite in opening and non-attack film beats
+  ---
+  duration_ms: 1.376625
+  type: 'test'
+  ...
+# Subtest: the supplied pose sets drive hero strikes and story-rival counters through the real film timeline
+ok 111 - the supplied pose sets drive hero strikes and story-rival counters through the real film timeline
+  ---
+  duration_ms: 12.997832
+  type: 'test'
+  ...
+# Subtest: acting during the intro cuts to the technique film; intro beats never fire and the turn commits once
+ok 112 - acting during the intro cuts to the technique film; intro beats never fire and the turn commits once
+  ---
+  duration_ms: 0.753565
+  type: 'test'
+  ...
+# Subtest: new duel film captions have Japanese translations
+ok 113 - new duel film captions have Japanese translations
+  ---
+  duration_ms: 0.315934
+  type: 'test'
+  ...
+# Subtest: strike without a sheet or attack animation keeps the idle sprite throughout
+ok 114 - strike without a sheet or attack animation keeps the idle sprite throughout
+  ---
+  duration_ms: 0.448807
+  type: 'test'
+  ...
+# Subtest: attack and technique sample every attack frame once, then restore the still before impact
+ok 115 - attack and technique sample every attack frame once, then restore the still before impact
+  ---
+  duration_ms: 1.265769
+  type: 'test'
+  ...
+# Subtest: long attacks clear at impact; cancelling invalidates frame ticks and cleans the next intro
+ok 116 - long attacks clear at impact; cancelling invalidates frame ticks and cleans the next intro
+  ---
+  duration_ms: 0.618728
+  type: 'test'
+  ...
+# Subtest: guard, tea, reduced motion and intro keep still sprites with a sheet available
+ok 117 - guard, tea, reduced motion and intro keep still sprites with a sheet available
+  ---
+  duration_ms: 0.602788
+  type: 'test'
+  ...
+# Subtest: an incoming counter plays the rival strike beats in order and the end beat waits for the hit
+ok 118 - an incoming counter plays the rival strike beats in order and the end beat waits for the hit
+  ---
+  duration_ms: 0.445347
+  type: 'test'
+  ...
+# Subtest: no incoming or reduced motion keeps the legacy reply beat without rival strike beats
+ok 119 - no incoming or reduced motion keeps the legacy reply beat without rival strike beats
+  ---
+  duration_ms: 0.458657
+  type: 'test'
+  ...
+# Subtest: signature uses the special cut and shows sig art on focus, then clears by impact
+ok 120 - signature uses the special cut and shows sig art on focus, then clears by impact
+  ---
+  duration_ms: 0.565626
+  type: 'test'
+  ...
+# Subtest: counter-special shows special telegraph art on reply/counter then clears
+ok 121 - counter-special shows special telegraph art on reply/counter then clears
+  ---
+  duration_ms: 0.491073
+  type: 'test'
+  ...
+# Subtest: assist flash shows oath emblem and follower sprite, then completes
+ok 122 - assist flash shows oath emblem and follower sprite, then completes
+  ---
+  duration_ms: 0.69973
+  type: 'test'
+  ...
+# Subtest: assist flash reduced motion skips straight to complete
+ok 123 - assist flash reduced motion skips straight to complete
+  ---
+  duration_ms: 0.2048
+  type: 'test'
+  ...
+# Subtest: normal and special films use different body poses and hold the contact pose through impact
+ok 124 - normal and special films use different body poses and hold the contact pose through impact
+  ---
+  duration_ms: 0.681512
+  type: 'test'
+  ...
+# Subtest: named rival normal and special replies switch their own poses and cancellation restores both sprites
+ok 125 - named rival normal and special replies switch their own poses and cancellation restores both sprites
+  ---
+  duration_ms: 0.601838
+  type: 'test'
+  ...
+# Subtest: pose atlases do not animate guard, tea, reduced motion or defeated rivals
+ok 126 - pose atlases do not animate guard, tea, reduced motion or defeated rivals
+  ---
+  duration_ms: 0.527925
+  type: 'test'
+  ...
+# Subtest: assist poses belong to the follower and clear back to the follower sprite on completion
+ok 127 - assist poses belong to the follower and clear back to the follower sprite on completion
+  ---
+  duration_ms: 0.298656
+  type: 'test'
+  ...
+# Subtest: rival special charges, switches identity and poses, then commits once after its impact hold
+ok 128 - rival special charges, switches identity and poses, then commits once after its impact hold
+  ---
+  duration_ms: 1.741062
+  type: 'test'
+  ...
+# Subtest: a non-lethal counter reply does not take the defeated rival fade
+ok 129 - a non-lethal counter reply does not take the defeated rival fade
+  ---
+  duration_ms: 1.542691
+  type: 'test'
+  ...
+# Subtest: cancel during the rival special focus prevents stale attack, impact and completion callbacks
+ok 130 - cancel during the rival special focus prevents stale attack, impact and completion callbacks
+  ---
+  duration_ms: 0.415352
+  type: 'test'
+  ...
+# Subtest: a special with no incoming damage and reduced motion never charges or displays special art
+ok 131 - a special with no incoming damage and reduced motion never charges or displays special art
+  ---
+  duration_ms: 0.36374
+  type: 'test'
+  ...
+# Subtest: rival motion uses its own identity and bosses retain their costume-specific sprite fallback
+ok 132 - rival motion uses its own identity and bosses retain their costume-specific sprite fallback
+  ---
+  duration_ms: 0.863401
+  type: 'test'
+  ...
+# Subtest: Japanese defaults on fresh and older saves; a language choice persists without losing progress
+ok 133 - Japanese defaults on fresh and older saves; a language choice persists without losing progress
+  ---
+  duration_ms: 5.698726
+  type: 'test'
+  ...
+# Subtest: bonus heroes cannot enter the campaign even through a forged unlock list
+ok 134 - bonus heroes cannot enter the campaign even through a forged unlock list
+  ---
+  duration_ms: 16.071301
+  type: 'test'
+  ...
+# Subtest: every hero has a roughly 30-word biography and translated display content
+ok 135 - every hero has a roughly 30-word biography and translated display content
+  ---
+  duration_ms: 2.119054
+  type: 'test'
+  ...
+# Subtest: combat messages translate names and values while retaining English logs for switching
+ok 136 - combat messages translate names and values while retaining English logs for switching
+  ---
+  duration_ms: 52.593912
+  type: 'test'
+  ...
+# Subtest: WU-PARTY-09I assist strings translate
+ok 137 - WU-PARTY-09I assist strings translate
+  ---
+  duration_ms: 0.495048
+  type: 'test'
+  ...
+# Subtest: the open pass supersedes the branching map: nodes are inert, the front moves east
+ok 138 - the open pass supersedes the branching map: nodes are inert, the front moves east
+  ---
+  duration_ms: 14.500701
+  type: 'test'
+  ...
+# Subtest: elite area victory drafts three curios; the pick is carried and applied in duels
+ok 139 - elite area victory drafts three curios; the pick is carried and applied in duels
+  ---
+  duration_ms: 42.69607
+  type: 'test'
+  ...
+# Subtest: a cleared pass grants a roadside breather to the wounded hero
+ok 140 - a cleared pass grants a roadside breather to the wounded hero
+  ---
+  duration_ms: 2.800251
+  type: 'test'
+  ...
+# Subtest: roadside content of the old branching map is gone with its nodes
+ok 141 - roadside content of the old branching map is gone with its nodes
+  ---
+  duration_ms: 2.549945
+  type: 'test'
+  ...
+# Subtest: curio effects: twin irons cadence, feather cost, sash protect, tally renown
+ok 142 - curio effects: twin irons cadence, feather cost, sash protect, tally renown
+  ---
+  duration_ms: 3.683006
+  type: 'test'
+  ...
+# Subtest: checkpoint at the elite offers recovers as the pending discipline
+ok 143 - checkpoint at the elite offers recovers as the pending discipline
+  ---
+  duration_ms: 30.76597
+  type: 'test'
+  ...
+# Subtest: quick play stays linear: no map, no curios, five encounters
+ok 144 - quick play stays linear: no map, no curios, five encounters
+  ---
+  duration_ms: 5.726242
+  type: 'test'
+  ...
+# Subtest: maze walls render whole props at tile scale, with biome lighting and stable world anchors
+ok 145 - maze walls render whole props at tile scale, with biome lighting and stable world anchors
+  ---
+  duration_ms: 2.379782
+  type: 'test'
+  ...
+# Subtest: stone acts use reviewed granite details, and night bamboo lighting differs from daylight
+ok 146 - stone acts use reviewed granite details, and night bamboo lighting differs from daylight
+  ---
+  duration_ms: 2.786923
+  type: 'test'
+  ...
+# Subtest: the maze is seeded, connected and covers the taller world in every direction
+ok 147 - the maze is seeded, connected and covers the taller world in every direction
+  ---
+  duration_ms: 9.357156
+  type: 'test'
+  ...
+# Subtest: every camp anchors on open floor, deepening toward the boss room
+ok 148 - every camp anchors on open floor, deepening toward the boss room
+  ---
+  duration_ms: 2.080726
+  type: 'test'
+  ...
+# Subtest: the open field triples its ranks and no rival deploys inside a hedge
+ok 149 - the open field triples its ranks and no rival deploys inside a hedge
+  ---
+  duration_ms: 24.027144
+  type: 'test'
+  ...
+# Subtest: maze walls stop the hero: movement slides along the hedges
+ok 150 - maze walls stop the hero: movement slides along the hedges
+  ---
+  duration_ms: 149.915292
+  type: 'test'
+  ...
+# Subtest: wayside shrines restore energy once each
+ok 151 - wayside shrines restore energy once each
+  ---
+  duration_ms: 32.162257
+  type: 'test'
+  ...
+# Subtest: checkpoints rebuild the same labyrinth for the same run
+ok 152 - checkpoints rebuild the same labyrinth for the same run
+  ---
+  duration_ms: 5.383598
+  type: 'test'
+  ...
+# Subtest: quick play and wander stay on the classic stone passes
+ok 153 - quick play and wander stay on the classic stone passes
+  ---
+  duration_ms: 1.696554
+  type: 'test'
+  ...
+# Subtest: legacy flat ranks migrate onto their vessel points
+ok 154 - legacy flat ranks migrate onto their vessel points
+  ---
+  duration_ms: 11.994402
+  type: 'test'
+  ...
+# Subtest: crossing cavities gate on vessels and apply their perks
+ok 155 - crossing cavities gate on vessels and apply their perks
+  ---
+  duration_ms: 0.638709
+  type: 'test'
+  ...
+# Subtest: Dragon's Cavity gives a second tea pot every encounter
+ok 156 - Dragon's Cavity gives a second tea pot every encounter
+  ---
+  duration_ms: 6.535749
+  type: 'test'
+  ...
+# Subtest: Phoenix Eye widens curio drafts to four choices
+ok 157 - Phoenix Eye widens curio drafts to four choices
+  ---
+  duration_ms: 45.164022
+  type: 'test'
+  ...
+# Subtest: every meridian node has resolvable requirements and unique ids
+ok 158 - every meridian node has resolvable requirements and unique ids
+  ---
+  duration_ms: 0.547497
+  type: 'test'
+  ...
+# Subtest: sneaking halves movement speed and shrinks archer aggro
+ok 159 - sneaking halves movement speed and shrinks archer aggro
+  ---
+  duration_ms: 4.613654
+  type: 'test'
+  ...
+# Subtest: the Hidden Blade sneaks closer than the others
+ok 160 - the Hidden Blade sneaks closer than the others
+  ---
+  duration_ms: 1.281046
+  type: 'test'
+  ...
+# Subtest: first blood on the pass opens the duel with the rival reeling
+ok 161 - first blood on the pass opens the duel with the rival reeling
+  ---
+  duration_ms: 1.687829
+  type: 'test'
+  ...
+# Subtest: sneaking into a rival ambushes the duel even without first blood
+ok 162 - sneaking into a rival ambushes the duel even without first blood
+  ---
+  duration_ms: 1.614358
+  type: 'test'
+  ...
+# Subtest: each adaptive mode has a complete, varied 32-bar arrangement
+ok 163 - each adaptive mode has a complete, varied 32-bar arrangement
+  ---
+  duration_ms: 8.010346
+  type: 'test'
+  ...
+# Subtest: music events have bounded levels and wuxia voices in quiet passages
+ok 164 - music events have bounded levels and wuxia voices in quiet passages
+  ---
+  duration_ms: 6.457154
+  type: 'test'
+  ...
+# Subtest: campaign deploys every rival of the act on one open map; Quick Play stays linear
+ok 165 - campaign deploys every rival of the act on one open map; Quick Play stays linear
+  ---
+  duration_ms: 13.381283
+  type: 'test'
+  ...
+# Subtest: a fallen leader scatters their area and the map never resets between areas
+ok 166 - a fallen leader scatters their area and the map never resets between areas
+  ---
+  duration_ms: 7.62596
+  type: 'test'
+  ...
+# Subtest: grunts alone never clear an area; the act is won only by the biggest boss
+ok 167 - grunts alone never clear an area; the act is won only by the biggest boss
+  ---
+  duration_ms: 11.152715
+  type: 'test'
+  ...
+# Subtest: cleared areas persist through a checkpoint save and continue
+ok 168 - cleared areas persist through a checkpoint save and continue
+  ---
+  duration_ms: 7.738002
+  type: 'test'
+  ...
+# Subtest: resolving an elite offer on the live map scene notifies the view (no stuck judgement)
+ok 169 - resolving an elite offer on the live map scene notifies the view (no stuck judgement)
+  ---
+  duration_ms: 2.967577
+  type: 'test'
+  ...
+# Subtest: Act V chains after the citadel, ends the campaign, and validates its boss
+ok 170 - Act V chains after the citadel, ends the campaign, and validates its boss
+  ---
+  duration_ms: 1.696992
+  type: 'test'
+  ...
+# Subtest: all twenty hidden legends stand exactly once across the act
+ok 171 - all twenty hidden legends stand exactly once across the act
+  ---
+  duration_ms: 1.040213
+  type: 'test'
+  ...
+# Subtest: every otherworld rival has a manifest sprite and a telegraphed special
+ok 172 - every otherworld rival has a manifest sprite and a telegraphed special
+  ---
+  duration_ms: 0.466575
+  type: 'test'
+  ...
+# Subtest: scenes four to eight speak in English and Japanese
+ok 173 - scenes four to eight speak in English and Japanese
+  ---
+  duration_ms: 0.854824
+  type: 'test'
+  ...
+# Subtest: Act V is gated behind the citadel and opens on the rift arrival
+ok 174 - Act V is gated behind the citadel and opens on the rift arrival
+  ---
+  duration_ms: 11.003898
+  type: 'test'
+  ...
+# Subtest: the hall reveal and the first round speak once when their areas are engaged
+ok 175 - the hall reveal and the first round speak once when their areas are engaged
+  ---
+  duration_ms: 12.751558
+  type: 'test'
+  ...
+# Subtest: the last keeper bars the bridge with words before blades
+ok 176 - the last keeper bars the bridge with words before blades
+  ---
+  duration_ms: 3.372204
+  type: 'test'
+  ...
+# Subtest: the trio cuts through all twenty and the waystation opens past the bridge
+ok 177 - the trio cuts through all twenty and the waystation opens past the bridge
+  ---
+  duration_ms: 10.927291
+  type: 'test'
+  ...
+# Subtest: legacy score migration preserves records but grants no campaign progress
+ok 178 - legacy score migration preserves records but grants no campaign progress
+  ---
+  duration_ms: 2.577487
+  type: 'test'
+  ...
+# Subtest: corrupt and future saves are not overwritten
+ok 179 - corrupt and future saves are not overwritten
+  ---
+  duration_ms: 0.414538
+  type: 'test'
+  ...
+# Subtest: unavailable storage reports session-only persistence without crashing
+ok 180 - unavailable storage reports session-only persistence without crashing
+  ---
+  duration_ms: 0.675332
+  type: 'test'
+  ...
+# Subtest: settings survive reload, malformed numbers and checkpoint are sanitized
+ok 181 - settings survive reload, malformed numbers and checkpoint are sanitized
+  ---
+  duration_ms: 1.457241
+  type: 'test'
+  ...
+# Subtest: version 1 structured profiles migrate to current schema
+ok 182 - version 1 structured profiles migrate to current schema
+  ---
+  duration_ms: 0.503513
+  type: 'test'
+  ...
+# Subtest: fixed simulation is identical at 30 and 120 render FPS
+ok 183 - fixed simulation is identical at 30 and 120 render FPS
+  ---
+  duration_ms: 28.158438
+  type: 'test'
+  ...
+# Subtest: fixed clock bounds catch-up and safely resets inside scene transitions
+ok 184 - fixed clock bounds catch-up and safely resets inside scene transitions
+  ---
+  duration_ms: 0.329393
+  type: 'test'
+  ...
+# Subtest: state machine rejects impossible scene transitions
+ok 185 - state machine rejects impossible scene transitions
+  ---
+  duration_ms: 0.814824
+  type: 'test'
+  ...
+# Subtest: event subscriptions clean up without stale callbacks
+ok 186 - event subscriptions clean up without stale callbacks
+  ---
+  duration_ms: 0.723568
+  type: 'test'
+  ...
+# Subtest: asset errors reject explicitly and can be retried
+ok 187 - asset errors reject explicitly and can be retried
+  ---
+  duration_ms: 1.73203
+  type: 'test'
+  ...
+# Subtest: music scheduler drops muted/backlogged beats and bounds notes per tick
+ok 188 - music scheduler drops muted/backlogged beats and bounds notes per tick
+  ---
+  duration_ms: 0.504116
+  type: 'test'
+  ...
+# Subtest: audio director maps scenes, persists mixer values and disposes subscriptions
+ok 189 - audio director maps scenes, persists mixer values and disposes subscriptions
+  ---
+  duration_ms: 0.773675
+  type: 'test'
+  ...
+# Subtest: last Quick Play party round-trips and a bad party does not unlock anyone
+ok 190 - last Quick Play party round-trips and a bad party does not unlock anyone
+  ---
+  duration_ms: 6.884429
+  type: 'test'
+  ...
+# Subtest: two tabs cannot silently overwrite a newer campaign save
+ok 191 - two tabs cannot silently overwrite a newer campaign save
+  ---
+  duration_ms: 0.307322
+  type: 'test'
+  ...
+# Subtest: audio director resolves all story-state transitions to procedural audio modes
+ok 192 - audio director resolves all story-state transitions to procedural audio modes
+  ---
+  duration_ms: 0.429919
+  type: 'test'
+  ...
+# Subtest: full campaign story progression drives AudioDirector transitions seamlessly
+ok 193 - full campaign story progression drives AudioDirector transitions seamlessly
+  ---
+  duration_ms: 36.933963
+  type: 'test'
+  ...
+# Subtest: roaming simulation is identical at 30 and 120 FPS and clamps to the pass
+ok 194 - roaming simulation is identical at 30 and 120 FPS and clamps to the pass
+  ---
+  duration_ms: 57.360711
+  type: 'test'
+  ...
+# Subtest: roam requires a statted encounter and parks the hero away from rivals
+ok 195 - roam requires a statted encounter and parks the hero away from rivals
+  ---
+  duration_ms: 1.556637
+  type: 'test'
+  ...
+# Subtest: walking into a rival begins that duel; winning returns to the pass
+ok 196 - walking into a rival begins that duel; winning returns to the pass
+  ---
+  duration_ms: 6.161196
+  type: 'test'
+  ...
+# Subtest: tea persists across duels within one encounter
+ok 197 - tea persists across duels within one encounter
+  ---
+  duration_ms: 19.424088
+  type: 'test'
+  ...
+# Subtest: clearing every rival on the pass completes the encounter
+ok 198 - clearing every rival on the pass completes the encounter
+  ---
+  duration_ms: 6.945297
+  type: 'test'
+  ...
+# Subtest: pausing from the pass freezes roaming and returns to the pass
+ok 199 - pausing from the pass freezes roaming and returns to the pass
+  ---
+  duration_ms: 1.273507
+  type: 'test'
+  ...
+# Subtest: removeContacted only removes the contacted rival
+ok 200 - removeContacted only removes the contacted rival
+  ---
+  duration_ms: 1.339389
+  type: 'test'
+  ...
+# Subtest: Quick play rejects missing, duplicate, mismatched and unknown party heroes
+ok 201 - Quick play rejects missing, duplicate, mismatched and unknown party heroes
+  ---
+  duration_ms: 0.808527
+  type: 'test'
+  ...
+# Subtest: party sprites trail the lead and never create contact or join a duel
+ok 202 - party sprites trail the lead and never create contact or join a duel
+  ---
+  duration_ms: 3.015358
+  type: 'test'
+  ...
+# Subtest: roam world exceeds one viewport and camera follows the hero
+ok 203 - roam world exceeds one viewport and camera follows the hero
+  ---
+  duration_ms: 0.824346
+  type: 'test'
+  ...
+# Subtest: hero can walk past the old single-screen courtyard edges
+ok 204 - hero can walk past the old single-screen courtyard edges
+  ---
+  duration_ms: 10.062831
+  type: 'test'
+  ...
+# Subtest: followers ease along a lagged trail without teleporting or stacking
+ok 205 - followers ease along a lagged trail without teleporting or stacking
+  ---
+  duration_ms: 20.867539
+  type: 'test'
+  ...
+# Subtest: followers remain on ground while camera would scroll with the lead
+ok 206 - followers remain on ground while camera would scroll with the lead
+  ---
+  duration_ms: 6.670724
+  type: 'test'
+  ...
+# Subtest: follower facing mirrors lead dx, not chase delta
+ok 207 - follower facing mirrors lead dx, not chase delta
+  ---
+  duration_ms: 6.570296
+  type: 'test'
+  ...
+# Subtest: soft camera deadzone holds when lead fidgets inside
+ok 208 - soft camera deadzone holds when lead fidgets inside
+  ---
+  duration_ms: 0.842994
+  type: 'test'
+  ...
+# Subtest: soft camera lerps toward cameraFocus ideal when outside deadzone
+ok 209 - soft camera lerps toward cameraFocus ideal when outside deadzone
+  ---
+  duration_ms: 0.895918
+  type: 'test'
+  ...
+# Subtest: soft camera clamps to WORLD edges like cameraFocus
+ok 210 - soft camera clamps to WORLD edges like cameraFocus
+  ---
+  duration_ms: 0.480589
+  type: 'test'
+  ...
+# Subtest: smoothCamera uses cameraFocus as the chase target
+ok 211 - smoothCamera uses cameraFocus as the chase target
+  ---
+  duration_ms: 0.248236
+  type: 'test'
+  ...
+# Subtest: world AABBs block wall bodies but leave a traversable corridor
+ok 212 - world AABBs block wall bodies but leave a traversable corridor
+  ---
+  duration_ms: 0.94796
+  type: 'test'
+  ...
+# Subtest: lead stops at walls, slides, and dash and wind cannot cross
+ok 213 - lead stops at walls, slides, and dash and wind cannot cross
+  ---
+  duration_ms: 30.411078
+  type: 'test'
+  ...
+# Subtest: lead and cosmetic followers route through the gap past the barrier
+ok 214 - lead and cosmetic followers route through the gap past the barrier
+  ---
+  duration_ms: 24.611661
+  type: 'test'
+  ...
+# Subtest: hero stays in the first courtyard while spawn markers cover the maze path
+ok 215 - hero stays in the first courtyard while spawn markers cover the maze path
+  ---
+  duration_ms: 2.410777
+  type: 'test'
+  ...
+# Subtest: field homes use spawn markers in roster order, including past the barrier
+ok 216 - field homes use spawn markers in roster order, including past the barrier
+  ---
+  duration_ms: 1.536792
+  type: 'test'
+  ...
+# Subtest: corridor opens into a roamable second pocket past the barrier
+ok 217 - corridor opens into a roamable second pocket past the barrier
+  ---
+  duration_ms: 0.389966
+  type: 'test'
+  ...
+# Subtest: lead paths through corridor into second zone and cannot clip pocket walls
+ok 218 - lead paths through corridor into second zone and cannot clip pocket walls
+  ---
+  duration_ms: 21.242352
+  type: 'test'
+  ...
+# Subtest: second pocket opens into a roamable third spur with spawn marker
+ok 219 - second pocket opens into a roamable third spur with spawn marker
+  ---
+  duration_ms: 0.324907
+  type: 'test'
+  ...
+# Subtest: lead paths from second zone into third spur and stops at end wall
+ok 220 - lead paths from second zone into third spur and stops at end wall
+  ---
+  duration_ms: 22.774412
+  type: 'test'
+  ...
+# Subtest: roam HUD shows three named HP chips and projectile damage only lowers the lead
+ok 221 - roam HUD shows three named HP chips and projectile damage only lowers the lead
+  ---
+  duration_ms: 68.065018
+  type: 'test'
+  ...
+# Subtest: campaign roam renders a single lead chip after a three-chip Quick play HUD
+ok 222 - campaign roam renders a single lead chip after a three-chip Quick play HUD
+  ---
+  duration_ms: 6.316761
+  type: 'test'
+  ...
+# Subtest: at least one rival spawns past the old 1280×720 screen (camera must scroll)
+ok 223 - at least one rival spawns past the old 1280×720 screen (camera must scroll)
+  ---
+  duration_ms: 1.192207
+  type: 'test'
+  ...
+# Subtest: swap lead allowed between encounters reshuffles party HUD and followers
+ok 224 - swap lead allowed between encounters reshuffles party HUD and followers
+  ---
+  duration_ms: 1.485552
+  type: 'test'
+  ...
+# Subtest: swap lead blocked mid-duel and mid-roam contact
+ok 225 - swap lead blocked mid-duel and mid-roam contact
+  ---
+  duration_ms: 0.665931
+  type: 'test'
+  ...
+# Subtest: swap lead after a duel returns to the pass before next contact
+ok 226 - swap lead after a duel returns to the pass before next contact
+  ---
+  duration_ms: 1.443162
+  type: 'test'
+  ...
+# Subtest: post-duel swap cue highlights follower chips then clears on swap
+ok 227 - post-duel swap cue highlights follower chips then clears on swap
+  ---
+  duration_ms: 1.972501
+  type: 'test'
+  ...
+# Subtest: swap cue dismissed by timeout and blocked mid-duel still holds
+ok 228 - swap cue dismissed by timeout and blocked mid-duel still holds
+  ---
+  duration_ms: 2.666316
+  type: 'test'
+  ...
+# Subtest: WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles while moving
+ok 229 - WU-FRAME-09: standing sheet leads pin a still cell; walk still cycles while moving
+  ---
+  duration_ms: 3.754722
+  type: 'test'
+  ...
+# Subtest: the merged route retains the south spur and reaches the distant Warden without wall clipping
+ok 230 - the merged route retains the south spur and reaches the distant Warden without wall clipping
+  ---
+  duration_ms: 109.173877
+  type: 'test'
+  ...
+# Subtest: all playable acts switch to their own existing ground art at a constant scale while scrolling
+ok 231 - all playable acts switch to their own existing ground art at a constant scale while scrolling
+  ---
+  duration_ms: 96.870044
+  type: 'test'
+  ...
+# Subtest: route map follows the hero and remaining enemies without changing encounter state
+ok 232 - route map follows the hero and remaining enemies without changing encounter state
+  ---
+  duration_ms: 0.689384
+  type: 'test'
+  ...
+# Subtest: Zhao Yun uses supplied walking frames while Hu Sanniang retains the original sprite
+ok 233 - Zhao Yun uses supplied walking frames while Hu Sanniang retains the original sprite
+  ---
+  duration_ms: 1.166844
+  type: 'test'
+  ...
+# Subtest: loadSheetManifest returns null when sheet row is missing (legacy still)
+ok 234 - loadSheetManifest returns null when sheet row is missing (legacy still)
+  ---
+  duration_ms: 1.4857
+  type: 'test'
+  ...
+# Subtest: wired FRAME-00 sheets resolve from the live manifest
+ok 235 - wired FRAME-00 sheets resolve from the live manifest
+  ---
+  duration_ms: 1.187034
+  type: 'test'
+  ...
+# Subtest: loadSheetManifest finds FRAME-00 sibling row by ${heroId}-sheet
+ok 236 - loadSheetManifest finds FRAME-00 sibling row by ${heroId}-sheet
+  ---
+  duration_ms: 0.253095
+  type: 'test'
+  ...
+# Subtest: loadSheetManifest rejects incomplete sheet rows
+ok 237 - loadSheetManifest rejects incomplete sheet rows
+  ---
+  duration_ms: 0.183542
+  type: 'test'
+  ...
+# Subtest: sampleAnim walks the loop and clamps non-loop attack
+ok 238 - sampleAnim walks the loop and clamps non-loop attack
+  ---
+  duration_ms: 0.487763
+  type: 'test'
+  ...
+# Subtest: sampleAnim no-ops on missing anim / empty frames
+ok 239 - sampleAnim no-ops on missing anim / empty frames
+  ---
+  duration_ms: 0.173785
+  type: 'test'
+  ...
+# Subtest: sheetGrid derives cols×rows from anim frames
+ok 240 - sheetGrid derives cols×rows from anim frames
+  ---
+  duration_ms: 0.273252
+  type: 'test'
+  ...
+# Subtest: applySheetFrame paints background crop; clearSheetFrame restores still
+ok 241 - applySheetFrame paints background crop; clearSheetFrame restores still
+  ---
+  duration_ms: 0.77539
+  type: 'test'
+  ...
+# Subtest: drawFrame canvas helper blits one cell (optional FRAME-02 surface)
+ok 242 - drawFrame canvas helper blits one cell (optional FRAME-02 surface)
+  ---
+  duration_ms: 0.55883
+  type: 'test'
+  ...
+# Subtest: loadSheet skips missing or incomplete rows without loading
+ok 243 - loadSheet skips missing or incomplete rows without loading
+  ---
+  duration_ms: 0.645936
+  type: 'test'
+  ...
+# Subtest: loadSheet loads the PNG by extensionless sibling id
+ok 244 - loadSheet loads the PNG by extensionless sibling id
+  ---
+  duration_ms: 0.350664
+  type: 'test'
+  ...
+# Subtest: loadSheet returns null on rejected, thrown or empty image loads
+ok 245 - loadSheet returns null on rejected, thrown or empty image loads
+  ---
+  duration_ms: 0.384873
+  type: 'test'
+  ...
+# Subtest: drawAnimFrame samples walk time and wraps with a destination
+ok 246 - drawAnimFrame samples walk time and wraps with a destination
+  ---
+  duration_ms: 0.263462
+  type: 'test'
+  ...
+# Subtest: drawAnimFrame samples attack objects and clamps at the final frame
+ok 247 - drawAnimFrame samples attack objects and clamps at the final frame
+  ---
+  duration_ms: 0.17906
+  type: 'test'
+  ...
+# Subtest: drawAnimFrame no-ops on missing animation, image or sheet
+ok 248 - drawAnimFrame no-ops on missing animation, image or sheet
+  ---
+  duration_ms: 0.151
+  type: 'test'
+  ...
+# Subtest: reviewed walk-only atlas cycles four cells while preserving the original standing sprite
+ok 249 - reviewed walk-only atlas cycles four cells while preserving the original standing sprite
+  ---
+  duration_ms: 40.110289
+  type: 'test'
+  ...
+# Subtest: supplied Zhao Yun walking PNGs cycle whole images and restore the original standing sprite
+ok 250 - supplied Zhao Yun walking PNGs cycle whole images and restore the original standing sprite
+  ---
+  duration_ms: 0.732278
+  type: 'test'
+  ...
+# Subtest: four-act Story keeps its three heroes across milestones, checkpoints and reloads
+ok 251 - four-act Story keeps its three heroes across milestones, checkpoints and reloads
+  ---
+  duration_ms: 96.385006
+  type: 'test'
+  ...
+# Subtest: legacy unlocked heroes never become Story protagonists and records remain intact
+ok 252 - legacy unlocked heroes never become Story protagonists and records remain intact
+  ---
+  duration_ms: 0.896585
+  type: 'test'
+  ...
+# Subtest: Acts II and III use their own illustrated enemies, translated story and long procedural themes
+ok 253 - Acts II and III use their own illustrated enemies, translated story and long procedural themes
+  ---
+  duration_ms: 1.49249
+  type: 'test'
+  ...
+# Subtest: mountain wind stays on the ground and a telegraphed pillar respects dodge invulnerability
+ok 254 - mountain wind stays on the ground and a telegraphed pillar respects dodge invulnerability
+  ---
+  duration_ms: 2.137784
+  type: 'test'
+  ...
+# Subtest: Rending Slash bleeds the hero for two ticks that ignore guard
+ok 255 - Rending Slash bleeds the hero for two ticks that ignore guard
+  ---
+  duration_ms: 8.656931
+  type: 'test'
+  ...
+# Subtest: Envenomed Dart poisons for three ticks and tea clears it
+ok 256 - Envenomed Dart poisons for three ticks and tea clears it
+  ---
+  duration_ms: 1.412565
+  type: 'test'
+  ...
+# Subtest: Qi Siphon drains Flow on top of its damage
+ok 257 - Qi Siphon drains Flow on top of its damage
+  ---
+  duration_ms: 1.056968
+  type: 'test'
+  ...
+# Subtest: Pommel Smash stuns the hero: the next action is lost and the rival hits freely
+ok 258 - Pommel Smash stuns the hero: the next action is lost and the rival hits freely
+  ---
+  duration_ms: 1.310087
+  type: 'test'
+  ...
+# Subtest: Ashen Resolve mends the rival and washes away hero-inflicted statuses
+ok 259 - Ashen Resolve mends the rival and washes away hero-inflicted statuses
+  ---
+  duration_ms: 1.984045
+  type: 'test'
+  ...
+# Subtest: Twin Strike lands two hits; guard blunts each
+ok 260 - Twin Strike lands two hits; guard blunts each
+  ---
+  duration_ms: 1.06378
+  type: 'test'
+  ...
+# Subtest: status ticks can finish a wounded rival
+ok 261 - status ticks can finish a wounded rival
+  ---
+  duration_ms: 1.291918
+  type: 'test'
+  ...
+# Subtest: Venom Vial poisons the rival through techniques
+ok 262 - Venom Vial poisons the rival through techniques
+  ---
+  duration_ms: 1.061679
+  type: 'test'
+  ...
+# Subtest: Rending Fang opens a bleed on every fourth strike
+ok 263 - Rending Fang opens a bleed on every fourth strike
+  ---
+  duration_ms: 1.513974
+  type: 'test'
+  ...
+# Subtest: every hero still clears quick play against the wider rival pool
+ok 264 - every hero still clears quick play against the wider rival pool
+  ---
+  duration_ms: 77.209505
+  type: 'test'
+  ...
+# Subtest: every non-protagonist hero appears as an illustrated named Story rival
+ok 265 - every non-protagonist hero appears as an illustrated named Story rival
+  ---
+  duration_ms: 2.183658
+  type: 'test'
+  ...
+# Subtest: exploration and duel share the Story roster while Quick Play keeps its encounters
+ok 266 - exploration and duel share the Story roster while Quick Play keeps its encounters
+  ---
+  duration_ms: 13.004133
+  type: 'test'
+  ...
+# Subtest: zhao-yun can clear all four Story acts with earned cultivation
+ok 267 - zhao-yun can clear all four Story acts with earned cultivation
+  ---
+  duration_ms: 74.839247
+  type: 'test'
+  ...
+# Subtest: lu-zhishen can clear all four Story acts with earned cultivation
+ok 268 - lu-zhishen can clear all four Story acts with earned cultivation
+  ---
+  duration_ms: 36.047624
+  type: 'test'
+  ...
+# Subtest: hu-sanniang can clear all four Story acts with earned cultivation
+ok 269 - hu-sanniang can clear all four Story acts with earned cultivation
+  ---
+  duration_ms: 49.480388
+  type: 'test'
+  ...
+# Subtest: old unlocks and recruits cannot change Story roles or resume a rival checkpoint
+ok 270 - old unlocks and recruits cannot change Story roles or resume a rival checkpoint
+  ---
+  duration_ms: 1.595962
+  type: 'test'
+  ...
+# Subtest: named legends anchor their areas: tougher than the grunts, special due sooner
+ok 271 - named legends anchor their areas: tougher than the grunts, special due sooner
+  ---
+  duration_ms: 2.342801
+  type: 'test'
+  ...
+# Subtest: hidden novel heroes stay off the selectable roster until the flag flips
+ok 272 - hidden novel heroes stay off the selectable roster until the flag flips
+  ---
+  duration_ms: 1.212054
+  type: 'test'
+  ...
+# Subtest: trailer fills exactly ten seconds and switches scenes at each cut
+ok 273 - trailer fills exactly ten seconds and switches scenes at each cut
+  ---
+  duration_ms: 1.771544
+  type: 'test'
+  ...
+# Subtest: both narration tracks have real PCM audio and fit their non-overlapping cue windows
+ok 274 - both narration tracks have real PCM audio and fit their non-overlapping cue windows
+  ---
+  duration_ms: 20.076094
+  type: 'test'
+  ...
+# Subtest: editorial cuts cover the film and bring a face into view at each narration entrance
+ok 275 - editorial cuts cover the film and bring a face into view at each narration entrance
+  ---
+  duration_ms: 24.687465
+  type: 'test'
+  ...
+# Subtest: contact poses hold at the shared sound cue and replay samples the same motion
+ok 276 - contact poses hold at the shared sound cue and replay samples the same motion
+  ---
+  duration_ms: 2.12075
+  type: 'test'
+  ...
+# Subtest: reduced motion retains every scene and subtitle while disabling all camera/impact effects
+ok 277 - reduced motion retains every scene and subtitle while disabling all camera/impact effects
+  ---
+  duration_ms: 7.107012
+  type: 'test'
+  ...
+# Subtest: fresh menu is unobstructed and Quick play opens the pass, not the duel table
+ok 278 - fresh menu is unobstructed and Quick play opens the pass, not the duel table
+  ---
+  duration_ms: 59.939011
+  type: 'test'
+  ...
+# Subtest: Quick play can launch Acts II and III without changing campaign progress
+ok 279 - Quick play can launch Acts II and III without changing campaign progress
+  ---
+  duration_ms: 18.490019
+  type: 'test'
+  ...
+# Subtest: campaign dialogue buttons work against actual HTML IDs and reach the pass and the duel
+ok 280 - campaign dialogue buttons work against actual HTML IDs and reach the pass and the duel
+  ---
+  duration_ms: 30.763545
+  type: 'test'
+  ...
+# Subtest: pause, resume, and return to roster restore visibility and interaction
+ok 281 - pause, resume, and return to roster restore visibility and interaction
+  ---
+  duration_ms: 7.624351
+  type: 'test'
+  ...
+# Subtest: bonus heroes only appear in Quick play and switching back selects a campaign hero
+ok 282 - bonus heroes only appear in Quick play and switching back selects a campaign hero
+  ---
+  duration_ms: 4.65544
+  type: 'test'
+  ...
+# Subtest: language selector updates biographies and current story without advancing it
+ok 283 - language selector updates biographies and current story without advancing it
+  ---
+  duration_ms: 10.251751
+  type: 'test'
+  ...
+# Subtest: Quick play requires exactly three distinct heroes before start
+ok 284 - Quick play requires exactly three distinct heroes before start
+  ---
+  duration_ms: 6.803743
+  type: 'test'
+  ...
+# Subtest: Quick play restart preserves the ordered party
+ok 285 - Quick play restart preserves the ordered party
+  ---
+  duration_ms: 8.697158
+  type: 'test'
+  ...
+# Subtest: last Quick Play party of three persists and preselects on the next Quick Play
+ok 286 - last Quick Play party of three persists and preselects on the next Quick Play
+  ---
+  duration_ms: 13.155568
+  type: 'test'
+  ...
+# Subtest: Quick play shows lead badge and follower 1/2 order chips
+ok 287 - Quick play shows lead badge and follower 1/2 order chips
+  ---
+  duration_ms: 5.263275
+  type: 'test'
+  ...
+# Subtest: Quick play tap-to-set-lead promotes a follower before start
+ok 288 - Quick play tap-to-set-lead promotes a follower before start
+  ---
+  duration_ms: 9.816178
+  type: 'test'
+  ...
+1..288
+# tests 288
+# suites 0
+# pass 288
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8776.243665
