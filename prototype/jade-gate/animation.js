@@ -109,7 +109,7 @@ export const EPISODES = [
           { t: 4, kind: "wide" },
           { t: 22, kind: "push", focus: "guan-yu" },
           { t: 40, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
-          { t: 58, kind: "duel", focus: "zhao-yun", rival: "guan-yu", pose: "strike", at: 64 },
+          { t: 58, kind: "fight", focus: "zhao-yun", rival: "guan-yu" },
           { t: 72, kind: "pan", from: "right" },
         ],
       },
@@ -127,9 +127,9 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "closeup", focus: "warden", pose: "focus", crop: "bust" },
           { t: 26, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
-          { t: 44, kind: "duel", focus: "zhao-yun", rival: "warden", pose: "strike", at: 48 },
+          { t: 44, kind: "fight", focus: "zhao-yun", rival: "warden", winner: "rival", rivalPose: "strike" },
           { t: 66, kind: "closeup", focus: "lu-zhishen", pose: "windup", crop: "face" },
-          { t: 82, kind: "duel", focus: "hu-sanniang", rival: "warden", pose: "special", at: 86 },
+          { t: 80, kind: "fight", focus: "hu-sanniang", rival: "warden", pose: "special" },
         ],
       },
       {
@@ -177,7 +177,7 @@ export const EPISODES = [
           { t: 4, kind: "closeup", focus: "night-heron", pose: "focus", crop: "face" },
           { t: 26, kind: "pan", from: "right" },
           { t: 46, kind: "closeup", focus: "lu-zhishen", pose: "windup", crop: "bust" },
-          { t: 64, kind: "duel", focus: "hu-sanniang", rival: "night-heron", pose: "special", at: 68 },
+          { t: 63, kind: "fight", focus: "hu-sanniang", rival: "night-heron", pose: "special" },
           { t: 78, kind: "push", focus: "night-heron" },
         ],
       },
@@ -220,8 +220,8 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "closeup", focus: "lu-bu-rival", pose: "focus", crop: "bust" },
-          { t: 26, kind: "duel", focus: "zhao-yun", rival: "lu-bu-rival", pose: "strike", at: 32 },
-          { t: 46, kind: "duel", focus: "hu-sanniang", rival: "lu-bu-rival", pose: "strike", at: 52 },
+          { t: 26, kind: "fight", focus: "zhao-yun", rival: "lu-bu-rival", winner: "rival", rivalPose: "strike" },
+          { t: 46, kind: "fight", focus: "hu-sanniang", rival: "lu-bu-rival" },
           { t: 66, kind: "closeup", focus: "zhao-yun", pose: "special", crop: "bust" },
           { t: 82, kind: "closeup", focus: "lu-bu-rival", pose: "windup", crop: "face" },
         ],
@@ -253,7 +253,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "right" },
           { t: 24, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
-          { t: 44, kind: "duel", focus: "zhao-yun", rival: "jade-sentinel", pose: "strike", at: 50 },
+          { t: 44, kind: "fight", focus: "zhao-yun", rival: "jade-sentinel" },
           { t: 64, kind: "push", focus: "meridian-acolyte" },
         ],
       },
@@ -291,10 +291,10 @@ export const EPISODES = [
           { t: 82, who: "", text: "王座，空了。" },
         ],
         shots: [
-          { t: 4, kind: "duel", focus: "zhao-yun", rival: "sovereign", pose: "strike", at: 8 },
+          { t: 4, kind: "fight", focus: "zhao-yun", rival: "sovereign", winner: "rival", rivalPose: "strike" },
           { t: 24, kind: "closeup", focus: "sovereign", pose: "focus", crop: "bust" },
           { t: 44, kind: "closeup", focus: "sovereign", pose: "windup", crop: "face" },
-          { t: 62, kind: "duel", focus: "zhao-yun", rival: "sovereign", pose: "special", at: 68 },
+          { t: 62, kind: "fight", focus: "zhao-yun", rival: "sovereign", pose: "special" },
           { t: 80, kind: "push", focus: "zhao-yun" },
         ],
       },
@@ -424,7 +424,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "right" },
           { t: 46, kind: "closeup", focus: "lin-daiyu", pose: "focus", crop: "bust" },
-          { t: 64, kind: "duel", focus: "zhao-yun", rival: "lin-daiyu", pose: "strike", at: 68 },
+          { t: 63, kind: "fight", focus: "zhao-yun", rival: "lin-daiyu" },
           { t: 78, kind: "wide" },
         ],
       },
@@ -445,7 +445,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "left" },
           { t: 28, kind: "closeup", focus: "hu-sanniang", pose: "focus", crop: "bust" },
-          { t: 48, kind: "duel", focus: "hu-sanniang", rival: "wu-yong", pose: "strike", at: 54 },
+          { t: 47, kind: "fight", focus: "hu-sanniang", rival: "wu-yong" },
           { t: 66, kind: "closeup", focus: "wu-yong", pose: "windup", crop: "bust" },
         ],
       },
@@ -520,7 +520,7 @@ export const EPISODES = [
           { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "bust" },
           { t: 34, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "face" },
           { t: 54, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
-          { t: 72, kind: "duel", focus: "zhao-yun", rival: "zhao-min", pose: "windup", at: 76 },
+          { t: 74, kind: "fight", focus: "zhao-yun", rival: "zhao-min", rivalPose: "strike", winner: "rival" },
         ],
       },
       {
@@ -540,9 +540,9 @@ export const EPISODES = [
           { t: 84, who: "", text: "雲，開了。" },
         ],
         shots: [
-          { t: 4, kind: "duel", focus: "zhao-min", rival: "zhao-yun", pose: "strike", at: 10 },
+          { t: 4, kind: "fight", focus: "zhao-min", rival: "zhao-yun", winner: "rival", rivalPose: "strike" },
           { t: 26, kind: "wide" },
-          { t: 46, kind: "duel", focus: "zhao-yun", rival: "zhao-min", pose: "special", at: 52 },
+          { t: 46, kind: "fight", focus: "zhao-yun", rival: "zhao-min", pose: "special" },
           { t: 64, kind: "closeup", focus: "zhao-min", pose: "windup", crop: "face" },
         ],
       },
@@ -566,6 +566,23 @@ export const EPISODES = [
     ],
   },
 ];
+
+/** 決戰七拍（研究自 chambara／武俠「一刀兩斷」與 sakuga 衝擊格文法）：
+ *  對峙 stand-off（落花觸發）→ 蓄勢 wind-up → 突進 charge →
+ *  交鋒 impact（衝擊格 + 定格 + 震屏）→ 擦身 pass（換位）→
+ *  靜止 hold（背對背定格）→ 分勝 aftermath（傷口浮現、敗者倒下）。 */
+const FIGHT_PHASES = [
+  ["standoff", 3.0], ["windup", 2.0], ["charge", 0.7], ["impact", 0.4],
+  ["pass", 1.4], ["hold", 2.4], ["aftermath", 2.8],
+];
+function fightPhase(elapsed) {
+  let start = 0;
+  for (const [name, length] of FIGHT_PHASES) {
+    if (elapsed < start + length) return { name, index: FIGHT_PHASES.findIndex(([n]) => n === name) };
+    start += length;
+  }
+  return { name: "aftermath", index: FIGHT_PHASES.length - 1 };
+}
 
 /* ---------------- 分鏡推導與播放器 ---------------- */
 const $ = (id) => document.getElementById(id);
@@ -661,7 +678,7 @@ function render() {
     const closeup = stage.querySelector(".closeup");
     const duel = stage.querySelector(".duel-stage");
     closeup.hidden = shot.kind !== "closeup";
-    duel.hidden = shot.kind !== "duel";
+    duel.hidden = shot.kind !== "duel" && shot.kind !== "fight";
     if (shot.kind === "closeup" && shot.focus) {
       const img = closeup.querySelector("img");
       const portrait = portraitSrc(shot.focus);
@@ -676,12 +693,14 @@ function render() {
       closeup.querySelector(".plate").textContent = nameOf(shot.focus);
       restartAnimation(closeup, "cut");
     }
-    if (shot.kind === "duel") {
-      applyPoseArt(duel.querySelector("img.hero"), shot.focus, shot.pose);
-      applyPoseArt(duel.querySelector("img.rival"), shot.rival, shot.pose === "special" ? "windup" : "focus");
+    if (shot.kind === "duel" || shot.kind === "fight") {
+      applyPoseArt(duel.querySelector("img.hero"), shot.focus, shot.focusPose || "focus");
+      applyPoseArt(duel.querySelector("img.rival"), shot.rival, shot.rivalPose || "focus");
       duel.querySelector(".plate.hero").textContent = nameOf(shot.focus);
       duel.querySelector(".plate.rival").textContent = nameOf(shot.rival);
-      restartAnimation(duel.querySelector(".fx"), shot.pose === "special" ? "flash" : "slash");
+      duel.dataset.winner = shot.winner === "rival" ? "rival" : "hero";
+      duel.dataset.phase = shot.kind === "fight" ? "standoff" : "clash";
+      duel.dataset.shotT = String(shot.t);
       restartAnimation(duel, "cut");
     }
     const camera = stage.querySelector(".camera");
@@ -690,6 +709,31 @@ function render() {
         : shot.kind === "push" ? "push"
         : shot.kind === "wide" ? "pan-" + scene.pan.replace("-slow", "")
         : scene.pan;
+    }
+  }
+
+  // 決戰推進：按拍切 phase（蓄勢換招式、交鋒衝擊格、擦身換位、分勝倒下）。
+  const duelStage = stage.querySelector(".duel-stage");
+  if (!duelStage.hidden && shot.kind === "fight") {
+    const elapsed = local - shot.t;
+    const { name } = fightPhase(elapsed);
+    if (duelStage.dataset.phase !== name) {
+      duelStage.dataset.phase = name;
+      const heroArt = duelStage.querySelector("img.hero");
+      const rivalArt = duelStage.querySelector("img.rival");
+      if (name === "windup") {
+        applyPoseArt(heroArt, shot.focus, "windup");
+        applyPoseArt(rivalArt, shot.rival, "windup");
+      }
+      if (name === "impact" || name === "pass" || name === "hold" || name === "aftermath") {
+        applyPoseArt(heroArt, shot.focus, shot.pose || "strike");
+        applyPoseArt(rivalArt, shot.rival, shot.rivalPose || "windup");
+        if (name === "impact") {
+          restartAnimation(duelStage.querySelector(".impact-frame"), "boom");
+          restartAnimation(duelStage.querySelector(".fx"), "slash");
+          restartAnimation(duelStage, "quake");
+        }
+      }
     }
   }
 
@@ -760,7 +804,8 @@ function loadEpisode(next) {
   // 完整腳本：章節 + 每拍（連分鏡提示），方便直接讀完整個故仔。
   const shotLine = (shot) =>
     shot.kind === "closeup" ? `〔大頭 · ${nameOf(shot.focus)}〕`
-    : shot.kind === "duel" ? `〔對峙 · ${nameOf(shot.focus)} 對 ${nameOf(shot.rival)}${shot.pose === "special" ? " · 絕招" : shot.pose === "strike" ? " · 出招" : ""}〕`
+    : shot.kind === "fight" ? `〔決戰七拍 · ${nameOf(shot.focus)} 對 ${nameOf(shot.rival)}${shot.winner === "rival" ? " · 先失一招" : ""}〕`
+    : shot.kind === "duel" ? `〔對峙 · ${nameOf(shot.focus)} 對 ${nameOf(shot.rival)}〕`
     : shot.kind === "push" ? `〔推近 · ${shot.focus ? nameOf(shot.focus) : "主體"}〕`
     : shot.kind === "pan" ? `〔橫搖 · ${shot.from === "left" ? "左→右" : "右→左"}〕`
     : "〔全景〕";
