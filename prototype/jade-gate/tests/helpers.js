@@ -3,6 +3,9 @@ import { GameSession } from "../src/domain/session.js";
 import { createCardCombat } from "../src/domain/card-combat.js";
 import { techniqueCost } from "../src/content/curios.js";
 import { DUEL_ENEMIES } from "../src/content/duels.js";
+import { setQuickplayHorde } from "../src/content/duels.js";
+// Classic scale: these suites drive the small gauntlet (horde tests opt up).
+setQuickplayHorde(1);
 export function memoryStorage(initial = {}) {
   const data = new Map(Object.entries(initial));
   return {

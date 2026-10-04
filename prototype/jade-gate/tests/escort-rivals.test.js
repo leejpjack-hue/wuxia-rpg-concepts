@@ -7,6 +7,7 @@ import {
   escortSquadFor,
   isEscortKind,
   rosterForEncounter,
+  QUICKPLAY_HORDE,
 } from "../src/content/duels.js";
 import { STORY_ROSTERS } from "../src/content/story-rivals.js";
 import { createRoam } from "../src/domain/roam.js";
@@ -61,7 +62,11 @@ test("escorts join only campaign passes that field a named legend", () => {
     } else {
       assert.deepEqual(withEscorts, roster, `${id} has no named legend, no escorts`);
     }
-    assert.deepEqual(rosterForEncounter(id, "quickplay"), DUEL_ROSTERS[id] || roster, id);
+    // Quick Play keeps its own encounters at horde scale — still no escorts.
+    const quickplay = rosterForEncounter(id, "quickplay");
+    const base = DUEL_ROSTERS[id] || roster;
+    assert.equal(quickplay.length, base.length * QUICKPLAY_HORDE, `${id} fields the horde`);
+    assert.deepEqual([...new Set(quickplay)], [...new Set(base)], `${id} horde repeats only its own kinds`);
   }
   for (const kind of ESCORT_KINDS)
     assert(!Object.values(DUEL_ROSTERS).some((roster) => roster.includes(kind)));

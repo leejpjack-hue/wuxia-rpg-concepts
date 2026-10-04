@@ -106,8 +106,11 @@ test("hidden novel heroes stay off the selectable roster until the flag flips", 
   for (const hero of hidden) {
     assert.equal(game.profile.unlockedHeroes.includes(hero.id), false);
     assert.equal(isStoryHero(hero.id), false);
+    // The hidden legends play in Quick Play now; Campaign keeps its gate.
     assert.throws(() => game.start(hero.id, "campaign"), /hidden until unlocked/);
-    assert.throws(() => game.start(hero.id, "quickplay", "jade-gate", quickParty(hero.id)), /hidden until unlocked/);
+    const run = session();
+    run.start(hero.id, "quickplay", "jade-gate", quickParty(hero.id));
+    assert.equal(run.g.p.id, hero.id);
   }
   const shown = { ...hidden[0], hidden: false };
   assert.equal(shown.hidden, false);

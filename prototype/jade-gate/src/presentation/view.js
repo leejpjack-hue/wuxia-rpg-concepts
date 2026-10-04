@@ -27,7 +27,9 @@ export class GameView {
     this.ready = false;
     this.noticeTime = 0;
     this.onGesture = onGesture;
-    const roster = HEROES.filter((hero) => !hero.hidden && (!hero.recruitedOnly || session.profile.recruits?.includes(hero.id)));
+    // Everyone cards up for Quick Play (hidden legends included); Campaign
+    // hides the hidden ones per the story gate.
+    const roster = HEROES.filter((hero) => !hero.recruitedOnly || session.profile.recruits?.includes(hero.id));
     this.$("heroes").innerHTML = roster.map(
       (hero, index) =>
         `<button class="hero-card" data-hero="${hero.id}" aria-pressed="false" aria-label="Choose ${hero.name}"><img src="${hero.keyArt || `assets/${hero.id}.png`}" alt="${hero.name} character art" style="object-position: ${hero.artFocus || "50% 18%"}"><span class="card-number">${String(index + 1).padStart(2, "0")} / ${hero.cn}</span><span class="card-check">✓</span><span class="lead-chip" hidden>Lead</span><span class="follower-chip" hidden></span><div class="card-copy"><small>${hero.title}</small><h2>${hero.name}</h2><p>${hero.weapon}</p><div class="stats">${hero.style.toUpperCase()}</div><span class="lock-note"></span><p class="card-biography" hidden></p></div></button>`,
@@ -184,7 +186,7 @@ export class GameView {
           this.runMode === "campaign" &&
           !campaignHeroUnlocked(profile, button.dataset.hero);
       const cardHero = HEROES.find(h => h.id === button.dataset.hero);
-      button.hidden = this.runMode === "campaign" && locked;
+      button.hidden = this.runMode === "campaign" && (locked || cardHero.hidden);
       button.setAttribute("aria-label", this.t(`Choose ${cardHero.name}`));
       button.querySelector("img").alt = this.t(`${cardHero.name} character art`);
       for (const [selector, value] of [[".card-copy small", cardHero.title], ["h2", cardHero.name], [".card-copy p", cardHero.weapon], [".stats", cardHero.style]])
