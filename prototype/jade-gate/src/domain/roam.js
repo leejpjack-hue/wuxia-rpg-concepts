@@ -95,7 +95,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       byArea.get(enemy.area).push(enemy);
     }
     for (const group of byArea.values()) {
-      const ward = group.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
+      const ward = group.filter(enemy => isNamedRivalKind(enemy.kind) || DUEL_ENEMIES[enemy.kind]?.boss).at(-1);
       if (ward) ringEscorts(ward, group.filter(enemy => isEscortKind(enemy.kind)));
     }
     // The maze has the last word on deployment: any rival the hedges swallowed
@@ -113,7 +113,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       }
     }
   } else {
-    const ward = field.filter(enemy => isNamedRivalKind(enemy.kind)).at(-1);
+    const ward = field.filter(enemy => isNamedRivalKind(enemy.kind) || DUEL_ENEMIES[enemy.kind]?.boss).at(-1);
     if (ward) ringEscorts(ward, field.filter(enemy => isEscortKind(enemy.kind)));
   }
   const spawn = maze ? maze.start : { x: 640, y: 500 };
@@ -409,11 +409,16 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       const [removed]=field.splice(roam.contact,1); roam.contact=-1; roam.defeated++;
       return removed;
     },
-    /** Open field: a fallen leader's area scatters — the survivors flee without duels. */
-    scatterArea(area) {
+    /** Open field: a fallen leader's area scatters — the survivors flee without
+     *  duels. `keepNamed` holds named legends and bosses in place: their
+     *  retinue routs, but a legend fights to the last. */
+    scatterArea(area, keepNamed = false) {
       const removed=[];
-      for(let i=field.length-1;i>=0;i--)
-        if(field[i].area===area) removed.push(field.splice(i,1)[0]);
+      for(let i=field.length-1;i>=0;i--) {
+        if(field[i].area!==area) continue;
+        if(keepNamed && (isNamedRivalKind(field[i].kind) || DUEL_ENEMIES[field[i].kind]?.boss)) continue;
+        removed.push(field.splice(i,1)[0]);
+      }
       if(removed.length){
         roam.defeated+=removed.length;
         const gone=new Set(removed.map(enemy=>enemy.id));

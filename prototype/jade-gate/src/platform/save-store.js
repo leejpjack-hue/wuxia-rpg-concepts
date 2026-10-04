@@ -115,11 +115,11 @@ export function sanitizeCheckpoint(raw) {
     curios: Array.isArray(raw.curios)
       ? [...new Set(raw.curios)].filter((id) => CURIO_IDS.includes(id)).slice(0, 8)
       : [],
-    // Open-field campaign progress: the areas already scattered this act.
+    // Open-field campaign progress: the areas and camps already scattered.
     openField: Array.isArray(raw.openField)
       ? [...new Set(raw.openField)]
-          .filter((id) => act.encounters.some((encounter) => encounter.id === id))
-          .slice(0, 12)
+          .filter((id) => act.encounters.some((encounter) => encounter.id === String(id).split("#")[0]))
+          .slice(0, 24)
       : [],
     map:
       act.map &&

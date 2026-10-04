@@ -67,9 +67,11 @@ test("a cleared pass grants a roadside breather to the wounded hero", () => {
   game.g.p.flow = 100;
   const flow = game.g.p.flow;
   game.combat.act("technique");
-  assert.equal(game.mode, "upgrade");
-  assert.equal(game.g.p.hp, 87); // +12 rival-defeat restore, +25 breather with the pass
+  // The partner legend still holds the camp — the rout pays out but settles nothing.
+  assert.equal(game.mode, "exploring");
+  assert.equal(game.g.p.hp, 87); // +12 rival-defeat restore, +25 breather with the rout
   assert.equal(game.g.p.flow, flow - game.g.p.cost + 8 + 10); // technique cost, +8 defeat, +10 breather
+  assert.equal(game.g.duel.tea >= 1, true);
 });
 
 test("roadside content of the old branching map is gone with its nodes", () => {
