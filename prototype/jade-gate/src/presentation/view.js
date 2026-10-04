@@ -9,12 +9,17 @@ import { curioById, EVENTS, CURIOS as CURIOS_LIST } from "../content/curios.js";
 import { JUDGEMENT, SHOP_STOCK, shopItemById, signatureById } from "../content/expansion.js";
 import { DUEL_ENEMIES } from "../content/duels.js";
 import { signatureArtFor, expansionArtAvailable } from "../content/expansion-art.js";
+import { createSpeaker, portraitFor } from "../platform/speech.js";
 export class GameView {
   constructor(session, document, onGesture = () => {}) {
     this.session = session;
     this.t = text => translate(text, session.profile.settings.language);
     this.document = document;
     this.$ = (id) => document.getElementById(id);
+    // The JavaScript speaker: dialogue lines read aloud, female-first, one
+    // stable voice per speaker.
+    this.speech = createSpeaker({ synthesis: document.defaultView?.speechSynthesis || null });
+    this.spokenKey = "";
     this.heroId = HEROES[0].id;
     this.partyIds = [];
     this.runMode = "campaign";
@@ -151,6 +156,8 @@ export class GameView {
   settings() {
     const s = this.session.profile.settings;
     this.language = s.language;
+    // Sound off mid-scene stops the spoken line; it re-reads on the next line.
+    if (!s.sound) this.speech.cancel();
     this.$("language").value = s.language;
     localizeDocument(this.document, s.language);
     this.document.body.classList.toggle("reduced-motion", s.reducedMotion);
@@ -287,6 +294,34 @@ export class GameView {
     this.$("modal-copy").textContent = this.t(copy);
     this.$("choices").innerHTML = "";
     this.$("modal-actions").innerHTML = "";
+    const portrait = this.$("dialogue-portrait");
+    if (portrait) portrait.hidden = true;
+  }
+  /** Dialogue scene dressing: the speaker's card and their spoken line. */
+  speakScene(line) {
+    const session = this.session;
+    const portrait = this.$("dialogue-portrait");
+    const artId = portraitFor(line.speaker, {
+      heroes: HEROES,
+      rivals: DUEL_ENEMIES,
+      fallback: session.hero?.id || HEROES[0].id,
+    });
+    if (portrait) {
+      const img = portrait.querySelector("img");
+      const caption = portrait.querySelector("figcaption");
+      if (img && caption) {
+        img.src = `assets/${artId}.png`;
+        img.alt = this.t(line.speaker);
+        caption.textContent = this.t(line.speaker);
+        portrait.hidden = false;
+      } else portrait.hidden = true;
+    }
+    // Read the line as shown (translated), once per line and language.
+    const settings = session.profile.settings;
+    const key = `${session.dialogue?.key}:${session.dialogue?.index}:${settings.language}`;
+    if (!settings.sound || key === this.spokenKey) return;
+    this.spokenKey = key;
+    this.speech.speak(this.t(line.text), line.speaker, settings.language);
   }
   button(
     text,
@@ -496,6 +531,7 @@ export class GameView {
       if (!wasMenu && this.ready && !this.codexOpen) this.$("start").focus();
       return;
     }
+    this.speech.cancel();
     if (mode === "playing") {
       this.$("play").focus({ preventScroll: true });
       this.$("play").scrollIntoView({ block: "start" });
@@ -509,6 +545,7 @@ export class GameView {
         line.speaker,
         line.text,
       );
+      this.speakScene(line);
       this.button(
         d.index === d.lines.length - 1
           ? (d.key === "warden-fall" || d.key === "heron-fall" || d.key?.endsWith("-fall"))
