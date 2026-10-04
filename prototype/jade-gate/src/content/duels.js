@@ -55,8 +55,9 @@ export function escortSquadFor(encounterId, size = 3) {
   return Array.from({ length: size }, (_, i) => ESCORT_KINDS[(hash + i) % ESCORT_KINDS.length]);
 }
 
+// Named legends and act bosses both keep a retinue on campaign passes.
 const rosterWithEscorts = (roster, runMode, encounterId) =>
-  runMode === "campaign" && roster?.some(isNamedRivalKind)
+  runMode === "campaign" && roster?.some((kind) => isNamedRivalKind(kind) || DUEL_ENEMIES[kind]?.boss)
     ? [...roster, ...escortSquadFor(encounterId)]
     : roster;
 

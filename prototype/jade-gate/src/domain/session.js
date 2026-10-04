@@ -16,7 +16,7 @@ import { createCombat } from "./combat.js";
 import { createRoam, isRanged } from "./roam.js";
 import { generateMaze, hashSeed } from "./maze.js";
 import { seededRandom } from "../engine/clock.js";
-import { DUEL_ENEMIES, isNamedRivalKind, isEscortKind, rosterForEncounter } from "../content/duels.js";
+import { DUEL_ENEMIES, isNamedRivalKind, isEscortKind, rosterForEncounter, escortSquadFor } from "../content/duels.js";
 import {
   applyCultivation,
   awardResult,
@@ -265,38 +265,86 @@ export class GameSession {
    * Ranks are tripled with act grunts, and wayside shrines dot the dead ends.
    * Nothing resets between areas — the same roam survives until the act ends.
    */
+  /** An encounter is cleared when its own area id or every one of its camps is. */
+  openAreaCleared(id) {
+    const cleared = new Set(this.g?.openField?.cleared || []);
+    if (cleared.has(id)) return true;
+    const units = this.g?.openField?.units?.[id];
+    return Array.isArray(units) && units.length > 0 && units.every((unit) => cleared.has(unit));
+  }
+
   prepareOpenField() {
     const g = this.g, act = this.act;
     const cleared = new Set(g.openField.cleared);
-    const live = act.encounters.filter((encounter) => !cleared.has(encounter.id));
+    const live = act.encounters.filter((encounter) => !this.openAreaCleared(encounter.id));
+    // Layout units. Named legends never pile up: their area splits into camps
+    // of at most two legends, each camp ringed by its own retinue. The Hall of
+    // Twenty fields nothing else — only the twenty legends and their retinues;
+    // other acts also keep one grunt camp per encounter (with tripled ranks).
+    const hallOfTwenty = act.id === "otherworld";
+    const units = [];              // { area, kinds, encounterId }
+    const unitMap = {};            // encounterId -> [area ids]
+    const areaOf = {};             // area id -> encounterId
+    for (const encounter of live) {
+      const kinds = rosterForEncounter(encounter.id, g.runMode);
+      if (encounter.bossId) {
+        units.push({ area: encounter.id, kinds, encounterId: encounter.id });
+        unitMap[encounter.id] = [encounter.id];
+        areaOf[encounter.id] = encounter.id;
+        continue;
+      }
+      const heroes = kinds.filter(isNamedRivalKind);
+      const grunts = kinds.filter((kind) => !isNamedRivalKind(kind) && !isEscortKind(kind));
+      for (let i = 0; i < heroes.length; i += 2) {
+        const camp = heroes.slice(i, i + 2);
+        // Two or three retainers per legend, ringed around the camp's ward.
+        const area = `${encounter.id}#${i / 2}`;
+        units.push({ area, kinds: [...camp, ...escortSquadFor(area, camp.length + 2)], encounterId: encounter.id });
+        (unitMap[encounter.id] ||= []).push(area);
+        areaOf[area] = encounter.id;
+      }
+      if (grunts.length || !heroes.length) {
+        units.push({ area: encounter.id, kinds: heroes.length ? grunts : kinds, encounterId: encounter.id });
+        (unitMap[encounter.id] ||= []).push(encounter.id);
+        areaOf[encounter.id] = encounter.id;
+      }
+    }
+    g.openField.units = unitMap;
+    g.openField.areaOf = areaOf;
     const maze = generateMaze(hashSeed(`${g.runId}:${act.id}:maze`), {
-      areas: live.filter((encounter) => !encounter.bossId).map((encounter) => encounter.id),
+      areas: units.filter((unit) => !act.encounters.find((e) => e.id === unit.encounterId)?.bossId).map((unit) => unit.area),
     });
     const roster = [], areas = [];
-    live.forEach((encounter) => {
-      for (const kind of rosterForEncounter(encounter.id, g.runMode)) {
+    for (const unit of units)
+      for (const kind of unit.kinds) {
         roster.push(kind);
-        areas.push(encounter.id);
+        areas.push(unit.area);
       }
-    });
-    // Triple the ranks: the story roster stands as-is; the extra bodies are
-    // act grunts folded into the existing camps, so a fallen legend still
-    // scatters the whole (now much thicker) area.
-    const gruntKinds = [...new Set(roster.filter((kind) =>
-      !isNamedRivalKind(kind) && !DUEL_ENEMIES[kind]?.boss && !isEscortKind(kind)))];
-    const pool = gruntKinds.length ? gruntKinds : ["guard"];
-    const rng = seededRandom(hashSeed(`${g.runId}:${act.id}:ranks`));
-    const target = roster.length * 3;
+    // Only the story-deployed core holds a camp; ranks scatter with it.
     const coreCount = roster.length;
-    while (roster.length < target) {
-      const area = areas[Math.floor(rng() * areas.length)];
-      roster.push(pool[Math.floor(rng() * pool.length)]);
-      areas.push(area);
+    const gruntAreas = [...new Set(units.filter((unit) =>
+      unit.kinds.some((kind) => !isNamedRivalKind(kind) && !DUEL_ENEMIES[kind]?.boss && !isEscortKind(kind))
+    ).map((unit) => unit.area))];
+    // Triple the ranks on the grunt camps: the story roster stands as-is; the
+    // extra bodies are act grunts, so a fallen legend still scatters thick ranks.
+    if (!hallOfTwenty && gruntAreas.length) {
+      const gruntKinds = [...new Set(roster.filter((kind) =>
+        !isNamedRivalKind(kind) && !DUEL_ENEMIES[kind]?.boss && !isEscortKind(kind) && !isRanged(kind)))];
+      const pool = gruntKinds.length ? gruntKinds : ["guard"];
+      const rng = seededRandom(hashSeed(`${g.runId}:${act.id}:ranks`));
+      const target = roster.length * 3;
+      while (roster.length < target) {
+        const area = gruntAreas[Math.floor(rng() * gruntAreas.length)];
+        roster.push(pool[Math.floor(rng() * pool.length)]);
+        areas.push(area);
+      }
     }
     const anchors = {};
-    for (const encounter of live)
-      anchors[encounter.id] = encounter.bossId ? maze.anchors.boss : maze.anchors[encounter.id];
-    const first = act.encounters.find((encounter) => !cleared.has(encounter.id)) || act.encounters[0];
+    for (const unit of units)
+      anchors[unit.area] = act.encounters.find((e) => e.id === unit.encounterId)?.bossId
+        ? maze.anchors.boss
+        : maze.anchors[unit.area];
+    const first = act.encounters.find((encounter) => !this.openAreaCleared(encounter.id)) || act.encounters[0];
     g.encounterIndex = act.encounters.indexOf(first);
     g.wave = g.encounterIndex + 1;
     g.enemies = [];
@@ -676,7 +724,7 @@ export class GameSession {
     this.unlockCodex("rivals", enemy.kind);
     // Open field: the HUD and music follow the area whose rival stepped to.
     const areaEncounter = this.g.openField
-      ? this.act.encounters.find((item) => item.id === enemy.area)
+      ? this.act.encounters.find((item) => item.id === (this.g.openField.areaOf?.[enemy.area] ?? enemy.area))
       : null;
     if (areaEncounter) this.g.encounterIndex = this.act.encounters.indexOf(areaEncounter);
     // First blood on the pass or a sneak contact: the duel opens with a reel.
@@ -686,6 +734,11 @@ export class GameSession {
     if (this.g.openField && DUEL_ENEMIES[enemy.kind]?.boss && !this.g.openField.intros?.[enemy.kind]) {
       (this.g.openField.intros ||= {})[enemy.kind] = true;
       this.g.pendingBossDuel = index;
+      // The bridge steadies you: a pot of tea and a deep breather before the keeper.
+      if (this.g.duel) this.g.duel.tea = this.g.p.teaPots ?? 1;
+      const steadied = Math.min(45, this.g.p.maxHp - this.g.p.hp);
+      this.g.p.hp += steadied;
+      this.g.p.flow = Math.min(100, this.g.p.flow + 10);
       this.beginDialogue(`${enemy.kind}-intro`);
       return true;
     }
@@ -708,11 +761,11 @@ export class GameSession {
     const removed = this.roam.removeContacted();
     if (!removed) return;
     this.g.lastDefeatedKind = removed.kind;
-    // Open field: a fallen boss or named legend scatters their whole area.
+    // Open field: a fallen boss or named legend breaks their camp. Legends
+    // fight to the last — a partner legend stands and the camp keeps its post.
     const leader = DUEL_ENEMIES[removed.kind]?.boss || isNamedRivalKind(removed.kind);
-    if (this.g.openField && leader) {
-      this.clearOpenArea(removed.area);
-      return;
+    if (this.g.openField && leader && !this.g.openField.cleared.includes(removed.area)) {
+      if (this.clearOpenArea(removed.area)) return;
     }
     if (!this.g.roam.field.length && !this.g.openField) {
       this.clearEncounter();
@@ -723,8 +776,7 @@ export class GameSession {
       // the fall, and leaderless outposts hold only while their original
       // story rivals do — the extra ranks scatter with them.
       if (removed.area && !this.g.roam.field.some((rival) => rival.area === removed.area && rival.core !== false)) {
-        this.clearOpenArea(removed.area);
-        return;
+        if (this.clearOpenArea(removed.area)) return;
       }
       this.transition("exploring");
       const left = this.g.roam.field.length;
@@ -751,31 +803,53 @@ export class GameSession {
   /** Open field: the leader's area scatters; elites still face the judgement. */
   clearOpenArea(area) {
     const g = this.g;
-    if (!g.openField || g.openField.cleared.includes(area)) return;
-    const encounter = this.act.encounters.find((item) => item.id === area);
-    const scattered = this.roam.scatterArea(area);
-    g.openField.cleared.push(area);
-    // A cleared pass yields a fresh pot of tea and a breather, as cleared
-    // encounters and roadside rests once did.
+    if (!g.openField || g.openField.cleared.includes(area)) return false;
+    const encounterId = g.openField.areaOf?.[area] ?? area;
+    const encounter = this.act.encounters.find((item) => item.id === encounterId);
+    // The retinue routs; named legends and bosses stand their ground.
+    const scattered = this.roam.scatterArea(area, true);
+    // Every broken camp yields a fresh pot of tea and a breather, as cleared
+    // encounters and roadside rests once did — even when a partner legend
+    // still holds the camp.
     if (g.duel) g.duel.tea = g.p.teaPots ?? 1;
     const healed = Math.min(25, g.p.maxHp - g.p.hp);
     g.p.hp += healed;
     g.p.flow = Math.min(100, g.p.flow + 10);
-    const next = this.act.encounters.find((item) => !g.openField.cleared.includes(item.id));
+    const namedLeft = g.roam.field.some((rival) => rival.area === area &&
+      (isNamedRivalKind(rival.kind) || DUEL_ENEMIES[rival.kind]?.boss));
+    if (namedLeft) {
+      this.bus.emit("notice", { text: "The retinue routs — the legend stands alone." });
+      return false;
+    }
+    g.openField.cleared.push(area);
+    const next = this.act.encounters.find((item) => !this.openAreaCleared(item.id));
     g.encounterIndex = next ? this.act.encounters.indexOf(next) : this.act.encounters.length - 1;
     if (encounter?.bossId) {
       // The act's biggest boss has fallen: the pass is won.
       this.finish(true);
-      return;
+      return true;
     }
     this.bus.emit("notice", {
       text: scattered.length
-        ? `${encounter?.title || "The pass"} falls — ${scattered.length} ${scattered.length === 1 ? "rival" : "rivals"} scatter.`
-        : `${encounter?.title || "The pass"} falls.`,
+        ? `${encounter?.title || "The pass"} — ${scattered.length} ${scattered.length === 1 ? "rival" : "rivals"} scatter.`
+        : `${encounter?.title || "The camp"} falls.`,
     });
+    // The nearby pass routs with its legend: clearing a hero camp scatters
+    // the encounter's rank camp as well.
+    if (String(area).includes("#") && !g.openField.cleared.includes(encounterId)) {
+      const rankCamp = g.roam.field.filter((rival) => rival.area === encounterId);
+      if (rankCamp.length && !rankCamp.some((rival) => isNamedRivalKind(rival.kind) || DUEL_ENEMIES[rival.kind]?.boss)) {
+        this.roam.scatterArea(encounterId, true);
+        g.openField.cleared.push(encounterId);
+      }
+    }
+    // The encounter settles only when every one of its camps has fallen.
+    const encounterDone = (g.openField.units?.[encounterId] || [area]).every((unit) =>
+      g.openField.cleared.includes(unit));
+    if (!encounterDone) return false;
     if (encounter?.elite) {
       // Elite areas keep their map offers: curio draft and the judgement.
-      g.map.current = `elite:${area}`;
+      g.map.current = `elite:${encounterId}`;
       if (!g.map.cleared.includes(g.map.current)) g.map.cleared.push(g.map.current);
       g.map.pendingCurios = this.draftCurios();
       if (g.lastDefeatedKind)
@@ -786,11 +860,12 @@ export class GameSession {
       g.map.pendingUpgrade = true;
       this.checkpoint("map");
       this.transition("map");
-      return;
+      return true;
     }
     this.checkpoint("upgrade");
     this.transition("upgrade");
     this.bus.emit("audio:sfx", { type: "upgrade" });
+    return true;
   }
   /** Back to the same open field — positions, curios and cleared areas intact. */
   resumeOpenField() {
@@ -1003,7 +1078,7 @@ export class GameSession {
     if (this.g.openField) {
       // Rejoin the persistent field minus every area already scattered.
       this.g.openField.cleared = (cp.openField || []).filter((id) =>
-        this.act.encounters.some((encounter) => encounter.id === id));
+        this.act.encounters.some((encounter) => encounter.id === String(id).split("#")[0]));
       this.g.curios = cp.curios.filter((id) => CURIO_IDS.includes(id));
       this.prepareOpenField();
     } else this.prepareEncounter();

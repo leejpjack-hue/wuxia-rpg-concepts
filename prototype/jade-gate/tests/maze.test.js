@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { ACTS } from "../src/content/campaign.js";
-import { rosterForEncounter, DUEL_ENEMIES, isNamedRivalKind } from "../src/content/duels.js";
+import { rosterForEncounter, DUEL_ENEMIES, isNamedRivalKind, isEscortKind } from "../src/content/duels.js";
 import { generateMaze, hashSeed } from "../src/domain/maze.js";
 import { resolveBlockers } from "../src/domain/ground.js";
 import { session, memoryStorage } from "./helpers.js";
@@ -80,7 +80,19 @@ test("the open field triples its ranks and no rival deploys inside a hedge", () 
     const g = game.g, maze = g.roam.maze;
     assert(maze, `${act.id} builds a maze`);
     const base = act.encounters.flatMap((encounter) => rosterForEncounter(encounter.id, "campaign"));
-    assert.equal(g.roam.field.length, base.length * 3, `${act.id} triples its roster`);
+    // Camp math: legends split into camps of two (each camp adds camp+2
+    // retainers); grunts stand apart; boss camps keep their retinue. The Hall
+    // of Twenty fields only its legends and their retinues — no ranks.
+    const core = act.encounters.reduce((sum, encounter) => {
+      const kinds = rosterForEncounter(encounter.id, "campaign");
+      if (encounter.bossId) return sum + kinds.length;
+      const legends = kinds.filter(isNamedRivalKind).length;
+      const grunts = kinds.filter((kind) => !isNamedRivalKind(kind) && !isEscortKind(kind)).length;
+      const camps = Math.ceil(legends / 2);
+      return sum + legends + grunts + (legends ? legends + camps * 2 : 0);
+    }, 0);
+    const ranks = act.id === "otherworld" ? 1 : 3;
+    assert.equal(g.roam.field.length, core * ranks, `${act.id} fields its camps${ranks === 3 ? " with tripled ranks" : " without ranks"}`);
     // Story legends stand exactly as often as the story casts them (some
     // legends hold more than one pass); the extra bodies are act grunts.
     for (const kind of new Set(base.filter(isNamedRivalKind)))

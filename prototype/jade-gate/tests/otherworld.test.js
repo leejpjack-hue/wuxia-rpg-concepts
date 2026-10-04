@@ -8,7 +8,7 @@ import { DUEL_ENEMIES } from '../src/content/duels.js';
 import { specialFor } from '../src/content/expansion.js';
 import { dialogueFor } from '../src/content/dialogue.js';
 import { translate } from '../src/locales/i18n.js';
-import { rosterForEncounter } from '../src/content/duels.js';
+import { rosterForEncounter, isEscortKind, isNamedRivalKind } from '../src/content/duels.js';
 import { session, memoryStorage, playCampaign } from './helpers.js';
 
 const act = () => ACTS.find((entry) => entry.id === 'otherworld');
@@ -92,16 +92,33 @@ test('Act V is gated behind the citadel and opens on the rift arrival', () => {
   game.advanceDialogue(true);
   assert.equal(game.mode, 'exploring');
   assert.ok(game.g.roam.maze, 'the otherworld builds its labyrinth');
-  const base = act().encounters.reduce(
-    (sum, encounter) => sum + rosterForEncounter(encounter.id, 'campaign').length, 0);
-  assert.equal(game.g.roam.field.length, base * 3, 'the twenty bring tripled ranks');
+  // The Hall of Twenty fields only the twenty legends and their retinues:
+  // no rank grunts, no camp holds more than two legends.
+  const legends = game.g.roam.field.filter((rival) => isNamedRivalKind(rival.kind) || rival.kind === 'zhao-min-rival');
+  assert.equal(legends.length, 20, 'exactly the twenty legends stand');
+  const camps = new Map();
+  for (const rival of game.g.roam.field) {
+    if (isNamedRivalKind(rival.kind) || rival.kind === 'zhao-min-rival')
+      camps.set(rival.area, (camps.get(rival.area) || 0) + 1);
+    else
+      assert(isEscortKind(rival.kind), `${rival.kind} is a retainer, not a rank grunt`);
+  }
+  for (const [area, count] of camps) assert.ok(count <= 2, `camp ${area} holds ${count} legends at most`);
+  assert.ok(camps.size >= 10, 'the legends spread across many camps');
+  // Every retinue numbers two to three per legend.
+  for (const [area, legendsInCamp] of camps) {
+    const retinue = game.g.roam.field.filter((rival) => rival.area === area && isEscortKind(rival.kind)).length;
+    if (area !== 'zhao-min-rival')
+      assert.ok(retinue >= legendsInCamp * 2 && retinue <= legendsInCamp * 3,
+        `camp ${area} keeps ${retinue} retainers for ${legendsInCamp} legends`);
+  }
 });
 
 test('the hall reveal and the first round speak once when their areas are engaged', () => {
   for (const [areaId, key] of [['hall-of-twenty', 'hall-reveal'], ['lattice-first-round', 'first-round']]) {
     const game = riftSession();
     game.advanceDialogue(true);
-    const rival = game.g.roam.field.find((entry) => entry.area === areaId && !entry.ranged);
+    const rival = game.g.roam.field.find((entry) => String(entry.area).startsWith(areaId) && !entry.ranged);
     assert(rival, `${areaId} holds rivals`);
     assert.equal(game.beginDuel(game.g.roam.field.indexOf(rival)), true);
     assert.equal(game.dialogue.key, key, `${areaId} opens on ${key}`);

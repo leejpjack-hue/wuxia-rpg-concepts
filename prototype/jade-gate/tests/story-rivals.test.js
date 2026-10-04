@@ -25,13 +25,14 @@ test("every non-protagonist hero appears as an illustrated named Story rival", (
 
 test("exploration and duel share the Story roster while Quick Play keeps its encounters", () => {
   const game = session(); game.start("zhao-yun", "campaign"); game.advanceDialogue(true);
-  // Open field: every encounter of the act deploys at once, escorts included —
-  // then the ranks triple with act grunts (the story roster leads the column).
+  // Open field: every encounter of the act deploys at once. Legends split
+  // into camps of two with their own retinues; the ranks triple with act grunts.
   const fullAct = ACTS.find(act => act.id === "jade-gate").encounters
     .flatMap(encounter => rosterForEncounter(encounter.id, "campaign"));
   const kinds = game.g.roam.field.map(rival => rival.kind);
-  assert.equal(kinds.length, fullAct.length * 3);
-  assert.deepEqual(kinds.slice(0, fullAct.length), fullAct);
+  assert.ok(kinds.length > fullAct.length, "retinues and ranks join the column");
+  for (const kind of fullAct)
+    assert(kinds.includes(kind), `${kind} deploys`);
   assert(game.beginDuel(0));
   assert.equal(game.g.enemies[0].name, "Guan Yu");
   assert.equal(game.g.enemies[0].art, "guan-yu-sprite");

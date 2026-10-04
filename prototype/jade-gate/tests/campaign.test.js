@@ -121,8 +121,8 @@ test("campaign walks the open pass to the boss, tea house and unlocks", () => {
   // First area: duel its named legend, and the area scatters.
   clearEncounter(game);
   assert.equal(game.mode, "upgrade");
-  assert(game.g.openField.cleared.includes("vanguard"));
-  assert(!game.g.roam.field.some((rival) => rival.area === "vanguard"));
+  assert(game.g.openField.cleared.some((id) => String(id).startsWith("vanguard")));
+  assert(!game.g.roam.field.some((rival) => String(rival.area).startsWith("vanguard")));
   game.chooseDiscipline("power");
   assert.equal(game.g.p.power, 1.25);
   assert.equal(game.mode, "exploring"); // the map never resets between areas
@@ -153,8 +153,8 @@ test("checkpoint resumes the open pass boundary and preserves run upgrades", () 
   assert(restored.continueCheckpoint());
   while (restored.mode === "dialogue") restored.advanceDialogue(true);
   assert.equal(restored.mode, "exploring"); // back on the same open pass
-  assert(restored.g.openField.cleared.includes("vanguard"));
-  assert(!restored.g.roam.field.some((rival) => rival.area === "vanguard"));
+  assert(restored.g.openField.cleared.some((id) => String(id).startsWith("vanguard")));
+  assert(!restored.g.roam.field.some((rival) => String(rival.area).startsWith("vanguard")));
   assert(restored.g.roam.field.some((rival) => rival.area === "warden"));
   assert.equal(restored.g.p.power, 1.25);
   assert.equal(restored.g.p.hp, 120);
