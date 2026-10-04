@@ -137,8 +137,107 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
   position: absolute; bottom: 9%; height: 74%; max-width: none;
   object-fit: contain; filter: drop-shadow(0 16px 14px #000c);
 }
-.duel-stage img.hero { left: 10%; animation: actor-in 1s var(--ease-film) both, duel-lunge-hero 2.6s var(--ease-film) both; }
-.duel-stage img.rival { right: 10%; transform: scaleX(-1); animation: actor-in 1s var(--ease-film) both, duel-lunge-rival 2.6s var(--ease-film) both; }
+.duel-stage img.hero { left: 10%; }
+.duel-stage img.rival { right: 10%; transform: scaleX(-1); }
+.duel-stage img { transition: translate 0.65s var(--ease-film), filter 0.4s ease; }
+
+/* ── 決戰七拍 ─────────────────────────────── */
+/* 1 對峙：定格企位，輕輕呼吸；落花飄下做觸發。 */
+.duel-stage[data-phase="standoff"] img { animation: idle-bob 3.2s ease-in-out infinite alternate; }
+.duel-stage[data-phase="standoff"] .petal { display: block; }
+.petal {
+  display: none; position: absolute; left: 49%; top: -3%;
+  width: 7px; height: 5px; border-radius: 60% 40% 55% 45%;
+  background: #e8b4c4; box-shadow: 0 0 6px #e8b4c488;
+  animation: petal-fall 4.6s ease-in both;
+}
+@keyframes petal-fall {
+  0% { translate: 0 0; rotate: 0deg; opacity: 0; }
+  12% { opacity: 0.9; }
+  100% { translate: 4cqw 62cqh; rotate: 220deg; opacity: 0; }
+}
+@keyframes idle-bob { from { margin-top: 0; } to { margin-top: 0.8cqh; } }
+
+/* 2 蓄勢：鏡頭推近，雙方下蹲蓄力（windup 招式由驅動換上）。 */
+.duel-stage[data-phase="windup"] { animation: fight-zoom-in 2s ease-out both; }
+.duel-stage[data-phase="windup"] img { translate: 0 2cqh; filter: brightness(1.06); }
+
+/* 3 突進：衝向中線，動感模糊＋速度線全開，荷蘭角。 */
+.duel-stage[data-phase="charge"] { rotate: -1.6deg; }
+.duel-stage[data-phase="charge"] img.hero { translate: 24cqw 0; filter: blur(2.5px); transition-duration: 0.55s; transition-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4); }
+.duel-stage[data-phase="charge"] img.rival { translate: -24cqw 0; filter: blur(2.5px); transition-duration: 0.55s; transition-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4); }
+.duel-stage[data-phase="charge"] .speed-lines { opacity: 0.95; }
+
+/* 4 交鋒：衝擊格（黑幕白刃）＋定格＋震屏。 */
+.duel-stage[data-phase="impact"] img { filter: brightness(2.2) contrast(1.4); }
+.duel-stage.quake { animation: cam-quake 0.42s linear both; }
+@keyframes cam-quake {
+  0%, 100% { translate: 0 0; }
+  20% { translate: -0.9cqw 0.5cqh; } 40% { translate: 0.8cqw -0.4cqh; }
+  60% { translate: -0.5cqw 0.3cqh; } 80% { translate: 0.3cqw -0.2cqh; }
+}
+.impact-frame {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none; z-index: 6;
+  background: #040707;
+}
+.impact-frame::before {
+  content: ""; position: absolute; left: -12%; right: -12%; top: 48%; height: 5px;
+  background: linear-gradient(90deg, transparent, #fff 20%, var(--gold) 50%, #fff 80%, transparent);
+  rotate: -11deg; scale: 0 1;
+}
+.impact-frame::after {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-conic-gradient(from 100deg at 50% 50%, #fff0 0 8deg, #ffffffcc 8deg 9.2deg, #fff0 9.2deg 16deg);
+  -webkit-mask: radial-gradient(circle, transparent 34%, #000 80%);
+  mask: radial-gradient(circle, transparent 34%, #000 80%);
+  opacity: 0;
+}
+.impact-frame.boom { animation: impact-boom 0.42s steps(1) both; }
+@keyframes impact-boom {
+  0% { opacity: 1; } 22% { opacity: 0; } 38% { opacity: 1; } 100% { opacity: 0; }
+}
+.impact-frame.boom::before { animation: impact-streak 0.42s ease-out both; }
+@keyframes impact-streak { 0% { scale: 0 1; } 30% { scale: 1 1; } 100% { scale: 1 0.4; opacity: 0; } }
+
+/* 5 擦身：換位衝過（motion blur 拖影）。 */
+.duel-stage[data-phase="pass"] img.hero { translate: 82cqw 0; filter: blur(7px); transition-duration: 0.9s; transition-timing-function: cubic-bezier(0.7, 0, 0.2, 1); }
+.duel-stage[data-phase="pass"] img.rival { translate: -82cqw 0; filter: blur(7px); transition-duration: 0.9s; transition-timing-function: cubic-bezier(0.7, 0, 0.2, 1); }
+
+/* 6 靜止：背對背定格（換位完成），塵埃落定，慢推近。 */
+.duel-stage[data-phase="hold"] img.hero { translate: 58cqw 0; filter: blur(0); }
+.duel-stage[data-phase="hold"] img.rival { translate: -58cqw 0; filter: blur(0); }
+.duel-stage[data-phase="hold"] { animation: fight-zoom-in 3.4s ease-out both; }
+.duel-stage[data-phase="hold"] .speed-lines { opacity: 0; }
+
+/* 7 分勝：敗者傷口浮現（刀痕亮線）——踉蹌、傾側、倒下；勝者持式而立。 */
+.duel-stage[data-phase="aftermath"] img { filter: blur(0); }
+.duel-stage[data-phase="aftermath"] .plate { opacity: 1; }
+.duel-stage[data-phase="aftermath"][data-winner="hero"] img.rival { animation: loser-fall-rival 2.6s ease-in both; }
+.duel-stage[data-phase="aftermath"][data-winner="rival"] img.hero { animation: loser-fall 2.6s ease-in both; }
+.duel-stage[data-phase="aftermath"][data-winner="hero"] img.hero,
+.duel-stage[data-phase="aftermath"][data-winner="rival"] img.rival {
+  animation: winner-settle 2.2s ease-out both;
+}
+@keyframes loser-fall {
+  0% { translate: 58cqw 0; rotate: 0deg; opacity: 1; }
+  30% { rotate: -4deg; }
+  60% { translate: 54cqw 6cqh; rotate: 9deg; opacity: 0.85; }
+  100% { translate: 52cqw 14cqh; rotate: 24deg; opacity: 0.12; }
+}
+@keyframes loser-fall-rival {
+  0% { translate: -58cqw 0; rotate: 0deg; opacity: 1; }
+  100% { translate: -52cqw 14cqh; rotate: -24deg; opacity: 0.12; }
+}
+@keyframes winner-settle { 0% { filter: brightness(1.5); } 100% { filter: brightness(1); } }
+.duel-stage[data-phase="aftermath"] img.wound::after { content: ""; }
+@keyframes fight-zoom-in { from { scale: 1; } to { scale: 1.1; } }
+
+/* loser starting sides: hero starts left (translate 0) / rival right — after pass they are swapped,
+   so hero-wins means rival fell from the hero's crossed position. */
+.duel-stage[data-phase="aftermath"][data-winner="hero"] img.rival { translate: -58cqw 0; }
+.duel-stage[data-phase="aftermath"][data-winner="rival"] img.hero { translate: 58cqw 0; }
+.duel-stage[data-phase="aftermath"][data-winner="hero"] img.hero { translate: -58cqw 0; }
+.duel-stage[data-phase="aftermath"][data-winner="rival"] img.rival { translate: 58cqw 0; }
 .duel-stage .plate {
   position: absolute; bottom: 5%; font: 700 clamp(11px, 1.8cqw, 17px) Georgia, serif;
   letter-spacing: 0.3em; color: #f2e6c8; text-shadow: 0 2px 8px #000;
