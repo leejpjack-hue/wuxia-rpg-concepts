@@ -61,12 +61,23 @@ const rosterWithEscorts = (roster, runMode, encounterId) =>
     ? [...roster, ...escortSquadFor(encounterId)]
     : roster;
 
-export const rosterForEncounter = (encounterId, runMode) =>
-  rosterWithEscorts(
+/** Quick Play fields a horde: the goal is to cut down everyone, so every
+ *  encounter stands at twenty times its roster. Test suites that drive the
+ *  classic small gauntlet dial it back via setQuickplayHorde(1). */
+export const QUICKPLAY_HORDE = 20;
+let hordeOverride = null;
+export const setQuickplayHorde = (times) => { hordeOverride = times; };
+
+export const rosterForEncounter = (encounterId, runMode) => {
+  const roster = rosterWithEscorts(
     (runMode === "campaign" ? STORY_ROSTERS[encounterId] : null) || DUEL_ROSTERS[encounterId],
     runMode,
     encounterId,
   );
+  return runMode === "quickplay" && roster
+    ? Array.from({ length: hordeOverride ?? QUICKPLAY_HORDE }, () => roster).flat()
+    : roster;
+};
 
 export const DUEL_ENEMIES = {
   ...STORY_RIVALS,
