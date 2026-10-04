@@ -29,6 +29,8 @@ Generate and approve key art first. Use it as the reference for the sprite, then
 
 ## Integration checklist
 
+Portrait placement uses a `{ src, fit, position }` descriptor from `src/presentation/character-art.js`. A custom `keyArt` filename (including JPEG) is supported. For a wide portrait whose subject is off-center, set `keyArtFocus` in the hero data to its reviewed CSS object-position, such as `"29% 18%"`. This only crops selection art. Set `cinematicArt` to the approved transparent ready body: card duels and dialogue use that file with `contain` and centered placement, so the entire body remains visible and selection offsets do not shift it. Review new portraits at both narrow and wide card widths.
+
 1. Add the hero to `src/content/heroes.js` with a unique lowercase hyphenated `id`, gameplay values, and an adult character description. Add matching `HERO_TECHNIQUES` data in `src/content/duels.js`.
 2. Save **both** PNGs under the exact filenames above. Add both manifest records. Remove any `artFocus` offset that was only needed to crop a concept sheet.
 3. Run `npm run check`; it verifies the manifest entry, format and basic dimensions for every hero. Inspect the alpha visually because a PNG header alone cannot prove clean transparency.
