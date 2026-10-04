@@ -101,15 +101,19 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 /* 大頭鏡：動作 asset 裁切（唔一定要成個人） */
 .closeup {
   position: absolute; inset: 0; z-index: 4; margin: 0;
-  display: grid; place-items: center end;
   background: radial-gradient(ellipse at 50% 38%, #101c1cd8, #05090af2 82%);
   overflow: hidden;
+  --face-y: 13%; --head-x: 50%;   /* JS 用 canvas 實測錨點覆寫 */
 }
-/* 研究結論：講嘢鏡頭塊面填滿畫面、眼喺上面三分一；左右留視線空間（lead room）。 */
+/* 研究結論：講嘢鏡頭塊面填滿畫面、眼喺上面三分一。
+ * 做法：張圖絕對定位，用 translate(-var(--head-x), -var(--face-y)) 將「眼線」
+ * 呢一點釘死喺 top 34% / left 50%（上三分一線）——唔靠置中，所以無論邊種
+ * 畫種、放幾大，個頭一定喺畫面入面。height 百分比只負責 zoom。 */
 .closeup img {
-  max-width: none; object-fit: cover; object-position: 50% 13%;
+  position: absolute; top: 34%; left: 50%;
+  max-width: none; object-fit: cover;
   filter: drop-shadow(0 0 42px #000c) contrast(1.06);
-  transition: translate 0.6s var(--ease-film);
+  translate: calc(-1 * var(--head-x)) calc(-1 * var(--face-y));
 }
 /* 裁切級別 × 畫種：height 由驅動按 CROP_ZOOM 指定（head 420% ≈ 面部填滿）。 */
 .closeup[data-crop="head"] img { height: 420%; }
@@ -118,15 +122,12 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 .closeup[data-kind="wide"][data-crop="head"] img { height: 360%; }
 .closeup[data-kind="wide"][data-crop="face"] img { height: 260%; }
 .closeup[data-kind="wide"][data-crop="bust"] img { height: 170%; }
-.closeup img.duel-pose, .closeup[data-kind="square"] img { object-position: 50% 9%; }
 .closeup[data-crop="head"] img.duel-pose { height: 440%; }
 .closeup[data-crop="face"] img.duel-pose { height: 310%; }
 
-/* 180 度軸線：left 機位塊面靠左望右（右邊留白），right 機位相反。 */
-.closeup[data-side="left"] { place-items: center end; }
-.closeup[data-side="left"] img { translate: -22cqw 0; }
-.closeup[data-side="right"] { place-items: center start; }
-.closeup[data-side="right"] img { translate: 22cqw 0; }
+/* 180 度軸線：left 機位個頭靠左望右（右邊留白），right 機位相反。 */
+.closeup[data-side="left"] img { translate: calc(-1 * var(--head-x) - 11cqw) calc(-1 * var(--face-y)); }
+.closeup[data-side="right"] img { translate: calc(-1 * var(--head-x) + 11cqw) calc(-1 * var(--face-y)); }
 .closeup[data-side="right"] .plate { left: auto; right: 7%; border-right: 0; border-left: 3px solid var(--gold); padding: 0 0 0 12px; }
 
 /* 對白大頭要「生」：微微呼吸同視線漂移。 */
