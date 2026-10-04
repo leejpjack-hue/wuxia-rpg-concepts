@@ -1,0 +1,174 @@
+/* 四人の刃 — 兩集動畫 Demo。分鏡、字幕、章節卡全部以現有遊戲畫作演出。 */
+:root {
+  --ink: #e9dfc4;
+  --muted: #9aa79b;
+  --gold: #caa96a;
+  --paper: #0c1213;
+  --ease-film: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% -10%, #17242a, #080d0e 60%);
+  color: var(--ink);
+  font: 15px/1.7 Georgia, "Noto Serif CJK TC", serif;
+  min-height: 100vh;
+}
+header {
+  display: flex; align-items: center; gap: 22px;
+  padding: 14px clamp(16px, 4vw, 46px);
+  border-bottom: 1px solid #22343630;
+}
+.wordmark { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+.wordmark .seal {
+  display: grid; place-items: center; width: 38px; height: 38px;
+  background: #35150f; color: #f2e3c0; font-weight: 700; font-size: 19px;
+  border: 1px solid #caa96a66;
+}
+.wordmark span:last-child { display: flex; flex-direction: column; line-height: 1.2; letter-spacing: 0.18em; font-size: 13px; }
+.wordmark small { color: var(--muted); font-size: 10px; letter-spacing: 0.3em; }
+.episode-tabs { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.episode-tab {
+  background: none; border: 1px solid #3a4a44; color: var(--muted);
+  padding: 8px 14px; cursor: pointer; letter-spacing: 0.08em; font: 13px Georgia, serif;
+  transition: color 0.3s, border-color 0.3s;
+}
+.episode-tab:hover { color: var(--ink); }
+.episode-tab.current { color: #f4e9cd; border-color: var(--gold); background: #caa96a14; }
+#back { color: var(--muted); text-decoration: none; letter-spacing: 0.12em; font-size: 12px; }
+#back:hover { color: var(--ink); }
+
+main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 60px; }
+.editorial { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
+.editorial #episode-label { margin: 0; color: var(--gold); letter-spacing: 0.24em; font-size: 12px; }
+.editorial .synopsis { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; }
+
+/* ── 分鏡舞台 ─────────────────────────────── */
+.stage {
+  position: relative; aspect-ratio: 16/9; overflow: hidden;
+  background: #060a0b; border: 1px solid #2c3d3a; border-radius: 10px;
+  container-type: size;
+}
+.backdrop {
+  position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
+  filter: saturate(0.92) contrast(1.05) brightness(0.9);
+  animation: none var(--ease-film) both;
+}
+.stage[data-scene] .backdrop.pan-in { animation-name: ken-in; animation-duration: 100s; }
+.stage[data-scene] .backdrop.pan-in-slow { animation-name: ken-slow; animation-duration: 120s; }
+.stage[data-scene] .backdrop.pan-left { animation-name: ken-left; animation-duration: 100s; }
+.stage[data-scene] .backdrop.pan-right { animation-name: ken-right; animation-duration: 100s; }
+.stage[data-scene] .backdrop.pan-out { animation-name: ken-out; animation-duration: 100s; }
+@keyframes ken-in { from { transform: scale(1.02); } to { transform: scale(1.16); } }
+@keyframes ken-slow { from { transform: scale(1.14) translateX(1.5%); } to { transform: scale(1.16) translateX(-1.5%); } }
+@keyframes ken-left { from { transform: scale(1.12) translateX(3%); } to { transform: scale(1.12) translateX(-3%); } }
+@keyframes ken-right { from { transform: scale(1.12) translateX(-3%); } to { transform: scale(1.12) translateX(3%); } }
+@keyframes ken-out { from { transform: scale(1.18); } to { transform: scale(1.03); } }
+
+.mist {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+  background:
+    radial-gradient(ellipse at 20% 80%, #cfe3d810, transparent 55%),
+    radial-gradient(ellipse at 80% 30%, #caa96a0a, transparent 50%);
+}
+.vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, #000a 100%);
+}
+.letterbox { position: absolute; left: 0; right: 0; height: 7%; background: #040707; z-index: 5; }
+.letterbox.top { top: 0; } .letterbox.bottom { bottom: 0; }
+
+/* 演員進場 */
+.cast { position: absolute; inset: 0; z-index: 2; }
+.actor {
+  position: absolute; bottom: 10%; height: 58%;
+  filter: drop-shadow(0 14px 12px #000b);
+  transform: scale(var(--scale, 1));
+  animation: actor-in 2.4s var(--ease-film) both;
+}
+@keyframes actor-in {
+  from { opacity: 0; translate: 0 4cqh; filter: drop-shadow(0 14px 12px #000b) blur(3px); }
+  to { opacity: 1; translate: 0 0; filter: drop-shadow(0 14px 12px #000b) blur(0); }
+}
+.side-far-left { left: 6%; }
+.side-left { left: 16%; }
+.side-center { left: 42%; }
+.side-right { right: 16%; }
+.side-far-right { right: 6%; }
+
+/* 章節卡 */
+.chapter-card {
+  position: absolute; z-index: 6; inset: 0; margin: 0; padding: 0 8%;
+  display: grid; place-content: center; text-align: center;
+  background: #05090ab8; color: #f2e6c8;
+  font-size: clamp(18px, 4.6cqw, 44px); letter-spacing: 0.5em; text-indent: 0.5em;
+  opacity: 0; pointer-events: none; transition: opacity 0.9s ease;
+  text-shadow: 0 4px 26px #000;
+}
+.chapter-card.shown { opacity: 1; }
+
+/* 旁白/對白字幕（下三行流轉） */
+.beats {
+  position: absolute; z-index: 7; left: 8%; right: 8%; bottom: 9%;
+  display: flex; flex-direction: column; gap: 0.5cqh; pointer-events: none;
+}
+.beat {
+  margin: 0; opacity: 0; translate: 0 8px;
+  transition: opacity 0.8s ease, translate 0.8s var(--ease-film);
+  font-size: clamp(12px, 2.3cqw, 22px);
+  text-shadow: 0 2px 8px #000, 0 0 22px #0008;
+  color: #f3ecd8;
+}
+.beat.shown { opacity: 1; translate: 0 0; }
+.beat .who { color: var(--gold); letter-spacing: 0.08em; }
+.film-meta {
+  position: absolute; z-index: 8; top: 8.4%; left: 3%; right: 3%;
+  display: flex; justify-content: space-between; color: #d8caa899;
+  font-size: 10px; letter-spacing: 0.3em;
+}
+
+/* ── 控制列 ─────────────────────────────── */
+.transport {
+  display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+button { font: 13px Georgia, serif; letter-spacing: 0.1em; }
+.transport .primary, #speed {
+  background: #1c2a28; color: var(--ink); border: 1px solid #3c4f47;
+  padding: 10px 18px; cursor: pointer; transition: background 0.3s;
+}
+.transport .primary:hover, #speed:hover { background: #24352f; }
+#speed.fast { color: #ffd98c; border-color: #caa96a; }
+.track {
+  flex: 1; min-width: 200px; height: 8px; background: #17221f; border: 1px solid #2c3a34;
+  cursor: pointer; position: relative;
+}
+#progress {
+  position: absolute; inset: 0 auto 0 0; width: 0;
+  background: linear-gradient(90deg, #8a6f3c, var(--gold));
+}
+#timer { color: var(--muted); font-size: 12px; letter-spacing: 0.14em; }
+
+/* ── 章節表 + 腳本 ───────────────────────── */
+.below { margin-top: 26px; }
+.below h2 { color: #f0e5c8; letter-spacing: 0.3em; font-size: 17px; margin: 0 0 12px; }
+.chapters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chapters button {
+  background: none; border: 1px solid #2f3f39; color: var(--muted);
+  padding: 7px 11px; cursor: pointer; font-size: 12px; letter-spacing: 0.06em;
+  transition: color 0.25s, border-color 0.25s;
+}
+.chapters button:hover { color: var(--ink); }
+.chapters button.current { color: #ffe6ad; border-color: var(--gold); background: #caa96a12; }
+details { margin-top: 18px; }
+summary { cursor: pointer; color: var(--gold); letter-spacing: 0.2em; font-size: 12px; }
+.transcript { color: #c9c2ac; font-size: 13px; white-space: pre-wrap; }
+footer {
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 16px clamp(16px, 4vw, 46px); border-top: 1px solid #22343630;
+  color: #7d8d84; font-size: 11px; letter-spacing: 0.24em;
+}
+@media (max-width: 720px) {
+  .episode-tabs { order: 3; width: 100%; }
+  .beat { font-size: 14px; }
+  .actor { height: 46%; }
+}

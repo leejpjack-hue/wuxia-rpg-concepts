@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d0e">
+  <title>四人の刃 — 兩集動畫 Demo</title>
+  <link rel="stylesheet" href="animation.css">
+</head>
+<body>
+  <header>
+    <a class="wordmark" href="./"><span class="seal">四</span><span>BLADES OF THE FOUR<small>兩集動畫 DEMO</small></span></a>
+    <nav class="episode-tabs">
+      <button class="episode-tab current" data-ep="ep1">第一集 · 破帝</button>
+      <button class="episode-tab" data-ep="ep2">第二集 · 裂口 · 廿賢殿</button>
+    </nav>
+    <a id="back" href="./">回到遊戲 ↗</a>
+  </header>
+
+  <main>
+    <div class="editorial">
+      <p id="episode-label">第一集 · 破帝</p>
+      <p class="synopsis">每集約 20 分鐘 · 以現有遊戲畫作構成的動畫分鏡 Demo · 看過之後再慢慢加新元素</p>
+    </div>
+
+    <section id="stage" class="stage" data-scene="" aria-label="動畫分鏡">
+      <img class="backdrop" src="assets/arena.png" alt="">
+      <div class="cast"></div>
+      <div class="letterbox top"></div>
+      <div class="letterbox bottom"></div>
+      <div class="vignette"></div>
+      <div class="mist"></div>
+      <p class="chapter-card"></p>
+      <div id="beats" class="beats" aria-live="polite"></div>
+      <div class="film-meta"><span>四俠傳 · 動畫分鏡</span><span id="film-time">00:00 / 00:00</span></div>
+    </section>
+
+    <div class="transport">
+      <button id="play" class="primary">▶ 播放</button>
+      <div id="track" class="track" role="progressbar" aria-label="播放位置"><span id="progress"></span></div>
+      <span id="timer">00:00 / 00:00</span>
+      <button id="speed" title="預覽模式：快速走完整集分鏡">×1</button>
+    </div>
+
+    <div class="below">
+      <h2 id="chapter">序章</h2>
+      <div id="chapters" class="chapters"></div>
+      <details>
+        <summary>完整腳本（劇透）</summary>
+        <div id="transcript" class="transcript"></div>
+      </details>
+    </div>
+
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer><span>BLADES OF THE FOUR · ANIMATION DEMO</span><span>第一集「破帝」· 第二集「裂口 · 廿賢殿」</span></footer>
+  <script type="module" src="animation.js"></script>
+</body>
+</html>
