@@ -36,6 +36,29 @@ function portraitSrc(id) {
   return manifest.some((row) => row.file === file && row.runtimeApproved !== false) ? file : null;
 }
 
+/** 每個角色塊面喺圖入面嘅位置（研究結論：面要填滿畫面、眼喺上面三分一）。
+ *  寫實 2:3 全身畫嘅頭喺頂部 12-16%；方圖 sprite 頭喺頂部 6-10%。 */
+const FACE_FOCUS = {
+  painted: { x: "50%", y: "13%" },   // assets/{id}.png 全身 key art
+  wide:    { x: "50%", y: "10%" },   // 1280x720 橫幅 key art（zhao-min.jpg）
+  square:  { x: "50%", y: "9%" },    // 動作單張 / sprite
+};
+
+/** 裁切級別（研究自對白鏡頭文法）：head 面部填滿、face 頭加肩、bust 半身。 */
+const CROP_ZOOM = {
+  // height%（相對舞台）：2:3 畫面部約佔全圖 15% 高 → head 用 ~420%。
+  painted: { head: "420%", face: "300%", bust: "190%" },
+  wide:    { head: "360%", face: "260%", bust: "170%" },
+  square:  { head: "440%", face: "310%", bust: "200%" },
+};
+
+function artKind(id) {
+  const row = manifest.find((entry) => entry.file === `assets/${id}.png` || entry.file === `assets/${id}.jpg`);
+  if (!row) return "square";
+  const wide = /\.jpg$/.test(row.file); // 橫幅 key art
+  return wide ? "wide" : "painted";
+}
+
 /** 動作 asset 解析：單張 `{id}-duel-{pose}.png` → atlas 裁切 → sprite 後備。 */
 const poseAtlases = new Map();
 function poseArt(id, pose) {
@@ -108,7 +131,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "wide" },
           { t: 22, kind: "push", focus: "guan-yu" },
-          { t: 40, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 40, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
           { t: 58, kind: "fight", focus: "zhao-yun", rival: "guan-yu" },
           { t: 72, kind: "pan", from: "right" },
         ],
@@ -125,8 +148,8 @@ export const EPISODES = [
           { t: 84, who: "", text: "第三式未出，雙刀已至。守將單膝落地的一刻，關門開了。" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "warden", pose: "focus", crop: "bust" },
-          { t: 26, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "warden", pose: "focus", crop: "face" },
+          { t: 26, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
           { t: 44, kind: "fight", focus: "zhao-yun", rival: "warden", winner: "rival", rivalPose: "strike" },
           { t: 66, kind: "closeup", focus: "lu-zhishen", pose: "windup", crop: "face" },
           { t: 80, kind: "fight", focus: "hu-sanniang", rival: "warden", pose: "special" },
@@ -157,7 +180,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "left" },
           { t: 22, kind: "push", focus: "shadow-assassin" },
-          { t: 40, kind: "closeup", focus: "hu-sanniang", pose: "focus", crop: "bust" },
+          { t: 40, kind: "closeup", focus: "hu-sanniang", pose: "focus", crop: "face" },
           { t: 58, kind: "wide" },
           { t: 74, kind: "push", focus: "hu-sanniang" },
         ],
@@ -176,7 +199,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "closeup", focus: "night-heron", pose: "focus", crop: "face" },
           { t: 26, kind: "pan", from: "right" },
-          { t: 46, kind: "closeup", focus: "lu-zhishen", pose: "windup", crop: "bust" },
+          { t: 46, kind: "closeup", focus: "lu-zhishen", pose: "windup", crop: "face" },
           { t: 63, kind: "fight", focus: "hu-sanniang", rival: "night-heron", pose: "special" },
           { t: 78, kind: "push", focus: "night-heron" },
         ],
@@ -219,10 +242,10 @@ export const EPISODES = [
           { t: 84, who: "呂布", text: "「……灰色散了。此刃，重歸於我。」" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "lu-bu-rival", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "lu-bu-rival", pose: "focus", crop: "face" },
           { t: 26, kind: "fight", focus: "zhao-yun", rival: "lu-bu-rival", winner: "rival", rivalPose: "strike" },
           { t: 46, kind: "fight", focus: "hu-sanniang", rival: "lu-bu-rival" },
-          { t: 66, kind: "closeup", focus: "zhao-yun", pose: "special", crop: "bust" },
+          { t: 66, kind: "closeup", focus: "zhao-yun", pose: "special", crop: "face" },
           { t: 82, kind: "closeup", focus: "lu-bu-rival", pose: "windup", crop: "face" },
         ],
       },
@@ -252,7 +275,7 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "pan", from: "right" },
-          { t: 24, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 24, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
           { t: 44, kind: "fight", focus: "zhao-yun", rival: "jade-sentinel" },
           { t: 64, kind: "push", focus: "meridian-acolyte" },
         ],
@@ -268,8 +291,8 @@ export const EPISODES = [
           { t: 74, who: "", text: "王座之後，是沒有邊的暗。" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "sovereign", pose: "focus", crop: "face" },
-          { t: 32, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "sovereign", pose: "focus", crop: "head" },
+          { t: 32, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "head" },
           { t: 56, kind: "push", focus: "sovereign" },
           { t: 72, kind: "wide" },
         ],
@@ -292,7 +315,7 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "fight", focus: "zhao-yun", rival: "sovereign", winner: "rival", rivalPose: "strike" },
-          { t: 24, kind: "closeup", focus: "sovereign", pose: "focus", crop: "bust" },
+          { t: 24, kind: "closeup", focus: "sovereign", pose: "focus", crop: "face" },
           { t: 44, kind: "closeup", focus: "sovereign", pose: "windup", crop: "face" },
           { t: 62, kind: "fight", focus: "zhao-yun", rival: "sovereign", pose: "special" },
           { t: 80, kind: "push", focus: "zhao-yun" },
@@ -344,7 +367,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "right" },
           { t: 24, kind: "push", focus: "zhao-yun" },
-          { t: 62, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 62, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
         ],
       },
       {
@@ -365,7 +388,7 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "wide" },
-          { t: 26, kind: "closeup", focus: "jia-yucun", pose: "focus", crop: "bust" },
+          { t: 26, kind: "closeup", focus: "jia-yucun", pose: "focus", crop: "face" },
           { t: 44, kind: "pan", from: "left" },
         ],
       },
@@ -387,7 +410,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "pan", from: "left" },
           { t: 26, kind: "wide" },
-          { t: 48, kind: "closeup", focus: "empress-yixiu", pose: "focus", crop: "bust" },
+          { t: 48, kind: "closeup", focus: "empress-yixiu", pose: "focus", crop: "face" },
         ],
       },
       {
@@ -400,7 +423,7 @@ export const EPISODES = [
           { t: 44, who: "", text: "二十張案，同時翻起。" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "head" },
           { t: 28, kind: "closeup", focus: "zhao-yun", pose: "windup", crop: "face" },
           { t: 42, kind: "wide" },
         ],
@@ -423,7 +446,7 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "pan", from: "right" },
-          { t: 46, kind: "closeup", focus: "lin-daiyu", pose: "focus", crop: "bust" },
+          { t: 46, kind: "closeup", focus: "lin-daiyu", pose: "focus", crop: "face" },
           { t: 63, kind: "fight", focus: "zhao-yun", rival: "lin-daiyu" },
           { t: 78, kind: "wide" },
         ],
@@ -444,9 +467,9 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "pan", from: "left" },
-          { t: 28, kind: "closeup", focus: "hu-sanniang", pose: "focus", crop: "bust" },
+          { t: 28, kind: "closeup", focus: "hu-sanniang", pose: "focus", crop: "face" },
           { t: 47, kind: "fight", focus: "hu-sanniang", rival: "wu-yong" },
-          { t: 66, kind: "closeup", focus: "wu-yong", pose: "windup", crop: "bust" },
+          { t: 66, kind: "closeup", focus: "wu-yong", pose: "windup", crop: "face" },
         ],
       },
       {
@@ -462,7 +485,7 @@ export const EPISODES = [
         shots: [
           { t: 4, kind: "closeup", focus: "bao-zheng", pose: "focus", crop: "face" },
           { t: 28, kind: "pan", from: "right" },
-          { t: 48, kind: "closeup", focus: "di-renjie", pose: "focus", crop: "bust" },
+          { t: 48, kind: "closeup", focus: "di-renjie", pose: "focus", crop: "face" },
         ],
       },
       {
@@ -482,7 +505,7 @@ export const EPISODES = [
         ],
         shots: [
           { t: 4, kind: "wide" },
-          { t: 28, kind: "closeup", focus: "wang-xifeng", pose: "focus", crop: "bust" },
+          { t: 28, kind: "closeup", focus: "wang-xifeng", pose: "focus", crop: "face" },
           { t: 50, kind: "pan", from: "left" },
         ],
       },
@@ -517,9 +540,9 @@ export const EPISODES = [
           { t: 74, who: "", text: "雙劍出鞘。雲棧之上，風停了。" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "face" },
           { t: 34, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "face" },
-          { t: 54, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "bust" },
+          { t: 54, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
           { t: 74, kind: "fight", focus: "zhao-yun", rival: "zhao-min", rivalPose: "strike", winner: "rival" },
         ],
       },
@@ -559,7 +582,7 @@ export const EPISODES = [
           { t: 86, who: "", text: "（第二集 完）" },
         ],
         shots: [
-          { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "bust" },
+          { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "face" },
           { t: 24, kind: "pan", from: "right" },
         ],
       },
@@ -596,7 +619,8 @@ function shotsOf(scene) {
   const shots = [{ t: 0, kind: "wide" }];
   scene.beats.forEach((beat, i) => {
     const focus = SPEAKERS[beat.who];
-    if (focus) shots.push({ t: Math.max(0, beat.t - 1.5), kind: "closeup", focus, pose: "focus", crop: "bust" });
+    if (beat.shot && focus) shots.push({ t: Math.max(0, beat.t - 1.5), kind: "closeup", focus, pose: "focus", crop: "face", ...beat.shot });
+    else if (focus) shots.push({ t: Math.max(0, beat.t - 1.5), kind: "closeup", focus, pose: "focus", crop: "face" });
     else if (i > 0) shots.push({ t: beat.t, kind: i % 2 ? "pan" : "wide", from: i % 4 === 1 ? "left" : "right" });
   });
   return shots.sort((a, b) => a.t - b.t);
@@ -626,6 +650,19 @@ function shotAt(scene, local) {
 function nameOf(id) {
   const entry = Object.entries(SPEAKERS).find(([, sid]) => sid === id);
   return entry ? entry[0] : id;
+}
+
+/** Shot/reverse-shot: within a scene, the first speaker takes screen-left
+ *  (facing right), and each different speaker flips the side — the two sides
+ *  of the conversation never face the same way (180-degree rule). */
+const speakerSides = new Map();
+function sideFor(scene, focus) {
+  const last = speakerSides.get(scene.id);
+  const side = last && last.focus !== focus && last.side === "left" ? "right"
+    : last && last.focus !== focus && last.side === "right" ? "left"
+    : last?.side || "left";
+  speakerSides.set(scene.id, { focus, side });
+  return side;
 }
 
 /** 把動作 asset 套上節點：單張直用；atlas 由 duel-poses 裁切。 */
@@ -682,14 +719,24 @@ function render() {
     if (shot.kind === "closeup" && shot.focus) {
       const img = closeup.querySelector("img");
       const portrait = portraitSrc(shot.focus);
+      const kind = portrait ? artKind(shot.focus) : "square";
+      const crop = shot.crop || "face";
+      const focus = FACE_FOCUS[kind];
       if (portrait) {
         img.removeAttribute("style");
         img.className = "";
         img.src = portrait;
         img.style.objectFit = "cover";
-        img.style.objectPosition = shot.crop === "face" ? "50% 8%" : "50% 16%";
-      } else applyPoseArt(img, shot.focus, shot.pose);
-      closeup.dataset.crop = shot.crop || "bust";
+        img.style.objectPosition = `${focus.x} ${focus.y}`;
+      } else {
+        applyPoseArt(img, shot.focus, shot.pose);
+        img.style.height = CROP_ZOOM.square[crop === "head" ? "face" : crop];
+      }
+      closeup.dataset.crop = crop;
+      closeup.dataset.kind = kind;
+      // 180 度軸線（shot/reverse-shot）：同一場戲兩個講者輪流講，左右機位對調。
+      const speakerSide = sideFor(scene, shot.focus);
+      closeup.dataset.side = speakerSide;
       closeup.querySelector(".plate").textContent = nameOf(shot.focus);
       restartAnimation(closeup, "cut");
     }
