@@ -102,21 +102,36 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 .closeup {
   position: absolute; inset: 0; z-index: 4; margin: 0;
   display: grid; place-items: center end;
-  background: radial-gradient(ellipse at 62% 40%, #101c1cd8, #05090af2 78%);
+  background: radial-gradient(ellipse at 50% 38%, #101c1cd8, #05090af2 82%);
+  overflow: hidden;
 }
+/* 研究結論：講嘢鏡頭塊面填滿畫面、眼喺上面三分一；左右留視線空間（lead room）。 */
 .closeup img {
-  height: 118%; max-width: none; object-fit: cover; object-position: 50% 12%;
-  transform-origin: 78% 30%;
+  max-width: none; object-fit: cover; object-position: 50% 13%;
   filter: drop-shadow(0 0 42px #000c) contrast(1.06);
-  mask-image: linear-gradient(105deg, transparent 0 12%, #000 34% 96%, transparent);
+  transition: translate 0.6s var(--ease-film);
 }
-.closeup[data-crop="face"] img { height: 165%; object-position: 50% 6%; }
-.closeup[data-crop="bust"] img { height: 118%; }
-.closeup img.duel-pose { height: 150%; }
-.closeup[data-crop="face"] img.duel-pose { height: 220%; }
-/* Sprite 後備（冇頭像冇動作圖）：全幅小人，推得更近裁上身。 */
-.closeup img:not(.duel-pose) { height: 200%; object-position: 50% 0; }
-.closeup[data-crop="face"] img:not(.duel-pose) { height: 280%; }
+/* 裁切級別 × 畫種：height 由驅動按 CROP_ZOOM 指定（head 420% ≈ 面部填滿）。 */
+.closeup[data-crop="head"] img { height: 420%; }
+.closeup[data-crop="face"] img { height: 300%; }
+.closeup[data-crop="bust"] img { height: 190%; }
+.closeup[data-kind="wide"][data-crop="head"] img { height: 360%; }
+.closeup[data-kind="wide"][data-crop="face"] img { height: 260%; }
+.closeup[data-kind="wide"][data-crop="bust"] img { height: 170%; }
+.closeup img.duel-pose, .closeup[data-kind="square"] img { object-position: 50% 9%; }
+.closeup[data-crop="head"] img.duel-pose { height: 440%; }
+.closeup[data-crop="face"] img.duel-pose { height: 310%; }
+
+/* 180 度軸線：left 機位塊面靠左望右（右邊留白），right 機位相反。 */
+.closeup[data-side="left"] { place-items: center end; }
+.closeup[data-side="left"] img { translate: -22cqw 0; }
+.closeup[data-side="right"] { place-items: center start; }
+.closeup[data-side="right"] img { translate: 22cqw 0; }
+.closeup[data-side="right"] .plate { left: auto; right: 7%; border-right: 0; border-left: 3px solid var(--gold); padding: 0 0 0 12px; }
+
+/* 對白大頭要「生」：微微呼吸同視線漂移。 */
+.closeup img { animation: closeup-breath 4.2s ease-in-out infinite alternate; }
+@keyframes closeup-breath { from { margin-top: 0; } to { margin-top: 0.7cqh; } }
 .closeup .shade {
   position: absolute; inset: 0;
   background: linear-gradient(100deg, #05090ae6 0 30%, transparent 62%),
