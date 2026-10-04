@@ -23,9 +23,24 @@
       <p class="synopsis">每集約 20 分鐘 · 以現有遊戲畫作構成的動畫分鏡 Demo · 看過之後再慢慢加新元素</p>
     </div>
 
-    <section id="stage" class="stage" data-scene="" aria-label="動畫分鏡">
-      <img class="backdrop" src="assets/arena.png" alt="">
+    <section id="stage" class="stage" data-scene="" data-shot="wide" aria-label="動畫分鏡">
+      <div class="camera">
+        <img class="backdrop" src="assets/arena.png" alt="">
+      </div>
       <div class="cast"></div>
+      <figure class="closeup" hidden>
+        <img alt="">
+        <div class="shade"></div>
+        <figcaption class="plate"></figcaption>
+      </figure>
+      <div class="duel-stage" hidden>
+        <img class="rival" alt="">
+        <img class="hero" alt="">
+        <span class="plate hero"></span>
+        <span class="plate rival"></span>
+        <div class="speed-lines"></div>
+        <div class="fx slash"></div>
+      </div>
       <div class="letterbox top"></div>
       <div class="letterbox bottom"></div>
       <div class="vignette"></div>

@@ -49,16 +49,17 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
   background: #060a0b; border: 1px solid #2c3d3a; border-radius: 10px;
   container-type: size;
 }
+.camera { position: absolute; inset: 0; }
 .backdrop {
   position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
   filter: saturate(0.92) contrast(1.05) brightness(0.9);
-  animation: none var(--ease-film) both;
 }
-.stage[data-scene] .backdrop.pan-in { animation-name: ken-in; animation-duration: 100s; }
-.stage[data-scene] .backdrop.pan-in-slow { animation-name: ken-slow; animation-duration: 120s; }
-.stage[data-scene] .backdrop.pan-left { animation-name: ken-left; animation-duration: 100s; }
-.stage[data-scene] .backdrop.pan-right { animation-name: ken-right; animation-duration: 100s; }
-.stage[data-scene] .backdrop.pan-out { animation-name: ken-out; animation-duration: 100s; }
+.camera[data-camera="pan-in"] .backdrop { animation: ken-in 100s var(--ease-film) both; }
+.camera[data-camera="pan-in-slow"] .backdrop { animation: ken-slow 120s var(--ease-film) both; }
+.camera[data-camera="pan-left"] .backdrop { animation: ken-left 100s var(--ease-film) both; }
+.camera[data-camera="pan-right"] .backdrop { animation: ken-right 100s var(--ease-film) both; }
+.camera[data-camera="pan-out"] .backdrop { animation: ken-out 100s var(--ease-film) both; }
+.camera[data-camera="push"] .backdrop { animation: ken-in 70s var(--ease-film) both; }
 @keyframes ken-in { from { transform: scale(1.02); } to { transform: scale(1.16); } }
 @keyframes ken-slow { from { transform: scale(1.14) translateX(1.5%); } to { transform: scale(1.16) translateX(-1.5%); } }
 @keyframes ken-left { from { transform: scale(1.12) translateX(3%); } to { transform: scale(1.12) translateX(-3%); } }
@@ -80,6 +81,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 
 /* 演員進場 */
 .cast { position: absolute; inset: 0; z-index: 2; }
+.stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast { visibility: hidden; }
 .actor {
   position: absolute; bottom: 10%; height: 58%;
   filter: drop-shadow(0 14px 12px #000b);
@@ -95,6 +97,72 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 .side-center { left: 42%; }
 .side-right { right: 16%; }
 .side-far-right { right: 6%; }
+
+/* 大頭鏡：動作 asset 裁切（唔一定要成個人） */
+.closeup {
+  position: absolute; inset: 0; z-index: 4; margin: 0;
+  display: grid; place-items: center end;
+  background: radial-gradient(ellipse at 62% 40%, #101c1cd8, #05090af2 78%);
+}
+.closeup img {
+  height: 118%; max-width: none; object-fit: cover; object-position: 50% 12%;
+  transform-origin: 78% 30%;
+  filter: drop-shadow(0 0 42px #000c) contrast(1.06);
+  mask-image: linear-gradient(105deg, transparent 0 12%, #000 34% 96%, transparent);
+}
+.closeup[data-crop="face"] img { height: 165%; object-position: 50% 6%; }
+.closeup[data-crop="bust"] img { height: 118%; }
+.closeup img.duel-pose { height: 150%; }
+.closeup[data-crop="face"] img.duel-pose { height: 220%; }
+/* Sprite 後備（冇頭像冇動作圖）：全幅小人，推得更近裁上身。 */
+.closeup img:not(.duel-pose) { height: 200%; object-position: 50% 0; }
+.closeup[data-crop="face"] img:not(.duel-pose) { height: 280%; }
+.closeup .shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, #05090ae6 0 30%, transparent 62%),
+              radial-gradient(circle at 78% 34%, transparent 30%, #05090ab0 72%);
+}
+.closeup .plate {
+  position: absolute; left: 7%; top: 18%;
+  writing-mode: vertical-rl; letter-spacing: 0.4em;
+  font: 700 clamp(15px, 3cqw, 30px) Georgia, "Noto Serif CJK TC", serif;
+  color: #f4e9cd; text-shadow: 0 3px 18px #000;
+  border-right: 3px solid var(--gold); padding-right: 12px;
+}
+.closeup.cut { animation: cut-dip 0.32s steps(2) both; }
+
+/* 對峙機位：雙人 + 速度線 + 出招特效 */
+.duel-stage { position: absolute; inset: 0; z-index: 4; }
+.duel-stage img {
+  position: absolute; bottom: 9%; height: 74%; max-width: none;
+  object-fit: contain; filter: drop-shadow(0 16px 14px #000c);
+}
+.duel-stage img.hero { left: 10%; animation: actor-in 1s var(--ease-film) both, duel-lunge-hero 2.6s var(--ease-film) both; }
+.duel-stage img.rival { right: 10%; transform: scaleX(-1); animation: actor-in 1s var(--ease-film) both, duel-lunge-rival 2.6s var(--ease-film) both; }
+.duel-stage .plate {
+  position: absolute; bottom: 5%; font: 700 clamp(11px, 1.8cqw, 17px) Georgia, serif;
+  letter-spacing: 0.3em; color: #f2e6c8; text-shadow: 0 2px 8px #000;
+}
+.duel-stage .plate.hero { left: 12%; }
+.duel-stage .plate.rival { right: 12%; }
+.duel-stage .speed-lines {
+  position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg at 50% 62%, #fff0 0 3.4deg, #ffffff26 3.4deg 3.8deg);
+  -webkit-mask: radial-gradient(circle at 50% 62%, transparent 26%, #000 68%);
+  mask: radial-gradient(circle at 50% 62%, transparent 26%, #000 68%);
+}
+.duel-stage .fx { position: absolute; inset: 0; pointer-events: none; }
+.duel-stage .fx.slash {
+  left: -10%; right: -10%; top: 46%; height: 4px; opacity: 0;
+  background: linear-gradient(90deg, transparent, #fff 18%, var(--gold) 50%, #fff 82%, transparent);
+  animation: fx-slash 0.6s ease-out 0.35s both;
+}
+.duel-stage .fx.flash { inset: 0; opacity: 0; background: radial-gradient(circle at 50% 55%, #fffbe8, #caa96a55 34%, transparent 72%); animation: fx-flash 0.7s ease-out 0.35s both; }
+@keyframes duel-lunge-hero { 0%, 20% { translate: 0 0; } 55% { translate: 26% 0; } 100% { translate: 20% 0; } }
+@keyframes duel-lunge-rival { 0%, 20% { translate: 0 0; } 55% { translate: -14% 0; } 100% { translate: -8% 0; } }
+@keyframes fx-slash { 0% { opacity: 0; transform: rotate(-9deg) scaleX(0); } 35% { opacity: 1; } 100% { opacity: 0; transform: rotate(-9deg) scaleX(1); } }
+@keyframes fx-flash { 0% { opacity: 0; } 30% { opacity: 0.95; } 100% { opacity: 0; } }
+@keyframes cut-dip { 0% { opacity: 0; } 55% { opacity: 1; } 100% { opacity: 1; } }
 
 /* 章節卡 */
 .chapter-card {
