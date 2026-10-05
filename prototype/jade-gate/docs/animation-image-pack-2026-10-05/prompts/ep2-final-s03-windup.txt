@@ -1,0 +1,23 @@
+ep2-final-s03-windup — 終章 · 第二十張案 · S03 · windup
+OUTPUT: assets/animation/fight/ep2-final-s03-windup.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/shot/ep2-final-s03.png [generate-and-approve-first]
+- assets/animation/identity/id-zhao-yun.png [generate-and-approve-first]
+- assets/zhao-yun-sprite.png [existing]
+- assets/animation/identity/id-zhao-min.png [generate-and-approve-first]
+- assets/zhao-min-sprite.png [existing]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. The same cloud bridge with unchanged portals and railings. Cool pearl light; gold jade glints appear only at the reveal. Use the approved standoff frame as exact camera and geography reference, preserve the same lens, horizon, body scale, light, costumes and weapon designs. Draw a new action keyframe.
+PHASE: Weight shifts onto the rear foot; attacker coils hips and bends elbows; defender actively braces. Weapons stay separate.
+ENTIRE EXCHANGE AND OUTCOME: Zhao Yun gently hooks the sleeve clasp with his sword spine. The clasp releases the half-jade pendant; do not cut skin, clothing across the torso, or the character's body. Both freeze at the reveal, without a victory collapse.
+CAST:
+zhao-yun: adult East Asian man, long black high ponytail, silver dragon shoulder armor, white layered robes, jade-green sash. Animation weapon continuity: one straight Qinggang jian, not the spear in the old ready sprite. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+zhao-min: adult East Asian woman, long dark ponytail, black short martial dress over ivory long sleeves, dark knee-high boots; two straight jian only in combat. Preserve this ready-sprite outfit consistently instead of switching to the modern white-jacket gallery portrait. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+No repeated upright ready pose; believable balance and foot contact. Before contact retain the initial left/right positions; after contact any crossing must follow the visible movement, never an arbitrary flip. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Match to adjacent phase at the same camera. Use action arcs and additional in-between drawings; seven poses alone are a limited-animation pass.

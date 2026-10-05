@@ -1,0 +1,11 @@
+2026-10-05 — animation prompt pack validation
+Source commit: 5f1ca74
+PASS: 389 unique requests; 128 existing shots mapped.
+PASS: Existing asset references exist; planned dependencies resolve to declared outputs.
+PASS: Markdown links and ZIP contents validated (389 prompts plus guide/catalog/inventory).
+PASS: Browser catalog loads; search returns seven causeway fight frames; selecting impact shows correct request; copy shows success.
+PASS: npm test — 304 passed, 0 failed.
+PASS: npm run check — JavaScript modules and existing game assets validated.
+PASS: git diff --check.
+Evidence: catalog-preview.png
+No new artwork generated or animation runtime modified.

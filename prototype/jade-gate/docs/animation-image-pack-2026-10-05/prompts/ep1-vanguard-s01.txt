@@ -1,0 +1,26 @@
+ep1-vanguard-s01 — 第一章 · 破先鋒 · S01 · wide
+OUTPUT: assets/animation/shot/ep1-vanguard-s01.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-guan-yu.png [generate-and-approve-first]
+- assets/guan-yu-sprite.png [existing]
+- assets/animation/identity/id-gu-dasao.png [generate-and-approve-first]
+- assets/gu-dasao-sprite.png [existing]
+- assets/animation/identity/id-guard.png [generate-and-approve-first]
+- assets/guard-sprite.png [existing]
+- assets/animation/background/bg-gate-camp.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Enemy camp outside Jade Gate, grounded stone yard, scattered braziers, gray banners. Night with orange fire rim light.
+STORY MOMENT: Guan Yu and Gu Dasao stand under the decree's influence, guarding the camp.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+guan-yu: tall mature East Asian warrior, long black beard, green robe, gold-edged armor, green-dragon crescent glaive. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+gu-dasao: strong adult East Asian woman, red headscarf, sleeveless charcoal tunic, red waist sash, trousers and boots, two broad cleavers. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+guard: adult East Asian soldier, dark helmet, blue-gray cloth and brown lamellar armor, one broad dao. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.

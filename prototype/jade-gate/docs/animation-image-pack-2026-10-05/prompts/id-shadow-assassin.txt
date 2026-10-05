@@ -1,0 +1,13 @@
+id-shadow-assassin — shadow-assassin · 正面身份基準
+OUTPUT: assets/animation/identity/id-shadow-assassin.png
+SIZE: 1536x1536
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/shadow-assassin-sprite.png [existing]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. Use the attached ready sprite as identity and costume reference. adult East Asian assassin, dark indigo scarf and lower-face covering, layered blue-gray cloth armor, topknot, one curved short blade. One single front-facing neutral head-and-shoulders portrait, closed relaxed mouth, eyes open, looking straight into lens, no head tilt, no dramatic expression. Full hair silhouette and shoulders within frame with 10% margin; face large enough to inspect eye shape. Neutral soft light from upper left, quiet gray background, no weapon foreground. Preserve asymmetry; do not beautify into a different person. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+

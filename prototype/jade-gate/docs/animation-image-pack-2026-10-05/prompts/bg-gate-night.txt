@@ -1,0 +1,13 @@
+bg-gate-night — 序章 · 血月照關 · 場景空景
+OUTPUT: assets/animation/background/bg-gate-night.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/arena.png [existing]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Jade Gate mountain fortress at night, large timber doors, stone battlements, refugees below, ashen banners and a crimson moon. Cold moonlight and isolated orange lanterns. Empty environment plate, no people, silhouettes, weapons, speech or effects in front of the architecture. Human eye-level perspective, 35mm-equivalent lens, horizon at 45% image height. Clearly readable walkable ground. Maintain 15% extra composition room on both sides for modest pans. Use the attached existing map only for palette and architectural motifs, redraw it from this camera instead of copying its elevated gameplay perspective. Separate foreground occlusion from the central acting lane.
+
+ANIMATION / HANDOFF:
+Later separate distant sky/cloud, architecture and foreground into layers; pan layers at different speeds. This plate itself contains no animation.

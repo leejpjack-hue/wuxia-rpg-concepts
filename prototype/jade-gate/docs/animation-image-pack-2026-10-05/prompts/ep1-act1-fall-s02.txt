@@ -1,0 +1,20 @@
+ep1-act1-fall-s02 — 第一章 · 關開 · S02 · closeup
+OUTPUT: assets/animation/shot/ep1-act1-fall-s02.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-guan-yu.png [generate-and-approve-first]
+- assets/guan-yu-sprite.png [existing]
+- assets/animation/background/bg-gate-dawn.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. The same Jade Gate stone courtyard after battle, open gate, extinguishing braziers and early soft dawn.
+STORY MOMENT: Guan Yu speaks as the gray influence fades from his eyes.
+CAMERA: Purpose-drawn close-up, 85mm-equivalent eye-level lens, guan-yu on screen right, head turned 25 degrees toward screen left, eyes looking just off-camera at the partner, full hair crown and chin visible, eye line at upper third. Head and shoulders fill the frame without zooming a full-body image. Match the head angle in every mouth and blink frame. Mouth initially closed; convey the line through eyes and facial muscles. 
+CAST IDENTITY:
+guan-yu: tall mature East Asian warrior, long black beard, green robe, gold-edged armor, green-dragon crescent glaive. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Use the closed-mouth base plus the open-mouth and blink variants in this pack. Add subtle breath/hair movement; mouth shapes must follow the recorded dialogue, not random looping.
