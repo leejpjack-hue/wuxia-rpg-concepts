@@ -1,0 +1,20 @@
+ep1-heron-s05 — 第二章 · 盲琴師 · S05 · push
+OUTPUT: assets/animation/shot/ep1-heron-s05.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-night-heron.png [generate-and-approve-first]
+- assets/night-heron-sprite.png [existing]
+- assets/animation/background/bg-river-mist.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Rocky riverbank and shallow water beside dense bamboo, dark slick stones, low white fog. Cool diffused morning light.
+STORY MOMENT: The zither falls safely; Night Heron smiles and retreats alive into fog.
+CAMERA: Medium waist-up shot with a 50mm-equivalent lens, character oriented toward the other actor, stable anatomy and complete hair crown. Leave 12% overscan for a restrained 1.0–1.08 camera push; if the beat is an object reveal, frame hands and that object instead of a generic face. 
+CAST IDENTITY:
+night-heron: adult blind zither musician, black eye covering, long dark hair and charcoal layered clothing, horizontal stringed zither; retain the reference silhouette and concealed eye design. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Restrained push under 8%, independent foreground/background parallax, a deliberate eye or hand movement; no repeated full-body bounce.

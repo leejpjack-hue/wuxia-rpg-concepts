@@ -1,0 +1,23 @@
+ep1-heron-s02 — 第二章 · 盲琴師 · S02 · pan
+OUTPUT: assets/animation/shot/ep1-heron-s02.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-zhao-yun.png [generate-and-approve-first]
+- assets/zhao-yun-sprite.png [existing]
+- assets/animation/identity/id-night-heron.png [generate-and-approve-first]
+- assets/night-heron-sprite.png [existing]
+- assets/animation/background/bg-river-mist.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Rocky riverbank and shallow water beside dense bamboo, dark slick stones, low white fog. Cool diffused morning light.
+STORY MOMENT: Zither strings stretch across the riverbank like traps; fog blocks the remaining approach.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+zhao-yun: adult East Asian man, long black high ponytail, silver dragon shoulder armor, white layered robes, jade-green sash. Animation weapon continuity: one straight Qinggang jian, not the spear in the old ready sprite. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+night-heron: adult blind zither musician, black eye covering, long dark hair and charcoal layered clothing, horizontal stringed zither; retain the reference silhouette and concealed eye design. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.

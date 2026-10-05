@@ -1,0 +1,20 @@
+ep1-vanguard-s02 — 第一章 · 破先鋒 · S02 · push
+OUTPUT: assets/animation/shot/ep1-vanguard-s02.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-guan-yu.png [generate-and-approve-first]
+- assets/guan-yu-sprite.png [existing]
+- assets/animation/background/bg-gate-camp.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Enemy camp outside Jade Gate, grounded stone yard, scattered braziers, gray banners. Night with orange fire rim light.
+STORY MOMENT: Subtle ink threads bind Guan Yu's wrist, suggesting repeated erased memories.
+CAMERA: Medium waist-up shot with a 50mm-equivalent lens, character oriented toward the other actor, stable anatomy and complete hair crown. Leave 12% overscan for a restrained 1.0–1.08 camera push; if the beat is an object reveal, frame hands and that object instead of a generic face. 
+CAST IDENTITY:
+guan-yu: tall mature East Asian warrior, long black beard, green robe, gold-edged armor, green-dragon crescent glaive. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Restrained push under 8%, independent foreground/background parallax, a deliberate eye or hand movement; no repeated full-body bounce.

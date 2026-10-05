@@ -1,0 +1,13 @@
+prop-half-jade — 半玉 · 前後呼應道具
+OUTPUT: assets/animation/prop/prop-half-jade.png
+SIZE: 1536x1536
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One single product-like reference image, 1536x1536, neutral gray background. A small pale celadon jade disk broken into two complementary halves along one distinctive asymmetrical zigzag fracture. Both halves lie adjacent with a 1cm gap, visibly capable of fitting exactly. One understated carved cloud circle crosses the fracture; tiny brown silk cord through a hole near the top. Same material and thickness for both halves. Soft neutral light, no hands, lettering, glow, duplicate objects or decorative frame. This is a proposed new story prop; approve before all handover/falling/reunion shots.
+
+ANIMATION / HANDOFF:
+

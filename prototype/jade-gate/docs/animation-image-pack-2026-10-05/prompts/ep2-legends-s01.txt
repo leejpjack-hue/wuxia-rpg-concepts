@@ -1,0 +1,26 @@
+ep2-legends-s01 — 第三章 · 被撕出書頁的人 · S01 · pan
+OUTPUT: assets/animation/shot/ep2-legends-s01.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-diaochan.png [generate-and-approve-first]
+- assets/diaochan-sprite.png [existing]
+- assets/animation/identity/id-yang-yuhuan.png [generate-and-approve-first]
+- assets/yang-yuhuan-sprite.png [existing]
+- assets/animation/identity/id-lin-daiyu.png [generate-and-approve-first]
+- assets/lin-daiyu-sprite.png [existing]
+- assets/animation/background/bg-garden.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Covered palace waterside gallery beyond the Hall of Twenty, lotus pond, reflected lamps and an opening to clouds. Warm evening gold with pale lavender reflections.
+STORY MOMENT: Diaochan, Yang Yuhuan, Lin Daiyu and Xue Baochai reclaim their individual stories.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+diaochan: adult East Asian dancer, flowing dark hair and gold ornaments, ivory-gold short dress with long pale pink silk ribbons. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+yang-yuhuan: adult East Asian woman, dark updo with gold flowers, black fitted short dress and ivory-gold sleeves, heeled sandals. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+lin-daiyu: slender adult East Asian woman, dark pinned hair, black-gold short dress with flowing lilac translucent outer sleeves, dark folding fan. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.

@@ -1,0 +1,14 @@
+ep1-warden-s01-blink — 第一章 · 灰旗守將 · S01 · blink
+OUTPUT: assets/animation/expression/ep1-warden-s01-blink.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/shot/ep1-warden-s01.png [generate-and-approve-first]
+- assets/animation/identity/id-warden.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Edit the attached APPROVED shot base image. Close only the eyelids in a relaxed blink; keep the mouth closed exactly as the base image. Preserve every other pixel as closely as possible: camera, face angle, head size, nose, jaw, hair, costume, lighting, background and composition. Do not redraw or reposition the person. One full-canvas replacement frame, not a face tile or contact sheet. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Register exactly over the base at 100% scale; reject any eye, nose or chin displacement before frame swapping.

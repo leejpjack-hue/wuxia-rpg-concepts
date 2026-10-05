@@ -1,0 +1,29 @@
+ep2-hall-s01 — 第二章 · 廿賢殿 · S01 · pan
+OUTPUT: assets/animation/shot/ep2-hall-s01.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-bao-zheng.png [generate-and-approve-first]
+- assets/bao-zheng-sprite.png [existing]
+- assets/animation/identity/id-di-renjie.png [generate-and-approve-first]
+- assets/di-renjie-sprite.png [existing]
+- assets/animation/identity/id-song-jiang.png [generate-and-approve-first]
+- assets/song-jiang-sprite.png [existing]
+- assets/animation/identity/id-wu-yong.png [generate-and-approve-first]
+- assets/wu-yong-sprite.png [existing]
+- assets/animation/background/bg-twenty-hall.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Enormous Hall of Twenty, twenty distinct desks arranged in three staggered banks, tall vermilion columns, lacquer screens and hanging lamps. Deep warm interior perspective.
+STORY MOMENT: Establish all twenty desks; distant human figures may be simple silhouettes.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+bao-zheng: mature East Asian magistrate, dark beard, black-purple robe and official headwear, sheathed judgment sword; preserve the approved face markings without inventing new ones. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+di-renjie: adult East Asian investigator, dark tied hair, gray-blue layered robe and dark trousers, court tablet held near chest. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+song-jiang: adult East Asian leader, tied hair, mustache and short beard, red tunic and black trousers, simple dao. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+wu-yong: adult East Asian strategist, tied dark hair, long deep-blue robe with purple trim, folding fan. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.

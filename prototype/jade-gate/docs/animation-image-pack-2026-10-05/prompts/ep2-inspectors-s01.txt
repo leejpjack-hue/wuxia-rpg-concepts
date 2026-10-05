@@ -1,0 +1,29 @@
+ep2-inspectors-s01 — 第一章 · 廿賢的巡查者 · S01 · wide
+OUTPUT: assets/animation/shot/ep2-inspectors-s01.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-jia-yucun.png [generate-and-approve-first]
+- assets/jia-yucun-sprite.png [existing]
+- assets/animation/identity/id-fan-jin.png [generate-and-approve-first]
+- assets/fan-jin-sprite.png [existing]
+- assets/animation/identity/id-kuang-zhong.png [generate-and-approve-first]
+- assets/kuang-zhong-sprite.png [existing]
+- assets/animation/identity/id-lu-su.png [generate-and-approve-first]
+- assets/lu-su-sprite.png [existing]
+- assets/animation/background/bg-inspection.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. An inspection pavilion opening onto the foggy street, four desks and travel ledgers, hanging lamps. Muted gray daylight and amber lamp accents.
+STORY MOMENT: Jia Yucun, Fan Jin, Kuang Zhong and Lu Su sit at four inspection stations.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+jia-yucun: adult East Asian man, tied black hair, cream sleeves under black waistcoat, dark trousers, bamboo court tablet. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+fan-jin: thin adult East Asian scholar, untidy tied hair, weathered beige-gray robe, scholarly scroll. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+kuang-zhong: adult East Asian official, tied hair and short facial hair, blue-teal tunic, dark trousers, ceremonial chained gold implement. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+lu-su: adult East Asian scholar, tied hair, light sage long tunic with cream sleeves, dark trousers, bamboo court tablet. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.

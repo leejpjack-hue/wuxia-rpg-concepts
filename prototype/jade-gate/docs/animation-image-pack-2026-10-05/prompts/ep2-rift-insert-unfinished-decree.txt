@@ -1,0 +1,16 @@
+ep2-rift-insert-unfinished-decree — rift · unfinished-decree
+OUTPUT: assets/animation/insert/ep2-rift-insert-unfinished-decree.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/background/bg-rift.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Broken Meridian Citadel gate at dawn, a golden fissure above the arch, loose paper and drifting ink. Dawn blue-gold light.
+A single unfinished black brushstroke hangs in the air over the broken gate, its loose end opening into gold; no letters or human face.
+
+No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+New proposed insert tied to this narrative beat; add an explicit shot binding later. Use a short motivated cut, not a replacement of the entire scene.

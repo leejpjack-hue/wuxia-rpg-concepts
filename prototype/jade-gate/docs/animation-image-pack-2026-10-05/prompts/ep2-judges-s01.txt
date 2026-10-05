@@ -1,0 +1,26 @@
+ep2-judges-s01 — 第三章 · 判官一脈 · S01 · pan
+OUTPUT: assets/animation/shot/ep2-judges-s01.png
+SIZE: 2560x1440
+ALPHA: False
+
+ATTACH REFERENCES (approve pending references before using this prompt):
+- assets/animation/identity/id-jia-zheng.png [generate-and-approve-first]
+- assets/jia-zheng-sprite.png [existing]
+- assets/animation/identity/id-xun-yu.png [generate-and-approve-first]
+- assets/xun-yu-sprite.png [existing]
+- assets/animation/identity/id-hu-sanniang.png [generate-and-approve-first]
+- assets/hu-sanniang-sprite.png [existing]
+- assets/animation/background/bg-judges.png [generate-and-approve-first]
+
+COPY PROMPT:
+Cinematic Chinese wuxia 2D animation keyframe, controlled clean contour lines, two to three deliberate shadow tones, restrained painterly background, consistent anatomy. Preserve the attached character identity rather than replacing it with a generic anime face. No photorealistic collage, no game interface, subtitles, lettering, watermark, border or split panels. One landscape frame, 2560x1440 pixels, 16:9. If this exact size is unavailable, use the closest landscape size without stretching; keep the center 16:9 composition safe for final export. Keep essential action above the bottom 16% reserved for subtitles. No baked black bars. Side chamber of the Hall of Twenty, four scholarly desks, strategy tokens, lamps and paper screens. Warm neutral light.
+STORY MOMENT: Jia Zheng, Xun Yu, Song Jiang and Wu Yong form a restrained strategic tableau.
+CAMERA: Cinematic establishing or narrative wide shot, 35mm-equivalent lens at human eye height. Arrange cast in readable depth rather than a row of pasted sprites. Show the described story action and setting. For intimate hand/object beats use a motivated insert camera while preserving the scene geography. 
+CAST IDENTITY:
+jia-zheng: adult East Asian official, tied hair, sober blue tunic with white cuffs, dark trousers, composed hands. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+xun-yu: adult East Asian strategist, tied dark hair, cream sleeves, dark blue vest with gold edging, fitted dark trousers. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+hu-sanniang: athletic adult East Asian woman, long black ponytail with red ribbons, red and dark lamellar armor, two curved sabers. Match the approved face reference exactly: facial proportions, eyes, nose, jaw, hairline and ornament placement.
+Use only the people required by this story moment; references for a group must remain distinct. Match skin and cloth lighting to the environment. No extra limbs or fingers, face drift, swapped costumes, duplicate weapons, cropped heads, floating feet, different eye colors, mirrored jewelry, unintended age changes or giant foreground weapons hiding faces. 
+
+ANIMATION / HANDOFF:
+Hold 2–5 seconds per readable action; layer fog, cloth and light. Long narrated beats need reaction/insert cuts rather than stretching one still for 15–30 seconds.
