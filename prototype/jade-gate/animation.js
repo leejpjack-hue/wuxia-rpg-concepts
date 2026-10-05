@@ -9,7 +9,7 @@
  */
 
 import manifest from "./docs/asset-manifest.json" with { type: "json" };
-import { loadDuelPoses, applyDuelPose } from "./src/platform/duel-poses.js";
+import { loadDuelPoses, applyDuelPose, clearDuelPose } from "./src/platform/duel-poses.js";
 
 const art = {
   gate: "assets/arena.png",
@@ -28,12 +28,17 @@ const SPEAKERS = {
   "灰旗守將": "warden", "夜鷺": "night-heron", "灰帝": "sovereign", "趙敏": "zhao-min",
   "賈雨村": "jia-yucun", "林黛玉": "lin-daiyu", "狄仁杰": "di-renjie", "包拯": "bao-zheng",
   "王熙鳳": "wang-xifeng", "楊玉環": "yang-yuhuan", "吳用": "wu-yong", "懿妃": "empress-yixiu",
+  "貂蟬": "diaochan", "守衛": "guard", "灰旗兵": "guard", "影刺客": "shadow-assassin",
+  "翠衛": "jade-sentinel", "天脈侍者": "meridian-acolyte",
 };
 
-/** 大頭鏡用畫：頭像 `{id}.png` 最靚 → 動作單張 → atlas 裁切 → sprite 推近。 */
+/** 大頭鏡用畫：頭像 `{id}.png` / `{id}.jpg` 最靚 → 動作單張 → atlas 裁切 → sprite 推近。 */
 function portraitSrc(id) {
-  const file = `assets/${id}.png`;
-  return manifest.some((row) => row.file === file && row.runtimeApproved !== false) ? file : null;
+  for (const ext of ["png", "jpg"]) {
+    const file = `assets/${id}.${ext}`;
+    if (manifest.some((row) => row.file === file && row.runtimeApproved !== false)) return file;
+  }
+  return null;
 }
 
 /** 每個角色塊面喺圖入面嘅位置（研究結論：面要填滿畫面、眼喺上面三分一）。
@@ -78,6 +83,7 @@ function poseRegionOf(atlas, pose, naturalW, naturalH) {
 }
 
 function measureAnchor(src, regionOf) {
+  if (/\.jpe?g$/i.test(src)) return Promise.resolve(null);
   return new Promise((resolve) => {
     const image = new Image();
     image.onload = () => {
@@ -770,16 +776,21 @@ const total = (ep) => ep.scenes.reduce((sum, scene) => sum + scene.duration, 0);
 
 /** 每場的鏡頭表：手寫 shots 優先；否則由節拍推導 —
  *  有講者 → 講者大頭（focus 蓄勢）；旁白 → 全景／橫搖交替。 */
+const derivedShots = new WeakMap();
 function shotsOf(scene) {
   if (scene.shots) return scene.shots;
-  const shots = [{ t: 0, kind: "wide" }];
+  let shots = derivedShots.get(scene);
+  if (shots) return shots;
+  shots = [{ t: 0, kind: "wide" }];
   scene.beats.forEach((beat, i) => {
     const focus = SPEAKERS[beat.who];
     if (beat.shot && focus) shots.push({ t: Math.max(0, beat.t - 1.5), kind: "closeup", focus, pose: "focus", crop: "face", ...beat.shot });
     else if (focus) shots.push({ t: Math.max(0, beat.t - 1.5), kind: "closeup", focus, pose: "focus", crop: "face" });
     else if (i > 0) shots.push({ t: beat.t, kind: i % 2 ? "pan" : "wide", from: i % 4 === 1 ? "left" : "right" });
   });
-  return shots.sort((a, b) => a.t - b.t);
+  shots.sort((a, b) => a.t - b.t);
+  derivedShots.set(scene, shots);
+  return shots;
 }
 
 let episode = EPISODES[0];
@@ -823,6 +834,7 @@ function sideFor(scene, focus) {
 
 /** 把動作 asset 套上節點：單張直用；atlas 由 duel-poses 裁切。 */
 function applyPoseArt(node, id, pose) {
+  clearDuelPose(node);
   node.removeAttribute("style");
   const { src, atlas } = poseArt(id, pose || "focus");
   if (atlas) applyDuelPose(node, atlas, pose || "focus");
@@ -840,6 +852,13 @@ function render() {
   $("film-time").textContent = `${fmt(clock)} / ${fmt(totalS)}`;
   $("timer").textContent = `${fmt(clock)} / ${fmt(totalS)}`;
   $("progress").style.width = `${(clock / totalS) * 100}%`;
+  const track = $("track");
+  if (track) {
+    track.style.setProperty("--progress", `${(clock / totalS) * 100}%`);
+    track.setAttribute("aria-valuenow", String(Math.floor(clock)));
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", String(Math.floor(totalS)));
+  }
   document.querySelectorAll("#chapters button").forEach((btn, i) =>
     btn.classList.toggle("current", episode.scenes[i] === scene));
 
@@ -864,7 +883,7 @@ function render() {
 
   // 分鏡：當前鏡頭決定機位。切鏡硬切（cut dip）。
   const shot = shotAt(scene, local);
-  const shotKey = `${scene.id}:${shot.t}:${shot.kind}:${shot.focus || ""}`;
+  const shotKey = `${scene.id}:${shot.t}:${shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
   if (stage.dataset.shotKey !== shotKey) {
     stage.dataset.shotKey = shotKey;
     stage.dataset.shot = shot.kind;
@@ -878,6 +897,7 @@ function render() {
       const kind = portrait ? artKind(shot.focus) : "square";
       const crop = shot.crop || "face";
       if (portrait) {
+        clearDuelPose(img);
         img.removeAttribute("style");
         img.className = "";
         img.src = portrait;
@@ -912,10 +932,11 @@ function render() {
     }
     const camera = stage.querySelector(".camera");
     if (camera) {
+      const panKey = (p) => (p ? (p.startsWith("pan-") ? p : `pan-${p}`) : "pan-in");
       camera.dataset.camera = shot.kind === "pan" ? `pan-${shot.from || "left"}`
         : shot.kind === "push" ? "push"
-        : shot.kind === "wide" ? "pan-" + scene.pan.replace("-slow", "")
-        : scene.pan;
+        : shot.kind === "wide" ? panKey(scene.pan.replace("-slow", ""))
+        : panKey(scene.pan);
     }
   }
 
@@ -928,6 +949,10 @@ function render() {
       duelStage.dataset.phase = name;
       const heroArt = duelStage.querySelector("img.hero");
       const rivalArt = duelStage.querySelector("img.rival");
+      if (name === "standoff") {
+        applyPoseArt(heroArt, shot.focus, shot.focusPose || "focus");
+        applyPoseArt(rivalArt, shot.rival, shot.rivalPose || "focus");
+      }
       if (name === "windup") {
         applyPoseArt(heroArt, shot.focus, "windup");
         applyPoseArt(rivalArt, shot.rival, "windup");
@@ -945,16 +970,24 @@ function render() {
   }
 
   const beats = stage.querySelectorAll(".beat");
-  scene.beats.forEach((beat, i) => {
+  for (let i = 0; i < beats.length; i++) {
     const node = beats[i];
-    node.classList.toggle("shown", local >= beat.t && local < beat.t + 14);
-    const cacheKey = `${scene.id}:${i}`;
-    if (node.dataset.beat !== cacheKey) {
-      node.dataset.beat = cacheKey;
-      node.querySelector(".who").textContent = beat.who ? `${beat.who}：` : "";
-      node.querySelector(".text").textContent = beat.text;
+    if (i < scene.beats.length) {
+      const beat = scene.beats[i];
+      const nextBeat = scene.beats[i + 1];
+      const endTime = nextBeat ? Math.min(nextBeat.t, beat.t + 14) : Math.min(scene.duration, beat.t + 14);
+      node.classList.toggle("shown", local >= beat.t && local < endTime);
+      const cacheKey = `${scene.id}:${i}`;
+      if (node.dataset.beat !== cacheKey) {
+        node.dataset.beat = cacheKey;
+        node.querySelector(".who").textContent = beat.who ? `${beat.who}：` : "";
+        node.querySelector(".text").textContent = beat.text;
+      }
+    } else {
+      node.classList.remove("shown");
+      node.dataset.beat = "";
     }
-  });
+  }
 }
 
 /** 重播一個 CSS 動畫 class（強制 reflow 重啟）。 */
@@ -1001,7 +1034,7 @@ function loadEpisode(next) {
     const btn = document.createElement("button");
     btn.textContent = scene.chapter;
     btn.onclick = () => { clock = sceneStart + 0.01; render(); };
-    btn.ondblclick = () => { clock = sceneStart + 0.01; playing = true; render(); };
+    btn.ondblclick = () => { clock = sceneStart + 0.01; playing = true; $("play").textContent = "⏸ 暫停"; render(); };
     chapters.appendChild(btn);
     start += scene.duration;
   }
@@ -1011,7 +1044,8 @@ function loadEpisode(next) {
   $("stage").dataset.shotKey = "";
   // 完整腳本：章節 + 每拍（連分鏡提示），方便直接讀完整個故仔。
   const shotLine = (shot) =>
-    shot.kind === "closeup" ? `〔大頭 · ${nameOf(shot.focus)}〕`
+    !shot ? "〔全景〕"
+    : shot.kind === "closeup" ? `〔大頭 · ${nameOf(shot.focus)}〕`
     : shot.kind === "fight" ? `〔決戰七拍 · ${nameOf(shot.focus)} 對 ${nameOf(shot.rival)}${shot.winner === "rival" ? " · 先失一招" : ""}〕`
     : shot.kind === "duel" ? `〔對峙 · ${nameOf(shot.focus)} 對 ${nameOf(shot.rival)}〕`
     : shot.kind === "push" ? `〔推近 · ${shot.focus ? nameOf(shot.focus) : "主體"}〕`
@@ -1033,14 +1067,21 @@ function boot() {
   document.querySelectorAll(".episode-tab").forEach((tab) => {
     tab.onclick = () => loadEpisode(EPISODES.find((ep) => ep.id === tab.dataset.ep));
   });
-  $("play").onclick = () => {
+  const togglePlay = () => {
     if (clock >= total(episode) - 0.1) clock = 0;
     playing = !playing;
     $("play").textContent = playing ? "⏸ 暫停" : "▶ 播放";
     render();
   };
+  $("play").onclick = togglePlay;
+  $("stage").onclick = (e) => {
+    if (e.target.closest("button, a")) return;
+    togglePlay();
+  };
+  const speeds = [1, 2, 4, 8];
   $("speed").onclick = () => {
-    speed = speed === 1 ? 8 : 1;
+    const nextIdx = (speeds.indexOf(speed) + 1) % speeds.length;
+    speed = speeds[nextIdx];
     $("speed").textContent = speed === 1 ? "×1" : `×${speed} 預覽`;
     $("speed").classList.toggle("fast", speed !== 1);
   };
@@ -1049,8 +1090,39 @@ function boot() {
     clock = Math.max(0, Math.min(total(episode) - 0.01, ((event.clientX - rect.left) / rect.width) * total(episode)));
     render();
   };
+  document.addEventListener("keydown", (event) => {
+    if (["INPUT", "BUTTON", "SELECT", "TEXTAREA"].includes(event.target.tagName)) return;
+    if (event.code === "Space" || event.code === "KeyK") {
+      event.preventDefault();
+      togglePlay();
+    } else if (event.code === "ArrowLeft") {
+      event.preventDefault();
+      clock = Math.max(0, clock - 5);
+      render();
+    } else if (event.code === "ArrowRight") {
+      event.preventDefault();
+      clock = Math.min(total(episode) - 0.01, clock + 5);
+      render();
+    } else if (event.code === "KeyR") {
+      event.preventDefault();
+      clock = 0;
+      playing = true;
+      $("play").textContent = "⏸ 暫停";
+      render();
+    }
+  });
   buildBeats(6);
   loadEpisode(EPISODES[0]);
   requestAnimationFrame((now) => { lastTick = now; frame(now); });
 }
-boot();
+if (typeof document !== "undefined") boot();
+
+export {
+  SPEAKERS,
+  FIGHT_PHASES,
+  fightPhase,
+  shotsOf,
+  total,
+  art,
+  portraitSrc,
+};
