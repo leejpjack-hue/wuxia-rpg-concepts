@@ -1,6 +1,6 @@
 /**
- * 四人の刃 — 兩集動畫 Demo（每集約 20 分鐘 · 分鏡版）
- * Episode 1「破帝」：三俠於古代擊敗灰帝的完整經過。
+ * 四人の刃 — 兩集動畫 Demo（第一集約 23 分鐘、第二集約 19 分鐘 · 分鏡版）
+ * Episode 1「破帝」：三俠於古代擊敗灰帝的完整經過——由常山趙家村說起。
  * Episode 2「裂口 · 廿賢殿」：裂口將三俠擲入異世界，遇上二十賢的故事。
  *
  * 分鏡語言：每場由鏡頭（shots）組成 — wide 全景、pan 橫搖、push 推近、
@@ -182,18 +182,38 @@ export const EPISODES = [
     subtitle: "三俠如何在世界淪陷之夜，走到灰帝座前",
     scenes: [
       {
+        id: "zhaovillage", chapter: "序章 · 常山趙家村", duration: 85,
+        backdrop: art.bamboo, pan: "in",
+        cast: [{ id: "zhao-yun", side: "left" }, { id: "guard", side: "right", delay: 1.4 }],
+        beats: [
+          { t: 4, who: "", text: "故事開始之前，常山腳下有條趙家村。村裡的少年姓趙名雲，白日鑄劍，夜裡替全村守燈。" },
+          { t: 22, who: "", text: "師父臨終前，把家傳的青釭劍交到他手上：「劍快，是末技；肯等，才是守門人。」" },
+          { t: 40, who: "", text: "三年後，朝廷的詔書到了村口——凡江湖血統，編入「較善之約」，兵器入庫，永世不得出關。" },
+          { t: 58, who: "", text: "繳械的隊伍收走了村裡最後一柄劍。趙雲連夜北上，行囊裡只帶著師父那一句話。" },
+          { t: 72, who: "", text: "他抵達翠門關外的那一夜，關樓上的燈，一盞一盞地熄了。" },
+        ],
+        shots: [
+          { t: 4, kind: "pan", from: "left" },
+          { t: 20, kind: "push", focus: "zhao-yun" },
+          { t: 38, kind: "push", focus: "guard" },
+          { t: 56, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
+          { t: 70, kind: "wide" },
+        ],
+      },
+      {
         id: "prologue", chapter: "序章 · 血月照關", duration: 75,
         backdrop: art.gate, pan: "in", cast: [],
         beats: [
           { t: 4, who: "", text: "灰旗軍來的那一夜，翠門關的燈火逐一熄滅。" },
           { t: 18, who: "", text: "朝廷的詔書寫得溫柔：凡江湖血統，編入「較善之約」，永世不得出關。" },
           { t: 34, who: "", text: "逃難的百姓翻過山脊，回頭望——關樓上，已換了灰色的旗。" },
-          { t: 50, who: "趙雲", text: "「山河有盡，寸刃不移。這一次，換我們守門。」" },
-          { t: 62, who: "", text: "三個人，三柄兵器，逆著人潮，走向關去。" },
+          { t: 44, who: "", text: "剛趕到關下的趙雲站在人潮裡，握緊行囊中的劍。他身後，是回不去的村。" },
+          { t: 54, who: "趙雲", text: "「山河有盡，寸刃不移。這一次，換我們守門。」" },
+          { t: 64, who: "", text: "而在人潮的另一頭，還有兩個逆流而行的身影——他們還不知道，彼此會在今夜相遇。" },
         ],
       },
       {
-        id: "oath", chapter: "第一章 · 三俠結誓", duration: 70,
+        id: "oath", chapter: "第一章 · 三俠結誓", duration: 115,
         backdrop: art.gate, pan: "left",
         cast: [
           { id: "zhao-yun", side: "left" },
@@ -201,17 +221,24 @@ export const EPISODES = [
           { id: "hu-sanniang", side: "right" },
         ],
         beats: [
-          { t: 5, who: "", text: "常山劍士趙雲——青釭劍出，如白龍過澗。" },
-          { t: 20, who: "", text: "花和尚魯智深——水磨禪杖六十斤，專打不平。" },
-          { t: 35, who: "", text: "日月雙刀扈三娘——紅纓一轉，敵陣自開。" },
-          { t: 50, who: "三人", text: "「不入帝都，誓不下山。」" },
-          { t: 60, who: "", text: "誓言落地之處，後來成了江湖的地標。" },
+          { t: 4, who: "", text: "關下的流民營，亂得像一鍋沸水。灰旗兵驅趕人群，鞭子落在跑不動的老人身上。" },
+          { t: 18, who: "", text: "一條水磨禪杖橫裡伸出，接住了鞭子。出手的和尚來自五台山——三日前，詔令焚了他的寺。他背著燒焦的半截山門下山，一路南來。" },
+          { t: 34, who: "魯智深", text: "「灑家的寺可以燒，人不能跪。要押走他們，先從灑家身上踏過去。」" },
+          { t: 46, who: "", text: "灰旗兵層層圍上。人群裡又殺出一對日月雙刀——獨龍岡的扈三娘。她追著押走全家的囚車走了三日三夜，追到關前，囚車還是進了關。" },
+          { t: 60, who: "扈三娘", text: "「我家的門，是被這道關拆的。拆門的人，一個都別想全身走。」" },
+          { t: 70, who: "", text: "亂軍之中，三件兵器第一次碰在一起：劍護著老人，杖擋著箭雨，雙刀開路。" },
+          { t: 82, who: "趙雲", text: "「原來不是只有我一個，不肯讓門就這樣關上。兩位——同路嗎？」" },
+          { t: 94, who: "三人", text: "「同路。不入帝都，誓不下山。」" },
+          { t: 106, who: "", text: "誓言落地之處，後來成了江湖的地標。三個失去家門的人，把彼此認成了門。" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "left" },
-          { t: 18, kind: "push", focus: "lu-zhishen" },
-          { t: 33, kind: "push", focus: "hu-sanniang" },
-          { t: 48, kind: "wide" },
+          { t: 32, kind: "closeup", focus: "lu-zhishen", pose: "focus", crop: "face" },
+          { t: 44, kind: "push", focus: "hu-sanniang" },
+          { t: 58, kind: "closeup", focus: "hu-sanniang", pose: "windup", crop: "face" },
+          { t: 68, kind: "wide" },
+          { t: 80, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
+          { t: 92, kind: "wide" },
         ],
       },
       {
@@ -223,18 +250,20 @@ export const EPISODES = [
           { id: "guard", side: "far-right", delay: 1.2 },
         ],
         beats: [
-          { t: 5, who: "", text: "關前的第一道營，由被詔令改寫的英雄鎮守——他們自己，已不記得自己是誰。" },
-          { t: 24, who: "", text: "青龍偃月刀攔路。刀是好刀，握刀的手，卻聽命於灰帝的墨。" },
-          { t: 42, who: "趙雲", text: "「關將軍，你的刀在替別人寫字。讓我幫你鬆一鬆腕。」" },
-          { t: 60, who: "", text: "一場牌局般的決鬥：讀招、拆招、以氣破式。守衛倒下之處，營火四散。" },
-          { t: 74, who: "", text: "被斬斷的不只是繩，還有寫在血裡的約。" },
+          { t: 4, who: "", text: "關前的第一道營，由被詔令改寫的英雄鎮守——他們自己，已不記得自己是誰。" },
+          { t: 16, who: "", text: "不肯跪的英雄，被押去「謄抄」：抄一遍自己的名字，便忘記一段自己。鎮守此關的關羽，已被抄過七遍。" },
+          { t: 30, who: "", text: "青龍偃月刀攔路。刀是好刀，握刀的手，卻聽命於灰帝的墨。" },
+          { t: 46, who: "趙雲", text: "「關將軍，你的刀在替別人寫字。讓我幫你鬆一鬆腕。」" },
+          { t: 62, who: "", text: "一場牌局般的決鬥：讀招、拆招、以氣破式。守衛倒下之處，營火四散。" },
+          { t: 76, who: "", text: "被斬斷的不只是繩，還有寫在血裡的約。" },
         ],
         shots: [
-          { t: 4, kind: "wide" },
-          { t: 22, kind: "push", focus: "guan-yu" },
-          { t: 40, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
-          { t: 58, kind: "fight", focus: "zhao-yun", rival: "guan-yu" },
-          { t: 72, kind: "pan", from: "right" },
+          { t: 2, kind: "wide" },
+          { t: 14, kind: "push", focus: "guan-yu" },
+          { t: 28, kind: "push", focus: "guan-yu" },
+          { t: 44, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
+          { t: 60, kind: "fight", focus: "zhao-yun", rival: "guan-yu" },
+          { t: 74, kind: "pan", from: "right" },
         ],
       },
       {
@@ -351,13 +380,22 @@ export const EPISODES = [
         ],
       },
       {
-        id: "freed", chapter: "第三章 · 同行", duration: 65,
+        id: "freed", chapter: "第三章 · 同行", duration: 80,
         backdrop: art.mountain, pan: "out",
         cast: [{ id: "lu-bu-rival", side: "left" }, { id: "zhao-yun", side: "right" }],
         beats: [
-          { t: 6, who: "呂布", text: "「詛咒已斷，我的戟自己作主。天脈城一戰——算我一份。」" },
-          { t: 26, who: "", text: "飛將軍並轡而行。雲開處，帝都已經看得見了。" },
-          { t: 44, who: "", text: "血月懸在城上，像一隻不肯眨的眼。" },
+          { t: 5, who: "呂布", text: "「詛咒已斷，我的戟自己作主。天脈城一戰——算我一份。」" },
+          { t: 20, who: "呂布", text: "「在咒裡的十年，我看過他的真身——前朝一個史官，一支筆。他發現寫下的約會自己行走，這就是詔令。天下人的誓，餵他的墨。」" },
+          { t: 42, who: "", text: "眾人抬頭。血月懸在城上，像一隻不肯眨的眼——原來那不是天象，是他的硯。" },
+          { t: 60, who: "趙雲", text: "「那就打翻它。墨再深，也深不過寫它的人心。」" },
+          { t: 72, who: "", text: "飛將軍並轡而行。雲開處，帝都已經看得見了。" },
+        ],
+        shots: [
+          { t: 4, kind: "closeup", focus: "lu-bu-rival", pose: "focus", crop: "face" },
+          { t: 18, kind: "closeup", focus: "lu-bu-rival", pose: "windup", crop: "face" },
+          { t: 40, kind: "wide" },
+          { t: 58, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
+          { t: 70, kind: "pan", from: "right" },
         ],
       },
       {
@@ -429,9 +467,10 @@ export const EPISODES = [
         beats: [
           { t: 8, who: "灰帝", text: "「月亮……落了。江湖，留給你們吧。朕怕的從來不是失去王座——是之後的寂靜。」" },
           { t: 34, who: "", text: "血月褪去。天脈城的門，開向一個平凡的黎明。" },
-          { t: 52, who: "", text: "江湖，從此屬於善待它的人。誓言，踐行了。" },
-          { t: 68, who: "", text: "——如果故事在這裡結束。" },
-          { t: 78, who: "", text: "（第一集 完）" },
+          { t: 50, who: "", text: "趙雲把青釭劍歸鞘，朝常山的方向行了一禮——師父，門守住了。" },
+          { t: 64, who: "", text: "江湖，從此屬於善待它的人。誓言，踐行了。" },
+          { t: 76, who: "", text: "——如果故事在這裡結束。" },
+          { t: 86, who: "", text: "（第一集 完）" },
         ],
         shots: [
           { t: 4, kind: "closeup", focus: "sovereign", pose: "windup", crop: "face" },
@@ -445,13 +484,15 @@ export const EPISODES = [
     subtitle: "裂口將三俠擲入異世界，二十賢等待著他們",
     scenes: [
       {
-        id: "rift", chapter: "序章 · 一息的黎明", duration: 80,
+        id: "rift", chapter: "序章 · 一息的黎明", duration: 90,
         backdrop: art.citadel, pan: "in", cast: [],
         beats: [
-          { t: 6, who: "", text: "灰帝倒下之後的黎明，只維持了一次心跳。" },
-          { t: 24, who: "", text: "一道金色的縫，在破碎的城門上空撕開——飲盡血月最後的光。" },
-          { t: 42, who: "", text: "然後它帶走了三個人。像河流帶走落葉。" },
-          { t: 60, who: "裂口", text: "「詔令未完，故事改寫續篇——」" },
+          { t: 5, who: "", text: "灰帝倒下之後的黎明，只維持了一次心跳。" },
+          { t: 20, who: "", text: "他飲下的誓，有一筆還懸在半空——沒有落款的故事，不會自己結束。" },
+          { t: 36, who: "", text: "一道金色的縫，在破碎的城門上空撕開，飲盡血月最後的光。" },
+          { t: 52, who: "", text: "斬誓的人，被未完的墨追討。縫帶走了三個人，像河流帶走落葉。" },
+          { t: 68, who: "裂口", text: "「詔令未完，故事改寫續篇——」" },
+          { t: 80, who: "", text: "翠門關的風，甚麼都沒有留下。除了三個空了的兵器位。" },
         ],
       },
       {
@@ -462,8 +503,9 @@ export const EPISODES = [
           { t: 6, who: "", text: "背上是石板。四面是霧，和一條散著舊煙味的街。" },
           { t: 26, who: "", text: "星象是錯的。銅錢上的年號，來自一個他們從未侍奉過的朝代。" },
           { t: 46, who: "", text: "離他們救下的那座關——大概一百年，或者兩百年。" },
-          { t: 64, who: "趙雲", text: "「那我們就用同樣的辦法，救這條街。起身的時候，看好彼此的背。」" },
-          { t: 80, who: "", text: "霧的深處，有人早已備好簿冊，等著「估價」這三個流民。" },
+          { t: 56, who: "", text: "而這個朝代的牆上，也貼著一紙寫得溫柔的約。名字不同，墨是同一種黑。" },
+          { t: 68, who: "趙雲", text: "「那我們就用同樣的辦法，救這條街。起身的時候，看好彼此的背。」" },
+          { t: 82, who: "", text: "霧的深處，有人早已備好簿冊，等著「估價」這三個流民。" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "right" },
