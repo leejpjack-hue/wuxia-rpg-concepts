@@ -47,18 +47,18 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 .stage {
   position: relative; aspect-ratio: 16/9; overflow: hidden;
   background: #060a0b; border: 1px solid #2c3d3a; border-radius: 10px;
-  container-type: size;
+  container-type: size; cursor: pointer;
 }
 .camera { position: absolute; inset: 0; }
 .backdrop {
   position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
   filter: saturate(0.92) contrast(1.05) brightness(0.9);
 }
-.camera[data-camera="pan-in"] .backdrop { animation: ken-in 100s var(--ease-film) both; }
-.camera[data-camera="pan-in-slow"] .backdrop { animation: ken-slow 120s var(--ease-film) both; }
-.camera[data-camera="pan-left"] .backdrop { animation: ken-left 100s var(--ease-film) both; }
-.camera[data-camera="pan-right"] .backdrop { animation: ken-right 100s var(--ease-film) both; }
-.camera[data-camera="pan-out"] .backdrop { animation: ken-out 100s var(--ease-film) both; }
+.camera[data-camera="pan-in"] .backdrop, .camera[data-camera="in"] .backdrop { animation: ken-in 100s var(--ease-film) both; }
+.camera[data-camera="pan-in-slow"] .backdrop, .camera[data-camera="in-slow"] .backdrop { animation: ken-slow 120s var(--ease-film) both; }
+.camera[data-camera="pan-left"] .backdrop, .camera[data-camera="left"] .backdrop { animation: ken-left 100s var(--ease-film) both; }
+.camera[data-camera="pan-right"] .backdrop, .camera[data-camera="right"] .backdrop { animation: ken-right 100s var(--ease-film) both; }
+.camera[data-camera="pan-out"] .backdrop, .camera[data-camera="out"] .backdrop { animation: ken-out 100s var(--ease-film) both; }
 .camera[data-camera="push"] .backdrop { animation: ken-in 70s var(--ease-film) both; }
 @keyframes ken-in { from { transform: scale(1.02); } to { transform: scale(1.16); } }
 @keyframes ken-slow { from { transform: scale(1.14) translateX(1.5%); } to { transform: scale(1.16) translateX(-1.5%); } }
@@ -81,7 +81,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 
 /* 演員進場 */
 .cast { position: absolute; inset: 0; z-index: 2; }
-.stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast { visibility: hidden; }
+.stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast, .stage[data-shot="fight"] .cast { visibility: hidden; }
 .actor {
   position: absolute; bottom: 10%; height: 58%;
   filter: drop-shadow(0 14px 12px #000b);
@@ -248,18 +248,18 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 .duel-stage[data-phase="aftermath"] img.wound::after { content: ""; }
 @keyframes fight-zoom-in { from { scale: 1; } to { scale: 1.1; } }
 
-/* loser starting sides: hero starts left (translate 0) / rival right — after pass they are swapped,
-   so hero-wins means rival fell from the hero's crossed position. */
-.duel-stage[data-phase="aftermath"][data-winner="hero"] img.rival { translate: -58cqw 0; }
-.duel-stage[data-phase="aftermath"][data-winner="rival"] img.hero { translate: 58cqw 0; }
-.duel-stage[data-phase="aftermath"][data-winner="hero"] img.hero { translate: -58cqw 0; }
-.duel-stage[data-phase="aftermath"][data-winner="rival"] img.rival { translate: 58cqw 0; }
+/* After pass and hold, fighters have swapped sides:
+   Hero crossed to screen-right (+58cqw), Rival crossed to screen-left (-58cqw).
+   In aftermath, winner holds their crossed position; loser plays their fall animation. */
+.duel-stage[data-phase="aftermath"] img.hero { translate: 58cqw 0; }
+.duel-stage[data-phase="aftermath"] img.rival { translate: -58cqw 0; }
 .duel-stage .plate {
-  position: absolute; bottom: 5%; font: 700 clamp(11px, 1.8cqw, 17px) Georgia, serif;
-  letter-spacing: 0.3em; color: #f2e6c8; text-shadow: 0 2px 8px #000;
+  position: absolute; top: 11%; font: 700 clamp(12px, 2cqw, 20px) Georgia, "Noto Serif CJK TC", serif;
+  letter-spacing: 0.3em; color: #f2e6c8; text-shadow: 0 2px 10px #000; z-index: 6;
+  border-bottom: 2px solid var(--gold); padding: 2px 8px;
 }
-.duel-stage .plate.hero { left: 12%; }
-.duel-stage .plate.rival { right: 12%; }
+.duel-stage .plate.hero { left: 8%; }
+.duel-stage .plate.rival { right: 8%; }
 .duel-stage .speed-lines {
   position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
   background: repeating-conic-gradient(from 0deg at 50% 62%, #fff0 0 3.4deg, #ffffff26 3.4deg 3.8deg);
@@ -290,14 +290,15 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 }
 .chapter-card.shown { opacity: 1; }
 
-/* 旁白/對白字幕（下三行流轉） */
+/* 旁白/對白字幕（底部定點平滑淡入淡出） */
 .beats {
   position: absolute; z-index: 7; left: 8%; right: 8%; bottom: 9%;
-  display: flex; flex-direction: column; gap: 0.5cqh; pointer-events: none;
+  height: 3.5em; pointer-events: none;
 }
 .beat {
-  margin: 0; opacity: 0; translate: 0 8px;
-  transition: opacity 0.8s ease, translate 0.8s var(--ease-film);
+  position: absolute; left: 0; right: 0; bottom: 0;
+  margin: 0; opacity: 0; translate: 0 8px; pointer-events: none;
+  transition: opacity 0.6s ease, translate 0.6s var(--ease-film);
   font-size: clamp(12px, 2.3cqw, 22px);
   text-shadow: 0 2px 8px #000, 0 0 22px #0008;
   color: #f3ecd8;
@@ -354,4 +355,11 @@ footer {
   .episode-tabs { order: 3; width: 100%; }
   .beat { font-size: 14px; }
   .actor { height: 46%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop, .actor, .closeup img, .duel-stage, .duel-stage img, .impact-frame, .fx, .speed-lines, .petal, .beat {
+    animation: none !important;
+    transition: none !important;
+  }
 }
