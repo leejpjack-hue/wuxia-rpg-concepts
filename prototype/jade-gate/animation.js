@@ -976,7 +976,12 @@ const FRAME_PACK = {
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
     { t: 24, base: "shot/ep2-final-s02" },
     // t: 42 決鬥七拍 → FIGHT_FRAMES["final:42"]
-    { t: 58, base: "shot/ep2-final-s04", until: 72 },
+    { t: 58, base: "shot/ep2-final-s04", talk: "expression/ep2-final-s04-talk", blink: "expression/ep2-final-s04-blink" },
+    { t: 72, base: "shot/ep2-final-s05", talk: "expression/ep2-final-s05-talk", blink: "expression/ep2-final-s05-blink" },
+    { t: 84, base: "shot/ep2-final-s06" },
+  ],
+  home: [
+    { t: 4, base: "shot/ep2-home-s01", until: 22 },
   ],
 };
 
