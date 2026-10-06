@@ -858,6 +858,7 @@ const FRAME_PACK = {
     { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
   bloodmoon: [
+    // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（standoff 在 PR #128；缺拍退回 standoff）
     { t: 64, base: "shot/ep1-bloodmoon-s04" },
   ],
   throne: [
@@ -922,10 +923,20 @@ const FIGHT_FRAMES = {
     hold: "fight/ep1-final-duel-s01-hold",
     aftermath: "fight/ep1-final-duel-s01-aftermath",
   },
+  "bloodmoon:44": {
+    standoff: "shot/ep1-bloodmoon-s03",
+    windup: "fight/ep1-bloodmoon-s03-windup",
+    charge: "fight/ep1-bloodmoon-s03-charge",
+    impact: "fight/ep1-bloodmoon-s03-impact",
+    pass: "fight/ep1-bloodmoon-s03-pass",
+    hold: "fight/ep1-bloodmoon-s03-hold",
+    aftermath: "fight/ep1-bloodmoon-s03-aftermath",
+  },
   "final-duel:62": {
     standoff: "shot/ep1-final-duel-s04",
     windup: "fight/ep1-final-duel-s04-windup",
     charge: "fight/ep1-final-duel-s04-charge",
+    impact: "fight/ep1-final-duel-s04-impact",
   },
 };
 
