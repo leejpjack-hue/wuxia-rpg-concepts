@@ -910,6 +910,13 @@ const FRAME_PACK = {
     // t: 62 決鬥七拍 → FIGHT_FRAMES["final-duel:62"]
     { t: 80, base: "shot/ep1-final-duel-s05" },
   ],
+  epilogue: [
+    { t: 4, base: "shot/ep1-epilogue-s01", talk: "expression/ep1-epilogue-s01-talk", blink: "expression/ep1-epilogue-s01-blink" },
+    { t: 32, base: "shot/ep1-epilogue-s02" },
+  ],
+  rift: [
+    { t: 0, base: "shot/ep2-rift-s01", until: 20 },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
