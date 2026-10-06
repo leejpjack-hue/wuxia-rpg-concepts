@@ -778,7 +778,9 @@ const FRAME_PACK = {
   zhaovillage: [
     { t: 4, base: "shot/ep1-zhaovillage-s01" },
     { t: 18, base: "shot/ep1-zhaovillage-s02" },
+    { t: 20, base: "insert/ep1-zhaovillage-insert-master-sword" },
     { t: 34, base: "shot/ep1-zhaovillage-s03" },
+    { t: 36, base: "insert/ep1-zhaovillage-insert-sister-forge" },
     { t: 50, base: "shot/ep1-zhaovillage-s04" },
     { t: 66, base: "shot/ep1-zhaovillage-s05", talk: "expression/ep1-zhaovillage-s05-talk", blink: "expression/ep1-zhaovillage-s05-blink" },
     { t: 84, base: "shot/ep1-zhaovillage-s06" },
@@ -981,7 +983,9 @@ const FRAME_PACK = {
     { t: 84, base: "shot/ep2-final-s06" },
   ],
   home: [
-    { t: 4, base: "shot/ep2-home-s01", until: 22 },
+    { t: 4, base: "shot/ep2-home-s01", talk: "expression/ep2-home-s01-talk", blink: "expression/ep2-home-s01-blink" },
+    { t: 22, base: "shot/ep2-home-s02" },
+    { t: 52, base: "shot/ep2-home-s03" },
   ],
 };
 
