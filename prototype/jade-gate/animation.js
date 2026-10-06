@@ -910,7 +910,7 @@ const FRAME_PACK = {
   lattice: [
     { t: 4, base: "shot/ep2-lattice-s01" },
     { t: 46, base: "shot/ep2-lattice-s02", talk: "expression/ep2-lattice-s02-talk", blink: "expression/ep2-lattice-s02-blink", until: 63 },
-    // t: 63 決鬥 → FIGHT_FRAMES["lattice:63"]（缺拍退回 standoff）
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["lattice:63"]
   ],
 };
 
@@ -983,6 +983,11 @@ const FIGHT_FRAMES = {
   "lattice:63": {
     standoff: "shot/ep2-lattice-s03",
     windup: "fight/ep2-lattice-s03-windup",
+    charge: "fight/ep2-lattice-s03-charge",
+    impact: "fight/ep2-lattice-s03-impact",
+    pass: "fight/ep2-lattice-s03-pass",
+    hold: "fight/ep2-lattice-s03-hold",
+    aftermath: "fight/ep2-lattice-s03-aftermath",
   },
 };
 
