@@ -879,7 +879,12 @@ const FRAME_PACK = {
     { t: 32, base: "shot/ep1-epilogue-s02" },
   ],
   rift: [
-    { t: 0, base: "shot/ep2-rift-s01", until: 20 },
+    { t: 0, base: "shot/ep2-rift-s01" },
+    { t: 20, base: "shot/ep2-rift-s02" },
+    { t: 36, base: "shot/ep2-rift-s03" },
+    { t: 52, base: "shot/ep2-rift-s04" },
+    { t: 68, base: "shot/ep2-rift-s05" },
+    { t: 80, base: "shot/ep2-rift-s06", until: 88 },
   ],
 };
 
