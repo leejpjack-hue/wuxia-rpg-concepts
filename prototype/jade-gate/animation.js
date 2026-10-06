@@ -866,6 +866,11 @@ const FRAME_PACK = {
     { t: 56, base: "shot/ep1-throne-s03" },
     { t: 72, base: "shot/ep1-throne-s04" },
   ],
+  "final-duel": [
+    // t: 4 決鬥七拍 → FIGHT_FRAMES["final-duel:4"]
+    { t: 24, base: "shot/ep1-final-duel-s02", talk: "expression/ep1-final-duel-s02-talk", blink: "expression/ep1-final-duel-s02-blink" },
+    { t: 44, base: "shot/ep1-final-duel-s03", talk: "expression/ep1-final-duel-s03-talk", until: 62 },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
