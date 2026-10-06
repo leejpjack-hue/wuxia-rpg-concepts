@@ -926,7 +926,12 @@ const FRAME_PACK = {
   ],
   court: [
     { t: 4, base: "shot/ep2-court-s01" },
-    { t: 28, base: "shot/ep2-court-s02", talk: "expression/ep2-court-s02-talk", blink: "expression/ep2-court-s02-blink", until: 50 },
+    { t: 28, base: "shot/ep2-court-s02", talk: "expression/ep2-court-s02-talk", blink: "expression/ep2-court-s02-blink" },
+    { t: 50, base: "shot/ep2-court-s03" },
+  ],
+  legends: [
+    { t: 4, base: "shot/ep2-legends-s01" },
+    { t: 28, base: "shot/ep2-legends-s02", talk: "expression/ep2-legends-s02-talk", blink: "expression/ep2-legends-s02-blink", until: 48 },
   ],
 };
 
