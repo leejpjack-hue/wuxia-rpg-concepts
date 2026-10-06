@@ -916,7 +916,7 @@ const FRAME_PACK = {
   judges: [
     { t: 4, base: "shot/ep2-judges-s01" },
     { t: 28, base: "shot/ep2-judges-s02", talk: "expression/ep2-judges-s02-talk", blink: "expression/ep2-judges-s02-blink", until: 47 },
-    // t: 47 決鬥 → FIGHT_FRAMES["judges:47"]（缺拍退回 standoff）
+    // t: 47 決鬥七拍 → FIGHT_FRAMES["judges:47"]
   ],
 };
 
@@ -998,6 +998,11 @@ const FIGHT_FRAMES = {
   "judges:47": {
     standoff: "shot/ep2-judges-s03",
     windup: "fight/ep2-judges-s03-windup",
+    charge: "fight/ep2-judges-s03-charge",
+    impact: "fight/ep2-judges-s03-impact",
+    pass: "fight/ep2-judges-s03-pass",
+    hold: "fight/ep2-judges-s03-hold",
+    aftermath: "fight/ep2-judges-s03-aftermath",
   },
 };
 
