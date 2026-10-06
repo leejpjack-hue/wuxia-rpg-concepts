@@ -817,7 +817,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-warden-s01", talk: "expression/ep1-warden-s01-talk", blink: "expression/ep1-warden-s01-blink" },
     { t: 26, base: "shot/ep1-warden-s02", talk: "expression/ep1-warden-s02-talk", blink: "expression/ep1-warden-s02-blink" },
     // t: 44 決鬥七拍 → FIGHT_FRAMES["warden:44"]
-    { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
+    { t: 66, base: "shot/ep1-warden-s04", talk: "expression/ep1-warden-s04-talk", blink: "expression/ep1-warden-s04-blink", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
     { t: 68, base: "insert/ep1-warden-insert-monk-block", until: 80 },
   ],
   causeway: [
@@ -844,8 +844,9 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 48, base: "insert/ep1-heron-insert-staff-bell" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
@@ -864,19 +865,42 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 48, base: "insert/ep1-heron-insert-staff-bell" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
+  ],
+  crossing: [
+    { t: 0, base: "shot/ep1-crossing-s01" },
+    { t: 24.5, base: "shot/ep1-crossing-s02", talk: "expression/ep1-crossing-s02-talk", blink: "expression/ep1-crossing-s02-blink" },
+    { t: 44, base: "shot/ep1-crossing-s03" },
+    { t: 58, base: "shot/ep1-crossing-s04" },
+  ],
+  clouds: [
+    { t: 0, base: "shot/ep1-clouds-s01" },
+    { t: 24.5, base: "shot/ep1-clouds-s02", talk: "expression/ep1-clouds-s02-talk", blink: "expression/ep1-clouds-s02-blink" },
+    { t: 44, base: "shot/ep1-clouds-s03" },
+    { t: 62, base: "shot/ep1-clouds-s04" },
   ],
   lubu: [
-    // 其餘呂布鏡頭在 #127 / #128。合併時把這格插進該陣列。
-    { t: 68, base: "insert/ep1-lubu-insert-curse-release", until: 82 },
+    { t: 4, base: "shot/ep1-lubu-s01", talk: "expression/ep1-lubu-s01-talk", blink: "expression/ep1-lubu-s01-blink", until: 26 },
+    // t: 26 決鬥七拍 → FIGHT_FRAMES["lubu:26"]
+    // t: 46 決鬥七拍 → FIGHT_FRAMES["lubu:46"]（standoff 在 PR #127）
+    { t: 66, base: "shot/ep1-lubu-s04", talk: "expression/ep1-lubu-s04-talk", blink: "expression/ep1-lubu-s04-blink" },
+    { t: 68, base: "insert/ep1-lubu-insert-curse-release" },
+    { t: 82, base: "shot/ep1-lubu-s05", talk: "expression/ep1-lubu-s05-talk", blink: "expression/ep1-lubu-s05-blink" },
   ],
   freed: [
-    // 其餘同行鏡頭在 #128。合併時把這格插進該陣列。
-    { t: 20, base: "insert/ep1-freed-insert-historian-ink", until: 40 },
+    { t: 4, base: "shot/ep1-freed-s01", talk: "expression/ep1-freed-s01-talk", blink: "expression/ep1-freed-s01-blink" },
+    { t: 18, base: "shot/ep1-freed-s02", talk: "expression/ep1-freed-s02-talk", blink: "expression/ep1-freed-s02-blink" },
+    { t: 20, base: "insert/ep1-freed-insert-historian-ink" },
+    { t: 40, base: "shot/ep1-freed-s03" },
+    { t: 58, base: "shot/ep1-freed-s04", talk: "expression/ep1-freed-s04-talk", blink: "expression/ep1-freed-s04-blink" },
+    { t: 70, base: "shot/ep1-freed-s05" },
   ],
   bloodmoon: [
-    // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（standoff 在 PR #128；缺拍退回 standoff）
+    { t: 4, base: "shot/ep1-bloodmoon-s01" },
+    { t: 24, base: "shot/ep1-bloodmoon-s02", talk: "expression/ep1-bloodmoon-s02-talk", blink: "expression/ep1-bloodmoon-s02-blink", until: 44 },
+    // t: 44 決鬥七拍 → FIGHT_FRAMES["bloodmoon:44"]（standoff、windup、charge 在 PR #128）
     { t: 64, base: "shot/ep1-bloodmoon-s04" },
   ],
   throne: [
@@ -1018,6 +1042,33 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-warden-s05-pass",
     hold: "fight/ep1-warden-s05-hold",
     aftermath: "fight/ep1-warden-s05-aftermath",
+  },
+  "heron:63": {
+    standoff: "shot/ep1-heron-s04",
+    windup: "fight/ep1-heron-s04-windup",
+    charge: "fight/ep1-heron-s04-charge",
+    impact: "fight/ep1-heron-s04-impact",
+    pass: "fight/ep1-heron-s04-pass",
+    hold: "fight/ep1-heron-s04-hold",
+    aftermath: "fight/ep1-heron-s04-aftermath",
+  },
+  "lubu:26": {
+    standoff: "shot/ep1-lubu-s02",
+    windup: "fight/ep1-lubu-s02-windup",
+    charge: "fight/ep1-lubu-s02-charge",
+    impact: "fight/ep1-lubu-s02-impact",
+    pass: "fight/ep1-lubu-s02-pass",
+    hold: "fight/ep1-lubu-s02-hold",
+    aftermath: "fight/ep1-lubu-s02-aftermath",
+  },
+  "lubu:46": {
+    standoff: "shot/ep1-lubu-s03",
+    windup: "fight/ep1-lubu-s03-windup",
+    charge: "fight/ep1-lubu-s03-charge",
+    impact: "fight/ep1-lubu-s03-impact",
+    pass: "fight/ep1-lubu-s03-pass",
+    hold: "fight/ep1-lubu-s03-hold",
+    aftermath: "fight/ep1-lubu-s03-aftermath",
   },
   "final-duel:4": {
     standoff: "shot/ep1-final-duel-s01",
