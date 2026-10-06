@@ -893,6 +893,22 @@ const FRAME_PACK = {
     { t: 24, base: "shot/ep1-bloodmoon-s02", talk: "expression/ep1-bloodmoon-s02-talk", blink: "expression/ep1-bloodmoon-s02-blink", until: 44 },
     // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（缺拍退回 standoff）
   ],
+  bloodmoon: [
+    // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（standoff 在 PR #128；缺拍退回 standoff）
+    { t: 64, base: "shot/ep1-bloodmoon-s04" },
+  ],
+  throne: [
+    { t: 4, base: "shot/ep1-throne-s01", talk: "expression/ep1-throne-s01-talk", blink: "expression/ep1-throne-s01-blink" },
+    { t: 32, base: "shot/ep1-throne-s02", talk: "expression/ep1-throne-s02-talk", blink: "expression/ep1-throne-s02-blink" },
+    { t: 56, base: "shot/ep1-throne-s03" },
+    { t: 72, base: "shot/ep1-throne-s04" },
+  ],
+  "final-duel": [
+    // t: 4 決鬥七拍 → FIGHT_FRAMES["final-duel:4"]
+    { t: 24, base: "shot/ep1-final-duel-s02", talk: "expression/ep1-final-duel-s02-talk", blink: "expression/ep1-final-duel-s02-blink" },
+    { t: 44, base: "shot/ep1-final-duel-s03", talk: "expression/ep1-final-duel-s03-talk", blink: "expression/ep1-final-duel-s03-blink", until: 62 },
+    // t: 62 決鬥 → FIGHT_FRAMES["final-duel:62"]（缺拍退回 standoff）
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -934,6 +950,14 @@ const FIGHT_FRAMES = {
     hold: "fight/ep1-warden-s05-hold",
     aftermath: "fight/ep1-warden-s05-aftermath",
   },
+  "final-duel:4": {
+    standoff: "shot/ep1-final-duel-s01",
+    windup: "fight/ep1-final-duel-s01-windup",
+    charge: "fight/ep1-final-duel-s01-charge",
+    impact: "fight/ep1-final-duel-s01-impact",
+    pass: "fight/ep1-final-duel-s01-pass",
+    hold: "fight/ep1-final-duel-s01-hold",
+    aftermath: "fight/ep1-final-duel-s01-aftermath",
   "lubu:46": {
     standoff: "shot/ep1-lubu-s03",
     windup: "fight/ep1-lubu-s03-windup",
@@ -947,6 +971,16 @@ const FIGHT_FRAMES = {
     standoff: "shot/ep1-bloodmoon-s03",
     windup: "fight/ep1-bloodmoon-s03-windup",
     charge: "fight/ep1-bloodmoon-s03-charge",
+    impact: "fight/ep1-bloodmoon-s03-impact",
+    pass: "fight/ep1-bloodmoon-s03-pass",
+    hold: "fight/ep1-bloodmoon-s03-hold",
+    aftermath: "fight/ep1-bloodmoon-s03-aftermath",
+  },
+  "final-duel:62": {
+    standoff: "shot/ep1-final-duel-s04",
+    windup: "fight/ep1-final-duel-s04-windup",
+    charge: "fight/ep1-final-duel-s04-charge",
+    impact: "fight/ep1-final-duel-s04-impact",
   "heron:63": {
     standoff: "shot/ep1-heron-s04",
     windup: "fight/ep1-heron-s04-windup",
