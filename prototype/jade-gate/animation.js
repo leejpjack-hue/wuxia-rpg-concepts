@@ -807,15 +807,24 @@ const FRAME_PACK = {
   ],
 };
 
-/** 守橋人決戰：七拍各有手繪幀（standoff 用基礎鏡頭幀）。 */
+/** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
+ *  缺拍時退回 standoff，避免半套幀指到不存在的檔。 */
 const FIGHT_FRAMES = {
-  standoff: "shot/ep2-causeway-s05",
-  windup: "fight/ep2-causeway-s05-windup",
-  charge: "fight/ep2-causeway-s05-charge",
-  impact: "fight/ep2-causeway-s05-impact",
-  pass: "fight/ep2-causeway-s05-pass",
-  hold: "fight/ep2-causeway-s05-hold",
-  aftermath: "fight/ep2-causeway-s05-aftermath",
+  "causeway:74": {
+    standoff: "shot/ep2-causeway-s05",
+    windup: "fight/ep2-causeway-s05-windup",
+    charge: "fight/ep2-causeway-s05-charge",
+    impact: "fight/ep2-causeway-s05-impact",
+    pass: "fight/ep2-causeway-s05-pass",
+    hold: "fight/ep2-causeway-s05-hold",
+    aftermath: "fight/ep2-causeway-s05-aftermath",
+  },
+  "warden:80": {
+    standoff: "shot/ep1-warden-s05",
+    windup: "fight/ep1-warden-s05-windup",
+    charge: "fight/ep1-warden-s05-charge",
+    impact: "fight/ep1-warden-s05-impact",
+  },
 };
 
 /** 選當前 keyframe：有幀用幀（until = 幀嘅生效下限，過咗就跌返 sprite 鏡頭）；
@@ -966,7 +975,7 @@ function render() {
   // 分鏡：當前鏡頭決定機位。切鏡硬切（cut dip）。
   const shot = shotAt(scene, local);
   // 圖像包優先：有手繪幀嘅鏡頭直接成圖出街（對白/眨眼用變體幀）；決鬥七拍幀優先過定鏡幀。
-  const fightFrames = shot.kind === "fight" && scene.id === "causeway" ? FIGHT_FRAMES : null;
+  const fightFrames = shot.kind === "fight" ? FIGHT_FRAMES[`${scene.id}:${shot.t}`] : null;
   const keyframe = fightFrames ? null : frameFor(scene, local);
   const onFrames = !!(keyframe || fightFrames);
   const shotKey = `${scene.id}:${shot.t}:${onFrames ? "frame" : shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
@@ -1029,8 +1038,9 @@ function render() {
 
   // keyframe 層：基礎幀切換先重啟鏡頭微推近；講嘢/眨眼/決鬥拍數只換 src。
   const kfImg = stage.querySelector(".keyframe");
+  const fightName = fightFrames ? fightFrames[fightPhase(local - shot.t).name] || fightFrames.standoff : null;
   const kfSrc = keyframe ? keyframe.src
-    : fightFrames ? `${PACK}/${fightFrames[fightPhase(local - shot.t).name]}.png`
+    : fightName ? `${PACK}/${fightName}.png`
     : null;
   kfImg.hidden = !kfSrc;
   if (kfSrc) {
