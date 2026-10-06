@@ -798,12 +798,45 @@ const FRAME_PACK = {
     { t: 44, base: "shot/ep1-oath-s03" },
     { t: 58, base: "shot/ep1-oath-s04", talk: "expression/ep1-oath-s04-talk", blink: "expression/ep1-oath-s04-blink" },
     { t: 68, base: "shot/ep1-oath-s05" },
-    { t: 80, base: "shot/ep1-oath-s06", talk: "expression/ep1-oath-s06-talk", until: 92 },
+    { t: 80, base: "shot/ep1-oath-s06", talk: "expression/ep1-oath-s06-talk", blink: "expression/ep1-oath-s06-blink" },
+    { t: 92, base: "shot/ep1-oath-s07" },
+  ],
+  vanguard: [
+    { t: 2, base: "shot/ep1-vanguard-s01" },
+    { t: 14, base: "shot/ep1-vanguard-s02" },
+    { t: 28, base: "shot/ep1-vanguard-s03" },
+    { t: 44, base: "shot/ep1-vanguard-s04", talk: "expression/ep1-vanguard-s04-talk", blink: "expression/ep1-vanguard-s04-blink" },
+    { t: 74, base: "shot/ep1-vanguard-s06" },
+  ],
+  warden: [
+    { t: 4, base: "shot/ep1-warden-s01", talk: "expression/ep1-warden-s01-talk", blink: "expression/ep1-warden-s01-blink" },
+    { t: 26, base: "shot/ep1-warden-s02", talk: "expression/ep1-warden-s02-talk", blink: "expression/ep1-warden-s02-blink" },
+    // t: 44 決鬥七拍 → FIGHT_FRAMES["warden:44"]
+    { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
   ],
   causeway: [
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
     { t: 56, base: "shot/ep2-causeway-s04", until: 74 },
-    // t: 74 決鬥七拍 → 由 fight 分支用 FIGHT_FRAMES 換幀
+    // t: 74 決鬥七拍 → FIGHT_FRAMES["causeway:74"]
+  ],
+  "act1-fall": [
+    { t: 0, base: "shot/ep1-act1-fall-s01" },
+    { t: 20.5, base: "shot/ep1-act1-fall-s02", talk: "expression/ep1-act1-fall-s02-talk", blink: "expression/ep1-act1-fall-s02-blink" },
+    { t: 40, base: "shot/ep1-act1-fall-s03" },
+    { t: 54, base: "shot/ep1-act1-fall-s04" },
+  ],
+  bamboo: [
+    { t: 4, base: "shot/ep1-bamboo-s01" },
+    { t: 22, base: "shot/ep1-bamboo-s02" },
+    { t: 40, base: "shot/ep1-bamboo-s03", talk: "expression/ep1-bamboo-s03-talk", blink: "expression/ep1-bamboo-s03-blink" },
+    { t: 58, base: "shot/ep1-bamboo-s04" },
+    { t: 74, base: "shot/ep1-bamboo-s05" },
+  ],
+  heron: [
+    { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
+    { t: 26, base: "shot/ep1-heron-s02" },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
@@ -837,6 +870,24 @@ const FIGHT_FRAMES = {
     pass: "fight/ep2-causeway-s05-pass",
     hold: "fight/ep2-causeway-s05-hold",
     aftermath: "fight/ep2-causeway-s05-aftermath",
+  },
+  "vanguard:60": {
+    standoff: "shot/ep1-vanguard-s05",
+    windup: "fight/ep1-vanguard-s05-windup",
+    charge: "fight/ep1-vanguard-s05-charge",
+    impact: "fight/ep1-vanguard-s05-impact",
+    pass: "fight/ep1-vanguard-s05-pass",
+    hold: "fight/ep1-vanguard-s05-hold",
+    aftermath: "fight/ep1-vanguard-s05-aftermath",
+  },
+  "warden:44": {
+    standoff: "shot/ep1-warden-s03",
+    windup: "fight/ep1-warden-s03-windup",
+    charge: "fight/ep1-warden-s03-charge",
+    impact: "fight/ep1-warden-s03-impact",
+    pass: "fight/ep1-warden-s03-pass",
+    hold: "fight/ep1-warden-s03-hold",
+    aftermath: "fight/ep1-warden-s03-aftermath",
   },
   "warden:80": {
     standoff: "shot/ep1-warden-s05",
@@ -997,7 +1048,7 @@ function render() {
   // 分鏡：當前鏡頭決定機位。切鏡硬切（cut dip）。
   const shot = shotAt(scene, local);
   // 圖像包優先：有手繪幀嘅鏡頭直接成圖出街（對白/眨眼用變體幀）；決鬥七拍幀優先過定鏡幀。
-  const fightFrames = shot.kind === "fight" ? FIGHT_FRAMES[`${scene.id}:${shot.t}`] : null;
+  const fightFrames = shot.kind === "fight" ? FIGHT_FRAMES[`${scene.id}:${shot.t}`] || null : null;
   const keyframe = fightFrames ? null : frameFor(scene, local);
   const onFrames = !!(keyframe || fightFrames);
   const shotKey = `${scene.id}:${shot.t}:${onFrames ? "frame" : shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
