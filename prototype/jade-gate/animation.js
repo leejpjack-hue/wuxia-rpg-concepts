@@ -900,7 +900,7 @@ const FRAME_PACK = {
   hall: [
     { t: 4, base: "shot/ep2-hall-s01" },
     { t: 26, base: "shot/ep2-hall-s02" },
-    { t: 48, base: "shot/ep2-hall-s03" },
+    { t: 48, base: "shot/ep2-hall-s03", talk: "expression/ep2-hall-s03-talk", blink: "expression/ep2-hall-s03-blink" },
   ],
 };
 
