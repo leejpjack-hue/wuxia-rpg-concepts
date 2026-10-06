@@ -820,7 +820,9 @@ const FRAME_PACK = {
   ],
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
-    { t: 26, base: "shot/ep1-heron-s02", until: 46 },
+    { t: 26, base: "shot/ep1-heron-s02" },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
 };
 
