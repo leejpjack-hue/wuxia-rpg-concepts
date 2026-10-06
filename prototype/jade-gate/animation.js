@@ -805,6 +805,10 @@ const FRAME_PACK = {
     { t: 56, base: "shot/ep2-causeway-s04", until: 74 },
     // t: 74 決鬥七拍 → 由 fight 分支用 FIGHT_FRAMES 換幀
   ],
+  "act1-fall": [
+    { t: 0, base: "shot/ep1-act1-fall-s01" },
+    { t: 20.5, base: "shot/ep1-act1-fall-s02", talk: "expression/ep1-act1-fall-s02-talk", until: 40 },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -824,6 +828,9 @@ const FIGHT_FRAMES = {
     windup: "fight/ep1-warden-s05-windup",
     charge: "fight/ep1-warden-s05-charge",
     impact: "fight/ep1-warden-s05-impact",
+    pass: "fight/ep1-warden-s05-pass",
+    hold: "fight/ep1-warden-s05-hold",
+    aftermath: "fight/ep1-warden-s05-aftermath",
   },
 };
 
