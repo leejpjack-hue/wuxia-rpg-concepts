@@ -835,8 +835,8 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
@@ -854,8 +854,8 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
   ],
 };
 
@@ -897,6 +897,15 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-warden-s05-pass",
     hold: "fight/ep1-warden-s05-hold",
     aftermath: "fight/ep1-warden-s05-aftermath",
+  },
+  "heron:63": {
+    standoff: "shot/ep1-heron-s04",
+    windup: "fight/ep1-heron-s04-windup",
+    charge: "fight/ep1-heron-s04-charge",
+    impact: "fight/ep1-heron-s04-impact",
+    pass: "fight/ep1-heron-s04-pass",
+    hold: "fight/ep1-heron-s04-hold",
+    aftermath: "fight/ep1-heron-s04-aftermath",
   },
 };
 
