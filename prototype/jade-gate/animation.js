@@ -871,6 +871,10 @@ const FRAME_PACK = {
     { t: 44, base: "shot/ep1-clouds-s03" },
     { t: 62, base: "shot/ep1-clouds-s04" },
   ],
+  lubu: [
+    { t: 4, base: "shot/ep1-lubu-s01", talk: "expression/ep1-lubu-s01-talk", blink: "expression/ep1-lubu-s01-blink", until: 26 },
+    // t: 26 決鬥 → FIGHT_FRAMES["lubu:26"]（缺拍退回 standoff）
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -920,6 +924,10 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-heron-s04-pass",
     hold: "fight/ep1-heron-s04-hold",
     aftermath: "fight/ep1-heron-s04-aftermath",
+  },
+  "lubu:26": {
+    standoff: "shot/ep1-lubu-s02",
+    windup: "fight/ep1-lubu-s02-windup",
   },
 };
 
