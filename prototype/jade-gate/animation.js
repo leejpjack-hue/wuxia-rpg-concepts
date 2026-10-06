@@ -857,6 +857,10 @@ const FRAME_PACK = {
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
     { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
+  lubu: [
+    { t: 66, base: "shot/ep1-lubu-s04", talk: "expression/ep1-lubu-s04-talk", blink: "expression/ep1-lubu-s04-blink" },
+    { t: 82, base: "shot/ep1-lubu-s05", talk: "expression/ep1-lubu-s05-talk" },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
