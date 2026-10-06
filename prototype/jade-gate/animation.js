@@ -835,8 +835,9 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
@@ -854,8 +855,26 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
-    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
+  ],
+  crossing: [
+    { t: 0, base: "shot/ep1-crossing-s01" },
+    { t: 24.5, base: "shot/ep1-crossing-s02", talk: "expression/ep1-crossing-s02-talk", blink: "expression/ep1-crossing-s02-blink" },
+    { t: 44, base: "shot/ep1-crossing-s03" },
+    { t: 58, base: "shot/ep1-crossing-s04" },
+  ],
+  clouds: [
+    { t: 0, base: "shot/ep1-clouds-s01" },
+    { t: 24.5, base: "shot/ep1-clouds-s02", talk: "expression/ep1-clouds-s02-talk", blink: "expression/ep1-clouds-s02-blink" },
+    { t: 44, base: "shot/ep1-clouds-s03" },
+    { t: 62, base: "shot/ep1-clouds-s04" },
+  ],
+  lubu: [
+    { t: 4, base: "shot/ep1-lubu-s01", talk: "expression/ep1-lubu-s01-talk", blink: "expression/ep1-lubu-s01-blink", until: 26 },
+    // t: 26 決鬥七拍 → FIGHT_FRAMES["lubu:26"]
+    { t: 46, base: "shot/ep1-lubu-s03", until: 66 },
   ],
   lubu: [
     // t: 46 決鬥七拍 → FIGHT_FRAMES["lubu:46"]（standoff 在 PR #127）
@@ -928,6 +947,23 @@ const FIGHT_FRAMES = {
     standoff: "shot/ep1-bloodmoon-s03",
     windup: "fight/ep1-bloodmoon-s03-windup",
     charge: "fight/ep1-bloodmoon-s03-charge",
+  "heron:63": {
+    standoff: "shot/ep1-heron-s04",
+    windup: "fight/ep1-heron-s04-windup",
+    charge: "fight/ep1-heron-s04-charge",
+    impact: "fight/ep1-heron-s04-impact",
+    pass: "fight/ep1-heron-s04-pass",
+    hold: "fight/ep1-heron-s04-hold",
+    aftermath: "fight/ep1-heron-s04-aftermath",
+  },
+  "lubu:26": {
+    standoff: "shot/ep1-lubu-s02",
+    windup: "fight/ep1-lubu-s02-windup",
+    charge: "fight/ep1-lubu-s02-charge",
+    impact: "fight/ep1-lubu-s02-impact",
+    pass: "fight/ep1-lubu-s02-pass",
+    hold: "fight/ep1-lubu-s02-hold",
+    aftermath: "fight/ep1-lubu-s02-aftermath",
   },
 };
 
