@@ -838,6 +838,25 @@ const FRAME_PACK = {
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
     { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
+  "act1-fall": [
+    { t: 0, base: "shot/ep1-act1-fall-s01" },
+    { t: 20.5, base: "shot/ep1-act1-fall-s02", talk: "expression/ep1-act1-fall-s02-talk", blink: "expression/ep1-act1-fall-s02-blink" },
+    { t: 40, base: "shot/ep1-act1-fall-s03" },
+    { t: 54, base: "shot/ep1-act1-fall-s04" },
+  ],
+  bamboo: [
+    { t: 4, base: "shot/ep1-bamboo-s01" },
+    { t: 22, base: "shot/ep1-bamboo-s02" },
+    { t: 40, base: "shot/ep1-bamboo-s03", talk: "expression/ep1-bamboo-s03-talk", blink: "expression/ep1-bamboo-s03-blink" },
+    { t: 58, base: "shot/ep1-bamboo-s04" },
+    { t: 74, base: "shot/ep1-bamboo-s05" },
+  ],
+  heron: [
+    { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
+    { t: 26, base: "shot/ep1-heron-s02" },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 63, base: "shot/ep1-heron-s04", until: 78 },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
