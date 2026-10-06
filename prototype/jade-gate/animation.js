@@ -812,7 +812,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-warden-s01", talk: "expression/ep1-warden-s01-talk", blink: "expression/ep1-warden-s01-blink" },
     { t: 26, base: "shot/ep1-warden-s02", talk: "expression/ep1-warden-s02-talk", blink: "expression/ep1-warden-s02-blink" },
     // t: 44 決鬥七拍 → FIGHT_FRAMES["warden:44"]
-    { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥未有幀 → 決鬥幀接手
+    { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
   ],
   causeway: [
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
