@@ -973,7 +973,9 @@ const FRAME_PACK = {
     { t: 48, base: "shot/ep2-legends-s03" },
   ],
   final: [
-    // t: 4 決鬥，缺拍退回 standoff → FIGHT_FRAMES["final:4"]
+    // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
+    { t: 24, base: "shot/ep2-final-s02", until: 58 },
+    // t: 42 決鬥，缺拍退回 standoff → FIGHT_FRAMES["final:42"]
   ],
 };
 
@@ -1093,6 +1095,13 @@ const FIGHT_FRAMES = {
     windup: "fight/ep2-final-s01-windup",
     charge: "fight/ep2-final-s01-charge",
     impact: "fight/ep2-final-s01-impact",
+    pass: "fight/ep2-final-s01-pass",
+    hold: "fight/ep2-final-s01-hold",
+    aftermath: "fight/ep2-final-s01-aftermath",
+  },
+  "final:42": {
+    standoff: "shot/ep2-final-s03",
+    windup: "fight/ep2-final-s03-windup",
   },
 };
 
