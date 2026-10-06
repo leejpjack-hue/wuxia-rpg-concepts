@@ -814,7 +814,13 @@ const FRAME_PACK = {
   bamboo: [
     { t: 4, base: "shot/ep1-bamboo-s01" },
     { t: 22, base: "shot/ep1-bamboo-s02" },
-    { t: 40, base: "shot/ep1-bamboo-s03", until: 58 },
+    { t: 40, base: "shot/ep1-bamboo-s03", talk: "expression/ep1-bamboo-s03-talk", blink: "expression/ep1-bamboo-s03-blink" },
+    { t: 58, base: "shot/ep1-bamboo-s04" },
+    { t: 74, base: "shot/ep1-bamboo-s05" },
+  ],
+  heron: [
+    { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
+    { t: 26, base: "shot/ep1-heron-s02", until: 46 },
   ],
 };
 
