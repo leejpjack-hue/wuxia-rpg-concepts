@@ -943,6 +943,11 @@ const FRAME_PACK = {
     { t: 28, base: "shot/ep2-refuse-s02", talk: "expression/ep2-refuse-s02-talk", blink: "expression/ep2-refuse-s02-blink" },
     { t: 42, base: "shot/ep2-refuse-s03" },
   ],
+  lattice: [
+    { t: 4, base: "shot/ep2-lattice-s01" },
+    { t: 46, base: "shot/ep2-lattice-s02", talk: "expression/ep2-lattice-s02-talk", blink: "expression/ep2-lattice-s02-blink", until: 63 },
+    // t: 63 決鬥 → FIGHT_FRAMES["lattice:63"]（缺拍退回 standoff）
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -1037,6 +1042,10 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-lubu-s02-pass",
     hold: "fight/ep1-lubu-s02-hold",
     aftermath: "fight/ep1-lubu-s02-aftermath",
+  },
+  "lattice:63": {
+    standoff: "shot/ep2-lattice-s03",
+    windup: "fight/ep2-lattice-s03-windup",
   },
 };
 
