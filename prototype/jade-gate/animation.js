@@ -953,6 +953,12 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep2-judges-s01" },
     { t: 28, base: "shot/ep2-judges-s02", talk: "expression/ep2-judges-s02-talk", blink: "expression/ep2-judges-s02-blink", until: 47 },
     // t: 47 決鬥七拍 → FIGHT_FRAMES["judges:47"]
+    { t: 66, base: "shot/ep2-judges-s04", talk: "expression/ep2-judges-s04-talk", blink: "expression/ep2-judges-s04-blink" },
+  ],
+  investigators: [
+    { t: 4, base: "shot/ep2-investigators-s01", talk: "expression/ep2-investigators-s01-talk", blink: "expression/ep2-investigators-s01-blink" },
+    { t: 28, base: "shot/ep2-investigators-s02" },
+    { t: 48, base: "shot/ep2-investigators-s03" },
   ],
 };
 
