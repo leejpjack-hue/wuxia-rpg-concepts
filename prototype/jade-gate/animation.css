@@ -81,7 +81,18 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 
 /* 演員進場 */
 .cast { position: absolute; inset: 0; z-index: 2; }
-.stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast, .stage[data-shot="fight"] .cast { visibility: hidden; }
+.stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast,
+.stage[data-shot="fight"] .cast, .stage[data-shot="frame"] .cast { visibility: hidden; }
+
+/* 圖像包 keyframe：手繪整幀直接做鏡頭（2560×1440 = 舞台比例），
+ * 基礎幀切換時輕微推近（drift），講嘢/眨眼變體只換 src 唔重啟。 */
+.keyframe {
+  position: absolute; inset: 0; z-index: 3;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(1.02) contrast(1.03);
+}
+.keyframe.drift { animation: kf-drift 13s ease-out both; }
+@keyframes kf-drift { from { scale: 1.001; } to { scale: 1.045; } }
 .actor {
   position: absolute; bottom: 10%; height: 58%;
   filter: drop-shadow(0 14px 12px #000b);

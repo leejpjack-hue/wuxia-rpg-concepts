@@ -752,6 +752,88 @@ export const EPISODES = [
   },
 ];
 
+/* ---------------- 動畫圖像包（docs/animation-image-pack-2026-10-05） ----------------
+ *  人手繪 keyframe 直接做鏡頭：有幀嘅場景播繪製鏡頭（講嘢/眨眼用變體幀，
+ *  有限動畫），決鬥七拍用逐拍幀；所有場景背景換專用場景板。 */
+const PACK = "assets/animation";
+const BG_PACK = {
+  zhaovillage: "bg-village", prologue: "bg-gate-night", oath: "bg-refugee-camp",
+  vanguard: "bg-gate-camp", warden: "bg-gate-courtyard", "act1-fall": "bg-gate-dawn",
+  bamboo: "bg-bamboo", heron: "bg-river-mist", crossing: "bg-ferry",
+  clouds: "bg-cloud-stairs", lubu: "bg-cloud-terrace", freed: "bg-cloud-terrace",
+  bloodmoon: "bg-citadel-approach", throne: "bg-throne", "final-duel": "bg-throne-broken",
+  epilogue: "bg-citadel-dawn",
+  rift: "bg-rift", "corpse-street": "bg-other-street", inspectors: "bg-inspection",
+  hall: "bg-twenty-hall", refuse: "bg-twenty-hall", lattice: "bg-lattice",
+  judges: "bg-judges", investigators: "bg-court", court: "bg-garden", legends: "bg-garden",
+  causeway: "bg-bridge", final: "bg-bridge", home: "bg-bridge-home",
+};
+for (const ep of EPISODES)
+  for (const scene of ep.scenes) {
+    const plate = BG_PACK[scene.id];
+    if (plate) scene.backdrop = `${PACK}/background/${plate}.png`;
+  }
+
+const FRAME_PACK = {
+  zhaovillage: [
+    { t: 4, base: "shot/ep1-zhaovillage-s01" },
+    { t: 18, base: "shot/ep1-zhaovillage-s02" },
+    { t: 34, base: "shot/ep1-zhaovillage-s03" },
+    { t: 50, base: "shot/ep1-zhaovillage-s04" },
+    { t: 66, base: "shot/ep1-zhaovillage-s05", talk: "expression/ep1-zhaovillage-s05-talk", blink: "expression/ep1-zhaovillage-s05-blink" },
+    { t: 84, base: "shot/ep1-zhaovillage-s06" },
+    { t: 96, base: "shot/ep1-zhaovillage-s07" },
+  ],
+  prologue: [
+    { t: 0, base: "shot/ep1-prologue-s01" },
+    { t: 18, base: "shot/ep1-prologue-s02" },
+    { t: 34, base: "shot/ep1-prologue-s03" },
+    { t: 44, base: "shot/ep1-prologue-s04" },
+    { t: 52, base: "shot/ep1-prologue-s05", talk: "expression/ep1-prologue-s05-talk", blink: "expression/ep1-prologue-s05-blink" },
+    { t: 64, base: "shot/ep1-prologue-s06" },
+  ],
+  oath: [
+    { t: 4, base: "shot/ep1-oath-s01" },
+    { t: 32, base: "shot/ep1-oath-s02", talk: "expression/ep1-oath-s02-talk", blink: "expression/ep1-oath-s02-blink" },
+    { t: 44, base: "shot/ep1-oath-s03" },
+    { t: 58, base: "shot/ep1-oath-s04", talk: "expression/ep1-oath-s04-talk", blink: "expression/ep1-oath-s04-blink" },
+    { t: 68, base: "shot/ep1-oath-s05" },
+    { t: 80, base: "shot/ep1-oath-s06", talk: "expression/ep1-oath-s06-talk", until: 92 },
+  ],
+  causeway: [
+    { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
+    { t: 56, base: "shot/ep2-causeway-s04", until: 74 },
+    // t: 74 決鬥七拍 → 由 fight 分支用 FIGHT_FRAMES 換幀
+  ],
+};
+
+/** 守橋人決戰：七拍各有手繪幀（standoff 用基礎鏡頭幀）。 */
+const FIGHT_FRAMES = {
+  standoff: "shot/ep2-causeway-s05",
+  windup: "fight/ep2-causeway-s05-windup",
+  charge: "fight/ep2-causeway-s05-charge",
+  impact: "fight/ep2-causeway-s05-impact",
+  pass: "fight/ep2-causeway-s05-pass",
+  hold: "fight/ep2-causeway-s05-hold",
+  aftermath: "fight/ep2-causeway-s05-aftermath",
+};
+
+/** 選當前 keyframe：有幀用幀（until = 幀嘅生效下限，過咗就跌返 sprite 鏡頭）；
+ *  講嘢幀喺對白期間 ~2.4Hz 開合口、週期眨眼（有限動畫，全部由 clock 決定——
+ *  seek 都係確定性重現）。baseKey 只計基礎幀，變體切換唔重啟鏡頭呼吸。 */
+function frameFor(scene, local) {
+  const frames = FRAME_PACK[scene.id];
+  if (!frames) return null;
+  let frame = null;
+  for (const f of frames) if (local >= f.t) frame = f;
+  if (!frame || (frame.until !== undefined && local >= frame.until)) return null;
+  let src = frame.base;
+  const speaking = frame.talk && local < frame.t + 14;
+  const blinkNow = frame.blink && local % 4.3 < 0.14;
+  if (blinkNow) src = frame.blink;
+  else if (speaking && Math.floor((local - frame.t) * 2.4) % 2 === 0) src = frame.talk;
+  return { baseKey: `${scene.id}:${frame.t}`, src: `${PACK}/${src}.png` };
+}
 /** 決戰七拍（研究自 chambara／武俠「一刀兩斷」與 sakuga 衝擊格文法）：
  *  對峙 stand-off（落花觸發）→ 蓄勢 wind-up → 突進 charge →
  *  交鋒 impact（衝擊格 + 定格 + 震屏）→ 擦身 pass（換位）→
@@ -883,14 +965,18 @@ function render() {
 
   // 分鏡：當前鏡頭決定機位。切鏡硬切（cut dip）。
   const shot = shotAt(scene, local);
-  const shotKey = `${scene.id}:${shot.t}:${shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
+  // 圖像包優先：有手繪幀嘅鏡頭直接成圖出街（對白/眨眼用變體幀）；決鬥七拍幀優先過定鏡幀。
+  const fightFrames = shot.kind === "fight" && scene.id === "causeway" ? FIGHT_FRAMES : null;
+  const keyframe = fightFrames ? null : frameFor(scene, local);
+  const onFrames = !!(keyframe || fightFrames);
+  const shotKey = `${scene.id}:${shot.t}:${onFrames ? "frame" : shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
   if (stage.dataset.shotKey !== shotKey) {
     stage.dataset.shotKey = shotKey;
-    stage.dataset.shot = shot.kind;
+    stage.dataset.shot = onFrames ? "frame" : shot.kind;
     const closeup = stage.querySelector(".closeup");
     const duel = stage.querySelector(".duel-stage");
-    closeup.hidden = shot.kind !== "closeup";
-    duel.hidden = shot.kind !== "duel" && shot.kind !== "fight";
+    closeup.hidden = onFrames || shot.kind !== "closeup";
+    duel.hidden = onFrames || (shot.kind !== "duel" && shot.kind !== "fight");
     if (shot.kind === "closeup" && shot.focus) {
       const img = closeup.querySelector("img");
       const portrait = portraitSrc(shot.focus);
@@ -920,7 +1006,7 @@ function render() {
       }
       restartAnimation(closeup, "cut");
     }
-    if (shot.kind === "duel" || shot.kind === "fight") {
+    if (!fightFrames && (shot.kind === "duel" || shot.kind === "fight")) {
       applyPoseArt(duel.querySelector("img.hero"), shot.focus, shot.focusPose || "focus");
       applyPoseArt(duel.querySelector("img.rival"), shot.rival, shot.rivalPose || "focus");
       duel.querySelector(".plate.hero").textContent = nameOf(shot.focus);
@@ -933,14 +1019,33 @@ function render() {
     const camera = stage.querySelector(".camera");
     if (camera) {
       const panKey = (p) => (p ? (p.startsWith("pan-") ? p : `pan-${p}`) : "pan-in");
-      camera.dataset.camera = shot.kind === "pan" ? `pan-${shot.from || "left"}`
+      camera.dataset.camera = onFrames ? panKey(scene.pan)
+        : shot.kind === "pan" ? `pan-${shot.from || "left"}`
         : shot.kind === "push" ? "push"
         : shot.kind === "wide" ? panKey(scene.pan.replace("-slow", ""))
         : panKey(scene.pan);
     }
   }
 
+  // keyframe 層：基礎幀切換先重啟鏡頭微推近；講嘢/眨眼/決鬥拍數只換 src。
+  const kfImg = stage.querySelector(".keyframe");
+  const kfSrc = keyframe ? keyframe.src
+    : fightFrames ? `${PACK}/${fightFrames[fightPhase(local - shot.t).name]}.png`
+    : null;
+  kfImg.hidden = !kfSrc;
+  if (kfSrc) {
+    if (kfImg.dataset.base !== (keyframe ? keyframe.baseKey : `fight:${shot.t}`)) {
+      kfImg.dataset.base = keyframe ? keyframe.baseKey : `fight:${shot.t}`;
+      restartAnimation(kfImg, "drift");
+    }
+    if (kfImg.dataset.src !== kfSrc) {
+      kfImg.dataset.src = kfSrc;
+      kfImg.src = kfSrc;
+    }
+  }
+
   // 決戰推進：按拍切 phase（蓄勢換招式、交鋒衝擊格、擦身換位、分勝倒下）。
+  // 有手繪幀嘅決鬥（守橋人）唔行 sprite 舞台——phase 直接由 keyframe 層換幀。
   const duelStage = stage.querySelector(".duel-stage");
   if (!duelStage.hidden && shot.kind === "fight") {
     const elapsed = local - shot.t;
