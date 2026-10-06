@@ -863,7 +863,10 @@ const FRAME_PACK = {
   ],
   freed: [
     { t: 4, base: "shot/ep1-freed-s01", talk: "expression/ep1-freed-s01-talk", blink: "expression/ep1-freed-s01-blink" },
-    { t: 18, base: "shot/ep1-freed-s02", talk: "expression/ep1-freed-s02-talk", until: 40 },
+    { t: 18, base: "shot/ep1-freed-s02", talk: "expression/ep1-freed-s02-talk", blink: "expression/ep1-freed-s02-blink" },
+    { t: 40, base: "shot/ep1-freed-s03" },
+    { t: 58, base: "shot/ep1-freed-s04", talk: "expression/ep1-freed-s04-talk", blink: "expression/ep1-freed-s04-blink" },
+    { t: 70, base: "shot/ep1-freed-s05" },
   ],
 };
 
