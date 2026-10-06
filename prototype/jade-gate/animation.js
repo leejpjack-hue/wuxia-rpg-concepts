@@ -859,7 +859,11 @@ const FRAME_PACK = {
   ],
   lubu: [
     { t: 66, base: "shot/ep1-lubu-s04", talk: "expression/ep1-lubu-s04-talk", blink: "expression/ep1-lubu-s04-blink" },
-    { t: 82, base: "shot/ep1-lubu-s05", talk: "expression/ep1-lubu-s05-talk" },
+    { t: 82, base: "shot/ep1-lubu-s05", talk: "expression/ep1-lubu-s05-talk", blink: "expression/ep1-lubu-s05-blink" },
+  ],
+  freed: [
+    { t: 4, base: "shot/ep1-freed-s01", talk: "expression/ep1-freed-s01-talk", blink: "expression/ep1-freed-s01-blink" },
+    { t: 18, base: "shot/ep1-freed-s02", talk: "expression/ep1-freed-s02-talk", until: 40 },
   ],
 };
 
