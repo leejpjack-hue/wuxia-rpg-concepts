@@ -860,6 +860,11 @@ const FRAME_PACK = {
   bloodmoon: [
     { t: 64, base: "shot/ep1-bloodmoon-s04" },
   ],
+  throne: [
+    { t: 4, base: "shot/ep1-throne-s01", talk: "expression/ep1-throne-s01-talk", blink: "expression/ep1-throne-s01-blink" },
+    { t: 32, base: "shot/ep1-throne-s02", talk: "expression/ep1-throne-s02-talk", blink: "expression/ep1-throne-s02-blink" },
+    { t: 56, base: "shot/ep1-throne-s03", until: 72 },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
