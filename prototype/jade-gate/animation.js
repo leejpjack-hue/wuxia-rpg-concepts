@@ -863,7 +863,8 @@ const FRAME_PACK = {
   throne: [
     { t: 4, base: "shot/ep1-throne-s01", talk: "expression/ep1-throne-s01-talk", blink: "expression/ep1-throne-s01-blink" },
     { t: 32, base: "shot/ep1-throne-s02", talk: "expression/ep1-throne-s02-talk", blink: "expression/ep1-throne-s02-blink" },
-    { t: 56, base: "shot/ep1-throne-s03", until: 72 },
+    { t: 56, base: "shot/ep1-throne-s03" },
+    { t: 72, base: "shot/ep1-throne-s04" },
   ],
 };
 
@@ -905,6 +906,11 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-warden-s05-pass",
     hold: "fight/ep1-warden-s05-hold",
     aftermath: "fight/ep1-warden-s05-aftermath",
+  },
+  "final-duel:4": {
+    standoff: "shot/ep1-final-duel-s01",
+    windup: "fight/ep1-final-duel-s01-windup",
+    charge: "fight/ep1-final-duel-s01-charge",
   },
 };
 
