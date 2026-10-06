@@ -816,7 +816,9 @@ const FRAME_PACK = {
   ],
   causeway: [
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
-    { t: 56, base: "shot/ep2-causeway-s04", until: 74 },
+    { t: 32, base: "shot/ep2-causeway-s02", talk: "expression/ep2-causeway-s02-talk", blink: "expression/ep2-causeway-s02-blink" },
+    { t: 46, base: "shot/ep2-causeway-s03" },
+    { t: 56, base: "shot/ep2-causeway-s04", talk: "expression/ep2-causeway-s04-talk", until: 74 },
     // t: 74 決鬥七拍 → FIGHT_FRAMES["causeway:74"]
   ],
   "act1-fall": [
@@ -967,7 +969,8 @@ const FRAME_PACK = {
   ],
   legends: [
     { t: 4, base: "shot/ep2-legends-s01" },
-    { t: 28, base: "shot/ep2-legends-s02", talk: "expression/ep2-legends-s02-talk", blink: "expression/ep2-legends-s02-blink", until: 48 },
+    { t: 28, base: "shot/ep2-legends-s02", talk: "expression/ep2-legends-s02-talk", blink: "expression/ep2-legends-s02-blink" },
+    { t: 48, base: "shot/ep2-legends-s03" },
   ],
 };
 
