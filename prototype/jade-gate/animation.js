@@ -922,7 +922,11 @@ const FRAME_PACK = {
   investigators: [
     { t: 4, base: "shot/ep2-investigators-s01", talk: "expression/ep2-investigators-s01-talk", blink: "expression/ep2-investigators-s01-blink" },
     { t: 28, base: "shot/ep2-investigators-s02" },
-    { t: 48, base: "shot/ep2-investigators-s03" },
+    { t: 48, base: "shot/ep2-investigators-s03", talk: "expression/ep2-investigators-s03-talk", blink: "expression/ep2-investigators-s03-blink" },
+  ],
+  court: [
+    { t: 4, base: "shot/ep2-court-s01" },
+    { t: 28, base: "shot/ep2-court-s02", talk: "expression/ep2-court-s02-talk", blink: "expression/ep2-court-s02-blink", until: 50 },
   ],
 };
 
