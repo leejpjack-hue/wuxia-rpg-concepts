@@ -818,7 +818,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
     { t: 32, base: "shot/ep2-causeway-s02", talk: "expression/ep2-causeway-s02-talk", blink: "expression/ep2-causeway-s02-blink" },
     { t: 46, base: "shot/ep2-causeway-s03" },
-    { t: 56, base: "shot/ep2-causeway-s04", talk: "expression/ep2-causeway-s04-talk", until: 74 },
+    { t: 56, base: "shot/ep2-causeway-s04", talk: "expression/ep2-causeway-s04-talk", blink: "expression/ep2-causeway-s04-blink", until: 74 },
     // t: 74 決鬥七拍 → FIGHT_FRAMES["causeway:74"]
   ],
   "act1-fall": [
@@ -972,6 +972,9 @@ const FRAME_PACK = {
     { t: 28, base: "shot/ep2-legends-s02", talk: "expression/ep2-legends-s02-talk", blink: "expression/ep2-legends-s02-blink" },
     { t: 48, base: "shot/ep2-legends-s03" },
   ],
+  final: [
+    // t: 4 決鬥，缺拍退回 standoff → FIGHT_FRAMES["final:4"]
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -1084,6 +1087,12 @@ const FIGHT_FRAMES = {
     pass: "fight/ep2-judges-s03-pass",
     hold: "fight/ep2-judges-s03-hold",
     aftermath: "fight/ep2-judges-s03-aftermath",
+  },
+  "final:4": {
+    standoff: "shot/ep2-final-s01",
+    windup: "fight/ep2-final-s01-windup",
+    charge: "fight/ep2-final-s01-charge",
+    impact: "fight/ep2-final-s01-impact",
   },
 };
 
