@@ -837,6 +837,7 @@ const FRAME_PACK = {
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
     // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
@@ -856,6 +857,13 @@ const FRAME_PACK = {
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
     // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
+    { t: 78, base: "shot/ep1-heron-s05" },
+  ],
+  crossing: [
+    { t: 0, base: "shot/ep1-crossing-s01" },
+    { t: 24.5, base: "shot/ep1-crossing-s02", talk: "expression/ep1-crossing-s02-talk", blink: "expression/ep1-crossing-s02-blink" },
+    { t: 44, base: "shot/ep1-crossing-s03" },
+    { t: 58, base: "shot/ep1-crossing-s04" },
   ],
 };
 
