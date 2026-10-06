@@ -865,6 +865,12 @@ const FRAME_PACK = {
     { t: 44, base: "shot/ep1-crossing-s03" },
     { t: 58, base: "shot/ep1-crossing-s04" },
   ],
+  clouds: [
+    { t: 0, base: "shot/ep1-clouds-s01" },
+    { t: 24.5, base: "shot/ep1-clouds-s02", talk: "expression/ep1-clouds-s02-talk", blink: "expression/ep1-clouds-s02-blink" },
+    { t: 44, base: "shot/ep1-clouds-s03" },
+    { t: 62, base: "shot/ep1-clouds-s04" },
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
