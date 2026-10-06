@@ -884,7 +884,16 @@ const FRAME_PACK = {
     { t: 36, base: "shot/ep2-rift-s03" },
     { t: 52, base: "shot/ep2-rift-s04" },
     { t: 68, base: "shot/ep2-rift-s05" },
-    { t: 80, base: "shot/ep2-rift-s06", until: 88 },
+    { t: 80, base: "shot/ep2-rift-s06" },
+    { t: 88, base: "shot/ep2-rift-s07" },
+  ],
+  "corpse-street": [
+    { t: 4, base: "shot/ep2-corpse-street-s01" },
+    { t: 24, base: "shot/ep2-corpse-street-s02" },
+    { t: 62, base: "shot/ep2-corpse-street-s03", talk: "expression/ep2-corpse-street-s03-talk", blink: "expression/ep2-corpse-street-s03-blink" },
+  ],
+  inspectors: [
+    { t: 4, base: "shot/ep2-inspectors-s01", until: 26 },
   ],
 };
 
