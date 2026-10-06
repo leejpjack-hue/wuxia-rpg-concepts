@@ -903,6 +903,14 @@ const FRAME_PACK = {
     { t: 24, base: "shot/ep1-bloodmoon-s02", talk: "expression/ep1-bloodmoon-s02-talk", blink: "expression/ep1-bloodmoon-s02-blink", until: 44 },
     // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（缺拍退回 standoff）
   ],
+  lubu: [
+    // 其餘呂布鏡頭在 #127 / #128。合併時把這格插進該陣列。
+    { t: 68, base: "insert/ep1-lubu-insert-curse-release", until: 82 },
+  ],
+  freed: [
+    // 其餘同行鏡頭在 #128。合併時把這格插進該陣列。
+    { t: 20, base: "insert/ep1-freed-insert-historian-ink", until: 40 },
+  ],
   bloodmoon: [
     // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（standoff 在 PR #128；缺拍退回 standoff）
     { t: 64, base: "shot/ep1-bloodmoon-s04" },
@@ -918,15 +926,18 @@ const FRAME_PACK = {
     { t: 24, base: "shot/ep1-final-duel-s02", talk: "expression/ep1-final-duel-s02-talk", blink: "expression/ep1-final-duel-s02-blink" },
     { t: 44, base: "shot/ep1-final-duel-s03", talk: "expression/ep1-final-duel-s03-talk", blink: "expression/ep1-final-duel-s03-blink", until: 62 },
     // t: 62 決鬥七拍 → FIGHT_FRAMES["final-duel:62"]
+    { t: 64, base: "insert/ep1-final-duel-insert-four-weapons" },
     { t: 80, base: "shot/ep1-final-duel-s05" },
   ],
   epilogue: [
     { t: 4, base: "shot/ep1-epilogue-s01", talk: "expression/ep1-epilogue-s01-talk", blink: "expression/ep1-epilogue-s01-blink" },
     { t: 32, base: "shot/ep1-epilogue-s02" },
+    { t: 46, base: "insert/ep1-epilogue-insert-sheathe-bow" },
   ],
   rift: [
     { t: 0, base: "shot/ep2-rift-s01" },
     { t: 20, base: "shot/ep2-rift-s02" },
+    { t: 20, base: "insert/ep2-rift-insert-unfinished-decree" },
     { t: 36, base: "shot/ep2-rift-s03" },
     { t: 52, base: "shot/ep2-rift-s04" },
     { t: 68, base: "shot/ep2-rift-s05" },
