@@ -948,14 +948,19 @@ const FRAME_PACK = {
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
     { t: 24, base: "shot/ep2-final-s02" },
     // t: 42 決鬥七拍 → FIGHT_FRAMES["final:42"]
+    { t: 44, base: "insert/ep2-final-insert-jade-falls" },
     { t: 58, base: "shot/ep2-final-s04", talk: "expression/ep2-final-s04-talk", blink: "expression/ep2-final-s04-blink" },
+    { t: 60, base: "insert/ep2-final-insert-sister-recognition" },
     { t: 72, base: "shot/ep2-final-s05", talk: "expression/ep2-final-s05-talk", blink: "expression/ep2-final-s05-blink" },
     { t: 84, base: "shot/ep2-final-s06" },
+    { t: 86, base: "insert/ep2-final-insert-jade-reunites" },
   ],
   home: [
     { t: 4, base: "shot/ep2-home-s01", talk: "expression/ep2-home-s01-talk", blink: "expression/ep2-home-s01-blink" },
     { t: 22, base: "shot/ep2-home-s02" },
     { t: 52, base: "shot/ep2-home-s03" },
+    { t: 54, base: "insert/ep2-home-insert-farewell-reverse" },
+    { t: 66, base: "insert/ep2-home-insert-two-gatekeepers" },
   ],
 };
 
