@@ -904,6 +904,7 @@ const FRAME_PACK = {
     { t: 20, base: "insert/ep2-rift-insert-unfinished-decree" },
     { t: 36, base: "shot/ep2-rift-s03" },
     { t: 52, base: "shot/ep2-rift-s04" },
+    { t: 52, base: "insert/ep2-rift-insert-three-fall" },
     { t: 68, base: "shot/ep2-rift-s05" },
     { t: 80, base: "shot/ep2-rift-s06" },
     { t: 88, base: "shot/ep2-rift-s07" },
@@ -911,6 +912,7 @@ const FRAME_PACK = {
   "corpse-street": [
     { t: 4, base: "shot/ep2-corpse-street-s01" },
     { t: 24, base: "shot/ep2-corpse-street-s02" },
+    { t: 26, base: "insert/ep2-corpse-street-insert-strange-coin" },
     { t: 62, base: "shot/ep2-corpse-street-s03", talk: "expression/ep2-corpse-street-s03-talk", blink: "expression/ep2-corpse-street-s03-blink" },
   ],
   inspectors: [
@@ -921,6 +923,7 @@ const FRAME_PACK = {
   hall: [
     { t: 4, base: "shot/ep2-hall-s01" },
     { t: 26, base: "shot/ep2-hall-s02" },
+    { t: 28, base: "insert/ep2-hall-insert-twenty-seats" },
     { t: 48, base: "shot/ep2-hall-s03", talk: "expression/ep2-hall-s03-talk", blink: "expression/ep2-hall-s03-blink" },
   ],
   refuse: [
@@ -949,11 +952,13 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep2-court-s01" },
     { t: 28, base: "shot/ep2-court-s02", talk: "expression/ep2-court-s02-talk", blink: "expression/ep2-court-s02-blink" },
     { t: 50, base: "shot/ep2-court-s03" },
+    { t: 52, base: "insert/ep2-court-insert-court-release" },
   ],
   legends: [
     { t: 4, base: "shot/ep2-legends-s01" },
     { t: 28, base: "shot/ep2-legends-s02", talk: "expression/ep2-legends-s02-talk", blink: "expression/ep2-legends-s02-blink" },
     { t: 48, base: "shot/ep2-legends-s03" },
+    { t: 50, base: "insert/ep2-legends-insert-nineteen-lamps" },
   ],
   final: [
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
