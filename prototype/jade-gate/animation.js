@@ -868,6 +868,11 @@ const FRAME_PACK = {
     { t: 58, base: "shot/ep1-freed-s04", talk: "expression/ep1-freed-s04-talk", blink: "expression/ep1-freed-s04-blink" },
     { t: 70, base: "shot/ep1-freed-s05" },
   ],
+  bloodmoon: [
+    { t: 4, base: "shot/ep1-bloodmoon-s01" },
+    { t: 24, base: "shot/ep1-bloodmoon-s02", talk: "expression/ep1-bloodmoon-s02-talk", blink: "expression/ep1-bloodmoon-s02-blink", until: 44 },
+    // t: 44 決鬥 → FIGHT_FRAMES["bloodmoon:44"]（缺拍退回 standoff）
+  ],
 };
 
 /** 決鬥七拍，以「場景:鏡頭時間」索引。standoff 用該鏡頭基礎幀。
@@ -908,6 +913,10 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-warden-s05-pass",
     hold: "fight/ep1-warden-s05-hold",
     aftermath: "fight/ep1-warden-s05-aftermath",
+  },
+  "bloodmoon:44": {
+    standoff: "shot/ep1-bloodmoon-s03",
+    windup: "fight/ep1-bloodmoon-s03-windup",
   },
 };
 
