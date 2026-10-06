@@ -864,6 +864,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-lubu-s01", talk: "expression/ep1-lubu-s01-talk", blink: "expression/ep1-lubu-s01-blink", until: 26 },
     // t: 26 決鬥七拍 → FIGHT_FRAMES["lubu:26"]
     // t: 46 決鬥七拍 → FIGHT_FRAMES["lubu:46"]（standoff 在 PR #127）
+    { t: 46, base: "shot/ep1-lubu-s03", until: 66 },
     { t: 66, base: "shot/ep1-lubu-s04", talk: "expression/ep1-lubu-s04-talk", blink: "expression/ep1-lubu-s04-blink" },
     { t: 68, base: "insert/ep1-lubu-insert-curse-release" },
     { t: 82, base: "shot/ep1-lubu-s05", talk: "expression/ep1-lubu-s05-talk", blink: "expression/ep1-lubu-s05-blink" },
