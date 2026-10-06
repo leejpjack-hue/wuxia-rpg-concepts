@@ -807,7 +807,14 @@ const FRAME_PACK = {
   ],
   "act1-fall": [
     { t: 0, base: "shot/ep1-act1-fall-s01" },
-    { t: 20.5, base: "shot/ep1-act1-fall-s02", talk: "expression/ep1-act1-fall-s02-talk", until: 40 },
+    { t: 20.5, base: "shot/ep1-act1-fall-s02", talk: "expression/ep1-act1-fall-s02-talk", blink: "expression/ep1-act1-fall-s02-blink" },
+    { t: 40, base: "shot/ep1-act1-fall-s03" },
+    { t: 54, base: "shot/ep1-act1-fall-s04" },
+  ],
+  bamboo: [
+    { t: 4, base: "shot/ep1-bamboo-s01" },
+    { t: 22, base: "shot/ep1-bamboo-s02" },
+    { t: 40, base: "shot/ep1-bamboo-s03", until: 58 },
   ],
 };
 
