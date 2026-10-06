@@ -871,7 +871,8 @@ const FRAME_PACK = {
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final-duel:4"]
     { t: 24, base: "shot/ep1-final-duel-s02", talk: "expression/ep1-final-duel-s02-talk", blink: "expression/ep1-final-duel-s02-blink" },
     { t: 44, base: "shot/ep1-final-duel-s03", talk: "expression/ep1-final-duel-s03-talk", blink: "expression/ep1-final-duel-s03-blink", until: 62 },
-    // t: 62 決鬥 → FIGHT_FRAMES["final-duel:62"]（缺拍退回 standoff）
+    // t: 62 決鬥七拍 → FIGHT_FRAMES["final-duel:62"]
+    { t: 80, base: "shot/ep1-final-duel-s05" },
   ],
 };
 
@@ -937,6 +938,9 @@ const FIGHT_FRAMES = {
     windup: "fight/ep1-final-duel-s04-windup",
     charge: "fight/ep1-final-duel-s04-charge",
     impact: "fight/ep1-final-duel-s04-impact",
+    pass: "fight/ep1-final-duel-s04-pass",
+    hold: "fight/ep1-final-duel-s04-hold",
+    aftermath: "fight/ep1-final-duel-s04-aftermath",
   },
 };
 
