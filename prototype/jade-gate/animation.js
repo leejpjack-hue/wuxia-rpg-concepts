@@ -778,9 +778,12 @@ const FRAME_PACK = {
   zhaovillage: [
     { t: 4, base: "shot/ep1-zhaovillage-s01" },
     { t: 18, base: "shot/ep1-zhaovillage-s02" },
+    { t: 20, base: "insert/ep1-zhaovillage-insert-master-sword" },
     { t: 34, base: "shot/ep1-zhaovillage-s03" },
+    { t: 36, base: "insert/ep1-zhaovillage-insert-sister-forge" },
     { t: 50, base: "shot/ep1-zhaovillage-s04" },
     { t: 66, base: "shot/ep1-zhaovillage-s05", talk: "expression/ep1-zhaovillage-s05-talk", blink: "expression/ep1-zhaovillage-s05-blink" },
+    { t: 68, base: "insert/ep1-zhaovillage-insert-sister-half-jade" },
     { t: 84, base: "shot/ep1-zhaovillage-s06" },
     { t: 96, base: "shot/ep1-zhaovillage-s07" },
   ],
@@ -794,10 +797,12 @@ const FRAME_PACK = {
   ],
   oath: [
     { t: 4, base: "shot/ep1-oath-s01" },
+    { t: 18, base: "insert/ep1-oath-insert-staff-catches-whip" },
     { t: 32, base: "shot/ep1-oath-s02", talk: "expression/ep1-oath-s02-talk", blink: "expression/ep1-oath-s02-blink" },
     { t: 44, base: "shot/ep1-oath-s03" },
     { t: 58, base: "shot/ep1-oath-s04", talk: "expression/ep1-oath-s04-talk", blink: "expression/ep1-oath-s04-blink" },
     { t: 68, base: "shot/ep1-oath-s05" },
+    { t: 70, base: "insert/ep1-oath-insert-three-protect" },
     { t: 80, base: "shot/ep1-oath-s06", talk: "expression/ep1-oath-s06-talk", blink: "expression/ep1-oath-s06-blink" },
     { t: 92, base: "shot/ep1-oath-s07" },
   ],
@@ -813,6 +818,7 @@ const FRAME_PACK = {
     { t: 26, base: "shot/ep1-warden-s02", talk: "expression/ep1-warden-s02-talk", blink: "expression/ep1-warden-s02-blink" },
     // t: 44 決鬥七拍 → FIGHT_FRAMES["warden:44"]
     { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
+    { t: 68, base: "insert/ep1-warden-insert-monk-block", until: 80 },
   ],
   causeway: [
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
@@ -837,7 +843,8 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell", until: 63 },
     // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
     { t: 78, base: "shot/ep1-heron-s05" },
   ],
@@ -857,7 +864,8 @@ const FRAME_PACK = {
   heron: [
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
-    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink", until: 63 },
+    { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell", until: 63 },
     // t: 63 決鬥七拍 → FIGHT_FRAMES["heron:63"]
     { t: 78, base: "shot/ep1-heron-s05" },
   ],
@@ -973,7 +981,17 @@ const FRAME_PACK = {
     { t: 48, base: "shot/ep2-legends-s03" },
   ],
   final: [
-    // t: 4 決鬥，缺拍退回 standoff → FIGHT_FRAMES["final:4"]
+    // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
+    { t: 24, base: "shot/ep2-final-s02" },
+    // t: 42 決鬥七拍 → FIGHT_FRAMES["final:42"]
+    { t: 58, base: "shot/ep2-final-s04", talk: "expression/ep2-final-s04-talk", blink: "expression/ep2-final-s04-blink" },
+    { t: 72, base: "shot/ep2-final-s05", talk: "expression/ep2-final-s05-talk", blink: "expression/ep2-final-s05-blink" },
+    { t: 84, base: "shot/ep2-final-s06" },
+  ],
+  home: [
+    { t: 4, base: "shot/ep2-home-s01", talk: "expression/ep2-home-s01-talk", blink: "expression/ep2-home-s01-blink" },
+    { t: 22, base: "shot/ep2-home-s02" },
+    { t: 52, base: "shot/ep2-home-s03" },
   ],
 };
 
@@ -1093,6 +1111,18 @@ const FIGHT_FRAMES = {
     windup: "fight/ep2-final-s01-windup",
     charge: "fight/ep2-final-s01-charge",
     impact: "fight/ep2-final-s01-impact",
+    pass: "fight/ep2-final-s01-pass",
+    hold: "fight/ep2-final-s01-hold",
+    aftermath: "fight/ep2-final-s01-aftermath",
+  },
+  "final:42": {
+    standoff: "shot/ep2-final-s03",
+    windup: "fight/ep2-final-s03-windup",
+    charge: "fight/ep2-final-s03-charge",
+    impact: "fight/ep2-final-s03-impact",
+    pass: "fight/ep2-final-s03-pass",
+    hold: "fight/ep2-final-s03-hold",
+    aftermath: "fight/ep2-final-s03-aftermath",
   },
 };
 
