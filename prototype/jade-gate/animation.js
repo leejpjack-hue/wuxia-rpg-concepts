@@ -907,7 +907,36 @@ const FRAME_PACK = {
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final-duel:4"]
     { t: 24, base: "shot/ep1-final-duel-s02", talk: "expression/ep1-final-duel-s02-talk", blink: "expression/ep1-final-duel-s02-blink" },
     { t: 44, base: "shot/ep1-final-duel-s03", talk: "expression/ep1-final-duel-s03-talk", blink: "expression/ep1-final-duel-s03-blink", until: 62 },
-    // t: 62 決鬥 → FIGHT_FRAMES["final-duel:62"]（缺拍退回 standoff）
+    // t: 62 決鬥七拍 → FIGHT_FRAMES["final-duel:62"]
+    { t: 80, base: "shot/ep1-final-duel-s05" },
+  ],
+  epilogue: [
+    { t: 4, base: "shot/ep1-epilogue-s01", talk: "expression/ep1-epilogue-s01-talk", blink: "expression/ep1-epilogue-s01-blink" },
+    { t: 32, base: "shot/ep1-epilogue-s02" },
+  ],
+  rift: [
+    { t: 0, base: "shot/ep2-rift-s01" },
+    { t: 20, base: "shot/ep2-rift-s02" },
+    { t: 36, base: "shot/ep2-rift-s03" },
+    { t: 52, base: "shot/ep2-rift-s04" },
+    { t: 68, base: "shot/ep2-rift-s05" },
+    { t: 80, base: "shot/ep2-rift-s06" },
+    { t: 88, base: "shot/ep2-rift-s07" },
+  ],
+  "corpse-street": [
+    { t: 4, base: "shot/ep2-corpse-street-s01" },
+    { t: 24, base: "shot/ep2-corpse-street-s02" },
+    { t: 62, base: "shot/ep2-corpse-street-s03", talk: "expression/ep2-corpse-street-s03-talk", blink: "expression/ep2-corpse-street-s03-blink" },
+  ],
+  inspectors: [
+    { t: 4, base: "shot/ep2-inspectors-s01" },
+    { t: 26, base: "shot/ep2-inspectors-s02", talk: "expression/ep2-inspectors-s02-talk", blink: "expression/ep2-inspectors-s02-blink" },
+    { t: 44, base: "shot/ep2-inspectors-s03" },
+  ],
+  hall: [
+    { t: 4, base: "shot/ep2-hall-s01" },
+    { t: 26, base: "shot/ep2-hall-s02" },
+    { t: 48, base: "shot/ep2-hall-s03", talk: "expression/ep2-hall-s03-talk", blink: "expression/ep2-hall-s03-blink" },
   ],
 };
 
@@ -958,6 +987,7 @@ const FIGHT_FRAMES = {
     pass: "fight/ep1-final-duel-s01-pass",
     hold: "fight/ep1-final-duel-s01-hold",
     aftermath: "fight/ep1-final-duel-s01-aftermath",
+  },
   "lubu:46": {
     standoff: "shot/ep1-lubu-s03",
     windup: "fight/ep1-lubu-s03-windup",
@@ -981,6 +1011,10 @@ const FIGHT_FRAMES = {
     windup: "fight/ep1-final-duel-s04-windup",
     charge: "fight/ep1-final-duel-s04-charge",
     impact: "fight/ep1-final-duel-s04-impact",
+    pass: "fight/ep1-final-duel-s04-pass",
+    hold: "fight/ep1-final-duel-s04-hold",
+    aftermath: "fight/ep1-final-duel-s04-aftermath",
+  },
   "heron:63": {
     standoff: "shot/ep1-heron-s04",
     windup: "fight/ep1-heron-s04-windup",
