@@ -783,6 +783,7 @@ const FRAME_PACK = {
     { t: 36, base: "insert/ep1-zhaovillage-insert-sister-forge" },
     { t: 50, base: "shot/ep1-zhaovillage-s04" },
     { t: 66, base: "shot/ep1-zhaovillage-s05", talk: "expression/ep1-zhaovillage-s05-talk", blink: "expression/ep1-zhaovillage-s05-blink" },
+    { t: 68, base: "insert/ep1-zhaovillage-insert-sister-half-jade" },
     { t: 84, base: "shot/ep1-zhaovillage-s06" },
     { t: 96, base: "shot/ep1-zhaovillage-s07" },
   ],
@@ -796,10 +797,12 @@ const FRAME_PACK = {
   ],
   oath: [
     { t: 4, base: "shot/ep1-oath-s01" },
+    { t: 18, base: "insert/ep1-oath-insert-staff-catches-whip" },
     { t: 32, base: "shot/ep1-oath-s02", talk: "expression/ep1-oath-s02-talk", blink: "expression/ep1-oath-s02-blink" },
     { t: 44, base: "shot/ep1-oath-s03" },
     { t: 58, base: "shot/ep1-oath-s04", talk: "expression/ep1-oath-s04-talk", blink: "expression/ep1-oath-s04-blink" },
     { t: 68, base: "shot/ep1-oath-s05" },
+    { t: 70, base: "insert/ep1-oath-insert-three-protect" },
     { t: 80, base: "shot/ep1-oath-s06", talk: "expression/ep1-oath-s06-talk", blink: "expression/ep1-oath-s06-blink" },
     { t: 92, base: "shot/ep1-oath-s07" },
   ],
@@ -815,6 +818,7 @@ const FRAME_PACK = {
     { t: 26, base: "shot/ep1-warden-s02", talk: "expression/ep1-warden-s02-talk", blink: "expression/ep1-warden-s02-blink" },
     // t: 44 決鬥七拍 → FIGHT_FRAMES["warden:44"]
     { t: 66, base: "shot/ep1-warden-s04", until: 80 },  // t: 80 第二場決鬥 → FIGHT_FRAMES["warden:80"] 七拍幀
+    { t: 68, base: "insert/ep1-warden-insert-monk-block", until: 80 },
   ],
   causeway: [
     { t: 4, base: "shot/ep2-causeway-s01", talk: "expression/ep2-causeway-s01-talk", blink: "expression/ep2-causeway-s01-blink" },
@@ -840,6 +844,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell" },
     { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
   "act1-fall": [
@@ -859,6 +864,7 @@ const FRAME_PACK = {
     { t: 4, base: "shot/ep1-heron-s01", talk: "expression/ep1-heron-s01-talk", blink: "expression/ep1-heron-s01-blink" },
     { t: 26, base: "shot/ep1-heron-s02" },
     { t: 46, base: "shot/ep1-heron-s03", talk: "expression/ep1-heron-s03-talk", blink: "expression/ep1-heron-s03-blink" },
+    { t: 48, base: "insert/ep1-heron-insert-staff-bell" },
     { t: 63, base: "shot/ep1-heron-s04", until: 78 },
   ],
   bloodmoon: [
