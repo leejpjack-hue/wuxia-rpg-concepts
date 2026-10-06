@@ -974,8 +974,9 @@ const FRAME_PACK = {
   ],
   final: [
     // t: 4 決鬥七拍 → FIGHT_FRAMES["final:4"]
-    { t: 24, base: "shot/ep2-final-s02", until: 58 },
-    // t: 42 決鬥，缺拍退回 standoff → FIGHT_FRAMES["final:42"]
+    { t: 24, base: "shot/ep2-final-s02" },
+    // t: 42 決鬥七拍 → FIGHT_FRAMES["final:42"]
+    { t: 58, base: "shot/ep2-final-s04", until: 72 },
   ],
 };
 
@@ -1102,6 +1103,11 @@ const FIGHT_FRAMES = {
   "final:42": {
     standoff: "shot/ep2-final-s03",
     windup: "fight/ep2-final-s03-windup",
+    charge: "fight/ep2-final-s03-charge",
+    impact: "fight/ep2-final-s03-impact",
+    pass: "fight/ep2-final-s03-pass",
+    hold: "fight/ep2-final-s03-hold",
+    aftermath: "fight/ep2-final-s03-aftermath",
   },
 };
 
