@@ -873,7 +873,7 @@ const FRAME_PACK = {
   ],
   lubu: [
     { t: 4, base: "shot/ep1-lubu-s01", talk: "expression/ep1-lubu-s01-talk", blink: "expression/ep1-lubu-s01-blink", until: 26 },
-    // t: 26 決鬥 → FIGHT_FRAMES["lubu:26"]（缺拍退回 standoff）
+    // t: 26 決鬥七拍 → FIGHT_FRAMES["lubu:26"]
   ],
 };
 
@@ -928,6 +928,11 @@ const FIGHT_FRAMES = {
   "lubu:26": {
     standoff: "shot/ep1-lubu-s02",
     windup: "fight/ep1-lubu-s02-windup",
+    charge: "fight/ep1-lubu-s02-charge",
+    impact: "fight/ep1-lubu-s02-impact",
+    pass: "fight/ep1-lubu-s02-pass",
+    hold: "fight/ep1-lubu-s02-hold",
+    aftermath: "fight/ep1-lubu-s02-aftermath",
   },
 };
 
