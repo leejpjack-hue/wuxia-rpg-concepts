@@ -911,6 +911,10 @@ const FIGHT_FRAMES = {
     standoff: "shot/ep1-final-duel-s01",
     windup: "fight/ep1-final-duel-s01-windup",
     charge: "fight/ep1-final-duel-s01-charge",
+    impact: "fight/ep1-final-duel-s01-impact",
+    pass: "fight/ep1-final-duel-s01-pass",
+    hold: "fight/ep1-final-duel-s01-hold",
+    aftermath: "fight/ep1-final-duel-s01-aftermath",
   },
 };
 
