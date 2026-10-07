@@ -113,20 +113,31 @@ h1 {
   object-fit: cover;
 }
 
-/* Squares carry the figure in the lower 16:9 band. Bottom-align so that band fills the stage. */
+/* 16:9 cutouts. Full stage, no extra zoom baked into the layer. */
 .layer.char {
   position: absolute;
-  left: 0;
-  bottom: 0;
+  inset: 0;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: fill;
+  height: 100%;
+  object-fit: cover;
 }
 
 .layer.hero { z-index: 1; }
 .layer.rival { z-index: 2; }
 .layer.fx { z-index: 3; }
+
+/* The painted burst is a full plate. On the layered cut, keep a small spark on the blades. */
+.stage[data-source="layered"] .layer.fx {
+  inset: auto;
+  width: 22%;
+  height: 22%;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
 
 .stage img.insert {
   opacity: 0;
@@ -150,6 +161,8 @@ h1 {
 
 .stage[data-beat="charge"] .speed-lines,
 .stage[data-beat="impact"] .speed-lines { opacity: 0.95; }
+
+.stage[data-source="layered"] .speed-lines { opacity: 0; }
 
 .cam-read {
   position: absolute;

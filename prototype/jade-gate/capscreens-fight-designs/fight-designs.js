@@ -13,7 +13,26 @@ const CAMERAS = {
 };
 
 const ORDER = ["standoff", "windup", "charge", "impact", "pass", "hold", "aftermath"];
-const LAYER_BEATS = ["windup", "charge", "impact", "aftermath"];
+/** Layered Vanguard exchange. Zooms stay near 1 so the gate stays readable. ~10.4s. */
+const LAYER_CAMERAS = {
+  approach: { zoom: 1.0, x: 50, y: 54, ease: 0, label: "wide, gate readable", ms: 1600 },
+  feint: { zoom: 1.04, x: 48, y: 52, ease: 480, label: "feint, gate holds", ms: 1400 },
+  parry: { zoom: 1.06, x: 50, y: 50, ease: 260, label: "parry, gate holds", ms: 1200 },
+  exchange: { zoom: 1.08, x: 50, y: 50, ease: 240, label: "exchange, gate holds", ms: 1400 },
+  impact: { zoom: 1.12, x: 50, y: 48, ease: 0, label: "tip-clash, gate still reads", ms: 1600 },
+  follow: { zoom: 1.04, x: 50, y: 52, ease: 400, label: "follow-through", ms: 1400 },
+  aftermath: { zoom: 1.0, x: 50, y: 54, ease: 640, label: "wide aftermath", ms: 1800 },
+};
+const LAYER_BEATS = Object.keys(LAYER_CAMERAS);
+const LAYER_LABELS = {
+  approach: "Approach",
+  feint: "Feint",
+  parry: "Parry",
+  exchange: "Exchange",
+  impact: "Impact",
+  follow: "Follow",
+  aftermath: "Aftermath",
+};
 const LABELS = {
   standoff: "Standoff",
   windup: "Wind-up",
@@ -31,7 +50,6 @@ const DESIGNS = [
     stem: "ep1-vanguard-s05",
     cutout: true,
     focus: { charge: { x: 34, y: 46 }, impact: { x: 50, y: 40 } },
-    layeredFocus: { impact: { x: 50, y: 46 } },
   },
   {
     id: "warden",
@@ -63,7 +81,7 @@ const DESIGNS = [
 const $ = (id) => document.getElementById(id);
 let design = DESIGNS[0];
 let layered = true;
-let beat = "windup";
+let beat = "approach";
 let playing = false;
 let timer = 0;
 let insertTimer = 0;
@@ -78,8 +96,8 @@ function beatPath(item, name) {
 }
 
 function cameraFor(name) {
-  const layeredFocus = layered && design.cutout ? design.layeredFocus?.[name] : null;
-  return { ...CAMERAS[name], ...(design.focus?.[name] || {}), ...(layeredFocus || {}) };
+  if (layered && design.cutout && LAYER_CAMERAS[name]) return { ...LAYER_CAMERAS[name] };
+  return { ...CAMERAS[name], ...(design.focus?.[name] || {}) };
 }
 
 function activeOrder() {
@@ -143,7 +161,7 @@ function showLayers(name, read) {
     fx.hidden = true;
   }
   $("cam-read").textContent = `${read} · layered`;
-  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")}) · Art Dir PASS_WITH_NOTES`;
+  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")})`;
 }
 
 function show(name, { fx = false } = {}) {
@@ -178,9 +196,10 @@ function clearHit() {
 function hit() {
   clearHit();
   restart($("stage"), "quake");
+  if (layered && design.cutout) return;
   restart($("flash"), "on");
   restart($("impact-frame"), "boom");
-  if (!design.insert || (layered && design.cutout)) return;
+  if (!design.insert) return;
   const insert = $("insert");
   insert.src = rel(design.insert);
   insert.hidden = false;
@@ -229,7 +248,26 @@ function select(next) {
     card.setAttribute("aria-pressed", card.dataset.id === design.id ? "true" : "false");
   }
   if (design.insert) $("insert").src = rel(design.insert);
-  show(layered ? "windup" : "standoff");
+  renderBeats();
+  show(layered ? "approach" : "standoff");
+}
+
+function renderBeats() {
+  const beats = $("beats");
+  beats.replaceChildren();
+  const order = activeOrder();
+  const labels = layered && design.cutout ? LAYER_LABELS : LABELS;
+  for (const name of order) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.beat = name;
+    button.textContent = labels[name];
+    button.onclick = () => {
+      stop();
+      show(name, { fx: true });
+    };
+    beats.append(button);
+  }
 }
 
 function preload(item) {
@@ -272,26 +310,16 @@ function mount() {
     cards.append(button);
     preload(item);
   }
-  const beats = $("beats");
-  for (const name of ORDER) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.beat = name;
-    button.textContent = LABELS[name];
-    button.onclick = () => {
-      stop();
-      show(name, { fx: true });
-    };
-    beats.append(button);
-  }
+  renderBeats();
   $("play").onclick = () => play();
   $("mode").onclick = () => {
     if (!design.cutout) return;
     stop();
     layered = !layered;
     syncMode();
-    const next = layered && !LAYER_BEATS.includes(beat) ? "windup" : beat;
-    show(next);
+    renderBeats();
+    const order = activeOrder();
+    show(order.includes(beat) ? beat : order[0]);
   };
   $("layer-bg").onerror = () => {
     if ($("stage").dataset.source !== "layered") return;
@@ -299,7 +327,7 @@ function mount() {
     $("status").textContent += " · cutout missing, baked fallback";
   };
   syncMode();
-  show("windup");
+  show("approach");
 }
 
 mount();
