@@ -96,6 +96,38 @@ h1 {
   display: block;
 }
 
+.stage img.plate[hidden],
+.layers[hidden],
+.layer.fx[hidden] { display: none; }
+
+.layers { position: absolute; inset: 0; }
+
+.layer { pointer-events: none; }
+
+.layer.bg,
+.layer.fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Squares carry the figure in the lower 16:9 band. Bottom-align so that band fills the stage. */
+.layer.char {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: fill;
+}
+
+.layer.hero { z-index: 1; }
+.layer.rival { z-index: 2; }
+.layer.fx { z-index: 3; }
+
 .stage img.insert {
   opacity: 0;
   pointer-events: none;
@@ -189,6 +221,8 @@ button {
 }
 
 button[aria-pressed="true"] { background: #2a4038; }
+
+#mode[hidden] { display: none; }
 
 #status {
   color: var(--muted);

@@ -1,4 +1,5 @@
 const ROOT = "../assets/animation/";
+const CUTOUT = "../assets/fight/ep1-vanguard/";
 
 /** Directed cuts. ease 0 is a hard cut. Focal x/y are percent of the plate. */
 const CAMERAS = {
@@ -12,6 +13,7 @@ const CAMERAS = {
 };
 
 const ORDER = ["standoff", "windup", "charge", "impact", "pass", "hold", "aftermath"];
+const LAYER_BEATS = ["windup", "charge", "impact", "aftermath"];
 const LABELS = {
   standoff: "Standoff",
   windup: "Wind-up",
@@ -27,7 +29,9 @@ const DESIGNS = [
     id: "vanguard",
     title: "Gate Vanguard Clash",
     stem: "ep1-vanguard-s05",
+    cutout: true,
     focus: { charge: { x: 34, y: 46 }, impact: { x: 50, y: 40 } },
+    layeredFocus: { impact: { x: 50, y: 46 } },
   },
   {
     id: "warden",
@@ -58,6 +62,8 @@ const DESIGNS = [
 
 const $ = (id) => document.getElementById(id);
 let design = DESIGNS[0];
+let layered = true;
+let beat = "windup";
 let playing = false;
 let timer = 0;
 let insertTimer = 0;
@@ -72,7 +78,12 @@ function beatPath(item, name) {
 }
 
 function cameraFor(name) {
-  return { ...CAMERAS[name], ...(design.focus?.[name] || {}) };
+  const layeredFocus = layered && design.cutout ? design.layeredFocus?.[name] : null;
+  return { ...CAMERAS[name], ...(design.focus?.[name] || {}), ...(layeredFocus || {}) };
+}
+
+function activeOrder() {
+  return layered && design.cutout ? LAYER_BEATS : ORDER;
 }
 
 function applyCamera(name) {
@@ -84,22 +95,67 @@ function applyCamera(name) {
   camera.style.setProperty("--cam-x", `${cam.x}%`);
   camera.style.setProperty("--cam-y", `${cam.y}%`);
   camera.style.setProperty("--cam-z", String(cam.zoom));
-  const read = `${name} · ${cam.label}`;
+  return cam;
+}
+
+function syncMode() {
+  const button = $("mode");
+  const available = !!design.cutout;
+  button.hidden = !available;
+  if (!available) layered = false;
+  button.textContent = layered ? "Layered cutouts" : "Baked plates";
+  button.setAttribute("aria-pressed", layered ? "true" : "false");
+}
+
+function showBaked(name, read) {
+  const path = beatPath(design, name);
+  const stage = $("stage");
+  stage.dataset.source = "baked";
+  $("layers").hidden = true;
+  $("layer-fx").hidden = true;
+  const plate = $("plate");
+  plate.hidden = false;
+  plate.src = rel(path);
+  plate.alt = `${design.title}, ${read}`;
+  const fallback = design.cutout && layered ? "baked fallback · " : "baked · ";
+  const extra = name === "impact" && design.insert ? ` · flash ${rel(design.insert)}` : "";
   $("cam-read").textContent = read;
-  return { cam, read };
+  $("status").textContent = `${design.title} · ${fallback}${read} · ${rel(path)}${extra}`;
+}
+
+function showLayers(name, read) {
+  const stage = $("stage");
+  stage.dataset.source = "layered";
+  $("plate").hidden = true;
+  $("layers").hidden = false;
+  $("layer-bg").src = `${CUTOUT}bg.png`;
+  $("layer-hero").src = `${CUTOUT}hero-${name}.png`;
+  $("layer-hero").alt = `${design.title}, Zhao Yun with a jian, ${read}`;
+  $("layer-rival").src = `${CUTOUT}rival-${name}.png`;
+  $("layer-rival").alt = `${design.title}, vanguard, ${read}`;
+  const fx = $("layer-fx");
+  const files = [`bg.png`, `hero-${name}.png`, `rival-${name}.png`];
+  if (name === "impact") {
+    fx.src = `${CUTOUT}fx-impact.png`;
+    fx.hidden = false;
+    files.push("fx-impact.png");
+  } else {
+    fx.hidden = true;
+  }
+  $("cam-read").textContent = `${read} · layered`;
+  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")}) · Art Dir PASS_WITH_NOTES`;
 }
 
 function show(name, { fx = false } = {}) {
-  const path = beatPath(design, name);
-  const { read } = applyCamera(name);
-  $("plate").src = rel(path);
-  $("plate").alt = `${design.title}, ${read}`;
+  beat = name;
+  const cam = applyCamera(name);
+  const read = `${name} · ${cam.label}`;
   $("stage").dataset.beat = name;
   for (const button of document.querySelectorAll("[data-beat]")) {
     button.setAttribute("aria-pressed", button.dataset.beat === name ? "true" : "false");
   }
-  const extra = name === "impact" && design.insert ? ` · flash ${rel(design.insert)}` : "";
-  $("status").textContent = `${design.title} · ${read} · ${rel(path)}${extra}`;
+  if (layered && design.cutout && LAYER_BEATS.includes(name)) showLayers(name, read);
+  else showBaked(name, read);
   if (name === "impact" && fx) hit();
   else clearHit();
 }
@@ -124,7 +180,7 @@ function hit() {
   restart($("stage"), "quake");
   restart($("flash"), "on");
   restart($("impact-frame"), "boom");
-  if (!design.insert) return;
+  if (!design.insert || (layered && design.cutout)) return;
   const insert = $("insert");
   insert.src = rel(design.insert);
   insert.hidden = false;
@@ -143,13 +199,14 @@ function stop() {
 }
 
 function stepFrom(index) {
-  if (index >= ORDER.length) {
+  const order = activeOrder();
+  if (index >= order.length) {
     stop();
-    show("aftermath");
+    show(order[order.length - 1]);
     $("status").textContent += " · Sequence complete";
     return;
   }
-  const name = ORDER[index];
+  const name = order[index];
   show(name, { fx: true });
   timer = setTimeout(() => stepFrom(index + 1), cameraFor(name).ms);
 }
@@ -166,11 +223,13 @@ function select(next) {
   stop();
   clearHit();
   design = next;
+  layered = !!next.cutout;
+  syncMode();
   for (const card of document.querySelectorAll(".card")) {
     card.setAttribute("aria-pressed", card.dataset.id === design.id ? "true" : "false");
   }
   if (design.insert) $("insert").src = rel(design.insert);
-  show("standoff");
+  show(layered ? "windup" : "standoff");
 }
 
 function preload(item) {
@@ -181,6 +240,17 @@ function preload(item) {
   if (item.insert) {
     const image = new Image();
     image.src = rel(item.insert);
+  }
+  if (!item.cutout) return;
+  for (const file of ["bg.png", "fx-impact.png"]) {
+    const image = new Image();
+    image.src = `${CUTOUT}${file}`;
+  }
+  for (const name of LAYER_BEATS) {
+    for (const who of ["hero", "rival"]) {
+      const image = new Image();
+      image.src = `${CUTOUT}${who}-${name}.png`;
+    }
   }
 }
 
@@ -215,7 +285,21 @@ function mount() {
     beats.append(button);
   }
   $("play").onclick = () => play();
-  show("standoff");
+  $("mode").onclick = () => {
+    if (!design.cutout) return;
+    stop();
+    layered = !layered;
+    syncMode();
+    const next = layered && !LAYER_BEATS.includes(beat) ? "windup" : beat;
+    show(next);
+  };
+  $("layer-bg").onerror = () => {
+    if ($("stage").dataset.source !== "layered") return;
+    showBaked(beat, $("cam-read").textContent.replace(" · layered", ""));
+    $("status").textContent += " · cutout missing, baked fallback";
+  };
+  syncMode();
+  show("windup");
 }
 
 mount();
