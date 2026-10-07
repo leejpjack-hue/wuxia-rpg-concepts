@@ -9,17 +9,27 @@
 <body>
 <main>
   <h1>Fight designs</h1>
-  <p class="lede">Five painted duels from the animation pack. Short charge, a hard impact, a slower aftermath.</p>
+  <p class="lede">V1 animatic on every fight: the camera crops the baked plates. Gate Vanguard Clash defaults to the Art Director v2 cutouts — background, Zhao Yun with a jian, the rival, then the impact effect — using the same cuts, including the tip-clash close-up. Art Dir PASS_WITH_NOTES (upscale and fringe). The other four fights stay on the baked plates.</p>
   <div id="cards" class="cards"></div>
   <div id="stage" class="stage" data-beat="standoff">
-    <img id="plate" class="plate" alt="">
+    <div id="camera" class="camera">
+      <img id="plate" class="plate" alt="">
+      <div id="layers" class="layers" hidden>
+        <img id="layer-bg" class="layer bg" alt="">
+        <img id="layer-hero" class="layer char hero" alt="">
+        <img id="layer-rival" class="layer char rival" alt="">
+        <img id="layer-fx" class="layer fx" alt="" hidden>
+      </div>
+    </div>
     <img id="insert" class="insert" alt="" hidden>
     <div class="speed-lines"></div>
     <div id="flash" class="flash"></div>
     <div id="impact-frame" class="impact-frame"></div>
+    <p id="cam-read" class="cam-read"></p>
   </div>
   <nav>
     <button id="play" type="button">Play</button>
+    <button id="mode" type="button" hidden>Layered cutouts</button>
     <span id="beats"></span>
   </nav>
   <p id="status" role="status"></p>
