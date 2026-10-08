@@ -15,19 +15,22 @@ The four fights without cutouts, and Vanguard when the toggle is set to baked pl
 
 Baked playback also opens on the shot standoff when that plate exists, and flashes pass and hold between impact and aftermath.
 
-## Vanguard layers
+## Vanguard shot list
 
-About 10.4 seconds. The camera stays wide enough that the gate, banners, and night stay recognizable. Impact only tightens to 1.12.
+Ten seconds. Zhao Yun stays screen-left and the vanguard screen-right. Wides keep the gate readable. The blade close-up is its own plate, with a small spark in the painting, not a full-frame white burst.
 
-1. **approach** — 1.6s, wide
-2. **feint** — 1.4s
-3. **parry** — 1.2s
-4. **exchange** — 1.4s
-5. **impact** — 1.6s, tip clash, small spark, gate still reads
-6. **follow** — 1.4s, follow-through
-7. **aftermath** — 1.8s, wide
+| Beat | Time | Size | Angle | Move |
+| --- | --- | --- | --- | --- |
+| approach | 1.7s | wide | frontal | slow track across the arena |
+| windup | 1.0s | close-up | low, on Zhao Yun | hard cut, hold |
+| feint | 1.2s | medium two-shot | frontal | push-in |
+| ots | 1.2s | over-the-shoulder | behind Yun, rival facing camera | hard cut |
+| exchange | 1.0s | medium two-shot | frontal | whip-pan into the strike |
+| impact | 1.6s | close-up | frontal, blades and hands | hold and a gentle shake |
+| follow | 1.4s | medium to wide | frontal | pull-back |
+| aftermath | 0.9s | wide | frontal | settle |
 
-`assets/fight/ep1-vanguard/`, bottom to top: `bg.png`, `hero-{beat}.png`, `rival-{beat}.png`, and a small crop of `fx-impact.png` on impact only. The Layered / Baked control falls back to the v1 plates.
+`approach`, `feint`, `exchange`, `follow`, and `aftermath` composite `bg.png`, `hero-{beat}.png`, and `rival-{beat}.png`. The rival cutouts are the same man in every one of those beats: dark iron lamellar, closed helmet, narrow visor, short crimson tassel, and the polearm stays in his hands on screen-right. `windup` uses `angle-low.png`, `ots` uses `angle-ots.png`, and `impact` uses `angle-blades.png`. The Layered / Baked control falls back to the v1 plates.
 
 ## The five designs
 
