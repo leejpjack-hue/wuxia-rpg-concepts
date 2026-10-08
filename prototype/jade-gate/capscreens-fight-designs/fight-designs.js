@@ -1,4 +1,5 @@
 import { activeHero, castFiles, resolveFrame } from "./vanguard-layers.mjs";
+import { CAMERA_FIT, anchorFor, layoutFor } from "./vanguard-place.mjs";
 
 const ROOT = "../assets/animation/";
 const CUTOUT = "../assets/fight/ep1-vanguard/";
@@ -51,8 +52,8 @@ const LAYER_CAMERAS = {
     angle: "frontal",
     move: "push-in",
     easeName: "push",
-    from: { zoom: 1.22, x: 46, y: 50 },
-    zoom: 1.52, x: 50, y: 42,
+    from: CAMERA_FIT.feint.from,
+    zoom: CAMERA_FIT.feint.zoom, x: CAMERA_FIT.feint.x, y: CAMERA_FIT.feint.y,
     ease: 900,
     ms: 1200,
     label: "medium two-shot · frontal · push-in",
@@ -73,8 +74,8 @@ const LAYER_CAMERAS = {
     angle: "frontal",
     move: "whip-pan",
     easeName: "whip",
-    from: { zoom: 1.42, x: 36, y: 44 },
-    zoom: 1.5, x: 64, y: 42,
+    from: CAMERA_FIT.exchange.from,
+    zoom: CAMERA_FIT.exchange.zoom, x: CAMERA_FIT.exchange.x, y: CAMERA_FIT.exchange.y,
     ease: 220,
     ms: 1000,
     label: "medium two-shot · frontal · whip-pan",
@@ -96,8 +97,8 @@ const LAYER_CAMERAS = {
     angle: "frontal",
     move: "pull-back",
     easeName: "pull",
-    from: { zoom: 1.48, x: 50, y: 44 },
-    zoom: 1.06, x: 50, y: 54,
+    from: CAMERA_FIT.follow.from,
+    zoom: CAMERA_FIT.follow.zoom, x: CAMERA_FIT.follow.x, y: CAMERA_FIT.follow.y,
     ease: 1100,
     ms: 1400,
     label: "pull-back · frontal · to wide",
@@ -341,6 +342,113 @@ function endBody() {
   setCues("", 0, 1);
 }
 
+function relOf(src) {
+  const mark = "ep1-vanguard/";
+  const i = src.indexOf(mark);
+  return i < 0 ? src : src.slice(i + mark.length);
+}
+
+function bindSeat(el) {
+  if (!el || el.dataset.seatBound) return;
+  el.dataset.seatBound = "1";
+  el.addEventListener("load", () => {
+    if (el._seat) el._seat();
+  });
+}
+
+/** Plant a cropped sprite on the beat's foot mark. Left/bottom survive writePose. */
+function seat(el, shadow, src, slot) {
+  if (!el) return;
+  if (!slot || !src) {
+    el.hidden = true;
+    el.classList.remove("placed");
+    if (shadow) shadow.hidden = true;
+    return;
+  }
+  el.hidden = false;
+  el.classList.add("placed");
+  bindSeat(el);
+  const apply = () => {
+    const anchor = anchorFor(relOf(src));
+    const parent = el.parentElement;
+    const pw = parent?.clientWidth || 0;
+    const ph = parent?.clientHeight || 0;
+    const ready = el.complete && el.naturalWidth > 0 && el.src.includes(relOf(src).split("/").pop());
+    el.style.inset = "auto";
+    el.style.top = "auto";
+    el.style.right = "auto";
+    el.style.width = "auto";
+    el.style.maxWidth = "none";
+    el.style.height = `${slot.h}%`;
+    el.style.bottom = `${(100 - slot.foot).toFixed(2)}%`;
+    el.style.transformOrigin = `${(anchor * 100).toFixed(2)}% 100%`;
+    if (ready && pw && ph) {
+      const spriteH = (slot.h / 100) * ph;
+      const spriteW = spriteH * (el.naturalWidth / el.naturalHeight);
+      const footX = (slot.x / 100) * pw;
+      el.style.left = `${(footX - anchor * spriteW).toFixed(2)}px`;
+    } else {
+      el.style.left = `${slot.x}%`;
+    }
+  };
+  el._seat = apply;
+  apply();
+  if (shadow) {
+    shadow.hidden = false;
+    shadow.style.left = `${slot.x}%`;
+    shadow.style.bottom = `${(100 - slot.foot).toFixed(2)}%`;
+    shadow.style.width = `${Math.max(10, slot.h * 0.28).toFixed(2)}%`;
+  }
+}
+
+/** Slash sits between the two blades, not across the empty gate. */
+function seatFx(fx, frame, layout) {
+  if (!fx) return;
+  const both = frame?.fx && layout?.hero && layout?.rival;
+  fx.classList.remove("full");
+  if (!both) {
+    fx.hidden = true;
+    fx.classList.remove("bridged");
+    return;
+  }
+  fx.hidden = false;
+  fx.classList.add("bridged");
+  const mid = (layout.hero.x + layout.rival.x) / 2;
+  const span = Math.abs(layout.rival.x - layout.hero.x);
+  const h = (layout.hero.h + layout.rival.h) / 2;
+  const foot = (layout.hero.foot + layout.rival.foot) / 2;
+  fx.style.inset = "auto";
+  fx.style.right = "auto";
+  fx.style.bottom = "auto";
+  fx.style.left = `${mid}%`;
+  fx.style.top = `${(foot - h * 0.46).toFixed(2)}%`;
+  fx.style.width = `${Math.max(16, span * 0.92).toFixed(2)}%`;
+  fx.style.height = `${(h * 0.42).toFixed(2)}%`;
+  fx.style.transform = "translate(-50%, -50%)";
+  fx.style.objectFit = "fill";
+}
+
+function seatFrame(name, elapsed, dur, frame) {
+  const hero = $("layer-hero");
+  const rival = $("layer-rival");
+  const shadowHero = $("shadow-hero");
+  const shadowRival = $("shadow-rival");
+  if (!frame || frame.flash) {
+    if (shadowHero) shadowHero.hidden = true;
+    if (shadowRival) shadowRival.hidden = true;
+    return;
+  }
+  const layout = layoutFor(name, elapsed, dur, {
+    hero: frame.heroPose,
+    rival: frame.rivalPose,
+  });
+  seat(hero, shadowHero, frame.hero, layout?.hero);
+  seat(rival, shadowRival, frame.rival, layout?.rival);
+  if (hero) hero.style.zIndex = name === "ots" ? "2" : "";
+  if (rival) rival.style.zIndex = name === "ots" ? "1" : "";
+  seatFx($("layer-fx"), frame, layout);
+}
+
 function applyResolved(frame, read) {
   if (!frame) return;
   const key = [frame.flash, frame.bg, frame.hero, frame.rival, frame.fx].join("|");
@@ -375,7 +483,7 @@ function applyResolved(frame, read) {
     rival.alt = `${design.title}, vanguard, ${read}`;
   }
   fx.hidden = !frame.fx;
-  fx.classList.toggle("full", !!frame.fx);
+  fx.classList.remove("full");
   if (frame.fx) fx.src = frame.fx;
   $("status").textContent = `${design.title} · layered · ${read} · ${frame.heroId} · ${frame.pose}`;
 }
@@ -393,6 +501,7 @@ function beginBody(name, cam, read) {
     const u = Math.min(1, elapsed / dur);
     const frame = resolveFrame(name, elapsed, heroId);
     applyResolved(frame, poseRead);
+    seatFrame(name, elapsed, dur, frame);
     if (!reduceMotion.matches && frame && !frame.flash) {
       setCues(name, elapsed, dur);
       const shift = parallaxShift();
@@ -412,7 +521,9 @@ function beginBody(name, cam, read) {
     }
     requestAnimationFrame(tick);
   };
-  applyResolved(resolveFrame(name, 0, heroId), poseRead);
+  const opening = resolveFrame(name, 0, heroId);
+  applyResolved(opening, poseRead);
+  seatFrame(name, 0, dur, opening);
   requestAnimationFrame(tick);
 }
 
@@ -448,8 +559,12 @@ function showLayers(name, read) {
   const fx = $("layer-fx");
   fx.hidden = true;
   $("cam-read").textContent = `${read} · layered`;
-  applyResolved(resolveFrame(name, 0, heroId), read);
-  if (resolveFrame(name, 0, heroId)) return;
+  const opening = resolveFrame(name, 0, heroId);
+  applyResolved(opening, read);
+  if (opening) {
+    seatFrame(name, 0, cam.ms || 1000, opening);
+    return;
+  }
   if (cam.file) {
     $("layers").hidden = true;
     const plate = $("plate");

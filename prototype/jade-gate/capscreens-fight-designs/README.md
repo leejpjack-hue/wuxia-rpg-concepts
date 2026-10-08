@@ -30,7 +30,7 @@ Ten seconds. Zhao Yun stays screen-left and the vanguard screen-right. Wides kee
 | follow | 1.4s | medium to wide | frontal | pull-back |
 | aftermath | 0.9s | wide | frontal | settle |
 
-Layered playback reads `vanguard-cast.mjs`. Each tick is a background plate plus a Zhao Yun layer and a rival layer, with smear and slash art on the FX layer. The gate background stays `bg.png`. Wind-up uses `bg-low.png`, the reverse uses `bg-ots.png`, and the blade close-up uses `bg-blades.png`. White and black impact frames stay full-frame flashes. Drawings advance about every 83ms. The slash is held from 160ms to 380ms. `?hero=lu-zhishen` points the hero role at Lu Zhishen’s stand-in layers and does not change the backgrounds. The default view is Zhao Yun. The rival stays screen-right. The Layered / Baked control falls back to the v1 plates.
+Layered playback reads `vanguard-cast.mjs`. Each tick is a background plate plus a Zhao Yun layer and a rival layer, with smear and slash art on the FX layer. Where each fighter stands is `vanguard-place.mjs`: a ground line and height per background, and a foot mark per pose pair, so a hero swap lands on the same marks. The gate background stays `bg.png`. Wind-up uses `bg-low.png`, the reverse uses `bg-ots.png`, and the blade close-up uses `bg-blades.png`. White and black impact frames stay full-frame flashes. Drawings advance about every 83ms. The slash is held from 160ms to 380ms. `?hero=lu-zhishen` points the hero role at Lu Zhishen’s stand-in layers and does not change the backgrounds or the foot marks. The default view is Zhao Yun. The rival stays screen-right. The Layered / Baked control falls back to the v1 plates.
 
 ## The five designs
 

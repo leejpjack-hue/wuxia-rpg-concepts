@@ -125,6 +125,21 @@ h1 {
 
 .stage img.plate { transform-origin: 50% 58%; }
 
+.layer.char.placed {
+  object-fit: contain;
+  max-width: none;
+}
+
+.contact-shadow {
+  position: absolute;
+  z-index: 0;
+  height: 2.4%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  transform: translate(-50%, 40%);
+  pointer-events: none;
+}
+
 .layer.hero { z-index: 1; }
 .layer.rival { z-index: 2; }
 .layer.fx { z-index: 3; }
@@ -152,6 +167,15 @@ h1 {
   object-fit: cover;
   mix-blend-mode: screen;
   opacity: 0.92;
+}
+
+.stage[data-source="layered"] .layer.fx.bridged {
+  inset: auto;
+  object-fit: fill;
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  max-width: none;
+  z-index: 3;
 }
 
 .stage img.insert {
