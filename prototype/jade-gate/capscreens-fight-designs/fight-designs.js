@@ -239,16 +239,18 @@ function smoother(u) {
 
 function idleLife(who, now, name) {
   const t = now / 1000;
-  const slow = name === "aftermath" ? 0.7 : 1;
+  const quiet = name === "aftermath" || name === "approach";
+  const slow = quiet ? 0.7 : 1;
+  const amp = quiet ? 0.6 : 1;
   if (who === "hero") {
     return {
-      y: Math.sin(t * 2.05 * slow) * 2.4,
-      rot: Math.sin(t * 1.25 * slow) * 0.4,
+      y: Math.sin(t * 2.05 * slow) * 2.4 * amp,
+      rot: Math.sin(t * 1.25 * slow) * 0.4 * amp,
     };
   }
   return {
-    y: Math.sin(t * 1.9 * slow + 2.15) * 2.2,
-    rot: Math.sin(t * 1.1 * slow + 1.35) * 0.45,
+    y: Math.sin(t * 1.9 * slow + 2.15) * 2.2 * amp,
+    rot: Math.sin(t * 1.1 * slow + 1.35) * 0.45 * amp,
   };
 }
 
@@ -261,34 +263,39 @@ function beatPair(name, who, u) {
     const stepB = smoother((u - 0.46) / 0.46);
     const forward = 0.48 * stepA + 0.52 * stepB;
     return {
-      x: dir * 14 * reach * forward,
-      y: -Math.sin(Math.min(1, u) * Math.PI * 2) * 1.6,
-      rot: dir * -0.7 * forward,
+      x: dir * 8 * reach * forward,
+      y: -Math.sin(Math.min(1, u) * Math.PI * 2) * 1,
+      rot: dir * -0.35 * forward,
     };
   }
   if (name === "feint") {
-    const lean = u < 0.3
-      ? smoother(u / 0.3)
-      : Math.max(0, 1 - smoother((u - 0.3) / 0.55));
+    const lean = u < 0.18
+      ? smoother(u / 0.18)
+      : Math.max(0, 1 - smoother((u - 0.18) / 0.42));
+    const fast = u < 0.2;
     return {
-      x: dir * 16 * reach * lean,
-      rot: dir * -1.5 * lean,
-      blur: u < 0.3 ? 0.8 : 0,
+      x: dir * 28 * reach * lean,
+      rot: dir * -2.4 * lean,
+      skew: dir * 4.8 * (fast ? lean : lean * 0.2),
+      blur: fast ? 2.4 * lean : 0,
+      sx: 1 + (fast ? 0.05 * lean : 0),
     };
   }
   if (name === "exchange") {
-    const lunge = smoother(Math.min(1, u / 0.4));
+    const lunge = smoother(Math.min(1, u / 0.28));
+    const fast = u < 0.32;
     return {
-      x: dir * 18 * reach * lunge,
-      rot: dir * -1.2 * lunge,
-      skew: dir * 1.5 * lunge,
-      blur: u < 0.46 ? 0.85 : 0,
+      x: dir * 30 * reach * lunge,
+      rot: dir * -2.2 * lunge,
+      skew: dir * 5.5 * (fast ? lunge : lunge * 0.35),
+      blur: fast ? 2.6 : 0,
+      sx: 1 + (fast ? 0.055 * lunge : 0),
     };
   }
   if (name === "follow") {
     const swing = Math.sin(u * Math.PI * 2);
-    const env = 0.4 + 0.6 * (1 - u);
-    return { x: dir * reach * 10 * swing * env, rot: dir * 0.8 * swing * env };
+    const env = u < 0.5 ? 1 : 0.85;
+    return { x: dir * reach * 16 * swing * env, rot: dir * 1.8 * swing * env };
   }
   if (name === "aftermath") return {};
   return {};
@@ -298,13 +305,20 @@ function platePose(name, u, elapsed, now) {
   const t = now / 1000;
   const breathY = Math.sin(t * 1.45) * 1.2;
   if (name === "windup") {
-    const coil = smoother(Math.min(1, u / 0.62));
-    return { x: -3.5 * coil, y: breathY, rot: -0.4 * coil, sx: 1 + 0.008 * coil, sy: 1 - 0.016 * coil };
+    const coil = smoother(Math.min(1, u / 0.72));
+    return { x: -7 * coil, y: breathY, rot: -0.8 * coil, sx: 1 + 0.016 * coil, sy: 1 - 0.032 * coil };
   }
   if (name === "impact") {
-    if (elapsed < 100) return { x: 0, y: 0, rot: 0, sx: 1, sy: 1, skew: 0, blur: 0 };
-    const kick = Math.exp(-3.1 * ((elapsed - 100) / 780));
-    return { x: 3.5 * kick, y: breathY * 0.25, rot: 1.1 * kick, skew: 1.6 * kick, blur: kick > 0.5 ? 0.55 : 0, sx: 1, sy: 1 };
+    if (elapsed < 190) {
+      const punch = elapsed < 42
+        ? { contrast: 2.5, brightness: 1.65 }
+        : elapsed < 84
+          ? { contrast: 2.3, brightness: 0.4 }
+          : {};
+      return { x: 0, y: 0, rot: 0, sx: 1, sy: 1, skew: 0, blur: 0, ...punch };
+    }
+    const kick = Math.exp(-4.4 * ((elapsed - 190) / 480));
+    return { x: 8 * kick, y: breathY * 0.2, rot: 2.4 * kick, skew: 3.2 * kick, blur: kick > 0.55 ? 1.3 : 0, sx: 1, sy: 1 };
   }
   return { y: breathY, rot: Math.sin(t * 0.75) * 0.12, sx: 1 + Math.sin(t * 1.45) * 0.003, sy: 1 + Math.sin(t * 1.45) * 0.003 };
 }
@@ -330,7 +344,30 @@ function writePose(el, pose) {
   const sy = pose.sy || 1;
   const skew = pose.skew || 0;
   el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) skewX(${skew.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
-  el.style.filter = pose.blur ? `blur(${pose.blur.toFixed(2)}px)` : "";
+  const filters = [];
+  if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
+  if (pose.contrast) filters.push(`contrast(${pose.contrast})`);
+  if (pose.brightness) filters.push(`brightness(${pose.brightness})`);
+  el.style.filter = filters.join(" ");
+}
+
+function setCues(name, elapsed, dur) {
+  const glint = $("glint");
+  const punch = $("punch");
+  const glintOn = (name === "windup" && elapsed > dur - 200) || (name === "feint" && elapsed < 200);
+  if (glint) {
+    glint.hidden = !glintOn;
+    glint.className = glintOn ? `glint ${name}` : "glint";
+  }
+  let punchMode = "";
+  if (name === "impact") {
+    if (elapsed < 42) punchMode = "white";
+    else if (elapsed < 84) punchMode = "black";
+  }
+  if (punch) {
+    punch.hidden = !punchMode;
+    punch.className = punchMode ? `punch ${punchMode}` : "punch";
+  }
 }
 
 function endBody() {
@@ -341,6 +378,7 @@ function endBody() {
     el.style.transform = "";
     el.style.filter = "";
   }
+  setCues("", 0, 1);
 }
 
 function beginBody(name, cam) {
@@ -355,6 +393,7 @@ function beginBody(name, cam) {
     if (token !== bodyToken) return;
     const elapsed = now - started;
     const u = Math.min(1, elapsed / dur);
+    setCues(name, elapsed, dur);
     if (plate) {
       writePose($("plate"), platePose(name, u, elapsed, now));
     } else {
@@ -369,6 +408,7 @@ function beginBody(name, cam) {
           rot: (move.rot || 0) + life.rot,
           skew: move.skew || 0,
           blur: move.blur || 0,
+          sx: move.sx || 1,
         });
       }
     }
@@ -458,7 +498,7 @@ function restart(node, className) {
 
 function clearHit() {
   clearTimeout(insertTimer);
-  $("stage").classList.remove("quake", "quake-soft");
+  $("stage").classList.remove("quake", "quake-soft", "quake-bump");
   $("flash").classList.remove("on");
   $("impact-frame").classList.remove("boom");
   $("insert").classList.remove("flash");
@@ -468,7 +508,7 @@ function clearHit() {
 function hit(cam) {
   clearHit();
   if (layered && design.cutout) {
-    if (cam && cam.shake) restart($("stage"), "quake-soft");
+    if (cam && cam.shake) restart($("stage"), "quake-bump");
     return;
   }
   restart($("stage"), "quake");
