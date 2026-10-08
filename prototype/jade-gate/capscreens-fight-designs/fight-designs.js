@@ -176,6 +176,8 @@ let playing = false;
 let timer = 0;
 let insertTimer = 0;
 let camToken = 0;
+let bodyToken = 0;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function rel(path) {
   return `${ROOT}${path}`;
@@ -228,6 +230,151 @@ function applyCamera(name) {
     });
   });
   return cam;
+}
+
+function smoother(u) {
+  const t = Math.min(1, Math.max(0, u));
+  return t * t * (3 - 2 * t);
+}
+
+function idleLife(who, now, name) {
+  const t = now / 1000;
+  const slow = name === "aftermath" ? 0.7 : 1;
+  if (who === "hero") {
+    return {
+      y: Math.sin(t * 2.05 * slow) * 2.4,
+      rot: Math.sin(t * 1.25 * slow) * 0.4,
+    };
+  }
+  return {
+    y: Math.sin(t * 1.9 * slow + 2.15) * 2.2,
+    rot: Math.sin(t * 1.1 * slow + 1.35) * 0.45,
+  };
+}
+
+/** Beat offset for a cutout. Zero at the cut so the new PNG does not slide in. */
+function beatPair(name, who, u) {
+  const dir = who === "hero" ? 1 : -1;
+  const reach = who === "hero" ? 1 : 0.86;
+  if (name === "approach") {
+    const stepA = smoother(u / 0.4);
+    const stepB = smoother((u - 0.46) / 0.46);
+    const forward = 0.48 * stepA + 0.52 * stepB;
+    return {
+      x: dir * 14 * reach * forward,
+      y: -Math.sin(Math.min(1, u) * Math.PI * 2) * 1.6,
+      rot: dir * -0.7 * forward,
+    };
+  }
+  if (name === "feint") {
+    const lean = u < 0.3
+      ? smoother(u / 0.3)
+      : Math.max(0, 1 - smoother((u - 0.3) / 0.55));
+    return {
+      x: dir * 16 * reach * lean,
+      rot: dir * -1.5 * lean,
+      blur: u < 0.3 ? 0.8 : 0,
+    };
+  }
+  if (name === "exchange") {
+    const lunge = smoother(Math.min(1, u / 0.4));
+    return {
+      x: dir * 18 * reach * lunge,
+      rot: dir * -1.2 * lunge,
+      skew: dir * 1.5 * lunge,
+      blur: u < 0.46 ? 0.85 : 0,
+    };
+  }
+  if (name === "follow") {
+    const swing = Math.sin(u * Math.PI * 2);
+    const env = 0.4 + 0.6 * (1 - u);
+    return { x: dir * reach * 10 * swing * env, rot: dir * 0.8 * swing * env };
+  }
+  if (name === "aftermath") return {};
+  return {};
+}
+
+function platePose(name, u, elapsed, now) {
+  const t = now / 1000;
+  const breathY = Math.sin(t * 1.45) * 1.2;
+  if (name === "windup") {
+    const coil = smoother(Math.min(1, u / 0.62));
+    return { x: -3.5 * coil, y: breathY, rot: -0.4 * coil, sx: 1 + 0.008 * coil, sy: 1 - 0.016 * coil };
+  }
+  if (name === "impact") {
+    if (elapsed < 100) return { x: 0, y: 0, rot: 0, sx: 1, sy: 1, skew: 0, blur: 0 };
+    const kick = Math.exp(-3.1 * ((elapsed - 100) / 780));
+    return { x: 3.5 * kick, y: breathY * 0.25, rot: 1.1 * kick, skew: 1.6 * kick, blur: kick > 0.5 ? 0.55 : 0, sx: 1, sy: 1 };
+  }
+  return { y: breathY, rot: Math.sin(t * 0.75) * 0.12, sx: 1 + Math.sin(t * 1.45) * 0.003, sy: 1 + Math.sin(t * 1.45) * 0.003 };
+}
+
+function parallaxShift() {
+  const camera = $("camera");
+  const width = camera.offsetWidth;
+  const height = camera.offsetHeight;
+  if (!width || !height) return { x: 0, y: 0 };
+  const origin = getComputedStyle(camera).transformOrigin.split(" ");
+  return {
+    x: (parseFloat(origin[0]) / width - 0.5) * 70,
+    y: (parseFloat(origin[1]) / height - 0.5) * 32,
+  };
+}
+
+function writePose(el, pose) {
+  if (!el) return;
+  const x = pose.x || 0;
+  const y = pose.y || 0;
+  const rot = pose.rot || 0;
+  const sx = pose.sx || 1;
+  const sy = pose.sy || 1;
+  const skew = pose.skew || 0;
+  el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) skewX(${skew.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  el.style.filter = pose.blur ? `blur(${pose.blur.toFixed(2)}px)` : "";
+}
+
+function endBody() {
+  bodyToken += 1;
+  for (const id of ["layer-hero", "layer-rival", "plate"]) {
+    const el = $(id);
+    if (!el) continue;
+    el.style.transform = "";
+    el.style.filter = "";
+  }
+}
+
+function beginBody(name, cam) {
+  endBody();
+  if (reduceMotion.matches) return;
+  if (!layered || !design.cutout || !LAYER_BEATS.includes(name)) return;
+  const token = bodyToken;
+  const started = performance.now();
+  const dur = cam.ms || 1000;
+  const plate = !!cam.file;
+  const tick = (now) => {
+    if (token !== bodyToken) return;
+    const elapsed = now - started;
+    const u = Math.min(1, elapsed / dur);
+    if (plate) {
+      writePose($("plate"), platePose(name, u, elapsed, now));
+    } else {
+      const shift = parallaxShift();
+      for (const who of ["hero", "rival"]) {
+        const life = idleLife(who, now, name);
+        const move = beatPair(name, who, u);
+        const depth = who === "hero" ? 1 : 0.82;
+        writePose($(`layer-${who}`), {
+          x: (move.x || 0) + shift.x * depth,
+          y: (move.y || 0) + life.y + shift.y * depth,
+          rot: (move.rot || 0) + life.rot,
+          skew: move.skew || 0,
+          blur: move.blur || 0,
+        });
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function syncMode() {
@@ -291,8 +438,13 @@ function show(name, { fx = false } = {}) {
   for (const button of document.querySelectorAll("[data-beat]")) {
     button.setAttribute("aria-pressed", button.dataset.beat === name ? "true" : "false");
   }
-  if (layered && design.cutout && LAYER_BEATS.includes(name)) showLayers(name, read);
-  else showBaked(name, read);
+  if (layered && design.cutout && LAYER_BEATS.includes(name)) {
+    showLayers(name, read);
+    beginBody(name, cam);
+  } else {
+    showBaked(name, read);
+    endBody();
+  }
   if (cam.shake && fx) hit(cam);
   else if (name === "impact" && fx) hit(cam);
   else clearHit();
@@ -455,6 +607,10 @@ function mount() {
     showBaked(beat, $("cam-read").textContent.replace(" · layered", ""));
     $("status").textContent += " · cutout missing, baked fallback";
   };
+  reduceMotion.addEventListener("change", () => {
+    if (reduceMotion.matches) endBody();
+    else if (layered && design.cutout && LAYER_BEATS.includes(beat)) beginBody(beat, cameraFor(beat));
+  });
   syncMode();
   show("approach");
 }

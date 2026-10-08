@@ -120,7 +120,10 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform-origin: 50% 94%;
 }
+
+.stage img.plate { transform-origin: 50% 58%; }
 
 .layer.hero { z-index: 1; }
 .layer.rival { z-index: 2; }
@@ -299,4 +302,9 @@ a { color: var(--muted); }
   .impact-frame.boom::before,
   .stage img.insert.flash { animation: none; }
   .camera { transition: none; }
+  .layer.char,
+  #plate {
+    transform: none !important;
+    filter: none !important;
+  }
 }
