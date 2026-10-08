@@ -23,6 +23,8 @@ export function resolveFrame(beat, elapsed, heroId = DEFAULT_HERO) {
     fx: frame.fx ? `${ROOT}${frame.fx}` : "",
     flash: frame.flash ? `${ROOT}${frame.flash}` : "",
     pose: frame.hero || frame.flash || "",
+    heroPose: frame.hero || "",
+    rivalPose: frame.rival || "",
     heroId: hero,
   };
 }
