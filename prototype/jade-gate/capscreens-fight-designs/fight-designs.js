@@ -1,3 +1,5 @@
+import { activeHero, castFiles, resolveFrame } from "./vanguard-layers.mjs";
+
 const ROOT = "../assets/animation/";
 const CUTOUT = "../assets/fight/ep1-vanguard/";
 
@@ -123,35 +125,6 @@ const LAYER_LABELS = {
   follow: "Follow",
   aftermath: "Aftermath",
 };
-/**
- * Redrawn action plates inside a layered beat.
- * plate = one full painting. stack = the existing hero/rival cutouts for that beat.
- * Timings are milliseconds from the beat start. Camera keyframes stay in LAYER_CAMERAS.
- */
-const ACTION_SWAPS = {
-  windup: [
-    { at: 0, plate: "angle-low.png" },
-    { at: 320, plate: "pose-windup-coil.png" },
-  ],
-  feint: [
-    { at: 0, plate: "pose-feint-smear.png" },
-    { at: 420, stack: "feint" },
-  ],
-  exchange: [
-    { at: 0, plate: "pose-exchange-smear.png" },
-    { at: 360, stack: "exchange" },
-  ],
-  impact: [
-    { at: 0, plate: "pose-impact-white.png" },
-    { at: 80, plate: "pose-impact-black.png" },
-    { at: 160, plate: "pose-impact-slash.png" },
-    { at: 380, plate: "pose-impact-recoil.png" },
-  ],
-  follow: [
-    { at: 0, plate: "pose-follow-overshoot.png" },
-    { at: 560, stack: "follow" },
-  ],
-};
 const LABELS = {
   standoff: "Standoff",
   windup: "Wind-up",
@@ -208,6 +181,7 @@ let camToken = 0;
 let bodyToken = 0;
 let swapKey = "";
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const heroId = activeHero(new URLSearchParams(location.search).get("hero"));
 
 function rel(path) {
   return `${ROOT}${path}`;
@@ -367,46 +341,43 @@ function endBody() {
   setCues("", 0, 1);
 }
 
-function frameAt(name, elapsed) {
-  const frames = ACTION_SWAPS[name];
-  if (!frames) return null;
-  let current = frames[0];
-  for (const frame of frames) {
-    if (elapsed >= frame.at) current = frame;
-  }
-  return current;
-}
-
-function applySwap(name, frame, read) {
+function applyResolved(frame, read) {
   if (!frame) return;
-  const key = frame.plate ? `p:${frame.plate}` : `s:${frame.stack}`;
+  const key = [frame.flash, frame.bg, frame.hero, frame.rival, frame.fx].join("|");
   if (key === swapKey) return;
   swapKey = key;
   const plate = $("plate");
-  if (frame.plate) {
+  const fx = $("layer-fx");
+  if (frame.flash) {
     $("layers").hidden = true;
     plate.hidden = false;
-    const src = `${CUTOUT}${frame.plate}`;
-    if (plate.getAttribute("src") !== src) plate.src = src;
-    plate.alt = `${design.title}, Zhao Yun with a jian, ${read}`;
-    for (const id of ["layer-hero", "layer-rival"]) {
-      const el = $(id);
-      el.style.transform = "";
-      el.style.filter = "";
-    }
-    $("status").textContent = `${design.title} · layered · ${read} · ${src}`;
+    if (plate.getAttribute("src") !== frame.flash) plate.src = frame.flash;
+    plate.alt = `${design.title}, impact flash, ${read}`;
+    fx.hidden = true;
+    $("status").textContent = `${design.title} · layered · ${read} · ${frame.heroId} · ${frame.flash}`;
     return;
   }
   plate.hidden = true;
   plate.style.transform = "";
   plate.style.filter = "";
   $("layers").hidden = false;
-  $("layer-bg").src = `${CUTOUT}bg.png`;
-  $("layer-hero").src = `${CUTOUT}hero-${frame.stack}.png`;
-  $("layer-hero").alt = `${design.title}, Zhao Yun with a jian, ${read}`;
-  $("layer-rival").src = `${CUTOUT}rival-${frame.stack}.png`;
-  $("layer-rival").alt = `${design.title}, vanguard, ${read}`;
-  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (bg.png, hero-${frame.stack}.png, rival-${frame.stack}.png)`;
+  $("layer-bg").src = frame.bg;
+  const hero = $("layer-hero");
+  hero.hidden = !frame.hero;
+  if (frame.hero) {
+    hero.src = frame.hero;
+    hero.alt = `${design.title}, ${frame.heroId}, ${read}`;
+  }
+  const rival = $("layer-rival");
+  rival.hidden = !frame.rival;
+  if (frame.rival) {
+    rival.src = frame.rival;
+    rival.alt = `${design.title}, vanguard, ${read}`;
+  }
+  fx.hidden = !frame.fx;
+  fx.classList.toggle("full", !!frame.fx);
+  if (frame.fx) fx.src = frame.fx;
+  $("status").textContent = `${design.title} · layered · ${read} · ${frame.heroId} · ${frame.pose}`;
 }
 
 function beginBody(name, cam, read) {
@@ -420,33 +391,28 @@ function beginBody(name, cam, read) {
     if (token !== bodyToken) return;
     const elapsed = now - started;
     const u = Math.min(1, elapsed / dur);
-    const frame = frameAt(name, elapsed);
-    applySwap(name, frame, poseRead);
-    if (!reduceMotion.matches) {
+    const frame = resolveFrame(name, elapsed, heroId);
+    applyResolved(frame, poseRead);
+    if (!reduceMotion.matches && frame && !frame.flash) {
       setCues(name, elapsed, dur);
-      const onPlate = frame ? !!frame.plate : !!cam.file;
-      if (onPlate) {
-        writePose($("plate"), platePose(name, u, elapsed, now));
-      } else {
-        const shift = parallaxShift();
-        for (const who of ["hero", "rival"]) {
-          const life = idleLife(who, now, name);
-          const move = beatPair(name, who, u);
-          const depth = who === "hero" ? 1 : 0.82;
-          writePose($(`layer-${who}`), {
-            x: (move.x || 0) + shift.x * depth,
-            y: (move.y || 0) + life.y + shift.y * depth,
-            rot: (move.rot || 0) + life.rot,
-            skew: move.skew || 0,
-            blur: move.blur || 0,
-            sx: move.sx || 1,
-          });
-        }
+      const shift = parallaxShift();
+      for (const who of ["hero", "rival"]) {
+        const life = idleLife(who, now, name);
+        const move = beatPair(name, who, u);
+        const depth = who === "hero" ? 1 : 0.82;
+        writePose($(`layer-${who}`), {
+          x: (move.x || 0) + shift.x * depth,
+          y: (move.y || 0) + life.y + shift.y * depth,
+          rot: (move.rot || 0) + life.rot,
+          skew: move.skew || 0,
+          blur: move.blur || 0,
+          sx: move.sx || 1,
+        });
       }
     }
     requestAnimationFrame(tick);
   };
-  applySwap(name, frameAt(name, 0), poseRead);
+  applyResolved(resolveFrame(name, 0, heroId), poseRead);
   requestAnimationFrame(tick);
 }
 
@@ -482,7 +448,8 @@ function showLayers(name, read) {
   const fx = $("layer-fx");
   fx.hidden = true;
   $("cam-read").textContent = `${read} · layered`;
-  if (ACTION_SWAPS[name]) return;
+  applyResolved(resolveFrame(name, 0, heroId), read);
+  if (resolveFrame(name, 0, heroId)) return;
   if (cam.file) {
     $("layers").hidden = true;
     const plate = $("plate");
@@ -644,12 +611,9 @@ function preload(item) {
       image.src = `${CUTOUT}${who}-${name}.png`;
     }
   }
-  for (const frames of Object.values(ACTION_SWAPS)) {
-    for (const frame of frames) {
-      if (!frame.plate) continue;
-      const image = new Image();
-      image.src = `${CUTOUT}${frame.plate}`;
-    }
+  for (const src of castFiles(heroId)) {
+    const image = new Image();
+    image.src = src;
   }
 }
 

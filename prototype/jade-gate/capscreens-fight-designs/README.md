@@ -30,7 +30,7 @@ Ten seconds. Zhao Yun stays screen-left and the vanguard screen-right. Wides kee
 | follow | 1.4s | medium to wide | frontal | pull-back |
 | aftermath | 0.9s | wide | frontal | settle |
 
-`approach` and `aftermath` composite `bg.png`, `hero-{beat}.png`, and `rival-{beat}.png`. `ots` stays on `angle-ots.png`. The other layered beats swap redrawn action plates on the same shot list: wind-up holds `angle-low.png`, then `pose-windup-coil.png`; feint opens on `pose-feint-smear.png`, then the feint cutouts; exchange opens on `pose-exchange-smear.png`, then the exchange cutouts; impact plays `pose-impact-white.png`, `pose-impact-black.png`, `pose-impact-slash.png`, then `pose-impact-recoil.png`; follow opens on `pose-follow-overshoot.png`, then the follow cutouts. The rival stays screen-right in dark iron lamellar, a closed helmet, a short crimson tassel, and the polearm in his hands. The Layered / Baked control falls back to the v1 plates.
+Layered playback reads `vanguard-cast.mjs`. Each tick is a background plate plus a Zhao Yun layer and a rival layer, with smear and slash art on the FX layer. The gate background stays `bg.png`. Wind-up uses `bg-low.png`, the reverse uses `bg-ots.png`, and the blade close-up uses `bg-blades.png`. White and black impact frames stay full-frame flashes. Drawings advance about every 83ms. The slash is held from 160ms to 380ms. `?hero=lu-zhishen` points the hero role at Lu Zhishen’s stand-in layers and does not change the backgrounds. The default view is Zhao Yun. The rival stays screen-right. The Layered / Baked control falls back to the v1 plates.
 
 ## The five designs
 
