@@ -13,7 +13,116 @@ const CAMERAS = {
 };
 
 const ORDER = ["standoff", "windup", "charge", "impact", "pass", "hold", "aftermath"];
-const LAYER_BEATS = ["windup", "charge", "impact", "aftermath"];
+/** Layered Vanguard shot list. ~10s. Yun stays screen-left, the vanguard screen-right. */
+const EASE = {
+  track: "cubic-bezier(0.25, 0.1, 0.25, 1)",
+  push: "cubic-bezier(0.22, 0.7, 0.2, 1)",
+  whip: "cubic-bezier(0.55, 0.05, 0.25, 1)",
+  pull: "cubic-bezier(0.16, 0.84, 0.3, 1)",
+  cut: "linear",
+};
+const LAYER_CAMERAS = {
+  approach: {
+    size: "wide",
+    angle: "frontal",
+    move: "slow track",
+    easeName: "track",
+    from: { zoom: 1.03, x: 46, y: 52 },
+    zoom: 1.05, x: 54, y: 50,
+    ease: 1550,
+    ms: 1700,
+    label: "establishing wide · frontal · slow track",
+  },
+  windup: {
+    size: "CU",
+    angle: "low, Yun",
+    move: "hard cut, hold",
+    easeName: "cut",
+    zoom: 1, x: 50, y: 50,
+    ease: 0,
+    ms: 1000,
+    file: "angle-low.png",
+    label: "face CU · low angle · hold",
+  },
+  feint: {
+    size: "medium two-shot",
+    angle: "frontal",
+    move: "push-in",
+    easeName: "push",
+    from: { zoom: 1.22, x: 46, y: 50 },
+    zoom: 1.52, x: 50, y: 42,
+    ease: 900,
+    ms: 1200,
+    label: "medium two-shot · frontal · push-in",
+  },
+  ots: {
+    size: "OTS",
+    angle: "behind Yun",
+    move: "hard cut",
+    easeName: "cut",
+    zoom: 1, x: 50, y: 50,
+    ease: 0,
+    ms: 1200,
+    file: "angle-ots.png",
+    label: "over-shoulder · reverse · cut",
+  },
+  exchange: {
+    size: "medium two-shot",
+    angle: "frontal",
+    move: "whip-pan",
+    easeName: "whip",
+    from: { zoom: 1.42, x: 36, y: 44 },
+    zoom: 1.5, x: 64, y: 42,
+    ease: 220,
+    ms: 1000,
+    label: "medium two-shot · frontal · whip-pan",
+  },
+  impact: {
+    size: "CU",
+    angle: "frontal, blades",
+    move: "hold, gentle shake",
+    easeName: "cut",
+    zoom: 1, x: 50, y: 50,
+    ease: 0,
+    ms: 1600,
+    file: "angle-blades.png",
+    shake: true,
+    label: "blade CU · frontal · hold",
+  },
+  follow: {
+    size: "medium to wide",
+    angle: "frontal",
+    move: "pull-back",
+    easeName: "pull",
+    from: { zoom: 1.48, x: 50, y: 44 },
+    zoom: 1.06, x: 50, y: 54,
+    ease: 1100,
+    ms: 1400,
+    label: "pull-back · frontal · to wide",
+  },
+  aftermath: {
+    size: "wide",
+    angle: "frontal",
+    move: "settle",
+    easeName: "pull",
+    from: { zoom: 1.06, x: 50, y: 54 },
+    zoom: 1, x: 50, y: 56,
+    ease: 700,
+    ms: 900,
+    label: "wide · frontal · settle",
+  },
+};
+const LAYER_BEATS = Object.keys(LAYER_CAMERAS);
+const LAYER_LABELS = {
+  approach: "Approach",
+  windup: "Wind-up",
+  feint: "Feint",
+  ots: "Reverse",
+  exchange: "Exchange",
+  impact: "Impact",
+  follow: "Follow",
+  aftermath: "Aftermath",
+};
 const LABELS = {
   standoff: "Standoff",
   windup: "Wind-up",
@@ -31,7 +140,6 @@ const DESIGNS = [
     stem: "ep1-vanguard-s05",
     cutout: true,
     focus: { charge: { x: 34, y: 46 }, impact: { x: 50, y: 40 } },
-    layeredFocus: { impact: { x: 50, y: 46 } },
   },
   {
     id: "warden",
@@ -63,10 +171,11 @@ const DESIGNS = [
 const $ = (id) => document.getElementById(id);
 let design = DESIGNS[0];
 let layered = true;
-let beat = "windup";
+let beat = "approach";
 let playing = false;
 let timer = 0;
 let insertTimer = 0;
+let camToken = 0;
 
 function rel(path) {
   return `${ROOT}${path}`;
@@ -78,23 +187,46 @@ function beatPath(item, name) {
 }
 
 function cameraFor(name) {
-  const layeredFocus = layered && design.cutout ? design.layeredFocus?.[name] : null;
-  return { ...CAMERAS[name], ...(design.focus?.[name] || {}), ...(layeredFocus || {}) };
+  if (layered && design.cutout && LAYER_CAMERAS[name]) return { ...LAYER_CAMERAS[name] };
+  return { ...CAMERAS[name], ...(design.focus?.[name] || {}) };
 }
 
 function activeOrder() {
   return layered && design.cutout ? LAYER_BEATS : ORDER;
 }
 
+function writeCam(camera, frame) {
+  camera.style.setProperty("--cam-x", `${frame.x}%`);
+  camera.style.setProperty("--cam-y", `${frame.y}%`);
+  camera.style.setProperty("--cam-z", String(frame.zoom));
+}
+
 function applyCamera(name) {
   const cam = cameraFor(name);
   const stage = $("stage");
   const camera = $("camera");
-  stage.dataset.cut = cam.ease === 0 ? "hard" : "ease";
-  camera.style.setProperty("--cam-ms", `${cam.ease}ms`);
-  camera.style.setProperty("--cam-x", `${cam.x}%`);
-  camera.style.setProperty("--cam-y", `${cam.y}%`);
-  camera.style.setProperty("--cam-z", String(cam.zoom));
+  const token = ++camToken;
+  stage.dataset.move = cam.easeName || "";
+  camera.style.setProperty("--cam-ease", EASE[cam.easeName] || EASE.push);
+  if (!cam.from) {
+    stage.dataset.cut = cam.ease ? "ease" : "hard";
+    camera.style.setProperty("--cam-ms", `${cam.ease || 0}ms`);
+    writeCam(camera, cam);
+    return cam;
+  }
+  const start = { ...cam, ...cam.from };
+  stage.dataset.cut = "hard";
+  camera.style.setProperty("--cam-ms", "0ms");
+  writeCam(camera, start);
+  requestAnimationFrame(() => {
+    if (token !== camToken) return;
+    requestAnimationFrame(() => {
+      if (token !== camToken) return;
+      stage.dataset.cut = "ease";
+      camera.style.setProperty("--cam-ms", `${cam.ease}ms`);
+      writeCam(camera, cam);
+    });
+  });
   return cam;
 }
 
@@ -125,7 +257,20 @@ function showBaked(name, read) {
 
 function showLayers(name, read) {
   const stage = $("stage");
+  const cam = cameraFor(name);
   stage.dataset.source = "layered";
+  const fx = $("layer-fx");
+  fx.hidden = true;
+  if (cam.file) {
+    $("layers").hidden = true;
+    const plate = $("plate");
+    plate.hidden = false;
+    plate.src = `${CUTOUT}${cam.file}`;
+    plate.alt = `${design.title}, Zhao Yun with a jian, ${read}`;
+    $("cam-read").textContent = `${read} · layered`;
+    $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT}${cam.file}`;
+    return;
+  }
   $("plate").hidden = true;
   $("layers").hidden = false;
   $("layer-bg").src = `${CUTOUT}bg.png`;
@@ -133,17 +278,9 @@ function showLayers(name, read) {
   $("layer-hero").alt = `${design.title}, Zhao Yun with a jian, ${read}`;
   $("layer-rival").src = `${CUTOUT}rival-${name}.png`;
   $("layer-rival").alt = `${design.title}, vanguard, ${read}`;
-  const fx = $("layer-fx");
   const files = [`bg.png`, `hero-${name}.png`, `rival-${name}.png`];
-  if (name === "impact") {
-    fx.src = `${CUTOUT}fx-impact.png`;
-    fx.hidden = false;
-    files.push("fx-impact.png");
-  } else {
-    fx.hidden = true;
-  }
   $("cam-read").textContent = `${read} · layered`;
-  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")}) · Art Dir PASS_WITH_NOTES`;
+  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")})`;
 }
 
 function show(name, { fx = false } = {}) {
@@ -156,7 +293,8 @@ function show(name, { fx = false } = {}) {
   }
   if (layered && design.cutout && LAYER_BEATS.includes(name)) showLayers(name, read);
   else showBaked(name, read);
-  if (name === "impact" && fx) hit();
+  if (cam.shake && fx) hit(cam);
+  else if (name === "impact" && fx) hit(cam);
   else clearHit();
 }
 
@@ -168,19 +306,23 @@ function restart(node, className) {
 
 function clearHit() {
   clearTimeout(insertTimer);
-  $("stage").classList.remove("quake");
+  $("stage").classList.remove("quake", "quake-soft");
   $("flash").classList.remove("on");
   $("impact-frame").classList.remove("boom");
   $("insert").classList.remove("flash");
   $("insert").hidden = true;
 }
 
-function hit() {
+function hit(cam) {
   clearHit();
+  if (layered && design.cutout) {
+    if (cam && cam.shake) restart($("stage"), "quake-soft");
+    return;
+  }
   restart($("stage"), "quake");
   restart($("flash"), "on");
   restart($("impact-frame"), "boom");
-  if (!design.insert || (layered && design.cutout)) return;
+  if (!design.insert) return;
   const insert = $("insert");
   insert.src = rel(design.insert);
   insert.hidden = false;
@@ -229,7 +371,26 @@ function select(next) {
     card.setAttribute("aria-pressed", card.dataset.id === design.id ? "true" : "false");
   }
   if (design.insert) $("insert").src = rel(design.insert);
-  show(layered ? "windup" : "standoff");
+  renderBeats();
+  show(layered ? "approach" : "standoff");
+}
+
+function renderBeats() {
+  const beats = $("beats");
+  beats.replaceChildren();
+  const order = activeOrder();
+  const labels = layered && design.cutout ? LAYER_LABELS : LABELS;
+  for (const name of order) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.beat = name;
+    button.textContent = labels[name];
+    button.onclick = () => {
+      stop();
+      show(name, { fx: true });
+    };
+    beats.append(button);
+  }
 }
 
 function preload(item) {
@@ -247,6 +408,12 @@ function preload(item) {
     image.src = `${CUTOUT}${file}`;
   }
   for (const name of LAYER_BEATS) {
+    const cam = LAYER_CAMERAS[name];
+    if (cam.file) {
+      const image = new Image();
+      image.src = `${CUTOUT}${cam.file}`;
+      continue;
+    }
     for (const who of ["hero", "rival"]) {
       const image = new Image();
       image.src = `${CUTOUT}${who}-${name}.png`;
@@ -272,26 +439,16 @@ function mount() {
     cards.append(button);
     preload(item);
   }
-  const beats = $("beats");
-  for (const name of ORDER) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.beat = name;
-    button.textContent = LABELS[name];
-    button.onclick = () => {
-      stop();
-      show(name, { fx: true });
-    };
-    beats.append(button);
-  }
+  renderBeats();
   $("play").onclick = () => play();
   $("mode").onclick = () => {
     if (!design.cutout) return;
     stop();
     layered = !layered;
     syncMode();
-    const next = layered && !LAYER_BEATS.includes(beat) ? "windup" : beat;
-    show(next);
+    renderBeats();
+    const order = activeOrder();
+    show(order.includes(beat) ? beat : order[0]);
   };
   $("layer-bg").onerror = () => {
     if ($("stage").dataset.source !== "layered") return;
@@ -299,7 +456,7 @@ function mount() {
     $("status").textContent += " · cutout missing, baked fallback";
   };
   syncMode();
-  show("windup");
+  show("approach");
 }
 
 mount();

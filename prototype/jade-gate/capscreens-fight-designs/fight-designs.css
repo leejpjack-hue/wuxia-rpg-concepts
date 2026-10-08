@@ -80,8 +80,8 @@ h1 {
   inset: 0;
   transform-origin: var(--cam-x, 50%) var(--cam-y, 46%);
   transform: scale(var(--cam-z, 1));
-  transition: transform var(--cam-ms, 480ms) cubic-bezier(0.22, 0.7, 0.2, 1),
-    transform-origin var(--cam-ms, 480ms) ease;
+  transition: transform var(--cam-ms, 480ms) var(--cam-ease, cubic-bezier(0.22, 0.7, 0.2, 1)),
+    transform-origin var(--cam-ms, 480ms) var(--cam-ease, cubic-bezier(0.22, 0.7, 0.2, 1));
 }
 
 .stage[data-cut="hard"] .camera { transition: none; }
@@ -113,20 +113,31 @@ h1 {
   object-fit: cover;
 }
 
-/* Squares carry the figure in the lower 16:9 band. Bottom-align so that band fills the stage. */
+/* 16:9 cutouts. Full stage, no extra zoom baked into the layer. */
 .layer.char {
   position: absolute;
-  left: 0;
-  bottom: 0;
+  inset: 0;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: fill;
+  height: 100%;
+  object-fit: cover;
 }
 
 .layer.hero { z-index: 1; }
 .layer.rival { z-index: 2; }
 .layer.fx { z-index: 3; }
+
+/* The painted burst is a full plate. On the layered cut, keep a small spark on the blades. */
+.stage[data-source="layered"] .layer.fx {
+  inset: auto;
+  width: 22%;
+  height: 22%;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
 
 .stage img.insert {
   opacity: 0;
@@ -151,6 +162,8 @@ h1 {
 .stage[data-beat="charge"] .speed-lines,
 .stage[data-beat="impact"] .speed-lines { opacity: 0.95; }
 
+.stage[data-source="layered"] .speed-lines { opacity: 0; }
+
 .cam-read {
   position: absolute;
   z-index: 6;
@@ -166,6 +179,7 @@ h1 {
 }
 
 .stage.quake { animation: cam-quake 0.42s linear both; }
+.stage.quake-soft { animation: cam-quake-soft 0.7s ease-out both; }
 
 .flash {
   position: absolute;
@@ -240,6 +254,12 @@ a { color: var(--muted); }
   80% { translate: 0.35% -0.2%; }
 }
 
+@keyframes cam-quake-soft {
+  0%, 100% { translate: 0 0; }
+  30% { translate: -0.35% 0.18%; }
+  60% { translate: 0.28% -0.12%; }
+}
+
 @keyframes white-flash {
   0% { opacity: 0; }
   18% { opacity: 0.92; }
@@ -273,6 +293,7 @@ a { color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   .stage.quake,
+  .stage.quake-soft,
   .flash.on,
   .impact-frame.boom,
   .impact-frame.boom::before,
