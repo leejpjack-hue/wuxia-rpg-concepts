@@ -123,6 +123,35 @@ const LAYER_LABELS = {
   follow: "Follow",
   aftermath: "Aftermath",
 };
+/**
+ * Redrawn action plates inside a layered beat.
+ * plate = one full painting. stack = the existing hero/rival cutouts for that beat.
+ * Timings are milliseconds from the beat start. Camera keyframes stay in LAYER_CAMERAS.
+ */
+const ACTION_SWAPS = {
+  windup: [
+    { at: 0, plate: "angle-low.png" },
+    { at: 320, plate: "pose-windup-coil.png" },
+  ],
+  feint: [
+    { at: 0, plate: "pose-feint-smear.png" },
+    { at: 420, stack: "feint" },
+  ],
+  exchange: [
+    { at: 0, plate: "pose-exchange-smear.png" },
+    { at: 360, stack: "exchange" },
+  ],
+  impact: [
+    { at: 0, plate: "pose-impact-white.png" },
+    { at: 80, plate: "pose-impact-black.png" },
+    { at: 160, plate: "pose-impact-slash.png" },
+    { at: 380, plate: "pose-impact-recoil.png" },
+  ],
+  follow: [
+    { at: 0, plate: "pose-follow-overshoot.png" },
+    { at: 560, stack: "follow" },
+  ],
+};
 const LABELS = {
   standoff: "Standoff",
   windup: "Wind-up",
@@ -176,6 +205,9 @@ let playing = false;
 let timer = 0;
 let insertTimer = 0;
 let camToken = 0;
+let bodyToken = 0;
+let swapKey = "";
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function rel(path) {
   return `${ROOT}${path}`;
@@ -230,6 +262,194 @@ function applyCamera(name) {
   return cam;
 }
 
+function smoother(u) {
+  const t = Math.min(1, Math.max(0, u));
+  return t * t * (3 - 2 * t);
+}
+
+function idleLife(who, now, name) {
+  const t = now / 1000;
+  const quiet = name === "aftermath" || name === "approach";
+  const slow = quiet ? 0.7 : 1;
+  const amp = quiet ? 0.6 : 1;
+  if (who === "hero") {
+    return {
+      y: Math.sin(t * 2.05 * slow) * 2.4 * amp,
+      rot: Math.sin(t * 1.25 * slow) * 0.4 * amp,
+    };
+  }
+  return {
+    y: Math.sin(t * 1.9 * slow + 2.15) * 2.2 * amp,
+    rot: Math.sin(t * 1.1 * slow + 1.35) * 0.45 * amp,
+  };
+}
+
+/** Beat offset for a cutout. Zero at the cut so the new PNG does not slide in. */
+function beatPair(name, who, u) {
+  const dir = who === "hero" ? 1 : -1;
+  const reach = who === "hero" ? 1 : 0.86;
+  if (name === "approach") {
+    const stepA = smoother(u / 0.4);
+    const stepB = smoother((u - 0.46) / 0.46);
+    const forward = 0.48 * stepA + 0.52 * stepB;
+    return {
+      x: dir * 8 * reach * forward,
+      y: -Math.sin(Math.min(1, u) * Math.PI * 2) * 1,
+      rot: dir * -0.35 * forward,
+    };
+  }
+  if (name === "aftermath" || name === "feint" || name === "exchange" || name === "follow") return {};
+  return {};
+}
+
+function platePose(name, u, elapsed, now) {
+  const t = now / 1000;
+  const breathY = Math.sin(t * 1.45) * 1.2;
+  if (name === "windup") return { y: breathY * 0.35, sx: 1, sy: 1 };
+  if (name === "impact") {
+    if (elapsed < 380) return { x: 0, y: 0, rot: 0, sx: 1, sy: 1 };
+    return { y: breathY * 0.35, sx: 1, sy: 1 };
+  }
+  return { y: breathY, rot: Math.sin(t * 0.75) * 0.12, sx: 1 + Math.sin(t * 1.45) * 0.003, sy: 1 + Math.sin(t * 1.45) * 0.003 };
+}
+
+function parallaxShift() {
+  const camera = $("camera");
+  const width = camera.offsetWidth;
+  const height = camera.offsetHeight;
+  if (!width || !height) return { x: 0, y: 0 };
+  const origin = getComputedStyle(camera).transformOrigin.split(" ");
+  return {
+    x: (parseFloat(origin[0]) / width - 0.5) * 70,
+    y: (parseFloat(origin[1]) / height - 0.5) * 32,
+  };
+}
+
+function writePose(el, pose) {
+  if (!el) return;
+  const x = pose.x || 0;
+  const y = pose.y || 0;
+  const rot = pose.rot || 0;
+  const sx = pose.sx || 1;
+  const sy = pose.sy || 1;
+  const skew = pose.skew || 0;
+  el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) skewX(${skew.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  const filters = [];
+  if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
+  if (pose.contrast) filters.push(`contrast(${pose.contrast})`);
+  if (pose.brightness) filters.push(`brightness(${pose.brightness})`);
+  el.style.filter = filters.join(" ");
+}
+
+function setCues(name, elapsed, dur) {
+  const glint = $("glint");
+  const glintOn = (name === "windup" && elapsed > dur - 200) || (name === "feint" && elapsed < 200);
+  if (glint) {
+    glint.hidden = !glintOn;
+    glint.className = glintOn ? `glint ${name}` : "glint";
+  }
+  const punch = $("punch");
+  if (punch) {
+    punch.hidden = true;
+    punch.className = "punch";
+  }
+}
+
+function endBody() {
+  bodyToken += 1;
+  swapKey = "";
+  for (const id of ["layer-hero", "layer-rival", "plate"]) {
+    const el = $(id);
+    if (!el) continue;
+    el.style.transform = "";
+    el.style.filter = "";
+  }
+  setCues("", 0, 1);
+}
+
+function frameAt(name, elapsed) {
+  const frames = ACTION_SWAPS[name];
+  if (!frames) return null;
+  let current = frames[0];
+  for (const frame of frames) {
+    if (elapsed >= frame.at) current = frame;
+  }
+  return current;
+}
+
+function applySwap(name, frame, read) {
+  if (!frame) return;
+  const key = frame.plate ? `p:${frame.plate}` : `s:${frame.stack}`;
+  if (key === swapKey) return;
+  swapKey = key;
+  const plate = $("plate");
+  if (frame.plate) {
+    $("layers").hidden = true;
+    plate.hidden = false;
+    const src = `${CUTOUT}${frame.plate}`;
+    if (plate.getAttribute("src") !== src) plate.src = src;
+    plate.alt = `${design.title}, Zhao Yun with a jian, ${read}`;
+    for (const id of ["layer-hero", "layer-rival"]) {
+      const el = $(id);
+      el.style.transform = "";
+      el.style.filter = "";
+    }
+    $("status").textContent = `${design.title} · layered · ${read} · ${src}`;
+    return;
+  }
+  plate.hidden = true;
+  plate.style.transform = "";
+  plate.style.filter = "";
+  $("layers").hidden = false;
+  $("layer-bg").src = `${CUTOUT}bg.png`;
+  $("layer-hero").src = `${CUTOUT}hero-${frame.stack}.png`;
+  $("layer-hero").alt = `${design.title}, Zhao Yun with a jian, ${read}`;
+  $("layer-rival").src = `${CUTOUT}rival-${frame.stack}.png`;
+  $("layer-rival").alt = `${design.title}, vanguard, ${read}`;
+  $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (bg.png, hero-${frame.stack}.png, rival-${frame.stack}.png)`;
+}
+
+function beginBody(name, cam, read) {
+  endBody();
+  if (!layered || !design.cutout || !LAYER_BEATS.includes(name)) return;
+  const token = bodyToken;
+  const started = performance.now();
+  const dur = cam.ms || 1000;
+  const poseRead = read || `${name} · ${cam.label}`;
+  const tick = (now) => {
+    if (token !== bodyToken) return;
+    const elapsed = now - started;
+    const u = Math.min(1, elapsed / dur);
+    const frame = frameAt(name, elapsed);
+    applySwap(name, frame, poseRead);
+    if (!reduceMotion.matches) {
+      setCues(name, elapsed, dur);
+      const onPlate = frame ? !!frame.plate : !!cam.file;
+      if (onPlate) {
+        writePose($("plate"), platePose(name, u, elapsed, now));
+      } else {
+        const shift = parallaxShift();
+        for (const who of ["hero", "rival"]) {
+          const life = idleLife(who, now, name);
+          const move = beatPair(name, who, u);
+          const depth = who === "hero" ? 1 : 0.82;
+          writePose($(`layer-${who}`), {
+            x: (move.x || 0) + shift.x * depth,
+            y: (move.y || 0) + life.y + shift.y * depth,
+            rot: (move.rot || 0) + life.rot,
+            skew: move.skew || 0,
+            blur: move.blur || 0,
+            sx: move.sx || 1,
+          });
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  applySwap(name, frameAt(name, 0), poseRead);
+  requestAnimationFrame(tick);
+}
+
 function syncMode() {
   const button = $("mode");
   const available = !!design.cutout;
@@ -261,13 +481,14 @@ function showLayers(name, read) {
   stage.dataset.source = "layered";
   const fx = $("layer-fx");
   fx.hidden = true;
+  $("cam-read").textContent = `${read} · layered`;
+  if (ACTION_SWAPS[name]) return;
   if (cam.file) {
     $("layers").hidden = true;
     const plate = $("plate");
     plate.hidden = false;
     plate.src = `${CUTOUT}${cam.file}`;
     plate.alt = `${design.title}, Zhao Yun with a jian, ${read}`;
-    $("cam-read").textContent = `${read} · layered`;
     $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT}${cam.file}`;
     return;
   }
@@ -279,7 +500,6 @@ function showLayers(name, read) {
   $("layer-rival").src = `${CUTOUT}rival-${name}.png`;
   $("layer-rival").alt = `${design.title}, vanguard, ${read}`;
   const files = [`bg.png`, `hero-${name}.png`, `rival-${name}.png`];
-  $("cam-read").textContent = `${read} · layered`;
   $("status").textContent = `${design.title} · layered · ${read} · ${CUTOUT} (${files.join(", ")})`;
 }
 
@@ -291,8 +511,13 @@ function show(name, { fx = false } = {}) {
   for (const button of document.querySelectorAll("[data-beat]")) {
     button.setAttribute("aria-pressed", button.dataset.beat === name ? "true" : "false");
   }
-  if (layered && design.cutout && LAYER_BEATS.includes(name)) showLayers(name, read);
-  else showBaked(name, read);
+  if (layered && design.cutout && LAYER_BEATS.includes(name)) {
+    showLayers(name, read);
+    beginBody(name, cam, read);
+  } else {
+    showBaked(name, read);
+    endBody();
+  }
   if (cam.shake && fx) hit(cam);
   else if (name === "impact" && fx) hit(cam);
   else clearHit();
@@ -306,7 +531,7 @@ function restart(node, className) {
 
 function clearHit() {
   clearTimeout(insertTimer);
-  $("stage").classList.remove("quake", "quake-soft");
+  $("stage").classList.remove("quake", "quake-soft", "quake-bump");
   $("flash").classList.remove("on");
   $("impact-frame").classList.remove("boom");
   $("insert").classList.remove("flash");
@@ -316,7 +541,7 @@ function clearHit() {
 function hit(cam) {
   clearHit();
   if (layered && design.cutout) {
-    if (cam && cam.shake) restart($("stage"), "quake-soft");
+    if (cam && cam.shake) restart($("stage"), "quake-bump");
     return;
   }
   restart($("stage"), "quake");
@@ -419,6 +644,13 @@ function preload(item) {
       image.src = `${CUTOUT}${who}-${name}.png`;
     }
   }
+  for (const frames of Object.values(ACTION_SWAPS)) {
+    for (const frame of frames) {
+      if (!frame.plate) continue;
+      const image = new Image();
+      image.src = `${CUTOUT}${frame.plate}`;
+    }
+  }
 }
 
 function mount() {
@@ -455,6 +687,11 @@ function mount() {
     showBaked(beat, $("cam-read").textContent.replace(" · layered", ""));
     $("status").textContent += " · cutout missing, baked fallback";
   };
+  reduceMotion.addEventListener("change", () => {
+    if (layered && design.cutout && LAYER_BEATS.includes(beat)) {
+      beginBody(beat, cameraFor(beat), `${beat} · ${cameraFor(beat).label}`);
+    } else endBody();
+  });
   syncMode();
   show("approach");
 }
