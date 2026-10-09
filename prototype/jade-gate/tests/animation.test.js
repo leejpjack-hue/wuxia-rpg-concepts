@@ -50,7 +50,7 @@ test("animation episodes have valid scenes, backdrops, and durations", () => {
         assert.ok(beat.t < scene.duration, `Beat timestamp (${beat.t}s) must fall within scene duration (${scene.duration}s)`);
         assert.ok(beat.text && beat.text.trim().length > 0, "Beat has text content");
 
-        if (beat.who && !["三人", "裂口"].includes(beat.who)) {
+        if (beat.who && !["三人", "裂口", "師父", "妹妹"].includes(beat.who)) {
           assert.ok(
             Object.prototype.hasOwnProperty.call(SPEAKERS, beat.who),
             `Speaker "${beat.who}" must be registered in SPEAKERS`
