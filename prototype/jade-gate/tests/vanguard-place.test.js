@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { FRAMES } from "../capscreens-fight-designs/vanguard-cast.mjs";
 import { ANCHOR } from "../capscreens-fight-designs/vanguard-anchor.mjs";
+import { SHOTS } from "../capscreens-fight-designs/vanguard-shots.mjs";
 import {
   BEAT_PLACE,
   CAMERA_FIT,
@@ -41,11 +42,12 @@ function placed(beat, heroKey, rivalKey, elapsed = 0, dur = 1000) {
   };
 }
 
-const FIGHT = ["feint", "exchange", "impact", "follow"];
+const FIGHT = ["feint", "exchange", "impact", "follow", "counter", "reprise"];
 
 test("approach starts apart and closes onto the courtyard", () => {
-  const start = layoutFor("approach", 0, 1700);
-  const end = layoutFor("approach", 1700, 1700);
+  const ms = SHOTS.find((shot) => shot.id === "approach").ms;
+  const start = layoutFor("approach", 0, ms);
+  const end = layoutFor("approach", ms, ms);
   assert.ok(gap(start) > 40, gap(start));
   assert.ok(gap(end) < 20, gap(end));
   assert.ok(gap(start) > gap(end) + 20);
@@ -93,15 +95,18 @@ test("the reverse and the settle stay engaged without leaving the frame", () => 
 });
 
 test("camera windows keep the ground line and the fighters inside the shot", () => {
-  for (const beat of ["feint", "exchange", "follow"]) {
+  for (const beat of Object.keys(CAMERA_FIT)) {
     const cam = CAMERA_FIT[beat];
     const foot = BEAT_PLACE[beat].foot;
-    assert.ok(visibleBottom(cam.zoom, cam.y) >= foot + 2, `${beat} end`);
-    assert.ok(visibleBottom(cam.from.zoom, cam.from.y) >= foot + 2, `${beat} start`);
-    const [fromL, fromR] = visibleSpan(cam.from.zoom, cam.from.x);
-    const [toL, toR] = visibleSpan(cam.zoom, cam.x);
-    const lo = Math.max(fromL, toL);
-    const hi = Math.min(fromR, toR);
+    const keys = cam.keys || [cam.from, { zoom: cam.zoom, x: cam.x, y: cam.y }];
+    let lo = -Infinity;
+    let hi = Infinity;
+    for (const key of keys) {
+      assert.ok(visibleBottom(key.zoom, key.y) >= foot + 2, `${beat} zoom ${key.zoom}`);
+      const [left, right] = visibleSpan(key.zoom, key.x);
+      lo = Math.max(lo, left);
+      hi = Math.min(hi, right);
+    }
     const seen = new Set();
     for (const frame of FRAMES[beat]) {
       if (!frame.hero || !frame.rival) continue;

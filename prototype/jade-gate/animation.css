@@ -82,7 +82,37 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
 /* 演員進場 */
 .cast { position: absolute; inset: 0; z-index: 2; }
 .stage[data-shot="closeup"] .cast, .stage[data-shot="duel"] .cast,
-.stage[data-shot="fight"] .cast, .stage[data-shot="frame"] .cast { visibility: hidden; }
+.stage[data-shot="fight"] .cast, .stage[data-shot="frame"] .cast,
+.stage[data-shot="clash"] .cast { visibility: hidden; }
+
+.clash { position: absolute; inset: 0; z-index: 3; background: #060a0b; }
+.clash[hidden] { display: none; }
+.clash-cam { position: absolute; inset: 0; }
+.clash-bg, .clash-flash {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.clash-char, .clash-ghost {
+  position: absolute; width: auto; max-width: none; object-fit: contain; pointer-events: none;
+}
+.clash-ghost { opacity: 0.42; }
+.clash-fx {
+  position: absolute; z-index: 4; pointer-events: none;
+  transform: translate(-50%, -50%); object-fit: fill; mix-blend-mode: screen;
+}
+.clash-shadow {
+  position: absolute; z-index: 0; height: 2.4%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  transform: translate(-50%, 40%);
+}
+.clash.bump { animation: clash-bump 0.26s linear both; }
+@keyframes clash-bump {
+  0% { translate: 0 0; }
+  12% { translate: 1.4% -0.25%; }
+  28% { translate: -0.9% 0.14%; }
+  46% { translate: 0.6% -0.08%; }
+  70% { translate: -0.25% 0.04%; }
+  100% { translate: 0 0; }
+}
 
 /* 圖像包 keyframe：手繪整幀直接做鏡頭（2560×1440 = 舞台比例），
  * 基礎幀切換時輕微推近（drift），講嘢/眨眼變體只換 src 唔重啟。 */
@@ -369,8 +399,10 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .backdrop, .actor, .closeup img, .duel-stage, .duel-stage img, .impact-frame, .fx, .speed-lines, .petal, .beat {
+  .backdrop, .actor, .closeup img, .duel-stage, .duel-stage img, .impact-frame, .fx, .speed-lines, .petal, .beat,
+  .clash, .clash-cam, .clash-char, .clash-ghost {
     animation: none !important;
     transition: none !important;
   }
+  .clash-cam, .clash-char, .clash-ghost { transform: none !important; }
 }

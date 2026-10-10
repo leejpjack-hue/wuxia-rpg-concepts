@@ -10,6 +10,10 @@
 
 import manifest from "./docs/asset-manifest.json" with { type: "json" };
 import { loadDuelPoses, applyDuelPose, clearDuelPose } from "./src/platform/duel-poses.js";
+import { resolveFrame } from "./capscreens-fight-designs/vanguard-layers.mjs";
+import { footStyle, fxStyle, layoutFor } from "./capscreens-fight-designs/vanguard-place.mjs";
+import { lifeScale, poseAt } from "./capscreens-fight-designs/vanguard-phrase.mjs";
+import { sampleCamera, sampleShot } from "./capscreens-fight-designs/vanguard-shots.mjs";
 
 const art = {
   gate: "assets/arena.png",
@@ -272,8 +276,8 @@ export const EPISODES = [
           { t: 14, kind: "push", focus: "guan-yu" },
           { t: 28, kind: "push", focus: "guan-yu" },
           { t: 44, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "face" },
-          { t: 60, kind: "fight", focus: "zhao-yun", rival: "guan-yu" },
-          { t: 74, kind: "pan", from: "right" },
+          { t: 60, kind: "fight", focus: "zhao-yun", rival: "guan-yu", cut: "vanguard" },
+          { t: 79, kind: "pan", from: "right" },
         ],
       },
       {
@@ -1148,6 +1152,132 @@ function fightPhase(elapsed) {
   return { name: "aftermath", index: FIGHT_PHASES.length - 1 };
 }
 
+function motionReduced() {
+  return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function clashRel(src) {
+  const mark = "ep1-vanguard/";
+  const i = src.indexOf(mark);
+  return i < 0 ? src : src.slice(i + mark.length);
+}
+
+function paintFighter(id, shadowId, src, slot, frame, who, pw, ph, ghost) {
+  const el = $(id);
+  if (!el) return;
+  const shadow = shadowId ? $(shadowId) : null;
+  if (!src || !slot) {
+    el.hidden = true;
+    if (shadow) shadow.hidden = true;
+    return;
+  }
+  el.hidden = false;
+  if (el.dataset.src !== src) {
+    el.dataset.src = src;
+    el.src = src;
+  }
+  const ready = el.complete && el.naturalWidth > 0 && el.src.includes(clashRel(src).split("/").pop());
+  const box = footStyle(
+    clashRel(src),
+    slot,
+    ready ? pw : 0,
+    ready ? ph : 0,
+    ready ? el.naturalWidth : 0,
+    ready ? el.naturalHeight : 0,
+  );
+  el.style.height = box.height;
+  el.style.bottom = box.bottom;
+  el.style.left = box.left;
+  el.style.transformOrigin = box.origin;
+  if (!motionReduced()) {
+    const scale = lifeScale(frame.phase);
+    const life = { y: Math.sin(performance.now() / 480) * 2.2 * scale, rot: 0 };
+    const pose = poseAt(frame, who, life, { x: 0, y: 0 });
+    if (ghost) {
+      pose.x = (pose.x || 0) + (who === "hero" ? -16 : 16);
+      pose.blur = (pose.blur || 0) + 0.35;
+      el.style.opacity = "0.42";
+    }
+    const filters = [];
+    if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
+    el.style.filter = filters.join(" ");
+    el.style.transform = `translate(${(pose.x || 0).toFixed(2)}px, ${(pose.y || 0).toFixed(2)}px) rotate(${(pose.rot || 0).toFixed(2)}deg) skewX(${(pose.skew || 0).toFixed(2)}deg) scale(${pose.sx || 1})`;
+  }
+  if (shadow) {
+    shadow.hidden = false;
+    shadow.style.left = `${slot.x}%`;
+    shadow.style.bottom = `${(100 - slot.foot).toFixed(2)}%`;
+    shadow.style.width = `${Math.max(10, slot.h * 0.28).toFixed(2)}%`;
+  }
+}
+
+/** Gate Vanguard on the animation page: the layered phrase, not the seven held plates. */
+function paintClash(elapsed) {
+  const { shot, local } = sampleShot(Math.max(0, elapsed));
+  const frame = resolveFrame(shot.id, local);
+  const cam = $("clash-cam");
+  if (!frame || !cam) return;
+  if (!motionReduced()) {
+    const view = sampleCamera(shot, local);
+    cam.style.transformOrigin = `${view.x}% ${view.y}%`;
+    cam.style.transform = `scale(${view.zoom})`;
+  }
+  const flash = $("clash-flash");
+  const bg = $("clash-bg");
+  if (frame.flash) {
+    if (flash) {
+      flash.hidden = false;
+      if (flash.dataset.src !== frame.flash) {
+        flash.dataset.src = frame.flash;
+        flash.src = frame.flash;
+      }
+    }
+    if (bg) bg.hidden = true;
+    for (const id of ["clash-hero", "clash-rival", "clash-hero-ghost", "clash-rival-ghost", "clash-fx"]) {
+      const el = $(id);
+      if (el) el.hidden = true;
+    }
+    return;
+  }
+  if (flash) flash.hidden = true;
+  if (bg) {
+    bg.hidden = false;
+    if (bg.dataset.src !== frame.bg) {
+      bg.dataset.src = frame.bg;
+      bg.src = frame.bg;
+    }
+  }
+  const layout = layoutFor(shot.id, local, shot.ms, {
+    hero: frame.heroPose,
+    rival: frame.rivalPose,
+  });
+  const pw = cam.clientWidth;
+  const ph = cam.clientHeight;
+  paintFighter("clash-hero", "clash-shadow-hero", frame.hero, layout?.hero, frame, "hero", pw, ph, false);
+  paintFighter("clash-rival", "clash-shadow-rival", frame.rival, layout?.rival, frame, "rival", pw, ph, false);
+  const fx = $("clash-fx");
+  const box = frame.fx ? fxStyle(layout) : null;
+  if (fx) {
+    fx.hidden = !box;
+    if (box) {
+      if (fx.dataset.src !== frame.fx) {
+        fx.dataset.src = frame.fx;
+        fx.src = frame.fx;
+      }
+      fx.style.left = box.left;
+      fx.style.top = box.top;
+      fx.style.width = box.width;
+      fx.style.height = box.height;
+    }
+  }
+  const clash = $("clash");
+  const hitKey = `${shot.id}:${frame.phase}:${frame.heroPose}`;
+  if (frame.phase === "stop" && clash && clash.dataset.hit !== hitKey) {
+    clash.dataset.hit = hitKey;
+    if (!motionReduced()) restartAnimation(clash, "bump");
+  }
+}
+
 /* ---------------- 分鏡推導與播放器 ---------------- */
 const $ = (id) => document.getElementById(id);
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -1263,13 +1393,14 @@ function render() {
   // 分鏡：當前鏡頭決定機位。切鏡硬切（cut dip）。
   const shot = shotAt(scene, local);
   // 圖像包優先：有手繪幀嘅鏡頭直接成圖出街（對白/眨眼用變體幀）；決鬥七拍幀優先過定鏡幀。
-  const fightFrames = shot.kind === "fight" ? FIGHT_FRAMES[`${scene.id}:${shot.t}`] || null : null;
-  const keyframe = fightFrames ? null : frameFor(scene, local);
-  const onFrames = !!(keyframe || fightFrames);
-  const shotKey = `${scene.id}:${shot.t}:${onFrames ? "frame" : shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
+  const clashOn = shot.cut === "vanguard";
+  const fightFrames = shot.kind === "fight" && !clashOn ? FIGHT_FRAMES[`${scene.id}:${shot.t}`] || null : null;
+  const keyframe = clashOn || fightFrames ? null : frameFor(scene, local);
+  const onFrames = !!(keyframe || fightFrames || clashOn);
+  const shotKey = `${scene.id}:${shot.t}:${clashOn ? "clash" : onFrames ? "frame" : shot.kind}:${shot.focus || ""}:${shot.rival || ""}`;
   if (stage.dataset.shotKey !== shotKey) {
     stage.dataset.shotKey = shotKey;
-    stage.dataset.shot = onFrames ? "frame" : shot.kind;
+    stage.dataset.shot = clashOn ? "clash" : onFrames ? "frame" : shot.kind;
     const closeup = stage.querySelector(".closeup");
     const duel = stage.querySelector(".duel-stage");
     closeup.hidden = onFrames || shot.kind !== "closeup";
@@ -1325,6 +1456,12 @@ function render() {
   }
 
   // keyframe 層：基礎幀切換先重啟鏡頭微推近；講嘢/眨眼/決鬥拍數只換 src。
+  const clash = $("clash");
+  if (clash) {
+    clash.hidden = !clashOn;
+    if (clashOn) paintClash((local - shot.t) * 1000);
+  }
+
   const kfImg = stage.querySelector(".keyframe");
   const fightName = fightFrames ? fightFrames[fightPhase(local - shot.t).name] || fightFrames.standoff : null;
   const kfSrc = keyframe ? keyframe.src

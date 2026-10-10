@@ -140,9 +140,12 @@ h1 {
   pointer-events: none;
 }
 
-.layer.hero { z-index: 1; }
-.layer.rival { z-index: 2; }
-.layer.fx { z-index: 3; }
+.layer.hero.ghost { z-index: 1; }
+.layer.rival.ghost { z-index: 2; }
+.layer.hero { z-index: 3; }
+.layer.rival { z-index: 4; }
+.layer.fx { z-index: 5; }
+.layer.ghost { opacity: 0.42; }
 
 /* The painted burst is a full plate. On the layered cut, keep a small spark on the blades. */
 .stage[data-source="layered"] .layer.fx {
@@ -252,6 +255,7 @@ h1 {
 
 .glint.windup { left: 22%; top: 46%; }
 .glint.feint { left: 30%; top: 40%; }
+.stage[data-source="layered"] .glint { display: none; }
 
 .flash {
   position: absolute;

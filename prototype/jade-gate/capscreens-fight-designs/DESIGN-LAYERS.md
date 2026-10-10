@@ -8,12 +8,12 @@
 
 ## Smallest change
 
-Keep the 8-shot camera list and the same stack. Replace full-painting swaps with a cast manifest: each timed frame is `{ bg, hero pose, rival pose, fx }`, and pose files are looked up by character id.
+Keep the same stack. The shot list adds a counter and a second hit. Each timed frame is `{ bg, hero pose, rival pose, fx, phase }`, and pose files are looked up by character id.
 
 - Wide beats reuse `bg.png` and the existing cutouts, plus new transparent in-betweens on that same gate.
 - Wind-up, the reverse, and the blade close-up get their own empty backgrounds, because those shots are different angles. Characters for those angles are their own layers.
 - White and black impact frames stay full-frame. They are exposure flashes, not a scene to recast.
 - Default hero id is `zhao-yun`. A debug query `?hero=lu-zhishen` points the hero role at Lu Zhishen stand-in layers. Backgrounds stay. That switch is not the default view.
-- In-betweens advance on a 12fps clock during the action (a repeat tick is the “on 2s” hold). Impact still holds the slash for the hit-stop.
+- In-betweens advance on a 24fps clock. A strike is wind-up, the approved smear drawing, impact, then a hit-stop that holds the contact pose. The phrase is longer than the first ten-second cut: a counter and a second hit stay on the gate stones.
 
-No new compositor. No change to baked mode or the other four fights.
+No new compositor. Baked mode keeps the same seven plates, with a longer camera move on the four fights that have no cutouts.

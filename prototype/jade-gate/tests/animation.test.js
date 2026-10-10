@@ -11,6 +11,7 @@ import {
   art,
   portraitSrc,
 } from "../animation.js";
+import { totalMs } from "../capscreens-fight-designs/vanguard-shots.mjs";
 
 const root = new URL("../", import.meta.url);
 const assetExists = (relPath) => existsSync(new URL(relPath, root));
@@ -82,6 +83,16 @@ test("portraitSrc finds both PNG and JPG portrait key art", () => {
   assert.equal(portraitSrc("lin-daiyu"), "assets/lin-daiyu.jpg", "Finds Lin Daiyu JPG portrait");
   assert.equal(portraitSrc("di-renjie"), "assets/di-renjie.jpg", "Finds Di Renjie JPG portrait");
   assert.equal(portraitSrc("nonexistent-character-id"), null, "Returns null for nonexistent character");
+});
+
+test("the vanguard fight on the animation page holds the long layered cut", () => {
+  const scene = EPISODES[0].scenes.find((item) => item.id === "vanguard");
+  const shots = shotsOf(scene);
+  const fight = shots.find((shot) => shot.cut === "vanguard");
+  const later = shots.find((shot) => shot.t > fight.t);
+  assert.ok(fight, "vanguard scene plays the layered cut");
+  assert.ok(later.t - fight.t + 0.05 >= totalMs() / 1000, `${later.t - fight.t}s window for ${totalMs()}ms`);
+  assert.ok(later.t < scene.duration);
 });
 
 test("fightPhase accurately calculates combat progression", () => {

@@ -1,130 +1,32 @@
 import { activeHero, castFiles, resolveFrame } from "./vanguard-layers.mjs";
-import { CAMERA_FIT, anchorFor, layoutFor } from "./vanguard-place.mjs";
+import { footStyle, fxStyle, layoutFor } from "./vanguard-place.mjs";
+import { lifeScale, poseAt } from "./vanguard-phrase.mjs";
+import { SHOTS, sampleCamera } from "./vanguard-shots.mjs";
 
 const ROOT = "../assets/animation/";
 const CUTOUT = "../assets/fight/ep1-vanguard/";
 
 /** Directed cuts. ease 0 is a hard cut. Focal x/y are percent of the plate. */
 const CAMERAS = {
-  standoff: { zoom: 1.04, x: 50, y: 48, ease: 0, label: "wide hold", ms: 860 },
-  windup: { zoom: 1.2, x: 48, y: 48, ease: 520, label: "wide ¾", ms: 980 },
-  charge: { zoom: 1.62, x: 38, y: 46, ease: 220, label: "push-in", ms: 320 },
-  impact: { zoom: 2.5, x: 50, y: 44, ease: 0, label: "tip-clash CU", ms: 760 },
-  pass: { zoom: 1.85, x: 50, y: 46, ease: 0, label: "pass flash", ms: 150 },
-  hold: { zoom: 1.62, x: 52, y: 48, ease: 0, label: "hold flash", ms: 170 },
-  aftermath: { zoom: 1.36, x: 50, y: 50, ease: 780, label: "medium-wide", ms: 1680 },
+  standoff: { zoom: 1.08, x: 50, y: 50, ease: 900, easeName: "track", label: "wide hold", ms: 1200, from: { zoom: 1.02, x: 46, y: 52 } },
+  windup: { zoom: 1.26, x: 44, y: 46, ease: 900, easeName: "push", label: "wide ¾ push", ms: 1500, from: { zoom: 1.08, x: 50, y: 50 } },
+  charge: { zoom: 1.7, x: 36, y: 46, ease: 280, easeName: "whip", label: "push-in", ms: 640, from: { zoom: 1.22, x: 48, y: 48 } },
+  impact: { zoom: 2.45, x: 50, y: 44, ease: 0, label: "tip-clash CU", ms: 920 },
+  pass: { zoom: 1.8, x: 56, y: 46, ease: 0, label: "pass flash", ms: 220 },
+  hold: { zoom: 1.5, x: 52, y: 48, ease: 0, label: "hold", ms: 480 },
+  aftermath: { zoom: 1.14, x: 50, y: 52, ease: 1100, easeName: "pull", label: "medium-wide", ms: 2100, from: { zoom: 1.4, x: 50, y: 48 } },
 };
 
 const ORDER = ["standoff", "windup", "charge", "impact", "pass", "hold", "aftermath"];
-/** Layered Vanguard shot list. ~10s. Yun stays screen-left, the vanguard screen-right. */
+/** Layered Vanguard shot list. Yun stays screen-left, the vanguard screen-right. */
+const LAYER_BEATS = SHOTS.map((shot) => shot.id);
+const LAYER_LABELS = Object.fromEntries(SHOTS.map((shot) => [shot.id, shot.title]));
 const EASE = {
   track: "cubic-bezier(0.25, 0.1, 0.25, 1)",
   push: "cubic-bezier(0.22, 0.7, 0.2, 1)",
   whip: "cubic-bezier(0.55, 0.05, 0.25, 1)",
   pull: "cubic-bezier(0.16, 0.84, 0.3, 1)",
   cut: "linear",
-};
-const LAYER_CAMERAS = {
-  approach: {
-    size: "wide",
-    angle: "frontal",
-    move: "slow track",
-    easeName: "track",
-    from: { zoom: 1.06, x: 44, y: 54 },
-    zoom: 1.14, x: 56, y: 52,
-    ease: 1550,
-    ms: 1700,
-    label: "establishing wide · frontal · slow track",
-  },
-  windup: {
-    size: "CU",
-    angle: "low, Yun",
-    move: "hard cut, hold",
-    easeName: "cut",
-    zoom: 1, x: 50, y: 50,
-    ease: 0,
-    ms: 1000,
-    file: "angle-low.png",
-    label: "face CU · low angle · hold",
-  },
-  feint: {
-    size: "medium two-shot",
-    angle: "frontal",
-    move: "push-in",
-    easeName: "push",
-    from: CAMERA_FIT.feint.from,
-    zoom: CAMERA_FIT.feint.zoom, x: CAMERA_FIT.feint.x, y: CAMERA_FIT.feint.y,
-    ease: 900,
-    ms: 1200,
-    label: "medium two-shot · frontal · push-in",
-  },
-  ots: {
-    size: "OTS",
-    angle: "behind Yun",
-    move: "hard cut",
-    easeName: "cut",
-    zoom: 1, x: 50, y: 50,
-    ease: 0,
-    ms: 1200,
-    file: "angle-ots.png",
-    label: "over-shoulder · reverse · cut",
-  },
-  exchange: {
-    size: "medium two-shot",
-    angle: "frontal",
-    move: "whip-pan",
-    easeName: "whip",
-    from: CAMERA_FIT.exchange.from,
-    zoom: CAMERA_FIT.exchange.zoom, x: CAMERA_FIT.exchange.x, y: CAMERA_FIT.exchange.y,
-    ease: 220,
-    ms: 1000,
-    label: "medium two-shot · frontal · whip-pan",
-  },
-  impact: {
-    size: "CU",
-    angle: "frontal, blades",
-    move: "hold, gentle shake",
-    easeName: "cut",
-    zoom: 1, x: 50, y: 50,
-    ease: 0,
-    ms: 1600,
-    file: "angle-blades.png",
-    shake: true,
-    label: "blade CU · frontal · hold",
-  },
-  follow: {
-    size: "medium to wide",
-    angle: "frontal",
-    move: "pull-back",
-    easeName: "pull",
-    from: CAMERA_FIT.follow.from,
-    zoom: CAMERA_FIT.follow.zoom, x: CAMERA_FIT.follow.x, y: CAMERA_FIT.follow.y,
-    ease: 1100,
-    ms: 1400,
-    label: "pull-back · frontal · to wide",
-  },
-  aftermath: {
-    size: "wide",
-    angle: "frontal",
-    move: "settle",
-    easeName: "pull",
-    from: { zoom: 1.08, x: 50, y: 54 },
-    zoom: 1.02, x: 50, y: 56,
-    ease: 700,
-    ms: 900,
-    label: "wide · frontal · settle",
-  },
-};
-const LAYER_BEATS = Object.keys(LAYER_CAMERAS);
-const LAYER_LABELS = {
-  approach: "Approach",
-  windup: "Wind-up",
-  feint: "Feint",
-  ots: "Reverse",
-  exchange: "Exchange",
-  impact: "Impact",
-  follow: "Follow",
-  aftermath: "Aftermath",
 };
 const LABELS = {
   standoff: "Standoff",
@@ -194,7 +96,10 @@ function beatPath(item, name) {
 }
 
 function cameraFor(name) {
-  if (layered && design.cutout && LAYER_CAMERAS[name]) return { ...LAYER_CAMERAS[name] };
+  if (layered && design.cutout) {
+    const shot = SHOTS.find((item) => item.id === name);
+    if (shot) return shot;
+  }
   return { ...CAMERAS[name], ...(design.focus?.[name] || {}) };
 }
 
@@ -215,6 +120,12 @@ function applyCamera(name) {
   const token = ++camToken;
   stage.dataset.move = cam.easeName || "";
   camera.style.setProperty("--cam-ease", EASE[cam.easeName] || EASE.push);
+  if (cam.camera) {
+    stage.dataset.cut = "hard";
+    camera.style.setProperty("--cam-ms", "0ms");
+    writeCam(camera, sampleCamera(cam, 0));
+    return cam;
+  }
   if (!cam.from) {
     stage.dataset.cut = cam.ease ? "ease" : "hard";
     camera.style.setProperty("--cam-ms", `${cam.ease || 0}ms`);
@@ -237,11 +148,6 @@ function applyCamera(name) {
   return cam;
 }
 
-function smoother(u) {
-  const t = Math.min(1, Math.max(0, u));
-  return t * t * (3 - 2 * t);
-}
-
 function idleLife(who, now, name) {
   const t = now / 1000;
   const quiet = name === "aftermath" || name === "approach";
@@ -257,35 +163,6 @@ function idleLife(who, now, name) {
     y: Math.sin(t * 1.9 * slow + 2.15) * 2.2 * amp,
     rot: Math.sin(t * 1.1 * slow + 1.35) * 0.45 * amp,
   };
-}
-
-/** Beat offset for a cutout. Zero at the cut so the new PNG does not slide in. */
-function beatPair(name, who, u) {
-  const dir = who === "hero" ? 1 : -1;
-  const reach = who === "hero" ? 1 : 0.86;
-  if (name === "approach") {
-    const stepA = smoother(u / 0.4);
-    const stepB = smoother((u - 0.46) / 0.46);
-    const forward = 0.48 * stepA + 0.52 * stepB;
-    return {
-      x: dir * 8 * reach * forward,
-      y: -Math.sin(Math.min(1, u) * Math.PI * 2) * 1,
-      rot: dir * -0.35 * forward,
-    };
-  }
-  if (name === "aftermath" || name === "feint" || name === "exchange" || name === "follow") return {};
-  return {};
-}
-
-function platePose(name, u, elapsed, now) {
-  const t = now / 1000;
-  const breathY = Math.sin(t * 1.45) * 1.2;
-  if (name === "windup") return { y: breathY * 0.35, sx: 1, sy: 1 };
-  if (name === "impact") {
-    if (elapsed < 380) return { x: 0, y: 0, rot: 0, sx: 1, sy: 1 };
-    return { y: breathY * 0.35, sx: 1, sy: 1 };
-  }
-  return { y: breathY, rot: Math.sin(t * 0.75) * 0.12, sx: 1 + Math.sin(t * 1.45) * 0.003, sy: 1 + Math.sin(t * 1.45) * 0.003 };
 }
 
 function parallaxShift() {
@@ -369,27 +246,28 @@ function seat(el, shadow, src, slot) {
   el.classList.add("placed");
   bindSeat(el);
   const apply = () => {
-    const anchor = anchorFor(relOf(src));
+    const rel = relOf(src);
     const parent = el.parentElement;
     const pw = parent?.clientWidth || 0;
     const ph = parent?.clientHeight || 0;
-    const ready = el.complete && el.naturalWidth > 0 && el.src.includes(relOf(src).split("/").pop());
+    const ready = el.complete && el.naturalWidth > 0 && el.src.includes(rel.split("/").pop());
+    const box = footStyle(
+      rel,
+      slot,
+      ready ? pw : 0,
+      ready ? ph : 0,
+      ready ? el.naturalWidth : 0,
+      ready ? el.naturalHeight : 0,
+    );
     el.style.inset = "auto";
     el.style.top = "auto";
     el.style.right = "auto";
     el.style.width = "auto";
     el.style.maxWidth = "none";
-    el.style.height = `${slot.h}%`;
-    el.style.bottom = `${(100 - slot.foot).toFixed(2)}%`;
-    el.style.transformOrigin = `${(anchor * 100).toFixed(2)}% 100%`;
-    if (ready && pw && ph) {
-      const spriteH = (slot.h / 100) * ph;
-      const spriteW = spriteH * (el.naturalWidth / el.naturalHeight);
-      const footX = (slot.x / 100) * pw;
-      el.style.left = `${(footX - anchor * spriteW).toFixed(2)}px`;
-    } else {
-      el.style.left = `${slot.x}%`;
-    }
+    el.style.height = box.height;
+    el.style.bottom = box.bottom;
+    el.style.left = box.left;
+    el.style.transformOrigin = box.origin;
   };
   el._seat = apply;
   apply();
@@ -411,19 +289,21 @@ function seatFx(fx, frame, layout) {
     fx.classList.remove("bridged");
     return;
   }
+  const box = fxStyle(layout);
+  if (!box) {
+    fx.hidden = true;
+    fx.classList.remove("bridged");
+    return;
+  }
   fx.hidden = false;
   fx.classList.add("bridged");
-  const mid = (layout.hero.x + layout.rival.x) / 2;
-  const span = Math.abs(layout.rival.x - layout.hero.x);
-  const h = (layout.hero.h + layout.rival.h) / 2;
-  const foot = (layout.hero.foot + layout.rival.foot) / 2;
   fx.style.inset = "auto";
   fx.style.right = "auto";
   fx.style.bottom = "auto";
-  fx.style.left = `${mid}%`;
-  fx.style.top = `${(foot - h * 0.46).toFixed(2)}%`;
-  fx.style.width = `${Math.max(16, span * 0.92).toFixed(2)}%`;
-  fx.style.height = `${(h * 0.42).toFixed(2)}%`;
+  fx.style.left = box.left;
+  fx.style.top = box.top;
+  fx.style.width = box.width;
+  fx.style.height = box.height;
   fx.style.transform = "translate(-50%, -50%)";
   fx.style.objectFit = "fill";
 }
@@ -444,8 +324,8 @@ function seatFrame(name, elapsed, dur, frame) {
   });
   seat(hero, shadowHero, frame.hero, layout?.hero);
   seat(rival, shadowRival, frame.rival, layout?.rival);
-  if (hero) hero.style.zIndex = name === "ots" ? "2" : "";
-  if (rival) rival.style.zIndex = name === "ots" ? "1" : "";
+  if (hero) hero.style.zIndex = name === "ots" ? "3" : "";
+  if (rival) rival.style.zIndex = name === "ots" ? "2" : "";
   seatFx($("layer-fx"), frame, layout);
 }
 
@@ -485,7 +365,7 @@ function applyResolved(frame, read) {
   fx.hidden = !frame.fx;
   fx.classList.remove("full");
   if (frame.fx) fx.src = frame.fx;
-  $("status").textContent = `${design.title} · layered · ${read} · ${frame.heroId} · ${frame.pose}`;
+  $("status").textContent = `${design.title} · layered · ${read} · ${frame.heroId} · ${frame.phase || frame.pose}`;
 }
 
 function beginBody(name, cam, read) {
@@ -495,28 +375,30 @@ function beginBody(name, cam, read) {
   const started = performance.now();
   const dur = cam.ms || 1000;
   const poseRead = read || `${name} · ${cam.label}`;
+  let hitArmed = false;
   const tick = (now) => {
     if (token !== bodyToken) return;
     const elapsed = now - started;
-    const u = Math.min(1, elapsed / dur);
     const frame = resolveFrame(name, elapsed, heroId);
     applyResolved(frame, poseRead);
     seatFrame(name, elapsed, dur, frame);
+    if (cam.camera) writeCam($("camera"), sampleCamera(cam, Math.min(elapsed, dur)));
+    $("stage").dataset.phase = frame?.phase || "";
+    if (frame?.phase === "stop") {
+      if (!hitArmed && !reduceMotion.matches) {
+        hitArmed = true;
+        restart($("stage"), "quake-bump");
+      }
+    } else hitArmed = false;
     if (!reduceMotion.matches && frame && !frame.flash) {
       setCues(name, elapsed, dur);
       const shift = parallaxShift();
+      const scale = lifeScale(frame.phase);
       for (const who of ["hero", "rival"]) {
         const life = idleLife(who, now, name);
-        const move = beatPair(name, who, u);
-        const depth = who === "hero" ? 1 : 0.82;
-        writePose($(`layer-${who}`), {
-          x: (move.x || 0) + shift.x * depth,
-          y: (move.y || 0) + life.y + shift.y * depth,
-          rot: (move.rot || 0) + life.rot,
-          skew: move.skew || 0,
-          blur: move.blur || 0,
-          sx: move.sx || 1,
-        });
+        life.y *= scale;
+        life.rot *= scale;
+        writePose($(`layer-${who}`), poseAt(frame, who, life, shift));
       }
     }
     requestAnimationFrame(tick);
@@ -713,18 +595,6 @@ function preload(item) {
   for (const file of ["bg.png", "fx-impact.png"]) {
     const image = new Image();
     image.src = `${CUTOUT}${file}`;
-  }
-  for (const name of LAYER_BEATS) {
-    const cam = LAYER_CAMERAS[name];
-    if (cam.file) {
-      const image = new Image();
-      image.src = `${CUTOUT}${cam.file}`;
-      continue;
-    }
-    for (const who of ["hero", "rival"]) {
-      const image = new Image();
-      image.src = `${CUTOUT}${who}-${name}.png`;
-    }
   }
   for (const src of castFiles(heroId)) {
     const image = new Image();
