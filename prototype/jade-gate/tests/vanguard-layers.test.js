@@ -24,54 +24,44 @@ test("swapping the hero keeps the background and points at that character's laye
   assert.equal(lu.heroId, "lu-zhishen");
 });
 
-test("a smear sits between keys, and impact holds the slash through hit-stop", () => {
-  const wind = resolveFrame("feint", 0);
-  assert.equal(wind.phase, "wind");
-  assert.match(wind.hero, /motion-wind\.png/);
-  const smear = resolveFrame("feint", 460);
-  assert.equal(smear.phase, "smear");
-  assert.ok(smear.motion.hero.smear > 0.8, smear.motion.hero.smear);
-  assert.notEqual(smear.motion.hero.from, smear.motion.hero.to);
-  assert.equal(wind.bg, smear.bg);
-  assert.doesNotMatch(smear.hero, /-s\.png/);
-  assert.match(resolveFrame("impact", 0).flash, /pose-impact-white/);
-  assert.match(resolveFrame("impact", 100).flash, /pose-impact-black/);
-  const slash = resolveFrame("impact", 240);
-  const held = resolveFrame("impact", 400);
-  assert.equal(slash.flash, "");
-  assert.equal(slash.phase, "stop");
-  assert.equal(slash.heroPose, held.heroPose);
-  assert.equal(slash.motion.hero.x, held.motion.hero.x);
-  assert.equal(slash.motion.hero.rot, held.motion.hero.rot);
-  assert.notEqual(resolveFrame("impact", 1200).heroPose, slash.heroPose);
+test("each tick is its own drawing, with no smear plate and no impact flash", () => {
+  const first = resolveFrame("feint", 0);
+  const next = resolveFrame("feint", 125);
+  assert.equal(first.phase, "draw");
+  assert.equal(first.flash, "");
+  assert.notEqual(first.heroPose, next.heroPose);
+  assert.equal(first.motion.hero.from, first.motion.hero.to);
+  assert.equal(first.motion.hero.smear, 0);
+  assert.equal(first.motion.hero.rot, 0);
+  assert.doesNotMatch(first.hero, /-s\.png/);
+  assert.equal(resolveFrame("impact", 0).flash, "");
+  assert.equal(resolveFrame("impact", 100).flash, "");
+  assert.notEqual(resolveFrame("impact", 0).heroPose, resolveFrame("impact", 600).heroPose);
+  assert.notEqual(resolveFrame("impact", 0).rivalPose, resolveFrame("impact", 600).rivalPose);
 });
 
-test("the clash is a longer phrase with a continuous arc between poses", () => {
-  assert.ok(totalMs() > 16000, totalMs());
-  assert.ok(totalMs() < 19000, totalMs());
-  const early = sampleBeat("windup", 1000);
-  const later = sampleBeat("windup", 1400);
-  assert.equal(early.hero.pose, "motion-wind");
-  assert.equal(later.hero.pose, "motion-wind");
-  assert.notEqual(early.hero.rot, later.hero.rot);
-  let stops = 0;
-  for (const id of ["feint", "exchange", "counter", "reprise"]) {
-    let peaked = false;
-    let prev = "";
-    for (let at = 0; at < 2000; at += 42) {
-      const sample = sampleBeat(id, at);
-      if (sample.hero.smear > 0.8) peaked = true;
-      if (sample.phase === "stop" && prev !== "stop") stops += 1;
-      prev = sample.phase;
+test("both fighters are drawn across a phrase long enough to play", () => {
+  assert.ok(totalMs() > 15000, totalMs());
+  assert.ok(totalMs() < 25000, totalMs());
+  const heroes = new Set();
+  const rivals = new Set();
+  for (const id of Object.keys(FRAMES)) {
+    for (const frame of FRAMES[id]) {
+      heroes.add(frame.hero);
+      rivals.add(frame.rival);
+      assert.equal(frame.hero.startsWith("wc"), false);
+      assert.equal(frame.flash, null);
     }
-    assert.equal(peaked, true, id);
   }
-  assert.ok(stops >= 4, stops);
-  const used = new Set(FRAMES.reprise.map((frame) => frame.hero));
-  assert.equal(used.has("wc1"), false);
-  assert.equal(used.has("motion-cut"), true);
+  assert.ok(heroes.size >= 100, heroes.size);
+  assert.ok(rivals.size >= 100, rivals.size);
+  const coil = sampleBeat("windup", 400);
+  const later = sampleBeat("windup", 900);
+  assert.notEqual(coil.hero.pose, later.hero.pose);
+  assert.notEqual(coil.rival.pose, later.rival.pose);
   assert.equal(SHOTS.map((shot) => shot.id).includes("counter"), true);
   assert.equal(SHOTS.map((shot) => shot.id).includes("reprise"), true);
+  assert.equal(SHOTS.some((shot) => shot.shake), false);
 });
 
 test("every manifest layer for the default cast is a file on disk", () => {

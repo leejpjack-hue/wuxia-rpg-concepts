@@ -14,6 +14,6 @@ Keep the same stack. The shot list adds a counter and a second hit. Each timed f
 - Wind-up, the reverse, and the blade close-up get their own empty backgrounds, because those shots are different angles. Characters for those angles are their own layers.
 - White and black impact frames stay full-frame. They are exposure flashes, not a scene to recast.
 - Default hero id is `zhao-yun`. A debug query `?hero=lu-zhishen` points the hero role at Lu Zhishen stand-in layers. Backgrounds stay. That switch is not the default view.
-- In-betweens are the interpolated body arc between two pose keys, plus a smear crossfade on the pose change. Holding a drawing for more ticks is not the in-between. Zhao’s fight poses are the keyed `motion-*` cutouts. The muddy `wc` / `lowlow` / `ots` / `cucu` plates are not used in this cut.
+- In-betweens are separate cutouts, eight a second, for both fighters. A frame is one drawing. The muddy `wc` / `lowlow` / `ots` / `cucu` plates are not used in this cut.
 
 No new compositor. Baked mode keeps the same seven plates, with a longer camera move on the four fights that have no cutouts.

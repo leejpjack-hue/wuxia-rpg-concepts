@@ -231,7 +231,7 @@ function paintActor(mainId, smearId, shadowId, motion, srcFrom, srcTo, slot) {
 function paintLight(slot, motion) {
   const light = $("layer-light");
   if (!light) return;
-  if (!slot || !motion) {
+  if (!slot || !motion || !motion.light) {
     light.hidden = true;
     return;
   }

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { FRAMES } from "../capscreens-fight-designs/vanguard-cast.mjs";
-import { ANCHOR } from "../capscreens-fight-designs/vanguard-anchor.mjs";
+import { anchorFor } from "../capscreens-fight-designs/vanguard-place.mjs";
 import { SHOTS } from "../capscreens-fight-designs/vanguard-shots.mjs";
 import {
   BEAT_PLACE,
@@ -25,7 +25,7 @@ function pngSize(rel) {
 function reach(rel, hPct) {
   const { w, h } = pngSize(rel);
   const sw = hPct * (1080 / 1920) * (w / h);
-  const anchor = ANCHOR[rel];
+  const anchor = anchorFor(rel);
   assert.equal(typeof anchor, "number", rel);
   return { left: anchor * sw, right: (1 - anchor) * sw };
 }
@@ -42,7 +42,7 @@ function placed(beat, heroKey, rivalKey, elapsed = 0, dur = 1000) {
   };
 }
 
-const FIGHT = ["feint", "exchange", "impact", "follow", "counter", "reprise"];
+const FIGHT = ["windup", "feint", "exchange", "impact", "follow", "counter", "reprise"];
 
 test("approach starts apart and closes onto the courtyard", () => {
   const ms = SHOTS.find((shot) => shot.id === "approach").ms;
@@ -88,10 +88,10 @@ test("the reverse and the settle stay engaged without leaving the frame", () => 
     assert.ok(row.edgeGap >= 2 && row.edgeGap <= 6, `aftermath ${row.edgeGap.toFixed(2)}`);
     assert.ok(row.left > 4 && row.right < 96);
   }
-  const wind = layoutFor("windup", 0, 1000);
-  assert.equal(wind.rival, null);
-  assert.ok(wind.hero.foot >= 88 && wind.hero.foot <= 94);
-  assert.ok(wind.hero.x > 30 && wind.hero.x < 60);
+  const wind = layoutFor("windup", 0, 1000, { hero: "d019", rival: "d019" });
+  assert.ok(wind.hero && wind.rival);
+  assert.ok(wind.hero.foot >= 82 && wind.hero.foot <= 94);
+  assert.equal(wind.hero.foot, wind.rival.foot);
 });
 
 test("camera windows keep the ground line and the fighters inside the shot", () => {

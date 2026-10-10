@@ -1310,7 +1310,7 @@ function paintClash(elapsed) {
   paintClashSmear("clash-hero", "clash-hero-smear", frame.motion?.hero, frame.heroFrom, frame.heroTo, layout?.hero, frame, "hero", pw, ph);
   paintClashSmear("clash-rival", "clash-rival-smear", frame.motion?.rival, frame.rivalFrom, frame.rivalTo, layout?.rival, frame, "rival", pw, ph);
   const light = $("clash-light");
-  if (light && layout?.hero && frame.motion?.hero) {
+  if (light && layout?.hero && frame.motion?.hero?.light) {
     const body = frame.motion.hero;
     light.hidden = false;
     light.style.left = `${layout.hero.x + (body.smear || 0) * 6}%`;

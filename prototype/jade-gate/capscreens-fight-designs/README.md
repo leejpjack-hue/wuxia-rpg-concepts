@@ -17,22 +17,22 @@ Baked playback also opens on the shot standoff when that plate exists, and flash
 
 ## Vanguard shot list
 
-About 18.4 seconds. Zhao Yun stays screen-left and the vanguard screen-right, on the courtyard stones at close range. The body arc between two poses is interpolated every frame. A pose change is a crossfade with skew and blur, then a hit-stop freezes that pose. Zhao’s four fight drawings are `motion-guard`, `motion-wind`, `motion-lunge`, and `motion-cut` — crisp keyed cutouts, not the grey-fringed `wc` plates.
+About 16.6 seconds, eight drawings a second. Zhao Yun stays screen-left and the vanguard screen-right, on the courtyard stones at close range. Every frame is its own cutout (`d000`…): the sword, the guandao, the hair, and the cloth are drawn, not rotated on a held plate. In-betweens are warped from the neighboring drawing only, so two poses are never shown at once. No impact flash, no hit-stop, no smear ghost.
 
-| Beat | Time | Size | Angle | Move |
-| --- | --- | --- | --- | --- |
-| approach | 2.4s | wide | frontal | slow track across the arena |
-| windup | 1.8s | close-up | low, on Zhao Yun | push-in through the coil |
-| feint | 2.0s | medium two-shot | frontal | push-in |
-| ots | 1.6s | medium two-shot | frontal, rival lead | drift |
-| exchange | 1.9s | medium two-shot | frontal | whip-pan into the strike |
-| impact | 1.5s | close two-shot | frontal, stone | punch-in, then hit-stop |
-| counter | 1.9s | medium two-shot | frontal, rival leads | push from the rival |
-| reprise | 2.0s | close two-shot | frontal, stone floor | punch-in, second hit-stop |
-| follow | 1.6s | medium to wide | frontal | pull-back |
-| aftermath | 1.7s | wide | frontal | settle |
+| Beat | Time | What moves |
+| --- | --- | --- |
+| approach | 2.4s | both weigh in and step |
+| windup | 2.4s | Zhao coils, Guan raises the guandao |
+| feint | 2.4s | Zhao’s first cut |
+| ots | 1.0s | Guan’s parry |
+| exchange | 1.8s | Guan sweeps |
+| impact | 1.3s | the bind on the stones |
+| counter | 1.5s | Zhao presses |
+| reprise | 1.8s | the second cut |
+| follow | 1.3s | both recover |
+| aftermath | 1.0s | both settle |
 
-Layered playback reads `vanguard-phrase.mjs`. Feet stay on the marks in `vanguard-place.mjs`. The gate background stays `bg.png`. The coil uses `bg-low.png`. White and black impact frames stay full-frame flashes, then the cut pose is held. A warm light follows Zhao’s lead shoulder. `?hero=lu-zhishen` points the hero role at Lu Zhishen’s stand-in and does not change the backgrounds or the foot marks. The default view is Zhao Yun. The Layered / Baked control falls back to the v1 plates.
+Layered playback reads `vanguard-phrase.mjs` and the drawings in `vanguard-draw.mjs`. Feet stay on the marks in `vanguard-place.mjs`. The gate background stays `bg.png` for the whole phrase. `?hero=lu-zhishen` points the hero role at Lu Zhishen’s stand-in and does not change the backgrounds or the foot marks. The default view is Zhao Yun. The Layered / Baked control falls back to the v1 plates.
 
 ## The five designs
 

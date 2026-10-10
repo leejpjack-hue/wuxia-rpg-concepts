@@ -1,5 +1,6 @@
 import { ANCHOR } from "./vanguard-anchor.mjs";
 import { FRAMES } from "./vanguard-cast.mjs";
+import { DRAW } from "./vanguard-draw.mjs";
 import { SPRITE } from "./vanguard-metrics.mjs";
 import { SHOTS } from "./vanguard-shots.mjs";
 
@@ -18,10 +19,10 @@ export const BEAT_PLACE = {
     rival: { x0: 72, x1: 58 },
   },
   windup: {
-    foot: 92,
-    h: 78,
-    hero: { x: 46 },
-    rival: null,
+    foot: 86,
+    h: 64,
+    hero: { x: 40 },
+    rival: { x: 60 },
   },
   feint: {
     foot: 84,
@@ -73,7 +74,7 @@ export const BEAT_PLACE = {
   },
 };
 
-const PAIRED = new Set(["feint", "ots", "exchange", "impact", "follow", "counter", "reprise", "aftermath"]);
+const PAIRED = new Set(["windup", "feint", "ots", "exchange", "impact", "follow", "counter", "reprise", "aftermath"]);
 
 function boundsFor(beat) {
   if (beat === "ots") return { edgeMin: 4, edgeMax: 96, gap: -1 };
@@ -81,12 +82,26 @@ function boundsFor(beat) {
   return { edgeMin: 8, edgeMax: 92, gap: -1 };
 }
 
+function metrics(rel) {
+  if (SPRITE[rel] && ANCHOR[rel] != null) {
+    return { w: SPRITE[rel][0], h: SPRITE[rel][1], anchor: ANCHOR[rel] };
+  }
+  const id = rel.split("/").pop()?.replace(".png", "");
+  if (rel.includes("/zhao-yun/d")) {
+    const row = DRAW.zhao.frames[id];
+    if (row) return { w: row.w, h: DRAW.zhao.h, anchor: row.anchor };
+  }
+  if (rel.includes("/vanguard/d")) {
+    const row = DRAW.guan.frames[id];
+    if (row) return { w: row.w, h: DRAW.guan.h, anchor: row.anchor };
+  }
+  return { w: 1, h: 2, anchor: ANCHOR[rel] ?? 0.5 };
+}
+
 function reach(who, pose, hPct) {
   const rel = `layers/${who}/${pose}.png`;
-  const size = SPRITE[rel];
-  const anchor = ANCHOR[rel] ?? 0.5;
-  const aspect = size ? size[0] / size[1] : 0.5;
-  const sw = hPct * (1080 / 1920) * aspect;
+  const { w, h, anchor } = metrics(rel);
+  const sw = hPct * (1080 / 1920) * (w / h);
   return { left: anchor * sw, right: (1 - anchor) * sw };
 }
 
@@ -145,7 +160,7 @@ export const CAMERA_FIT = Object.fromEntries(
 );
 
 export function anchorFor(relPath) {
-  return ANCHOR[relPath] ?? 0.5;
+  return metrics(relPath).anchor;
 }
 
 export function layoutFor(beat, elapsed, dur = 1000, poses = {}) {

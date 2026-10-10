@@ -1,32 +1,31 @@
 import { BEAT_MS, TICK } from "./vanguard-phrase.mjs";
 
-/** Camera keys use u in 0..1 of the beat. `at` is filled once the tick length is known. */
+/** The camera follows the phrase. It does not replace the drawings. */
 const META = [
   {
     id: "approach",
     title: "Approach",
     size: "wide",
     angle: "frontal",
-    move: "slow track",
+    move: "drift",
     easeName: "track",
-    label: "establishing wide · frontal · slow track",
+    label: "courtyard · both weigh in",
     camera: [
-      { u: 0, zoom: 1.04, x: 42, y: 56 },
-      { u: 1, zoom: 1.14, x: 57, y: 54 },
+      { u: 0, zoom: 1.02, x: 50, y: 56 },
+      { u: 1, zoom: 1.06, x: 50, y: 55 },
     ],
   },
   {
     id: "windup",
     title: "Coil",
-    size: "CU",
-    angle: "low, Yun",
-    move: "push-in",
-    easeName: "push",
-    label: "low angle · push-in · coil",
+    size: "medium two-shot",
+    angle: "frontal",
+    move: "drift",
+    easeName: "track",
+    label: "stones · Zhao coils",
     camera: [
-      { u: 0, zoom: 1, x: 48, y: 58 },
-      { u: 0.72, zoom: 1.12, x: 46, y: 54 },
-      { u: 1, zoom: 1.16, x: 45, y: 52 },
+      { u: 0, zoom: 1.06, x: 48, y: 55 },
+      { u: 1, zoom: 1.1, x: 46, y: 54 },
     ],
   },
   {
@@ -34,25 +33,25 @@ const META = [
     title: "Feint",
     size: "medium two-shot",
     angle: "frontal",
-    move: "push-in",
+    move: "ease in",
     easeName: "push",
-    label: "medium two-shot · frontal · push-in",
+    label: "stones · the first cut",
     camera: [
-      { u: 0, zoom: 1.08, x: 48, y: 54 },
-      { u: 1, zoom: 1.24, x: 50, y: 52 },
+      { u: 0, zoom: 1.06, x: 50, y: 55 },
+      { u: 1, zoom: 1.12, x: 50, y: 54 },
     ],
   },
   {
     id: "ots",
     title: "Reverse",
     size: "medium two-shot",
-    angle: "frontal, rival lead",
+    angle: "frontal",
     move: "drift",
     easeName: "track",
-    label: "reverse angle · drift · stone",
+    label: "stones · the parry",
     camera: [
-      { u: 0, zoom: 1, x: 44, y: 54 },
-      { u: 1, zoom: 1.08, x: 56, y: 52 },
+      { u: 0, zoom: 1.08, x: 52, y: 55 },
+      { u: 1, zoom: 1.1, x: 54, y: 54 },
     ],
   },
   {
@@ -60,13 +59,12 @@ const META = [
     title: "Exchange",
     size: "medium two-shot",
     angle: "frontal",
-    move: "whip-pan",
-    easeName: "whip",
-    label: "medium two-shot · frontal · whip-pan",
+    move: "drift",
+    easeName: "track",
+    label: "stones · Guan sweeps",
     camera: [
-      { u: 0, zoom: 1.1, x: 44, y: 54 },
-      { u: 0.32, zoom: 1.22, x: 56, y: 52 },
-      { u: 1, zoom: 1.18, x: 54, y: 52 },
+      { u: 0, zoom: 1.08, x: 52, y: 55 },
+      { u: 1, zoom: 1.12, x: 48, y: 54 },
     ],
   },
   {
@@ -74,28 +72,25 @@ const META = [
     title: "Impact",
     size: "close two-shot",
     angle: "frontal, stone",
-    move: "punch-in, hit-stop",
+    move: "ease in",
     easeName: "push",
-    label: "stone floor · punch-in · hit-stop",
-    shake: true,
+    label: "stones · the bind",
     camera: [
-      { u: 0, zoom: 1.02, x: 50, y: 52 },
-      { u: 0.14, zoom: 1.14, x: 50, y: 50 },
-      { u: 0.46, zoom: 1.14, x: 50, y: 50 },
-      { u: 1, zoom: 1.06, x: 50, y: 52 },
+      { u: 0, zoom: 1.08, x: 50, y: 54 },
+      { u: 1, zoom: 1.14, x: 50, y: 53 },
     ],
   },
   {
     id: "counter",
     title: "Counter",
     size: "medium two-shot",
-    angle: "frontal, rival lead",
-    move: "push from the rival",
-    easeName: "push",
-    label: "medium two-shot · rival lead · push",
+    angle: "frontal",
+    move: "drift",
+    easeName: "track",
+    label: "stones · the press",
     camera: [
-      { u: 0, zoom: 1.08, x: 56, y: 54 },
-      { u: 1, zoom: 1.24, x: 48, y: 52 },
+      { u: 0, zoom: 1.1, x: 50, y: 54 },
+      { u: 1, zoom: 1.14, x: 48, y: 54 },
     ],
   },
   {
@@ -103,14 +98,12 @@ const META = [
     title: "Reprise",
     size: "close two-shot",
     angle: "frontal, stone",
-    move: "punch-in, hit-stop",
+    move: "ease in",
     easeName: "push",
-    label: "close two-shot · stone floor · second hit",
+    label: "stones · the second cut",
     camera: [
-      { u: 0, zoom: 1.12, x: 50, y: 54 },
-      { u: 0.22, zoom: 1.28, x: 50, y: 52 },
-      { u: 0.48, zoom: 1.28, x: 50, y: 52 },
-      { u: 1, zoom: 1.16, x: 50, y: 54 },
+      { u: 0, zoom: 1.1, x: 50, y: 54 },
+      { u: 1, zoom: 1.16, x: 50, y: 53 },
     ],
   },
   {
@@ -118,12 +111,12 @@ const META = [
     title: "Follow",
     size: "medium to wide",
     angle: "frontal",
-    move: "pull-back",
+    move: "ease out",
     easeName: "pull",
-    label: "pull-back · frontal · to wide",
+    label: "stones · the recovery",
     camera: [
-      { u: 0, zoom: 1.22, x: 50, y: 52 },
-      { u: 1, zoom: 1.05, x: 50, y: 56 },
+      { u: 0, zoom: 1.14, x: 50, y: 54 },
+      { u: 1, zoom: 1.06, x: 50, y: 56 },
     ],
   },
   {
@@ -133,9 +126,9 @@ const META = [
     angle: "frontal",
     move: "settle",
     easeName: "pull",
-    label: "wide · frontal · settle",
+    label: "wide · both settle",
     camera: [
-      { u: 0, zoom: 1.08, x: 50, y: 54 },
+      { u: 0, zoom: 1.06, x: 50, y: 55 },
       { u: 1, zoom: 1.02, x: 50, y: 56 },
     ],
   },
@@ -144,11 +137,6 @@ const META = [
 function smooth(u) {
   const t = Math.min(1, Math.max(0, u));
   return t * t * (3 - 2 * t);
-}
-
-function whip(u) {
-  const t = Math.min(1, Math.max(0, u));
-  return 1 - (1 - t) ** 3;
 }
 
 export const SHOTS = META.map((meta) => {
@@ -189,7 +177,7 @@ export function sampleCamera(shot, local) {
     if (local > b.at) continue;
     const span = Math.max(1, b.at - a.at);
     const u = (local - a.at) / span;
-    const e = shot.easeName === "whip" ? whip(u) : smooth(u);
+    const e = smooth(u);
     return {
       zoom: a.zoom + (b.zoom - a.zoom) * e,
       x: a.x + (b.x - a.x) * e,
