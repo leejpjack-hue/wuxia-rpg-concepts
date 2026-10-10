@@ -186,11 +186,60 @@ function writePose(el, pose) {
   const sy = pose.sy || 1;
   const skew = pose.skew || 0;
   el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) skewX(${skew.toFixed(2)}deg) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+  el.style.opacity = pose.opacity == null ? "" : String(pose.opacity);
   const filters = [];
   if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
   if (pose.contrast) filters.push(`contrast(${pose.contrast})`);
   if (pose.brightness) filters.push(`brightness(${pose.brightness})`);
   el.style.filter = filters.join(" ");
+}
+
+function useSrc(el, src) {
+  if (!el || !src) return;
+  const file = src.split("/").pop();
+  if (el.dataset.file !== file) {
+    el.dataset.file = file;
+    el.src = src;
+  }
+}
+
+function paintActor(mainId, smearId, shadowId, motion, srcFrom, srcTo, slot) {
+  const main = $(mainId);
+  const smear = $(smearId);
+  const changing = motion && motion.from !== motion.to && motion.blend > 0.001;
+  useSrc(main, srcFrom || srcTo);
+  seat(main, $(shadowId), srcFrom || srcTo, slot);
+  if (main && motion) {
+    writePose(main, {
+      ...motion,
+      blur: changing ? 0 : motion.blur,
+      skew: changing ? motion.skew * 0.2 : motion.skew,
+      opacity: changing ? 1 - motion.blend : 1,
+    });
+  }
+  if (!smear) return;
+  if (!changing) {
+    smear.hidden = true;
+    smear.style.opacity = "0";
+    return;
+  }
+  useSrc(smear, srcTo);
+  seat(smear, null, srcTo, slot);
+  writePose(smear, { ...motion, opacity: motion.blend });
+}
+
+function paintLight(slot, motion) {
+  const light = $("layer-light");
+  if (!light) return;
+  if (!slot || !motion) {
+    light.hidden = true;
+    return;
+  }
+  const lead = (motion.x || 0) * 0.08 + (motion.smear || 0) * 6;
+  light.hidden = false;
+  light.style.left = `${slot.x + lead}%`;
+  light.style.top = `${(slot.foot - slot.h * 0.52).toFixed(2)}%`;
+  light.style.opacity = String(motion.hold ? 0.55 : 0.22 + (motion.smear || 0) * 0.6);
 }
 
 function setCues(name, elapsed, dur) {
@@ -305,7 +354,7 @@ function seatFx(fx, frame, layout) {
   fx.style.width = box.width;
   fx.style.height = box.height;
   fx.style.transform = "translate(-50%, -50%)";
-  fx.style.objectFit = "fill";
+  fx.style.objectFit = "contain";
 }
 
 function seatFrame(name, elapsed, dur, frame) {
@@ -376,13 +425,22 @@ function beginBody(name, cam, read) {
   const dur = cam.ms || 1000;
   const poseRead = read || `${name} · ${cam.label}`;
   let hitArmed = false;
+  let heldCam = null;
   const tick = (now) => {
     if (token !== bodyToken) return;
     const elapsed = now - started;
     const frame = resolveFrame(name, elapsed, heroId);
     applyResolved(frame, poseRead);
     seatFrame(name, elapsed, dur, frame);
-    if (cam.camera) writeCam($("camera"), sampleCamera(cam, Math.min(elapsed, dur)));
+    if (cam.camera) {
+      if (frame?.phase === "stop") {
+        if (!heldCam) heldCam = sampleCamera(cam, Math.min(elapsed, dur));
+        writeCam($("camera"), heldCam);
+      } else {
+        heldCam = null;
+        writeCam($("camera"), sampleCamera(cam, Math.min(elapsed, dur)));
+      }
+    }
     $("stage").dataset.phase = frame?.phase || "";
     if (frame?.phase === "stop") {
       if (!hitArmed && !reduceMotion.matches) {
@@ -394,12 +452,31 @@ function beginBody(name, cam, read) {
       setCues(name, elapsed, dur);
       const shift = parallaxShift();
       const scale = lifeScale(frame.phase);
+      const layout = layoutFor(name, elapsed, dur, { hero: frame.heroPose, rival: frame.rivalPose });
       for (const who of ["hero", "rival"]) {
+        const motion = frame.motion?.[who];
+        if (!motion) {
+          const smear = $(`layer-${who}-smear`);
+          if (smear) smear.hidden = true;
+          continue;
+        }
         const life = idleLife(who, now, name);
         life.y *= scale;
         life.rot *= scale;
-        writePose($(`layer-${who}`), poseAt(frame, who, life, shift));
+        const posed = poseAt(frame, who, life, shift);
+        const srcFrom = who === "hero" ? frame.heroFrom : frame.rivalFrom;
+        const srcTo = who === "hero" ? frame.heroTo : frame.rivalTo;
+        paintActor(
+          `layer-${who}`,
+          `layer-${who}-smear`,
+          who === "hero" ? "shadow-hero" : "shadow-rival",
+          { ...motion, ...posed },
+          srcFrom,
+          srcTo,
+          layout?.[who],
+        );
       }
+      paintLight(layout?.hero, frame.motion?.hero);
     }
     requestAnimationFrame(tick);
   };

@@ -1199,6 +1199,13 @@ function paintFighter(id, shadowId, src, slot, frame, who, pw, ph, ghost) {
       el.style.opacity = "0.42";
     }
     const filters = [];
+    const motion = frame.motion?.[who];
+    const changing = motion && motion.from !== motion.to && motion.blend > 0.001;
+    if (changing) {
+      pose.blur = 0;
+      pose.skew = (pose.skew || 0) * 0.2;
+      el.style.opacity = String(1 - motion.blend);
+    } else el.style.opacity = "";
     if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
     el.style.filter = filters.join(" ");
     el.style.transform = `translate(${(pose.x || 0).toFixed(2)}px, ${(pose.y || 0).toFixed(2)}px) rotate(${(pose.rot || 0).toFixed(2)}deg) skewX(${(pose.skew || 0).toFixed(2)}deg) scale(${pose.sx || 1})`;
@@ -1211,6 +1218,43 @@ function paintFighter(id, shadowId, src, slot, frame, who, pw, ph, ghost) {
   }
 }
 
+function paintClashSmear(mainId, smearId, motion, srcFrom, srcTo, slot, frame, who, pw, ph) {
+  const smear = $(smearId);
+  const main = $(mainId);
+  if (!smear) return;
+  const changing = motion && motion.from !== motion.to && motion.blend > 0.001 && srcTo && slot;
+  if (!changing) {
+    smear.hidden = true;
+    smear.style.opacity = "0";
+    return;
+  }
+  smear.hidden = false;
+  if (smear.dataset.src !== srcTo) {
+    smear.dataset.src = srcTo;
+    smear.src = srcTo;
+  }
+  const ready = smear.complete && smear.naturalWidth > 0;
+  const box = footStyle(
+    clashRel(srcTo),
+    slot,
+    ready ? pw : 0,
+    ready ? ph : 0,
+    ready ? smear.naturalWidth : 0,
+    ready ? smear.naturalHeight : 0,
+  );
+  smear.style.height = box.height;
+  smear.style.bottom = box.bottom;
+  smear.style.left = box.left;
+  smear.style.transformOrigin = box.origin;
+  const pose = poseAt(frame, who, { y: 0, rot: 0 }, { x: 0, y: 0 });
+  smear.style.opacity = String(motion.blend);
+  const filters = [];
+  if (pose.blur) filters.push(`blur(${pose.blur.toFixed(2)}px)`);
+  smear.style.filter = filters.join(" ");
+  smear.style.transform = `translate(${(pose.x || 0).toFixed(2)}px, ${(pose.y || 0).toFixed(2)}px) rotate(${(pose.rot || 0).toFixed(2)}deg) skewX(${(pose.skew || 0).toFixed(2)}deg) scale(${pose.sx || 1})`;
+  if (main) main.style.opacity = String(1 - motion.blend);
+}
+
 /** Gate Vanguard on the animation page: the layered phrase, not the seven held plates. */
 function paintClash(elapsed) {
   const { shot, local } = sampleShot(Math.max(0, elapsed));
@@ -1218,7 +1262,15 @@ function paintClash(elapsed) {
   const cam = $("clash-cam");
   if (!frame || !cam) return;
   if (!motionReduced()) {
-    const view = sampleCamera(shot, local);
+    let view = sampleCamera(shot, local);
+    if (frame.phase === "stop") {
+      const holdKey = `${shot.id}:${frame.heroPose}`;
+      if (cam.dataset.holdKey !== holdKey) {
+        cam.dataset.holdKey = holdKey;
+        cam.dataset.held = JSON.stringify(view);
+      }
+      view = JSON.parse(cam.dataset.held);
+    } else cam.dataset.holdKey = "";
     cam.style.transformOrigin = `${view.x}% ${view.y}%`;
     cam.style.transform = `scale(${view.zoom})`;
   }
@@ -1233,7 +1285,7 @@ function paintClash(elapsed) {
       }
     }
     if (bg) bg.hidden = true;
-    for (const id of ["clash-hero", "clash-rival", "clash-hero-ghost", "clash-rival-ghost", "clash-fx"]) {
+    for (const id of ["clash-hero", "clash-rival", "clash-hero-smear", "clash-rival-smear", "clash-fx", "clash-light"]) {
       const el = $(id);
       if (el) el.hidden = true;
     }
@@ -1253,8 +1305,18 @@ function paintClash(elapsed) {
   });
   const pw = cam.clientWidth;
   const ph = cam.clientHeight;
-  paintFighter("clash-hero", "clash-shadow-hero", frame.hero, layout?.hero, frame, "hero", pw, ph, false);
-  paintFighter("clash-rival", "clash-shadow-rival", frame.rival, layout?.rival, frame, "rival", pw, ph, false);
+  paintFighter("clash-hero", "clash-shadow-hero", frame.heroFrom || frame.hero, layout?.hero, frame, "hero", pw, ph, false);
+  paintFighter("clash-rival", "clash-shadow-rival", frame.rivalFrom || frame.rival, layout?.rival, frame, "rival", pw, ph, false);
+  paintClashSmear("clash-hero", "clash-hero-smear", frame.motion?.hero, frame.heroFrom, frame.heroTo, layout?.hero, frame, "hero", pw, ph);
+  paintClashSmear("clash-rival", "clash-rival-smear", frame.motion?.rival, frame.rivalFrom, frame.rivalTo, layout?.rival, frame, "rival", pw, ph);
+  const light = $("clash-light");
+  if (light && layout?.hero && frame.motion?.hero) {
+    const body = frame.motion.hero;
+    light.hidden = false;
+    light.style.left = `${layout.hero.x + (body.smear || 0) * 6}%`;
+    light.style.top = `${(layout.hero.foot - layout.hero.h * 0.52).toFixed(2)}%`;
+    light.style.opacity = String(body.hold ? 0.55 : 0.22 + (body.smear || 0) * 0.6);
+  } else if (light) light.hidden = true;
   const fx = $("clash-fx");
   const box = frame.fx ? fxStyle(layout) : null;
   if (fx) {

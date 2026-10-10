@@ -1,5 +1,4 @@
-import { FRAMES } from "./vanguard-cast.mjs";
-import { TICK } from "./vanguard-phrase.mjs";
+import { BEAT_MS, TICK } from "./vanguard-phrase.mjs";
 
 /** Camera keys use u in 0..1 of the beat. `at` is filled once the tick length is known. */
 const META = [
@@ -46,11 +45,11 @@ const META = [
   {
     id: "ots",
     title: "Reverse",
-    size: "OTS",
-    angle: "behind Yun",
+    size: "medium two-shot",
+    angle: "frontal, rival lead",
     move: "drift",
     easeName: "track",
-    label: "over-shoulder · drift",
+    label: "reverse angle · drift · stone",
     camera: [
       { u: 0, zoom: 1, x: 44, y: 54 },
       { u: 1, zoom: 1.08, x: 56, y: 52 },
@@ -73,11 +72,11 @@ const META = [
   {
     id: "impact",
     title: "Impact",
-    size: "CU",
-    angle: "frontal, blades",
+    size: "close two-shot",
+    angle: "frontal, stone",
     move: "punch-in, hit-stop",
     easeName: "push",
-    label: "blade close-up · punch-in · hit-stop",
+    label: "stone floor · punch-in · hit-stop",
     shake: true,
     camera: [
       { u: 0, zoom: 1.02, x: 50, y: 52 },
@@ -153,8 +152,7 @@ function whip(u) {
 }
 
 export const SHOTS = META.map((meta) => {
-  const list = FRAMES[meta.id];
-  const ms = list[list.length - 1].at + TICK;
+  const ms = BEAT_MS[meta.id];
   return {
     ...meta,
     ms,

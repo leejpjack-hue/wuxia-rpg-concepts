@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { FRAMES } from "../capscreens-fight-designs/vanguard-cast.mjs";
 import { activeHero, resolveFrame } from "../capscreens-fight-designs/vanguard-layers.mjs";
+import { sampleBeat } from "../capscreens-fight-designs/vanguard-phrase.mjs";
 import { SHOTS, totalMs } from "../capscreens-fight-designs/vanguard-shots.mjs";
 
 const root = new URL("../assets/fight/ep1-vanguard/", import.meta.url);
@@ -26,42 +27,49 @@ test("swapping the hero keeps the background and points at that character's laye
 test("a smear sits between keys, and impact holds the slash through hit-stop", () => {
   const wind = resolveFrame("feint", 0);
   assert.equal(wind.phase, "wind");
-  const smear = resolveFrame("feint", wind.n * 42);
+  assert.match(wind.hero, /motion-wind\.png/);
+  const smear = resolveFrame("feint", 460);
   assert.equal(smear.phase, "smear");
-  assert.notEqual(wind.hero, smear.hero);
-  assert.match(smear.hero, /-s\.png/);
+  assert.ok(smear.motion.hero.smear > 0.8, smear.motion.hero.smear);
+  assert.notEqual(smear.motion.hero.from, smear.motion.hero.to);
   assert.equal(wind.bg, smear.bg);
+  assert.doesNotMatch(smear.hero, /-s\.png/);
   assert.match(resolveFrame("impact", 0).flash, /pose-impact-white/);
   assert.match(resolveFrame("impact", 100).flash, /pose-impact-black/);
-  const slash = resolveFrame("impact", 200);
-  const held = resolveFrame("impact", 360);
+  const slash = resolveFrame("impact", 240);
+  const held = resolveFrame("impact", 400);
   assert.equal(slash.flash, "");
   assert.equal(slash.phase, "stop");
-  assert.equal(slash.hero, held.hero);
-  assert.notEqual(resolveFrame("impact", 640).hero, slash.hero);
+  assert.equal(slash.heroPose, held.heroPose);
+  assert.equal(slash.motion.hero.x, held.motion.hero.x);
+  assert.equal(slash.motion.hero.rot, held.motion.hero.rot);
+  assert.notEqual(resolveFrame("impact", 1200).heroPose, slash.heroPose);
 });
 
-test("the clash is a longer phrase with a smear between keys", () => {
+test("the clash is a longer phrase with a continuous arc between poses", () => {
   assert.ok(totalMs() > 16000, totalMs());
-  assert.ok(totalMs() < 22000, totalMs());
-  let ticks = 0;
-  let smears = 0;
+  assert.ok(totalMs() < 19000, totalMs());
+  const early = sampleBeat("windup", 1000);
+  const later = sampleBeat("windup", 1400);
+  assert.equal(early.hero.pose, "motion-wind");
+  assert.equal(later.hero.pose, "motion-wind");
+  assert.notEqual(early.hero.rot, later.hero.rot);
   let stops = 0;
-  for (const list of Object.values(FRAMES)) {
-    ticks += list.length;
+  for (const id of ["feint", "exchange", "counter", "reprise"]) {
+    let peaked = false;
     let prev = "";
-    for (const frame of list) {
-      if (frame.phase === "smear") smears += 1;
-      if (frame.phase === "stop" && prev !== "stop") stops += 1;
-      prev = frame.phase || "";
+    for (let at = 0; at < 2000; at += 42) {
+      const sample = sampleBeat(id, at);
+      if (sample.hero.smear > 0.8) peaked = true;
+      if (sample.phase === "stop" && prev !== "stop") stops += 1;
+      prev = sample.phase;
     }
+    assert.equal(peaked, true, id);
   }
-  assert.ok(ticks > 300, ticks);
-  assert.ok(smears > 40, smears);
   assert.ok(stops >= 4, stops);
-  const coil = FRAMES.windup.map((frame) => frame.hero).filter(Boolean);
-  assert.ok(coil.indexOf("lowlow0") < coil.indexOf("lowlow3"));
-  assert.ok(coil.indexOf("lowlow3") < coil.lastIndexOf("lowlow5"));
+  const used = new Set(FRAMES.reprise.map((frame) => frame.hero));
+  assert.equal(used.has("wc1"), false);
+  assert.equal(used.has("motion-cut"), true);
   assert.equal(SHOTS.map((shot) => shot.id).includes("counter"), true);
   assert.equal(SHOTS.map((shot) => shot.id).includes("reprise"), true);
 });

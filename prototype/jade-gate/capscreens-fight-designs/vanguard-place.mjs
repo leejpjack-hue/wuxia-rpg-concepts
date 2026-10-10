@@ -116,7 +116,7 @@ function heightFor(beat) {
     if (frame.hero && frame.rival) pairs.push([frame.hero, frame.rival]);
   }
   let chosen = { hero: heroH, rival: rivalH };
-  for (const scale of [1, 0.96, 0.92, 0.88, 0.84, 0.8, 0.76, 0.72, 0.68]) {
+  for (const scale of [1, 0.92, 0.84, 0.76, 0.68, 0.6, 0.54, 0.48, 0.42]) {
     const hh = heroH * scale;
     const hr = rivalH * scale;
     if (beat === "ots" && !(hh > hr)) continue;

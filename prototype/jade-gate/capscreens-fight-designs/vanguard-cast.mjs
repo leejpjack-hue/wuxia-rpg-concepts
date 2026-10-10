@@ -1,4 +1,4 @@
-import { PHRASES, buildBeat } from "./vanguard-phrase.mjs";
+import { BEATS, listFrames } from "./vanguard-phrase.mjs";
 
 export const DEFAULT_HERO = "zhao-yun";
 export const BACKGROUNDS = {
@@ -9,7 +9,7 @@ export const BACKGROUNDS = {
 };
 
 export const FRAMES = Object.fromEntries(
-  Object.entries(PHRASES).map(([id, phrase]) => [id, buildBeat(phrase.bg, phrase.steps)]),
+  Object.keys(BEATS).map((id) => [id, listFrames(id)]),
 );
 
 function poses(role) {
@@ -17,8 +17,8 @@ function poses(role) {
   for (const list of Object.values(FRAMES)) {
     for (const frame of list) {
       const ids = role === "vanguard"
-        ? [frame.rival, frame.ghostRival]
-        : [frame.hero, frame.ghostHero];
+        ? [frame.rival]
+        : [frame.hero, frame.heroFrom, frame.heroTo];
       for (const id of ids) if (id) set.add(id);
     }
   }

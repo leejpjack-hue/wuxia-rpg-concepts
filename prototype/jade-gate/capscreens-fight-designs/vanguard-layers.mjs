@@ -1,4 +1,5 @@
 import { BACKGROUNDS, CAST, DEFAULT_HERO, FRAMES } from "./vanguard-cast.mjs";
+import { sampleBeat } from "./vanguard-phrase.mjs";
 
 const ROOT = "../assets/fight/ep1-vanguard/";
 
@@ -17,28 +18,27 @@ function fileOf(who, pose) {
 /** One drawn frame. Paths come from the cast manifest, not from the beat name. */
 export function resolveFrame(beat, elapsed, heroId = DEFAULT_HERO) {
   const hero = activeHero(heroId);
-  const list = FRAMES[beat];
-  if (!list || !list.length) return null;
-  let frame = list[0];
-  for (const item of list) {
-    if (elapsed >= item.at) frame = item;
-  }
+  const sample = sampleBeat(beat, elapsed);
+  if (!sample) return null;
+  const heroPose = sample.hero.pose;
+  const rivalPose = sample.rival?.pose || "";
   return {
-    bg: frame.bg ? `${ROOT}${BACKGROUNDS[frame.bg]}` : "",
-    hero: fileOf(hero, frame.hero),
-    rival: fileOf("vanguard", frame.rival),
-    fx: frame.fx ? `${ROOT}${frame.fx}` : "",
-    flash: frame.flash ? `${ROOT}${frame.flash}` : "",
-    ghostHero: fileOf(hero, frame.ghostHero),
-    ghostRival: fileOf("vanguard", frame.ghostRival),
-    pose: frame.hero || frame.flash || "",
-    heroPose: frame.hero || "",
-    rivalPose: frame.rival || "",
+    bg: sample.bg ? `${ROOT}${BACKGROUNDS[sample.bg]}` : "",
+    hero: fileOf(hero, heroPose),
+    rival: fileOf("vanguard", rivalPose),
+    heroFrom: fileOf(hero, sample.hero.from),
+    heroTo: fileOf(hero, sample.hero.to),
+    rivalFrom: fileOf("vanguard", sample.rival?.from),
+    rivalTo: fileOf("vanguard", sample.rival?.to),
+    fx: sample.fx ? `${ROOT}${sample.fx}` : "",
+    flash: sample.flash ? `${ROOT}${sample.flash}` : "",
+    pose: heroPose || sample.flash || "",
+    heroPose,
+    rivalPose,
     heroId: hero,
-    phase: frame.phase || "",
-    step: frame.step || 0,
-    n: frame.n || 1,
-    hold: !!frame.hold,
+    phase: sample.phase || "",
+    hold: !!sample.hero.hold,
+    motion: { hero: sample.hero, rival: sample.rival, light: sample.light },
   };
 }
 
@@ -49,9 +49,9 @@ export function castFiles(heroId = DEFAULT_HERO) {
     for (const frame of list) {
       if (frame.bg) files.add(`${ROOT}${BACKGROUNDS[frame.bg]}`);
       if (frame.hero) files.add(fileOf(hero, frame.hero));
+      if (frame.heroFrom) files.add(fileOf(hero, frame.heroFrom));
+      if (frame.heroTo) files.add(fileOf(hero, frame.heroTo));
       if (frame.rival) files.add(fileOf("vanguard", frame.rival));
-      if (frame.ghostHero) files.add(fileOf(hero, frame.ghostHero));
-      if (frame.ghostRival) files.add(fileOf("vanguard", frame.ghostRival));
       if (frame.fx) files.add(`${ROOT}${frame.fx}`);
       if (frame.flash) files.add(`${ROOT}${frame.flash}`);
     }

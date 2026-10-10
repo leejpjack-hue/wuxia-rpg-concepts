@@ -172,6 +172,17 @@ h1 {
   opacity: 0.92;
 }
 
+.layer.smear { z-index: 6; pointer-events: none; }
+.follow-light {
+  position: absolute;
+  z-index: 7;
+  width: 22%;
+  height: 30%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 226, 170, 0.78) 0%, rgba(255, 150, 70, 0.16) 40%, transparent 70%);
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
 .stage[data-source="layered"] .layer.fx.bridged {
   inset: auto;
   object-fit: fill;

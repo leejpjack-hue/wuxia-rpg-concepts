@@ -95,9 +95,20 @@ main { max-width: 1180px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 36px) 6
   position: absolute; width: auto; max-width: none; object-fit: contain; pointer-events: none;
 }
 .clash-ghost { opacity: 0.42; }
+.clash-char.smear { z-index: 6; }
+.follow-light {
+  position: absolute;
+  z-index: 7;
+  width: 22%;
+  height: 30%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 226, 170, 0.78) 0%, rgba(255, 150, 70, 0.16) 40%, transparent 70%);
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
 .clash-fx {
   position: absolute; z-index: 4; pointer-events: none;
-  transform: translate(-50%, -50%); object-fit: fill; mix-blend-mode: screen;
+  transform: translate(-50%, -50%); object-fit: contain; mix-blend-mode: screen;
 }
 .clash-shadow {
   position: absolute; z-index: 0; height: 2.4%; border-radius: 50%; pointer-events: none;
