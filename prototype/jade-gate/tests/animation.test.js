@@ -16,7 +16,7 @@ const root = new URL("../", import.meta.url);
 const assetExists = (relPath) => existsSync(new URL(relPath, root));
 
 test("animation episodes have valid scenes, backdrops, and durations", () => {
-  assert.equal(EPISODES.length, 2, "Demo defines exactly two episodes");
+  assert.equal(EPISODES.length, 3, "Demo defines exactly three episodes");
 
   for (const ep of EPISODES) {
     assert.ok(ep.id && ep.title && ep.number, "Episode has id, title, and number");
@@ -50,7 +50,7 @@ test("animation episodes have valid scenes, backdrops, and durations", () => {
         assert.ok(beat.t < scene.duration, `Beat timestamp (${beat.t}s) must fall within scene duration (${scene.duration}s)`);
         assert.ok(beat.text && beat.text.trim().length > 0, "Beat has text content");
 
-        if (beat.who && !["三人", "裂口", "師父", "妹妹"].includes(beat.who)) {
+        if (beat.who && !["三人", "裂口", "師父", "妹妹", "范進", "魯肅", "元春"].includes(beat.who)) {
           assert.ok(
             Object.prototype.hasOwnProperty.call(SPEAKERS, beat.who),
             `Speaker "${beat.who}" must be registered in SPEAKERS`

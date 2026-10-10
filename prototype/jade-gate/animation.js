@@ -1,5 +1,5 @@
 /**
- * 四人の刃 — 兩集動畫 Demo（第一集約 23 分鐘、第二集約 19 分鐘 · 分鏡版）
+ * 四人の刃 — 三集動畫 Demo（第一集 23:30 · 第二集 10:22 · 第三集 11:32 · 分鏡版）
  * Episode 1「破帝」：三俠於古代擊敗灰帝的完整經過——由常山趙家村說起。
  * Episode 2「裂口 · 廿賢殿」：裂口將三俠擲入異世界，遇上二十賢的故事。
  *
@@ -491,8 +491,8 @@ export const EPISODES = [
     ],
   },
   {
-    id: "ep2", number: "第二集", title: "裂口 · 廿賢殿",
-    subtitle: "裂口將三俠擲入異世界，二十賢等待著他們",
+    id: "ep2", number: "第二集", title: "裂口 · 廿賢殿（上）",
+    subtitle: "裂口將三俠擲入異世界——廿賢殿的第一輪",
     scenes: [
       {
         id: "rift", chapter: "序章 · 一息的黎明", duration: 95,
@@ -508,7 +508,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "corpse-street", chapter: "第一章 · 亂世街", duration: 90,
+        id: "corpse-street", chapter: "第一章 · 亂世街", duration: 105,
         backdrop: art.maze, pan: "right",
         cast: [{ id: "zhao-yun", side: "left" }, { id: "lu-zhishen", side: "right" }],
         beats: [
@@ -518,6 +518,7 @@ export const EPISODES = [
           { t: 56, who: "扈三娘", text: "「牆上這紙約——名字不同，墨，是同一種黑。」" },
           { t: 68, who: "趙雲", text: "「那我們就用同樣的辦法，救這條街。起身的時候，看好彼此的背。」" },
           { t: 82, who: "賈雨村", text: "「（霧的深處）有趣。異世流民三名……備好簿冊，等他們自己走進估值。」" },
+          { t: 92, who: "趙雲", text: "「有人在等我們自己走進去——那就如他們所願。走吧，趁燈還肯亮。」" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "right" },
@@ -526,7 +527,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "inspectors", chapter: "第一章 · 廿賢的巡查者", duration: 90,
+        id: "inspectors", chapter: "第一章 · 廿賢的巡查者", duration: 110,
         backdrop: art.maze, pan: "left",
         cast: [
           { id: "jia-yucun", side: "far-left" },
@@ -540,6 +541,8 @@ export const EPISODES = [
           { t: 46, who: "魯智深", text: "「他們不是惡人——是被詔令從各自書頁裡撕出來的人。跟當年關前那些，一樣。」" },
           { t: 64, who: "趙雲", text: "「一場牌局，鬆開一條綁著他們的線——線斷之處，他們想起了自己的故事。」" },
           { t: 78, who: "賈雨村", text: "「（收起算盤）去吧，往深處走——那座殿，等這個故事等了很久了。」" },
+          { t: 84, who: "范進", text: "「（攥著墨錠）半生科場，今日才知道——功名，不過是別人替我寫的字。這一局，范某認了。」" },
+          { t: 97, who: "魯肅", text: "「（拱手）禮數我懂，但今日這一禮，敬的是不肯下跪的人。三位，殿在深處——好自為之。」" },
         ],
         shots: [
           { t: 4, kind: "wide" },
@@ -548,7 +551,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "hall", chapter: "第二章 · 廿賢殿", duration: 95,
+        id: "hall", chapter: "第二章 · 廿賢殿", duration: 112,
         backdrop: art.citadel, pan: "in-slow",
         cast: [
           { id: "bao-zheng", side: "far-left" },
@@ -561,6 +564,7 @@ export const EPISODES = [
           { t: 28, who: "懿妃", text: "「二十張臉，同時轉向你們——判官、相國、妃嬪、名將、名臣。散頁們，好大的膽子。」" },
           { t: 50, who: "懿妃", text: "「閉卷裡的散頁們。詔令把我們集合於此，寫成一個較善的宫廷——也會這樣對你們。跪下，被溫柔地改寫；或者站著，打贏二十人，贏回去的橋。」" },
           { t: 78, who: "趙雲", text: "「滿殿無聲——燈芯爆了一朵花。看來，我們的答案，他們不喜歡。」" },
+          { t: 86, who: "懿妃", text: "「不跪？好。廿賢殿開殿百年，敢說不跪的，你們是第三批——前兩批，都成了案卷裡的夾頁。」" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "left" },
@@ -569,13 +573,15 @@ export const EPISODES = [
         ],
       },
       {
-        id: "refuse", chapter: "第二章 · 不跪", duration: 65,
+        id: "refuse", chapter: "第二章 · 不跪", duration: 85,
         backdrop: art.citadel, pan: "in",
         cast: [{ id: "zhao-yun", side: "center" }],
         beats: [
           { t: 8, who: "趙雲", text: "「寧可站著打完二十場，不跪著受一次審。」" },
           { t: 30, who: "", text: "「開屏吧——第一輪。」" },
           { t: 44, who: "扈三娘", text: "「二十張案，同時翻起——來得好！我的刀，等不及了。」" },
+          { t: 50, who: "魯智深", text: "「二十案齊翻，好大的陣仗——灑家喜歡！一屏一局？來！」" },
+          { t: 66, who: "扈三娘", text: "「案翻得起，就要收得起。雙刀——出鞘吧。」" },
         ],
         shots: [
           { t: 4, kind: "closeup", focus: "zhao-yun", pose: "focus", crop: "head" },
@@ -584,7 +590,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "lattice", chapter: "第二章 · 格子廳第一輪", duration: 90,
+        id: "lattice", chapter: "第二章 · 格子廳第一輪", duration: 115,
         backdrop: art.maze, pan: "right",
         cast: [
           { id: "xue-baochai", side: "far-left" },
@@ -598,6 +604,8 @@ export const EPISODES = [
           { t: 48, who: "林黛玉", text: "「葬花的鋤，也葬得了刀客的銳氣。請。」" },
           { t: 66, who: "扈三娘", text: "「一屏一局。每贏一局，就有一個人，從別人的故事裡回到自己的故事裡。」" },
           { t: 80, who: "吳用", text: "「二十張案，一張一張地空——這一輪，散頁贏了。」" },
+          { t: 92, who: "林黛玉", text: "「第一輪葬的是銳氣，不是人。刀客，你的刀很乾淨——乾淨的人，才走得過橋。」" },
+          { t: 106, who: "", text: "（第二集 完）" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "right" },
@@ -606,8 +614,14 @@ export const EPISODES = [
           { t: 78, kind: "wide" },
         ],
       },
+    ],
+  },
+  {
+    id: "ep3", number: "第三集", title: "雲橋 · 守橋人",
+    subtitle: "廿賢殿的後半局——判官、深宮、美人，與回家的橋",
+    scenes: [
       {
-        id: "judges", chapter: "第三章 · 判官一脈", duration: 85,
+        id: "judges", chapter: "第三章 · 判官一脈", duration: 105,
         backdrop: art.citadel, pan: "left",
         cast: [
           { id: "jia-zheng", side: "left" },
@@ -619,6 +633,8 @@ export const EPISODES = [
           { t: 30, who: "扈三娘", text: "「理是死的，人是活的。雙刀只跟活人講。」" },
           { t: 50, who: "吳用", text: "「牌桌之上，在下算無遺策——卻輸給了不肯按牌理出牌的刀。有意思。」" },
           { t: 68, who: "吳用", text: "「……輸得不冤。回去我把這一局寫進書裡。」" },
+          { t: 78, who: "吳用", text: "「（合扇）理輸了，人沒有輸。扈三娘——他日江湖再見，吳某備酒赔罪。」" },
+          { t: 91, who: "扈三娘", text: "「酒就免了——我們刀客，喝茶就好。」" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "left" },
@@ -628,7 +644,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "investigators", chapter: "第三章 · 斷獄之刀", duration: 80,
+        id: "investigators", chapter: "第三章 · 斷獄之刀", duration: 100,
         backdrop: art.citadel, pan: "in",
         cast: [{ id: "bao-zheng", side: "left" }, { id: "di-renjie", side: "right" }],
         beats: [
@@ -636,6 +652,8 @@ export const EPISODES = [
           { t: 30, who: "狄仁杰", text: "「月牙額燈照謊言，在下的推理剝偽裝——開棺驗屍之前，先驗這座殿。」" },
           { t: 50, who: "狄仁杰", text: "「真相只有一個：這座殿，本身就是偽證。」" },
           { t: 66, who: "包拯", text: "「斷獄者認出了獄……本官輸這一局，勝這一生。去吧——最後的案，在雲上。」" },
+          { t: 74, who: "狄仁杰", text: "「（推案而起）殿既是偽證，就審到底——包兄，案的下一頁，在雲上那座橋。」" },
+          { t: 87, who: "包拯", text: "「月牙燈照到哪裡，本官就審到哪裡。去吧——把最後一盞燈，點亮。」" },
         ],
         shots: [
           { t: 4, kind: "closeup", focus: "bao-zheng", pose: "focus", crop: "face" },
@@ -644,7 +662,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "court", chapter: "第三章 · 深宮一脈", duration: 85,
+        id: "court", chapter: "第三章 · 深宮一脈", duration: 105,
         backdrop: art.citadel, pan: "right",
         cast: [
           { id: "jia-yuanchun", side: "far-left" },
@@ -657,6 +675,7 @@ export const EPISODES = [
           { t: 30, who: "王熙鳳", text: "「從沒見過輸了還這麼開心的。也罷——刀客，替我看看宮牆外的天。」" },
           { t: 52, who: "王熙鳳", text: "「一局終了——看：我倚案大笑，華妃擲扇，元春垂淚而笑。」" },
           { t: 68, who: "王熙鳳", text: "「原來輸一次，比贏一輩子輕。」" },
+          { t: 76, who: "元春", text: "「（隔簾）宮牆內外，原來只隔一局棋。姐妹們——替我記住今天的風。」" },
         ],
         shots: [
           { t: 4, kind: "wide" },
@@ -665,7 +684,7 @@ export const EPISODES = [
         ],
       },
       {
-        id: "legends", chapter: "第三章 · 被撕出書頁的人", duration: 85,
+        id: "legends", chapter: "第三章 · 被撕出書頁的人", duration: 102,
         backdrop: art.river, pan: "in-slow",
         cast: [
           { id: "diaochan", side: "left" },
@@ -677,6 +696,8 @@ export const EPISODES = [
           { t: 30, who: "楊玉環", text: "「霓裳一曲，從此只為自己跳。多謝你的刀。」" },
           { t: 50, who: "貂蟬", text: "「每斷一線，殿裡就亮一盞燈。二十盞——只剩最後一盞，未亮。」" },
           { t: 68, who: "趙雲", text: "「殿的盡頭是雲，雲上有座橋——橋頭，站著一個笑著的人。……那身形，好熟。」" },
+          { t: 76, who: "楊玉環", text: "「霓裳留在殿裡，舞帶走。貂蟬妹妹——下一世，為自己穿衣。」" },
+          { t: 89, who: "貂蟬", text: "「（斂衂一拜）玉環姐姐，這一拜——拜的是自己。」" },
         ],
         shots: [
           { t: 4, kind: "pan", from: "left" },
@@ -740,7 +761,7 @@ export const EPISODES = [
           { t: 54, who: "趙雲", text: "「（回頭）妹——保重。你抬手的樣子，還像小時候，催我回家吃飯。」" },
           { t: 66, who: "趙敏", text: "「橋頭與關下，隔著一百年，各站著一個趙家的守門人——師父那句話，我們兄妹，各守了一半。」" },
           { t: 78, who: "", text: "故事在他們身後，把自己摺好。" },
-          { t: 88, who: "", text: "（第二集 完）" },
+          { t: 88, who: "", text: "（第三集 完）" },
         ],
         shots: [
           { t: 4, kind: "closeup", focus: "zhao-min", pose: "focus", crop: "face" },
