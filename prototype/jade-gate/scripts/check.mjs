@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, sep, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { HEROES } from "../src/content/heroes.js";
@@ -16,6 +16,9 @@ function walk(dir) {
   );
 }
 for (const path of walk(root)) {
+  // demo/fight-30s/src/*.js 係 build.py 嘅模版（%META% 等佔位符），
+  // 語法檢查跳過，構建後產物先係可執行檔。
+  if (path.includes(`${join(root, "demo", "fight-30s", "src")}${sep}`)) continue;
   const r = spawnSync(process.execPath, ["--check", path], {
     encoding: "utf8",
   });
