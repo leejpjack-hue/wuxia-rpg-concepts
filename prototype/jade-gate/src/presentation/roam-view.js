@@ -183,6 +183,10 @@ export class RoamView {
     const { session } = this;
     const active = session.mode === "exploring";
     this.$("roam").hidden = !active;
+    // Renown lands the moment a duel is won — even while a modal (upgrade,
+    // map, waystation) holds the screen. Keep the roam HUD in step there, or
+    // it lags one fight behind the duel HUD and reads like a renown drop.
+    if (session.g?.roam) this.$("roam-score").textContent = this.t(session.g.score);
     if (!active || !session.g?.roam) return;
     const g = session.g;
     // New explore (createRoam) or hero swap → snap soft cam next draw.
