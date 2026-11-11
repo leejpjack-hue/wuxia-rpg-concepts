@@ -54,6 +54,25 @@ test("the hidden legends play in quick play; campaign keeps its story gate", () 
   }
 });
 
+test("a strike into the bunched horde builds Flow once per action, not once per rival struck", () => {
+  const game = session(memoryStorage());
+  game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+  game.g.encounterIndex = 1; // archer-run: the pass with twenty watchers
+  game.prepareEncounter();
+  const archers = game.g.roam.field.filter((enemy) => enemy.ranged);
+  assert.ok(archers.length > 1, "the horde fields many watchers at once");
+  // The horde shares spawn markers, so watchers bunch; stand inside the knot.
+  Object.assign(game.g.p, { x: 640, y: 500 });
+  for (const archer of archers) Object.assign(archer, { x: 640, y: 500 });
+  game.g.p.flow = 0;
+  game.g.p.flowBonus = 0;
+  assert.ok(game.roam.act("strike"));
+  assert.equal(
+    game.g.p.flow, 12,
+    "one Strike action gains the documented 12 Flow (GAME-ARCHITECTURE duel rules), not 12 per rival caught",
+  );
+});
+
 test("the goal is everyone: victory comes only after the last rival of the horde falls", () => {
   const game = session(memoryStorage());
   game.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));

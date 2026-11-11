@@ -161,6 +161,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
     if (action === 'technique') g.p.flow -= techniqueCost(g.p, g.curios);
     effect(action, g.p.x, g.p.y);
     bus.emit('audio:sfx', { type: action === 'technique' ? 'special' : 'strike', param: g.p.id });
+    let struck = 0;
     for (const enemy of targets) {
       // Melee rivals take no real-time damage: a clean hit marks first blood,
       // and the contact duel opens with them reeling.
@@ -173,7 +174,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       }
       const damage = Math.round(g.p.damage*g.p.power*(action === 'technique' ? HERO_TECHNIQUES[g.p.id].multiplier : 1));
       enemy.hp = Math.max(0, enemy.hp-damage);
-      g.p.flow = Math.min(100, g.p.flow+ (action === 'strike' ? 12+g.p.flowBonus : 0));
+      struck++;
       effect('hit', enemy.x, enemy.y, `−${damage}`);
       if (!enemy.hp) {
         field.splice(field.indexOf(enemy), 1); roam.defeated++;
@@ -185,6 +186,8 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
         bus.emit('roam:rival-defeated', { id: enemy.id });
       }
     }
+    // Flow rewards the pass itself, not each rival it clips.
+    if (struck && action === 'strike') g.p.flow = Math.min(100, g.p.flow + 12 + g.p.flowBonus);
     return true;
   }
   function wander(enemy, dt) {
