@@ -62,13 +62,13 @@ test("signature actions resolve: counter, execute, charged, cleanse, vanish", ()
   cleanse.start("mu-guiying", "quickplay", "jade-gate", quickParty("mu-guiying"));
   cleanse.beginDuel(0);
   cleanse.g.duel.status.hero.poison = { turns: 3, amount: 3 };
-  cleanse.g.duel.assistUsed = true;
+  cleanse.g.duel.assistUses = 1;
   cleanse.g.duel.assistReady = true;
   cleanse.g.p.hp = 50;
   cleanse.g.p.flow = 60;
   assert(cleanse.combat.act("signature"));
   assert.equal(cleanse.g.duel.status.hero.poison, null);
-  assert.equal(cleanse.g.duel.assistUsed, false, "rally re-readies the assist");
+  assert.equal(cleanse.g.duel.assistUses, 0, "rally re-readies the assist");
 
   // Vanish: Nie Yinniang takes no reply damage and leaves a bleed.
   const vanish = game();
@@ -100,6 +100,9 @@ test("the Sovereign and Zhao Min gather twice as fast below half health, as the 
 test("a sneaking Hidden Blade reads the night's tighter master aggro", () => {
   const g = game();
   g.start("nie-yinniang", "quickplay", "jade-gate", quickParty("nie-yinniang"));
+  // The opening vanguard fields only guards; the gauntlet encounter fields watchers.
+  g.g.encounterIndex = 1;
+  g.prepareEncounter();
   const archer = g.g.roam.field.find((enemy) => enemy.ranged);
   // Synthetic night: the master's sneak window is 120; the buggy fallback is 260.
   g.g.weather = { ...g.weather, sneakAggro: 420, sneakMasterAggro: 120 };

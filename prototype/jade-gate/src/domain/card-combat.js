@@ -79,7 +79,7 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
       sashUsed: false,
       charged: 0,
       // WU-PARTY-09I: one free assist strike per duel (no Flow; no follower HP).
-      assistUsed: false,
+      assistUses: 0,
       assistReady: false,
       assistLimit: 1 + (g.assistLimitBonus || 0),
       openingStun: opening,
@@ -171,7 +171,7 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
       enemy.specialAt = special?.focus || 3;
       log(`${enemy.name} unleashes ${next.name}!`);
     } else {
-      enemy.focus = (enemy.focus || 0) + 1;
+      enemy.focus = (enemy.focus || 0) + (enemy.phase && special?.phaseGather ? special.phaseGather : 1);
       enemy.specialAt = special?.focus || 3;
       if (special && enemy.focus === enemy.specialAt - 1)
         log(`${enemy.name} gathers power — the next blow will be ${next.special ? "" : ""}special.`);
@@ -376,7 +376,7 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
         d.status.hero.bleed = null;
         d.status.hero.poison = null;
         p.hp = Math.min(p.maxHp, p.hp + signature.heal);
-        if (signature.refreshAssist) d.assistUsed = false;
+        if (signature.refreshAssist) d.assistUses = 0;
         log("The signal rallies the line — wounds steadied, allies ready.");
       } else if (signature.archetype === "drainStrike") {
         damage = Math.round(base * signature.damage);
@@ -450,7 +450,7 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
   function assistStrike() {
     if (g.mode !== "playing" || !g.duel || !g.enemies.length || g.encounterDone) return false;
     const d = g.duel;
-    if ((d.assistUsed ? 1 : 0) >= (d.assistLimit || 1) || !d.assistReady) return false;
+    if ((d.assistUses || 0) >= (d.assistLimit || 1) || !d.assistReady) return false;
     const followers = g.party?.followers;
     if (!Array.isArray(followers) || !followers.length) return false;
     const followerId = followers[0];
@@ -462,7 +462,7 @@ export function createCardCombat(g, bus, { encounter, roster: explicitRoster } =
     const multiplier = oath ? oath.assistMultiplier : 1;
     let dealt = Math.min(enemy.hp, Math.round(ASSIST_DAMAGE * multiplier));
     enemy.hp = Math.max(0, enemy.hp - dealt);
-    d.assistUsed = true;
+    d.assistUses = (d.assistUses || 0) + 1;
     d.lastDamage = dealt;
     if (oath) {
       g.p.flow = Math.min(100, g.p.flow + oath.assistFlow);

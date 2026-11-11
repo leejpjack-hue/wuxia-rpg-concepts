@@ -91,7 +91,7 @@ test('WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow
   const g = game();
   g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun', 'hu-sanniang', 'lu-zhishen'));
   g.beginDuel(0);
-  assert.equal(g.g.duel.assistUsed, false);
+  assert.equal(g.g.duel.assistUses, 0);
   assert.equal(g.g.duel.assistReady, false);
   assert.equal(g.combat.assistStrike(), false); // not ready yet
   const enemy = g.g.enemies[0];
@@ -99,7 +99,7 @@ test('WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow
   const flowBefore = g.g.p.flow;
   assert(g.combat.act('attack'));
   assert.equal(g.g.duel.assistReady, true);
-  assert.equal(g.g.duel.assistUsed, false);
+  assert.equal(g.g.duel.assistUses, 0);
   const afterLead = g.g.enemies[0].hp;
   assert(afterLead < hpBefore);
   const result = g.combat.assistStrike();
@@ -107,7 +107,7 @@ test('WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow
   assert.equal(result.damage, ASSIST_DAMAGE);
   assert.equal(g.g.enemies[0].hp, afterLead - ASSIST_DAMAGE);
   assert.equal(g.g.p.flow, flowBefore + 12 + g.g.p.flowBonus); // no extra Flow from assist
-  assert.equal(g.g.duel.assistUsed, true);
+  assert.equal(g.g.duel.assistUses, 1);
   assert.equal(g.combat.assistStrike(), false); // second press no-op
   assert(g.g.duel.log.some((line) => line.includes('Hu Sanniang assists')));
 });
@@ -137,12 +137,12 @@ test('WU-PARTY-09I: assist hidden/no-op without followers; resets on new duel', 
   q.beginDuel(0);
   q.combat.act('attack');
   assert(q.combat.assistStrike());
-  assert.equal(q.g.duel.assistUsed, true);
+  assert.equal(q.g.duel.assistUses, 1);
   // Finish rival quickly then open next duel
   while (q.mode === 'playing') assert(q.combat.act(duelPolicy(q)));
   assert.equal(q.mode, 'exploring');
   assert(q.beginDuel(0));
-  assert.equal(q.g.duel.assistUsed, false);
+  assert.equal(q.g.duel.assistUses, 0);
   assert.equal(q.g.duel.assistReady, false);
   assert.equal(q.combat.assistStrike(), false);
   q.combat.act('attack');
