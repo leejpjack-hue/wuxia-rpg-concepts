@@ -112,6 +112,17 @@ test('WU-PARTY-09I: assist strike once per duel after lead damage; free; no Flow
   assert(g.g.duel.log.some((line) => line.includes('Hu Sanniang assists')));
 });
 
+test('oath incense fields two assists per duel; the third is refused', () => {
+  const g = game();
+  g.start('zhao-yun', 'quickplay', 'jade-gate', quickParty('zhao-yun'));
+  g.g.assistLimitBonus = 1; // what the merchant's oath incense buys
+  g.beginDuel(0);
+  g.combat.act('attack');
+  assert(g.combat.assistStrike(), 'first assist lands');
+  assert(g.combat.assistStrike(), 'second assist lands: incense raises the limit to two');
+  assert.equal(g.combat.assistStrike(), false, 'the third press is refused at the limit');
+});
+
 test('WU-PARTY-09I: assist hidden/no-op without followers; resets on new duel', () => {
   const g = game();
   g.start('zhao-yun', 'campaign'); // campaign party has no followers
