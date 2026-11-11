@@ -14,9 +14,9 @@ The player has confirmed a **hybrid loop: roam, then duel**. Between fights the 
 
 ## Implementation status and architecture
 
-The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now plays through Acts I–IV with arrival dialogue, encounter disciplines, multi-phase bosses, resolution dialogue, tea-house cultivation and checkpoint continuation. Story heroes are Zhao Yun, Lu Zhishen and Hu Sanniang. All other roster identities oppose them as named rivals on the pass; defeating or sparing them does not add a Story protagonist. Quick Play retains the full wider roster, with the Venom Adept earned through an elite judgement.
+The executable foundation is documented in [GAME-ARCHITECTURE.md](GAME-ARCHITECTURE.md). Campaign mode now plays through Acts I–V with arrival dialogue, encounter disciplines, multi-phase bosses, resolution dialogue, tea-house cultivation and checkpoint continuation; Act V is the otherworld, where the twenty hidden legends hold the halls and Zhao Min keeps the cloud causeway. Story heroes are Zhao Yun, Lu Zhishen and Hu Sanniang. All other roster identities oppose them as named rivals on the pass; defeating or sparing them does not add a Story protagonist. Quick Play retains the full wider roster, with the Venom Adept earned through an elite judgement.
 
-Acts I–IV are now playable in the browser; deeper parrying and 3D assets below remain production targets. The timeline is a planning estimate, not a delivery guarantee. Existing character art also requires a canon-alignment pass, especially Zhao Yun's sword and the revised ages.
+Acts I–V are now playable in the browser; deeper parrying and 3D assets below remain production targets. The timeline is a planning estimate, not a delivery guarantee. Existing character art also requires a canon-alignment pass, especially Zhao Yun's sword and the revised ages.
 
 ## 1. Executive Summary & Creative Vision
 

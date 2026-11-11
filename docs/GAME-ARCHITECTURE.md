@@ -2,7 +2,7 @@
 
 ## Current direction
 
-The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The four-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Acts I–IV are playable: Act II has a shallows-slowed river pass and Night Heron duel; Act III has a cloud terrace, wind and falling-stone hazards, monk trial and Lü Bu rival duel. Act IV completes the story in the Imperial Meridian Citadel. Story protagonists are fixed to Zhao Yun, Lu Zhishen and Hu Sanniang; the other thirteen roster identities appear as named rivals. Quick Play retains the wider playable roster.
+The playable browser build is a wuxia RPG with two phases per encounter. The hero first roams an illustrated pass with button-driven movement while rivals patrol; walking into a rival starts a turn-based card duel of one hero card versus one enemy card, with deliberate action choices. The five-act story, heroes, dialogue, Renown, cultivation, and checkpoint structure remain the campaign foundation. Acts I–IV climb from the Jade Gate through the shallows-slowed river pass (Night Heron duel), the cloud terrace with wind and falling-stone hazards (monk trial and Lü Bu rival duel) to the Imperial Meridian Citadel. Act V tears the trio into the otherworld, where twenty hidden legends hold the halls and Zhao Min keeps the cloud causeway, the only bridge home. Story protagonists are fixed to Zhao Yun, Lu Zhishen and Hu Sanniang; eleven other roster identities appear as named legend rivals on the passes (Lü Bu as a boss, the Venom Adept as an elite recruit). Quick Play retains the wider playable roster.
 
 ## Runtime
 
@@ -12,15 +12,20 @@ The optional `prototype/jade-gate/trailer.html` teaser is a standalone 10-second
 flowchart LR
   Boot[game.js] --> Session[GameSession]
   Boot --> View[GameView: menus and story]
+  Boot --> Pass[RoamView: the pass and party HUD]
   Boot --> Duel[DuelView: two cards and actions]
   Boot --> Audio[AudioDirector]
-  Session --> Combat[createCardCombat]
+  Session --> Roam[roam.js: patrols, real-time archers, hazards]
+  Session --> Combat[card-combat.js, injected as createCardCombat]
+  Roam -->|rival contact| Combat
   Combat --> Content[duels.js: rivals and techniques]
   Session --> Progress[Progression and cultivation]
   Session --> Saves[SaveStore]
   Session --> Bus[EventBus]
+  Roam --> Bus
   Combat --> Bus
   Bus --> View
+  Bus --> Pass
   Bus --> Duel
   Bus --> Audio
   Audio --> Synth[Adaptive 32-bar wuxia-rock score]
@@ -31,7 +36,7 @@ The composition root injects `createCardCombat` into `GameSession`. The session 
 | Module | Responsibility |
 |---|---|
 | `src/content/duels.js` | Act I pass rosters, enemy stats/patterns, hero technique effects |
-| `src/domain/roam.js` | Button-driven hero movement, deterministic rival patrols, contact hand-off; fixed 60 Hz step |
+| `src/domain/roam.js` | Button-driven hero movement, deterministic rival patrols, real-time archers and hazards, contact hand-off to duels; fixed 60 Hz step |
 | `src/domain/card-combat.js` | One explicit action plus at most one enemy reply; one duel per contacted rival; no idle damage |
 | `src/domain/session.js` | Scene transitions; injected combat factory; encounter preparation; upgrades and saves |
 | `src/presentation/view.js` | Roster, dialogue, disciplines, pause, results, tea house; screen visibility and focus |
@@ -53,7 +58,7 @@ Quick Play fields a horde (`QUICKPLAY_HORDE` in `duels.js` — every encounter s
 2. Choose Strike, Guard, Technique or Healing tea.
 3. Resolve the hero action. A defeated rival cannot retaliate.
 4. If the rival survives, resolve its displayed reply exactly once, then reveal the next intention.
-5. Win the duel to return to the pass, then repeat until the field is clear. Inside a duel there is no timer, automatic attack, hit chance or damage while waiting; on the pass there is no combat damage — only contact matters.
+5. Win the duel to return to the pass, then repeat until the field is clear. Inside a duel there is no timer, automatic attack, hit chance or damage while waiting. On the pass, melee rivals deal no damage until contact starts a duel; watchtower archers strike in real time (a volley budget caps simultaneous arrows), and pass hazards act live — shallows slow every step, wind gusts push actors and arrows, and falling pillars telegraph before they land. Of the declared hazards, razor-wire and the qi vortex remain atmosphere. Wayside shrines rest the party once each.
 
 | Action | Rule |
 |---|---|
@@ -61,10 +66,11 @@ Quick Play fields a horde (`QUICKPLAY_HORDE` in `duels.js` — every encounter s
 | Guard | Reduce this reply's damage by 80%, rounded to an integer. Gain 20 Flow. |
 | Technique | Spend 40 Flow (30 with Still water). Use the selected hero's effect; pierce rival guard. |
 | Healing tea | Once per encounter, recover up to 30 health. Rival still replies. Disabled at full health or with no tea. |
+| Signature | Fifth action, 25 Flow, once the hero carries one. Archetypes bend the duel: counters brace and cut, executes bite statused rivals, cleanse rallies the line, vanish takes no reply. |
 
 Zhao Yun deals double damage and halves the reply. Lu Zhishen deals 1.6× damage, restores 10 health and stuns the reply. Hu Sanniang deals 2.4× damage and restores 8 health. Lü Bu deals 2.8× damage. Techniques are disabled when unaffordable; invalid actions consume nothing.
 
-Each defeated rival grants Renown, restores 12 health and grants 8 Flow. Disciplines apply between encounters, then restore 22 health and 20 Flow. The Warden increases outgoing damage by 20% after crossing half health, visible in the next intent preview. These are initial balance values, not final difficulty claims.
+Each defeated rival grants Renown, restores 12 health and grants 8 Flow. Disciplines apply between encounters, then restore 22 health and 20 Flow. Every boss takes a second stance after crossing half health: outgoing damage rises 20%, visible in the next intent preview, and the Sovereign's and Zhao Min's specials also gather focus twice as fast while phased. These are initial balance values, not final difficulty claims.
 
 ## Scene and presentation rules
 
@@ -75,7 +81,7 @@ Each defeated rival grants Renown, restores 12 health and grants 8 Flow. Discipl
 - Modal action buttons consistently target `modal-actions`, matching the shipped HTML.
 - Button errors appear in an alert outside the hidden screens. Saved audio/motion settings apply on initial load.
 - A brief visual animation disables repeat input, but cannot damage the player or change a turn. Reduced motion removes the animation.
-- Keys 1–4 match the action buttons. Escape pauses/resumes. Held-key repeats are ignored.
+- Keys 1–5 match the action buttons (5 opens the signature when the hero carries one). Escape pauses/resumes. Held-key repeats are ignored.
 - Missing artwork reports a retryable notice but cannot block a mechanically playable duel.
 
 These rules address the previous empty menu overlay, missing action container, combat-to-defeat fallthrough, permanently hidden battle screen and stale inert states. Presentation regression tests use actual HTML IDs and an injected document adapter; browser checks cover real layout and clicks.
@@ -84,7 +90,7 @@ These rules address the previous empty menu overlay, missing action container, c
 
 `blades-profile-v2` continues to store settings, records, Renown wallet, cultivation ranks, unlocks, completed acts/runs and checkpoint. Existing saves are preserved. Checkpoints restart the current encounter or restore a dialogue, discipline choice or tea house; they do not restore mid-duel health, rival HP, intent or used tea. Old arena checkpoints enter the equivalent card encounter with saved starting stats. Optional `turns` defaults to zero on legacy saves.
 
-The roster is nine heroes: the original four plus Guan Yu, Wu Song, Mu Guiying, Liang Hongyu and Nie Yinniang from the 2026-09-25 Stitch try-run (full-body portraits and transparent gameplay sprites; initially available in Quick Play, then unlocked in Campaign at story milestones). Quick play allows every hero and updates personal records, but awards no permanent currency or unlocks. The last party of exactly three (`profile.lastQuickParty`: `{ lead, followers }` of two cosmetic followers) is stored on that same profile and preselected the next time Quick Play opens. It does not change act unlocks. Campaign completes Act I through arrival dialogue, a branching pass map (ambush / elite / event / rest / duel rows; single-node rows auto-march), a discipline after every fight, Warden dialogue, resolution, and tea-house cultivation. Elite victories and event boxes draft run-scoped curios (`curios.js`) that bend duel rules; picks are checkpointed with the map. The pass feeds the duel: first blood and sneak contacts open with the rival reeling (`roam.js` marks first blood; `sneak` halves speed and archer aggro). The tea house trades Renown on a meridian map (`meridians.js`): three vessels of gated points plus three crossing-cavity perks, with legacy cultivation ranks migrated. The expansion systems live in `expansion.js`: hero signature actions (a fifth Flow-gated duel move), rival focus/special attacks (techniques break the gathering), oath-bonded party assists, run-seeded weather, composure attrition on the pass, the pass merchant (run-renown shop), the elite spare-or-finish judgement with sect reputation and the Venom Adept recruit, the codex, and the endless Jianghu Wander. The rival pool carries status intents — bleed (ignores guard), poison (tea-cleansed), Flow siphon, hero-stunning concussion, twin strikes and self-mending — resolved from data-driven intent specs in `card-combat.js`; status chips render under each health bar. Reloading the tea house does not award victory twice. Cultivation applies on the next new campaign run. Lü Bu unlocks when the playable Act III rival duel is cleared.
+The roster is thirty-six heroes: the three story protagonists, eleven pass legends, Lü Bu, the Venom Adept and the twenty hidden legends of Act V (`heroes.js`; sixteen are visible in the menu, the hidden twenty card up in Quick Play and duel as the hall of rivals). Quick play allows every hero and updates personal records, but awards no permanent currency or unlocks. The last party of exactly three (`profile.lastQuickParty`: `{ lead, followers }` of two cosmetic followers) is stored on that same profile and preselected the next time Quick Play opens; promoting a follower between duels hands them a fresh, unwounded body, because cosmetic followers carry no run state. It does not change act unlocks. Campaign completes Act I through arrival dialogue, a branching pass map (ambush / elite / event / rest / duel rows; single-node rows auto-march), a discipline after every fight, Warden dialogue, resolution, and tea-house cultivation. Elite victories and event boxes draft run-scoped curios (`curios.js`) that bend duel rules; picks are checkpointed with the map. The pass feeds the duel: first blood and sneak contacts open with the rival reeling (`roam.js` marks first blood; `sneak` halves speed and archer aggro). The tea house trades Renown on a meridian map (`meridians.js`): three vessels of gated points plus three crossing-cavity perks, with legacy cultivation ranks migrated. The expansion systems live in `expansion.js`: hero signature actions (a fifth Flow-gated duel move), rival focus/special attacks (techniques break the gathering), oath-bonded party assists, run-seeded weather, composure attrition on the pass, the pass merchant (run-renown shop), the elite spare-or-finish judgement with sect reputation and the Venom Adept recruit, the codex, and the endless Jianghu Wander. The rival pool carries status intents — bleed (ignores guard), poison (tea-cleansed), Flow siphon, hero-stunning concussion, twin strikes and self-mending — resolved from data-driven intent specs in `card-combat.js`; status chips render under each health bar. Reloading the tea house does not award victory twice. Cultivation applies on the next new campaign run.
 
 Writes continue to detect another tab's newer save, preserve corrupt/future-version data, and report session-only play when storage is unavailable. Browser QA uses a separate localhost origin so the user's normal 127.0.0.1 campaign progress is not replaced.
 
@@ -94,11 +100,11 @@ Run `npm test` and `npm run check` in `prototype/jade-gate`. Card tests cover id
 
 Browser acceptance: roster → campaign dialogue → the pass (move by buttons and WASD) → contact starts first card duel → win returns to the pass → disciplines → Warden stance change → resolution → tea house → purchase → reload/Continue; also pause/resume from both the pass and a duel, and Quick play. Check narrow layouts, pass sprites, card portraits, keyboard controls and reduced motion.
 
-Delivered: browser card RPG with Acts I–III, twelve heroes, persistent progression, four new Act II/III procedural themes and 40 illustrated assets. Deferred: Act IV, open-world exploration, equipment inventory, 3D meshes/rigs and a Godot port. Sun Shangxiang, Gu Dasao, and Qin Liangyu are Quick Play only.
+Delivered: browser card RPG with Acts I–V, thirty-six heroes, persistent progression and the adaptive wuxia-rock score. Deferred: open-world exploration, equipment inventory, 3D meshes/rigs and a Godot port. Sun Shangxiang, Gu Dasao, and Qin Liangyu are Quick Play only.
 
 ### Localization and roster availability (26 September 2026)
 
-`HEROES[].quickPlayOnly` keeps newer heroes in Quick Play until earned, except Sun Shangxiang, Gu Dasao, and Qin Liangyu, who stay Quick Play only. The menu reveals earned heroes in Campaign in story order: Guan Yu after Act I, Wu Song after Act II, and Mu Guiying, Liang Hongyu and Nie Yinniang after the three mountain encounters. Session validation checks earned milestones rather than trusting the visible roster list. Save normalization preserves records and currency while discarding checkpoints for unavailable heroes. Lü Bu unlocks after the Act III rival duel. Quick Play's chapter selector can launch any built act for immediate testing without changing campaign progress.
+`HEROES[].quickPlayOnly` keeps newer heroes in Quick Play, and Sun Shangxiang, Gu Dasao, and Qin Liangyu stay Quick Play only. Campaign starts and resumes only with the three story protagonists (`STORY_HERO_IDS` in `story-rivals.js`, the 1 October role contract); every other identity, Lü Bu included, plays in Quick Play or duels as a rival. Session validation checks that role list rather than trusting the visible roster. Save normalization preserves records and currency while discarding checkpoints for unavailable heroes. Quick Play's chapter selector can launch any built act for immediate testing without changing campaign progress.
 
 Dialogue scenes dress the speaker: their portrait card (`#dialogue-portrait`, framed art plus a name caption, resolved by `portraitFor` in `platform/speech.js` from hero/rival display names, narrators borrow the player hero) stands beside the words. Each line is also read aloud through the browser's speechSynthesis — female-first voices ranked per language (`scoreVoice`/`pickVoice`), one stable voice per speaker with a per-speaker pitch shift, gated by the Sound toggle and cancelled when the scene ends or the sound goes off.
 

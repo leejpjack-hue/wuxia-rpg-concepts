@@ -1,0 +1,20 @@
+PASS  heroes total 36
+PASS  visible in menu 16
+PASS  hidden twenty
+PASS  story legends 11
+PASS  otherworld rivals 20
+PASS  story protagonists 3
+PASS  five acts
+PASS  signature cost 25 everywhere
+PASS  horde 20x
+PASS  mermaid has roam + pass nodes
+PASS  signature row present
+PASS  keys 1-5
+PASS  phaseGather sentence
+PASS  role contract line
+PASS  acts I-V delivered
+PASS  dormant hazards named
+PASS  flow spec acts I-V
+ℹ tests 319
+ℹ pass 319
+ℹ fail 0
