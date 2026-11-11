@@ -62,13 +62,13 @@ test("signature actions resolve: counter, execute, charged, cleanse, vanish", ()
   cleanse.start("mu-guiying", "quickplay", "jade-gate", quickParty("mu-guiying"));
   cleanse.beginDuel(0);
   cleanse.g.duel.status.hero.poison = { turns: 3, amount: 3 };
-  cleanse.g.duel.assistUsed = true;
+  cleanse.g.duel.assistUses = 1;
   cleanse.g.duel.assistReady = true;
   cleanse.g.p.hp = 50;
   cleanse.g.p.flow = 60;
   assert(cleanse.combat.act("signature"));
   assert.equal(cleanse.g.duel.status.hero.poison, null);
-  assert.equal(cleanse.g.duel.assistUsed, false, "rally re-readies the assist");
+  assert.equal(cleanse.g.duel.assistUses, 0, "rally re-readies the assist");
 
   // Vanish: Nie Yinniang takes no reply damage and leaves a bleed.
   const vanish = game();
@@ -83,6 +83,34 @@ test("signature actions resolve: counter, execute, charged, cleanse, vanish", ()
   vanish.combat.act("guard");
   vanish.combat.act("guard");
   assert.equal(vanish.g.duel.status.enemy.bleed, null);
+});
+
+test("the Sovereign and Zhao Min gather twice as fast below half health, as the pass tips promise", () => {
+  for (const kind of ["sovereign", "zhao-min-rival"]) {
+    const g = game();
+    g.start("zhao-yun", "quickplay", "jade-gate", quickParty("zhao-yun"));
+    g.beginDuel(0);
+    const enemy = g.g.enemies[0];
+    Object.assign(enemy, { kind, phase: 1, focus: 0, specialAt: specialFor(kind).focus, pattern: ["guard", "guard", "guard"], move: 0 });
+    g.combat.act("attack");
+    assert.equal(enemy.focus, 2, `${kind} gathers two focus per exchange in its second stance`);
+  }
+});
+
+test("a sneaking Hidden Blade reads the night's tighter master aggro", () => {
+  const g = game();
+  g.start("nie-yinniang", "quickplay", "jade-gate", quickParty("nie-yinniang"));
+  // The opening vanguard fields only guards; the gauntlet encounter fields watchers.
+  g.g.encounterIndex = 1;
+  g.prepareEncounter();
+  const archer = g.g.roam.field.find((enemy) => enemy.ranged);
+  // Synthetic night: the master's sneak window is 120; the buggy fallback is 260.
+  g.g.weather = { ...g.weather, sneakAggro: 420, sneakMasterAggro: 120 };
+  g.g.roam.sneaking = true;
+  Object.assign(g.g.p, { x: 640, y: 500 });
+  Object.assign(archer, { x: 840, y: 500, cooldown: 0, windup: 0 });
+  g.step(1 / 60, {});
+  assert.equal(archer.windup, 0, "a watcher 200 paces off holds its bow under the master's tighter window");
 });
 
 test("rivals gather focus and unleash telegraphed specials; techniques break them", () => {

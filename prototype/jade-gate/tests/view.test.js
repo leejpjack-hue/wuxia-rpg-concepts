@@ -6,6 +6,7 @@ import { GameSession } from '../src/domain/session.js';
 import { createCardCombat } from '../src/domain/card-combat.js';
 import { SaveStore } from '../src/platform/save-store.js';
 import { HEROES } from '../src/content/heroes.js';
+import { ACTS } from '../src/content/campaign.js';
 import { memoryStorage, quickParty } from './helpers.js';
 
 // Minimal injected document adapter. IDs come from the shipped HTML, so stale
@@ -64,6 +65,12 @@ test('fresh menu is unobstructed and Quick play opens the pass, not the duel tab
   assert.equal($('play').hidden, true); assert.equal($('play').inert, true);
   assert.equal($('selection').hidden, true);
   assert.equal($('overlay').hidden, true); assert.equal($('app-status').textContent, '');
+});
+test('Quick play chapter selector offers every built act', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const available = ACTS.filter(act => act.available).map(act => act.id);
+  for (const id of available)
+    assert(html.includes(`<option value="${id}"`), `Quick play lists the built act ${id}`);
 });
 test('Quick play can launch Acts II and III without changing campaign progress', () => {
   for (const actId of ['bamboo-crossing', 'mount-canglan']) {

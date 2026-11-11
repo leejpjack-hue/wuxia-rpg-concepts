@@ -252,7 +252,7 @@ export function createRoam(g, bus, { encounter, roster: explicitRoster, areas, a
       enemy.cooldown -= dt;
       // Sneaking closes the watchful range; the Hidden Blade near-erases it.
       const sneakBase = g.weather?.sneakAggro
-        ? (roam.sneakMaster ? g.weather.sneakMasterAggo || 260 : g.weather.sneakAggro)
+        ? (roam.sneakMaster ? g.weather.sneakMasterAggro || 260 : g.weather.sneakAggro)
         : (roam.sneakMaster ? 300 : 420);
       const aggro = roam.sneaking ? sneakBase : Math.round(850 * (g.weather?.aggroMultiplier ?? 1));
       // Volley budget: with tripled ranks, only a handful of arrows fly at

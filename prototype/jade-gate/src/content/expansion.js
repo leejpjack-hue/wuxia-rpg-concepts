@@ -123,8 +123,8 @@ export const ENEMY_SPECIALS = {
   "lu-bu-rival": { name: "Skyfall Halberd", scale: 2.4, focus: 4 },
   "jade-sentinel": { name: "Moon Gate Slam", scale: 2.2, heroBleed: { turns: 2, amount: 3 }, focus: 3 },
   "meridian-acolyte": { name: "Vortex Palm", scale: 2.0, drain: 15, focus: 3 },
-  sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4 },
-  "zhao-min-rival": { name: "Verdict of the Silver Fan", scale: 1.1, hits: 2, focus: 4 },
+  sovereign:     { name: "Blood Moon Edict", scale: 2.3, heroPoison: { turns: 2, amount: 3 }, focus: 4, phaseGather: 2 },
+  "zhao-min-rival": { name: "Verdict of the Silver Fan", scale: 1.1, hits: 2, focus: 4, phaseGather: 2 },
 };
 const heroSpecials = Object.fromEntries(HEROES.filter(hero => !hero.hidden).map(hero => {
   const sig = SIGNATURES[hero.id];

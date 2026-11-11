@@ -86,7 +86,7 @@ export class DuelView {
     const g = this.session.g, d = g?.duel, enemy = g?.enemies?.[0];
     const followers = g?.party?.followers;
     if (!d || !enemy || !Array.isArray(followers) || !followers.length) return;
-    if (!d.assistReady || d.assistUsed || this.session.g?.encounterDone) return;
+    if (!d.assistReady || d.assistUses >= (d.assistLimit || 1) || this.session.g?.encounterDone) return;
     const follower = HEROES.find((h) => h.id === followers[0]);
     if (!follower) return;
     const oath = oathFor([g.p.id, ...followers]);
@@ -255,7 +255,7 @@ export class DuelView {
       return;
     }
     btn.hidden = false;
-    const ready = !!d.assistReady && !d.assistUsed;
+    const ready = !!d.assistReady && (d.assistUses || 0) < (d.assistLimit || 1);
     btn.disabled = this.busy || mode !== "playing" || !ready;
     const oathIcon = this.$("assist-oath-icon");
     if (oathIcon) {
@@ -265,7 +265,7 @@ export class DuelView {
     }
     const detail = this.$("assist-detail");
     if (detail) {
-      if (d.assistUsed) detail.textContent = this.t("Assist used");
+      if ((d.assistUses || 0) >= (d.assistLimit || 1)) detail.textContent = this.t("Assist used");
       else {
         const name = HEROES.find((h) => h.id === followers[0])?.name || "";
         const base = this.t(`Assist · ${ASSIST_DAMAGE} damage · free once`);
