@@ -91,7 +91,9 @@ export class GameView {
       this.perform(() => session.continueCheckpoint());
     this.$("open-codex").onclick = () => {
       this.onGesture();
+      this.codexPausedFromPass = session.mode === "exploring";
       this.codexOpen = true;
+      if (this.codexPausedFromPass) session.pause();
       this.render();
     };
     this.$("start-wander").onclick = () =>
@@ -519,7 +521,13 @@ export class GameView {
         }
       }
     }
-    this.button("Close", () => { this.codexOpen = false; this.render(); }, { primary: true });
+    this.button("Close", () => {
+      this.codexOpen = false;
+      if (this.codexPausedFromPass) {
+        this.codexPausedFromPass = false;
+        session.resume();
+      } else this.render();
+    }, { primary: true });
   }
   render() {
     const session = this.session,
@@ -535,6 +543,9 @@ export class GameView {
     this.$("roam").inert = mode !== "exploring";
     this.$("play").inert = mode !== "playing";
     this.$("selection").inert = mode !== "menu";
+    // The codex only ever shows over the menu or a pause; anywhere else a
+    // queued codexOpen is stale (e.g. a mid-duel click) and must not linger.
+    if (mode !== "menu" && mode !== "paused") this.codexOpen = false;
     if (mode === "menu") {
       this.refreshMenu();
       if (this.codexOpen) this.renderCodex();
@@ -570,19 +581,23 @@ export class GameView {
     } else if (mode === "map") {
       this.renderMap(g);
     } else if (mode === "paused") {
-      const campaign = session.g?.runMode === "campaign";
-      const midDuel = campaign && session.pausedFrom === "playing";
-      this.modal(
-        "A MOMENT OF STILLNESS",
-        "The mountain can wait.",
-        midDuel
-          ? "Leaving this duel restores the saved encounter boundary, or the story, upgrade, or tea-house scene. Your save is intact. This mid-duel turn is not kept."
-          : campaign
-            ? "The journey is paused. Continue restores the saved encounter boundary or a story, upgrade, or tea-house scene — not a mid-duel turn or mid-turn snapshot."
-            : "The journey is paused. Campaign Continue returns to the last encounter checkpoint.",
-      );
-      this.button("Resume journey", () => session.resume(), { primary: true });
-      this.button("Return to roster", () => session.menu());
+      if (this.codexOpen) {
+        this.renderCodex();
+      } else {
+        const campaign = session.g?.runMode === "campaign";
+        const midDuel = campaign && session.pausedFrom === "playing";
+        this.modal(
+          "A MOMENT OF STILLNESS",
+          "The mountain can wait.",
+          midDuel
+            ? "Leaving this duel restores the saved encounter boundary, or the story, upgrade, or tea-house scene. Your save is intact. This mid-duel turn is not kept."
+            : campaign
+              ? "The journey is paused. Continue restores the saved encounter boundary or a story, upgrade, or tea-house scene — not a mid-duel turn or mid-turn snapshot."
+              : "The journey is paused. Campaign Continue returns to the last encounter checkpoint.",
+        );
+        this.button("Resume journey", () => session.resume(), { primary: true });
+        this.button("Return to roster", () => session.menu());
+      }
     } else if (mode === "upgrade") {
       this.modal(
         `ENCOUNTER ${g.wave} COMPLETE`,
@@ -630,12 +645,13 @@ export class GameView {
       this.$("choices").appendChild(crossHeading);
       for (const node of MERIDIAN_NODES.filter((item) => item.vessel === "cross")) {
         const state = meridianState(session.profile, node.id);
+        // Every perk row reads the same way — name, effect, cost — whether or
+        // not the gates are met, so the player knows what Renown buys first.
         const b = this.button(
           state.struck
-            ? `✓ ${node.point}`
-            : state.locked
-              ? `${node.point} · ${this.t("requires")} ${node.requires.map((need) => nodeById(need).point).join(" + ")}`
-              : `${node.point} · ${this.t(node.effect)} · ${node.cost} ${this.t("Renown")}`,
+            ? `✓ ${node.point} · ${this.t(node.effect)}`
+            : `${node.point} · ${this.t(node.effect)} · ${node.cost} ${this.t("Renown")}`
+              + (state.locked ? ` · ${this.t("requires")} ${node.requires.map((need) => nodeById(need).point).join(" + ")}` : ""),
           () => session.buy(node.id),
           { disabled: state.struck || state.locked || !state.affordable, parent: "choices" },
         );
