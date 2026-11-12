@@ -182,7 +182,6 @@
           <div class="fighter-info"><p class="fighter-title" id="enemy-title"></p><h2 id="enemy-name"></h2>
             <div class="health-label"><span data-i18n="HEALTH">体力</span><strong id="enemy-health"></strong></div>
             <div class="duel-meter rival-meter" id="enemy-health-meter" role="progressbar" aria-label="敵の体力" data-i18n-aria="Rival health"><i id="enemy-health-bar"></i></div>
-            <div class="intent-badge"><span data-i18n="NEXT MOVE">敵の次の行動</span><strong id="enemy-intent"></strong><small id="intent-next"></small><small id="enemy-focus" hidden></small></div>
             <button type="button" id="card-assist" class="assist-btn" hidden disabled aria-label="Assist">
               <img id="assist-oath-icon" class="action-icon" alt="" aria-hidden="true" hidden /><span data-i18n="Assist">援護</span>
               <small id="assist-detail"></small>
@@ -192,7 +191,7 @@
         </article>
       </div>
       <section class="turn-panel" aria-label="行動を選択" data-i18n-aria="Choose your action">
-        <div class="turn-heading"><div><p class="eyebrow" data-i18n="READ THE RIVAL · CHOOSE YOUR MOVE">敵を読み、一手を選べ</p><p id="intent-detail"></p></div><span id="turn-status" role="status" aria-live="polite" data-i18n="Your turn. Take your time.">あなたの番です。じっくり考えましょう。</span></div>
+        <div class="turn-heading"><div><p class="eyebrow" data-i18n="READ THE RIVAL · CHOOSE YOUR MOVE">敵を読み、一手を選べ</p></div><span id="turn-status" role="status" aria-live="polite" data-i18n="Your turn. Take your time.">あなたの番です。じっくり考えましょう。</span></div>
         <aside id="tutor-duel" class="first-run-tutor" data-tutor-root hidden aria-label="初回の指南" data-i18n-aria="First-run tutor">
           <p class="eyebrow" data-i18n="FIRST RUN">初回</p>
           <h2 data-i18n="The first card duel">最初のカード決闘</h2>
@@ -202,6 +201,7 @@
             <button type="button" id="tutor-skip-duel" data-i18n="Skip tutor forever">指南を以後表示しない</button>
           </div>
         </aside>
+        <div class="intent-badge" id="intent-badge"><span data-i18n="NEXT MOVE">敵の次の行動</span><strong id="enemy-intent"></strong><p id="intent-detail"></p><small id="intent-next"></small><small id="enemy-focus" hidden></small></div>
         <div class="duel-actions">
           <button id="card-attack" data-action="attack"><span><kbd>1</kbd><span data-i18n="Strike">攻撃</span></span><small id="attack-detail"></small></button>
           <button id="card-guard" data-action="guard"><span><kbd>2</kbd><span data-i18n="Guard">防御</span></span><small data-i18n="Block 80% damage · +20 Flow">被ダメージ80%軽減 · 気＋20</small></button>

@@ -147,6 +147,12 @@ export class DuelView {
   }
   render() {
     const { g, mode } = this.session;
+    // Paint only. The words and the number still come from combat.intent().
+    const play = this.$("play");
+    if (play?.dataset) {
+      const opening = !!(g?.duel && (g.encounterIndex || 0) === 0 && (g.duel.defeated || 0) === 0);
+      play.dataset.telegraph = g?.duel ? (opening ? "first" : "ready") : "";
+    }
     if (!g?.duel) return;
     const p = g.p, d = g.duel, enemy = g.enemies[0];
     this.$("duel-table").style.setProperty("--arena-image", `url("assets/${this.session.act.arena}.png")`);
@@ -187,6 +193,8 @@ export class DuelView {
       }
       this.$("enemy-intent").textContent = this.t(intent.name + (intent.damage ? ` · ${intent.damage} damage` : ""));
       this.$("intent-detail").textContent = this.t(intent.description);
+      const badge = this.$("intent-badge");
+      if (badge?.dataset) badge.dataset.intent = intent.kind;
       // The Night-Eye Charm reveals the rival's following move as well.
       const after = g.curios?.includes("night-eye") ? this.session.combat.intent(enemy, 1) : null;
       this.$("intent-next").textContent = after
@@ -242,7 +250,7 @@ export class DuelView {
     }));
   }
 
-  /** Show Assist under rival intent when followers exist; enable after lead damage. */
+  /** Assist stays on the rival card. Enable it after the lead has dealt damage. */
   renderAssist(mode, d, enemy) {
     const btn = this.$("card-assist");
     if (!btn) return;

@@ -180,6 +180,7 @@ export const messages = {
   'The adder curls beside tigers now… whose venom bought your loyalty?': '蛇はいま虎のそばに丸まっている……誰の毒がお前の忠義を買った？',
   'The mercy of one swordsman. Play your requiem and learn it.': '一人の剣士の慈悲だ。鎮魂歌を弾いて、学ぶがいい。',
   // Enemy specials (focus) logs and telegraphs.
+  'Focus {current}/{need}': '気勢 {current}/{need}', 'SPECIAL ready': '奥の手、準備完了',
   '{name} gathers power — the next blow will be special.': '{name}が気を集めている——次の一撃は奥の手だ。',
   'Your technique breaks the rival\'s gathering!': '奥義が敵の気勢を断ち切った！',
   '{name} unleashes {special}!': '{name}が{special}を放つ！',

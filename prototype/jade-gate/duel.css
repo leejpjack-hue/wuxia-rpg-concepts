@@ -29,10 +29,18 @@
 .duel-meter i { display: block; height: 100%; background: #a8c7ae; transition: width .3s ease; }
 .flow-meter i { background: #d6be87; }
 .rival-meter i { background: #cd8b7e; }
-.intent-badge { display: flex; flex-direction: column; min-height: 38px; margin-top: 10px; color: #efbea3; }
-.intent-badge span { font-size: 8px; letter-spacing: 1.5px; }
-.intent-badge strong { font-size: 12px; font-weight: 500; }
-[data-intent="heavy"] .intent-badge strong { color: #ffbca6; }
+/* Shipped telegraph: next move and exact engine damage, static under reduced motion. */
+.intent-badge {
+  display: flex; flex-direction: column; gap: 4px; margin: 14px 0 12px; padding: 12px 14px;
+  color: #fffaf3; background: #1a100c; border: 2px solid #e7c27a; border-radius: 4px;
+}
+.intent-badge span { font-size: 12px; font-weight: 700; letter-spacing: 1.6px; color: #f0d48a; }
+.intent-badge strong { font-family: Georgia, serif; font-size: 22px; font-weight: 700; line-height: 1.25; color: #fffaf3; }
+.intent-badge[data-intent="heavy"] strong { color: #ffd0c4; }
+.intent-badge[data-intent="special"] { border-color: #ffb4a2; background: #2a1210; }
+#play[data-telegraph="first"] .intent-badge { padding: 16px 18px; border-width: 3px; background: #2c1810; }
+#play[data-telegraph="first"] .intent-badge strong { font-size: clamp(26px, 3.4vw, 34px); }
+#play[data-telegraph="first"] .intent-badge span { font-size: 13px; }
 .duel-versus { text-align: center; display: flex; flex-direction: column; gap: 9px; }
 .duel-versus b { font: 52px Georgia, serif; color: #d8c9a3; text-shadow: 0 2px 20px #000; }
 .duel-versus span { font-size: 10px; letter-spacing: 1.5px; color: #ded9c9; }
@@ -40,7 +48,8 @@
 .turn-panel { margin-top: 20px; }
 .turn-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
 .turn-heading .eyebrow { margin: 0 0 4px; letter-spacing: 1.6px; font-size: 9px; }
-#intent-detail { margin: 0 0 12px; color: #becbc4; font-size: 13px; }
+#intent-detail { margin: 0; color: #fff6ea; font-size: 16px; line-height: 1.45; }
+#play[data-telegraph="first"] #intent-detail { font-size: 18px; }
 #turn-status { font-size: 11px; color: var(--gold); max-width: 310px; text-align: right; }
 .duel-actions { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
 .duel-actions button { text-align: left; min-height: 87px; padding: 14px; background: #1b2b29; border-color: #667b69; }
@@ -66,7 +75,8 @@
   font-size: 12px; color: var(--gold); background: #1d2823;
   border: 1px solid #5a5240; border-radius: 6px; cursor: help;
 }
-#intent-next { display: block; font-size: 9px; color: #9fb4a6; margin-top: 3px; min-height: 12px; }
+#intent-next { display: block; font-size: 15px; font-weight: 700; color: #e7f6ee; margin-top: 2px; }
+#intent-next:empty { display: none; }
 /* Meridian vessel headings inside the tea-house choice list. */
 .vessel-heading {
   margin: 14px 0 4px; font-size: 9px; letter-spacing: 1.4px; text-transform: uppercase;
@@ -114,7 +124,8 @@
   .fighter-info { padding: 8px; }
   .fighter-info h2 { font-size: 17px; min-height: 39px; }
   .fighter-title { font-size: 7px; letter-spacing: .6px; min-height: 21px; }
-  .intent-badge strong { font-size: 10px; }
+  .intent-badge strong { font-size: 18px; }
+  #play[data-telegraph="first"] .intent-badge strong { font-size: 22px; }
   .duel-versus small { letter-spacing: 0; }
   .duel-actions button span { font-size: 16px; }
   .duel-meta button { padding: 7px; font-size: 10px; }
@@ -135,7 +146,7 @@
 .assist-btn[hidden] { display: none; }
 
 /* Rival focus gauge, signature fifth action, weather chip, codex entries. */
-#enemy-focus { display: block; font-size: 9px; color: #d9a05f; margin-top: 2px; }
+#enemy-focus { display: block; font-size: 13px; font-weight: 700; color: #f0d48a; margin-top: 2px; }
 #card-signature { border-color: #7a68a0; background: #262034; }
 .weather-chip {
   font-size: 10px; color: var(--muted); border: 1px solid var(--line);
