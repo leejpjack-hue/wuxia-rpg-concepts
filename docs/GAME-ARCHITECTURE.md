@@ -83,6 +83,7 @@ Each defeated rival grants Renown, restores 12 health and grants 8 Flow. Discipl
 - A brief visual animation disables repeat input, but cannot damage the player or change a turn. Reduced motion removes the animation.
 - Keys 1–5 match the action buttons (5 opens the signature when the hero carries one). Escape pauses/resumes. Held-key repeats are ignored.
 - Missing artwork reports a retryable notice but cannot block a mechanically playable duel.
+- A first-run tutor (`src/presentation/first-run-tutor.js`) sits on the pass and on the card duel until each lesson is marked seen or the player skips it forever. The only new profile fields are `settings.tutorSeenMove`, `settings.tutorSeenDuel`, and `settings.tutorSkipped`. The pass lesson names WASD, the arrow keys, and the on-screen pad. The duel lesson names Strike, Guard, Technique, and Healing tea, the four actions already on the table. The trailer stays the optional header link. Combat, party, and acts stay as shipped. A save that already has a checkpoint, completed act, completed run, record, or Renown, and no tutor fields, is treated as already taught.
 
 These rules address the previous empty menu overlay, missing action container, combat-to-defeat fallthrough, permanently hidden battle screen and stale inert states. Presentation regression tests use actual HTML IDs and an injected document adapter; browser checks cover real layout and clicks.
 

@@ -516,6 +516,31 @@ kbd {
 [hidden] {
   display: none !important;
 }
+.first-run-tutor {
+  margin: 0;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  text-align: left;
+}
+.first-run-tutor h2 {
+  font: 22px/1.2 Georgia, serif;
+  margin: 0 0 8px;
+}
+.first-run-tutor p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.first-run-tutor .tutor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.first-run-tutor button {
+  font-size: 13px;
+  padding: 8px 14px;
+}
 .modal {
   max-width: 760px;
   width: 100%;

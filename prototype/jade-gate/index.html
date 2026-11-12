@@ -128,6 +128,15 @@
         <canvas id="roam-effects" width="1280" height="720" aria-hidden="true"></canvas>
         <img id="roam-hero" alt="" draggable="false" />
       </div>
+      <aside id="tutor-move" class="first-run-tutor" data-tutor-root hidden aria-label="初回の指南" data-i18n-aria="First-run tutor">
+        <p class="eyebrow" data-i18n="FIRST RUN">初回</p>
+        <h2 data-i18n="Walk the pass">峠を歩む</h2>
+        <p data-i18n="Move with WASD or the arrow keys, or the on-screen pad. Walk into a swordsman to start a card duel.">WASDか矢印キー、または画面の移動パッドで進む。剣士に触れるとカード決闘が始まる。</p>
+        <div class="tutor-actions">
+          <button type="button" id="tutor-move-done" data-i18n="Got it">わかった</button>
+          <button type="button" id="tutor-skip-move" data-i18n="Skip tutor forever">指南を以後表示しない</button>
+        </div>
+      </aside>
       <details class="roam-menu" id="roam-menu">
         <summary class="menu-toggle"><span data-i18n="Controls and route map">操作と経路図</span></summary>
       <div class="roam-controls">
@@ -184,6 +193,15 @@
       </div>
       <section class="turn-panel" aria-label="行動を選択" data-i18n-aria="Choose your action">
         <div class="turn-heading"><div><p class="eyebrow" data-i18n="READ THE RIVAL · CHOOSE YOUR MOVE">敵を読み、一手を選べ</p><p id="intent-detail"></p></div><span id="turn-status" role="status" aria-live="polite" data-i18n="Your turn. Take your time.">あなたの番です。じっくり考えましょう。</span></div>
+        <aside id="tutor-duel" class="first-run-tutor" data-tutor-root hidden aria-label="初回の指南" data-i18n-aria="First-run tutor">
+          <p class="eyebrow" data-i18n="FIRST RUN">初回</p>
+          <h2 data-i18n="The first card duel">最初のカード決闘</h2>
+          <p data-i18n="Choose Strike, Guard, Technique, or Healing tea. Strike deals damage and gains Flow. Guard blocks 80% of the reply. Technique spends Flow and pierces guard. Healing tea restores health once; the rival still replies. Keys 1–4 match the buttons.">攻撃、防御、奥義、回復の茶から一つ選ぶ。攻撃はダメージを与え気を得る。防御は反撃の80%を防ぐ。奥義は気を使い防御を貫通する。回復の茶は一度だけ体力を戻し、敵は行動する。1～4キーが各ボタンに対応する。</p>
+          <div class="tutor-actions">
+            <button type="button" id="tutor-duel-done" data-i18n="Got it">わかった</button>
+            <button type="button" id="tutor-skip-duel" data-i18n="Skip tutor forever">指南を以後表示しない</button>
+          </div>
+        </aside>
         <div class="duel-actions">
           <button id="card-attack" data-action="attack"><span><kbd>1</kbd><span data-i18n="Strike">攻撃</span></span><small id="attack-detail"></small></button>
           <button id="card-guard" data-action="guard"><span><kbd>2</kbd><span data-i18n="Guard">防御</span></span><small data-i18n="Block 80% damage · +20 Flow">被ダメージ80%軽減 · 気＋20</small></button>
