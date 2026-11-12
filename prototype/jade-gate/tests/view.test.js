@@ -66,6 +66,33 @@ test('fresh menu is unobstructed and Quick play opens the pass, not the duel tab
   assert.equal($('selection').hidden, true);
   assert.equal($('overlay').hidden, true); assert.equal($('app-status').textContent, '');
 });
+test('the header codex opens over a paused pass and closes back to it', () => {
+  const { session, $ } = fixture();
+  session.start('zhao-yun', 'campaign');
+  while (session.mode === 'dialogue') session.advanceDialogue(true);
+  assert.equal(session.mode, 'exploring');
+  $('open-codex').onclick();
+  assert.equal(session.mode, 'paused', 'reading the codex pauses the pass');
+  assert.equal($('overlay').hidden, false);
+  const labels = $('choices').children.map((child) => child.textContent).join(' ');
+  assert.match(labels, /—/, 'recorded entries render');
+  $('modal-actions').querySelector('button:not([disabled])').onclick();
+  assert.equal(session.mode, 'exploring', 'closing the codex returns to the pass');
+  assert.equal($('overlay').hidden, true);
+});
+
+test('the tea house shows each gated perk effect before it is unlocked', () => {
+  const { session, $ } = fixture();
+  session.start('zhao-yun', 'campaign');
+  while (session.mode === 'dialogue') session.advanceDialogue(true);
+  session.menu(); // exploring → menu → waystation are the legal edges
+  session.transition('waystation');
+  const labels = $('choices').children.map((child) => child.textContent).join(' ');
+  assert.match(labels, /二壶から始める/);        // Dragon's Cavity: second pot of tea
+  assert.match(labels, /気消費が5減る/);         // Dantian: techniques cost 5 less
+  assert.match(labels, /一つ増える/);            // Phoenix Eye: a fourth choice
+});
+
 test('Quick play chapter selector offers every built act', () => {
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   const available = ACTS.filter(act => act.available).map(act => act.id);

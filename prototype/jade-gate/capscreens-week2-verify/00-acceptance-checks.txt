@@ -1,0 +1,13 @@
+PASS  #156 run records the met rival (codex data)  — Guan Yu
+PASS  drive returned to the pass between encounters  — exploring
+PASS  #156 codex opens from the pass (between encounters)  — {"overlayHidden":false,"inDom":true,"mode":"paused"}
+PASS  #156 codex lists the met rival by name
+PASS  #156 codex shows recorded counts
+PASS  #156 ja labels (図鑑 headings)
+PASS  #156 en labels (Legends/Rivals/Curios)
+PASS  #157 vessels show effect per point  — +15 max health per pointSea of Qi | +10 starting Flow per pointLong S | +0.05 damage per pointBinding Po
+PASS  #157 perks show their effect label
+PASS  #157 the next-run rule is explained
+PASS  #157 ja perk labels in sync
+
+11/11 checks passed
