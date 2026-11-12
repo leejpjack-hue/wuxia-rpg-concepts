@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { GameView } from '../src/presentation/view.js';
 import { GameSession } from '../src/domain/session.js';
 import { createCardCombat } from '../src/domain/card-combat.js';
-import { SaveStore } from '../src/platform/save-store.js';
+import { SAVE_KEY, SaveStore } from '../src/platform/save-store.js';
 import { HEROES } from '../src/content/heroes.js';
 import { ACTS } from '../src/content/campaign.js';
 import { memoryStorage, quickParty } from './helpers.js';
@@ -225,6 +225,69 @@ test("Quick play shows lead badge and follower 1/2 order chips", () => {
   assert.equal(f2.querySelector(".follower-chip").hidden, false);
   assert.match(f2.querySelector(".follower-chip").textContent, /2/);
   assert.deepEqual(view.partyIds, ["zhao-yun", "hu-sanniang", "lu-zhishen"]);
+});
+
+const BOUNDARY_COPY = 'Continue restores the saved encounter boundary or a story, upgrade, or tea-house scene — not a mid-duel turn or mid-turn snapshot.';
+const MID_DUEL_COPY = 'Leaving this duel restores the saved encounter boundary, or the story, upgrade, or tea-house scene. Your save is intact. This mid-duel turn is not kept.';
+
+test('campaign Continue copy states the encounter boundary, not a mid-turn snapshot', () => {
+  const { $ } = fixture();
+  assert.match($('journey-summary').textContent, /保存した戦場の境目/);
+  assert.match($('journey-summary').textContent, /物語・修練・茶屋/);
+  assert.match($('journey-summary').textContent, /手番の途中には戻らない/);
+  assert.match(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), /id="continue"[^>]*aria-describedby="journey-summary"/);
+  $('language').onchange({ target: { value: 'en' } });
+  assert.match($('journey-summary').textContent, new RegExp(BOUNDARY_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.equal($('save-status').textContent, '');
+});
+
+test('a mid-duel quit explains the encounter boundary and the existing save still loads', () => {
+  const storage = memoryStorage();
+  const { session, $ } = fixture(storage);
+  $('start').onclick();
+  $('modal-actions').children[1].onclick();
+  assert.equal(session.mode, 'exploring');
+  $('roam-pause').onclick();
+  assert.match($('modal-copy').textContent, /保存した戦場の境目/);
+  assert.match($('modal-copy').textContent, /手番の途中には戻りません/);
+  $('modal-actions').children[0].onclick();
+  assert.equal(session.mode, 'exploring');
+  const boundaryHp = session.g.p.hp;
+  const saved = JSON.parse(storage.getItem(SAVE_KEY));
+  assert.equal(saved.version, 2);
+  assert.equal(saved.checkpoint.stage, 'combat');
+  assert.equal(session.beginDuel(0), true);
+  assert.equal(session.mode, 'playing');
+  session.g.p.hp = 1;
+  session.g.turns = (session.g.turns || 0) + 3;
+  $('pause').onclick();
+  assert.equal(session.mode, 'paused');
+  assert.equal(session.pausedFrom, 'playing');
+  assert.match($('modal-copy').textContent, /セーブはそのままです/);
+  assert.match($('modal-copy').textContent, /保存した戦場の境目/);
+  assert.doesNotMatch($('modal-copy').textContent, /読み込めません|broken save|corrupt/i);
+  $('language').onchange({ target: { value: 'en' } });
+  assert.equal($('modal-copy').textContent, MID_DUEL_COPY);
+  $('modal-actions').children[1].onclick();
+  assert.equal(session.mode, 'menu');
+  assert.equal($('continue').hidden, false);
+  assert.equal(session.store.warning, '');
+  assert.equal($('save-status').textContent, '');
+  assert.match($('journey-summary').textContent, /encounter boundary/);
+  const after = JSON.parse(storage.getItem(SAVE_KEY));
+  assert.equal(after.version, 2);
+  assert.equal(after.checkpoint.stage, 'combat');
+  assert.deepEqual(after.checkpoint.player, saved.checkpoint.player);
+  assert.deepEqual(Object.keys(after.checkpoint).sort(), Object.keys(saved.checkpoint).sort());
+  const next = fixture(storage);
+  assert.equal(next.session.store.warning, '');
+  assert.equal(next.$('continue').hidden, false);
+  next.$('language').onchange({ target: { value: 'en' } });
+  next.$('continue').onclick();
+  assert.equal(next.session.mode, 'exploring');
+  assert.equal(next.session.g.duel, null);
+  assert.equal(next.session.g.p.hp, boundaryHp);
+  assert.notEqual(next.session.g.p.hp, 1);
 });
 
 test("Quick play tap-to-set-lead promotes a follower before start", () => {

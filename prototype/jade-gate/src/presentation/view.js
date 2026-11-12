@@ -256,7 +256,7 @@ export class GameView {
     this.$("continue").disabled = !this.ready;
     this.$("journey-summary").textContent =
       this.runMode === "campaign"
-        ? this.t(`Campaign · ${profile.wallet} Renown · checkpoint saves between encounters`)
+        ? this.t(`Campaign · ${profile.wallet} Renown · Continue restores the saved encounter boundary or a story, upgrade, or tea-house scene — not a mid-duel turn or mid-turn snapshot.`)
         : `${this.t("Pick 3 → roam bamboo → duel → tap follower chip to swap → next rival")} · ${this.partyIds.length}/3`;
     if (this.$("open-codex")) {
       const codex = profile.codex || { heroes: {}, rivals: {}, curios: {} };
@@ -570,10 +570,16 @@ export class GameView {
     } else if (mode === "map") {
       this.renderMap(g);
     } else if (mode === "paused") {
+      const campaign = session.g?.runMode === "campaign";
+      const midDuel = campaign && session.pausedFrom === "playing";
       this.modal(
         "A MOMENT OF STILLNESS",
         "The mountain can wait.",
-        "The journey is paused. Campaign Continue returns to the last encounter checkpoint.",
+        midDuel
+          ? "Leaving this duel restores the saved encounter boundary, or the story, upgrade, or tea-house scene. Your save is intact. This mid-duel turn is not kept."
+          : campaign
+            ? "The journey is paused. Continue restores the saved encounter boundary or a story, upgrade, or tea-house scene — not a mid-duel turn or mid-turn snapshot."
+            : "The journey is paused. Campaign Continue returns to the last encounter checkpoint.",
       );
       this.button("Resume journey", () => session.resume(), { primary: true });
       this.button("Return to roster", () => session.menu());
