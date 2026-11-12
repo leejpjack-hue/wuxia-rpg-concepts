@@ -9,6 +9,7 @@ import { AudioDirector } from "./src/platform/audio-director.js";
 import { GameView } from "./src/presentation/view.js";
 import { DuelView } from "./src/presentation/duel-view.js";
 import { RoamView } from "./src/presentation/roam-view.js";
+import { FirstRunTutor } from "./src/presentation/first-run-tutor.js";
 import { HEROES } from "./src/content/heroes.js";
 import { SIGNATURE_ARCHETYPES, SPECIAL_ART_KINDS } from "./src/content/expansion-art.js";
 import { OATHS } from "./src/content/expansion.js";
@@ -31,6 +32,7 @@ function gesture() {
 const view = new GameView(session, document, gesture);
 const duel = new DuelView(session, document, gesture);
 const roam = new RoamView(session, document, gesture);
+const tutor = new FirstRunTutor(session, document);
 const assets = new AssetStore();
 const shownIds = HEROES.filter((hero) => !hero.hidden).map((hero) => hero.id);
 const art = [
@@ -87,6 +89,7 @@ function pagehide(event) {
   view.dispose();
   duel.dispose();
   roam.dispose();
+  tutor.dispose();
   audio.dispose();
   session.dispose();
   document.removeEventListener("visibilitychange", hidden);

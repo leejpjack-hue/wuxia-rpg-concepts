@@ -18,6 +18,10 @@ export const defaultProfile = () => ({
     masterVolume: 0.75,
     musicVolume: 0.65,
     sfxVolume: 0.85,
+    // First-run tutor. Absent on older saves; sanitizeProfile fills them.
+    tutorSkipped: false,
+    tutorSeenMove: false,
+    tutorSeenDuel: false,
   },
   records: {},
   wallet: 0,
@@ -189,6 +193,23 @@ export function sanitizeProfile(raw) {
     result.settings.language = raw.settings.language;
   for (const key of ["masterVolume", "musicVolume", "sfxVolume"])
     result.settings[key] = number(raw.settings?.[key], result.settings[key], 1);
+  // Older saves with real play and no tutor fields are already taught.
+  // Explicit flags always win, including a fresh run that has since checkpointed.
+  const tutorFlags = ["tutorSkipped", "tutorSeenMove", "tutorSeenDuel"];
+  const tutorTold = tutorFlags.some((key) => typeof raw.settings?.[key] === "boolean");
+  const tutorPlayed =
+    !tutorTold &&
+    !!(
+      raw.checkpoint ||
+      (Array.isArray(raw.completedActs) && raw.completedActs.length) ||
+      (Array.isArray(raw.completedRuns) && raw.completedRuns.length) ||
+      (raw.records && typeof raw.records === "object" && Object.keys(raw.records).length) ||
+      integer(raw.wallet) > 0
+    );
+  for (const key of tutorFlags) {
+    if (typeof raw.settings?.[key] === "boolean") result.settings[key] = raw.settings[key];
+    else if (tutorPlayed && key !== "tutorSkipped") result.settings[key] = true;
+  }
   result.checkpoint = sanitizeCheckpoint(raw.checkpoint);
   if (
     result.checkpoint &&
